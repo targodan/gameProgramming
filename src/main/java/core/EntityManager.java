@@ -14,6 +14,8 @@ import java.util.*;
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
 public class EntityManager {
+    // Invariant: All component lists are sorted ascending by time of adding the
+    //            *entity*.
     private final Map<Class<?>, List<Component>> components;
     private int nextEntity;
     
@@ -24,7 +26,7 @@ public class EntityManager {
     
     public void registerComponent(Class<?> comp) {
         if(this.components.containsKey(comp)) {
-            throw new IllegalArgumentException("The component is already registered.");
+            throw new WTFException("The component is already registered.");
         }
         this.components.put(comp, new ArrayList<>());
     }
@@ -37,6 +39,15 @@ public class EntityManager {
             this.components.get(comp.getClass()).add(comp);
         });
         return id;
+    }
+    
+    public void addComponent(int entityID, Component comp) {
+        comp.setEntityID(entityID);
+        List<Component> list = this.components.get(comp.getClass());
+        list.add(comp);
+        // Keep the invariant valid.
+        list.sort((a, b) -> b.getEntityID() - a.getEntityID());
+        Engine.getInstance().getMessageManager().sendMessage(new Message(Messages.getInstance().ENTITY_ADD_COMPONENT(), entityID));
     }
     
     public List<Component> getComponentsOfType(Class<?> type) {

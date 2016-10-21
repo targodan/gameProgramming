@@ -11,7 +11,7 @@ package core;
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
 public class Message {
-    protected int type;
+    protected final int type;
     protected final Object payload;
 
     public Message(int type, Object payload) {

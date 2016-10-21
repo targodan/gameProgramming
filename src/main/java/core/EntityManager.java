@@ -38,4 +38,8 @@ public class EntityManager {
         });
         return id;
     }
+    
+    public List<Component> getComponentsOfType(Class<?> type) {
+        return this.components.get(type);
+    }
 }

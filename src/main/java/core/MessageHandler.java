@@ -10,6 +10,6 @@ package core;
  *
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
-public interface Handler {
-    public void handle(Message msg);
+public interface MessageHandler {
+    public void handleMessage(Message msg);
 }

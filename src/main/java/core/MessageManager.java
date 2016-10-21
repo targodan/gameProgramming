@@ -22,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageManager {
     protected final Set<String> messages;
     protected final Set<Integer> hashes;
-    protected final Map<Integer, Set<Handler>> handlers;
+    protected final Map<Integer, Set<MessageHandler>> handlers;
     protected final Queue<Message> queue;
     
     public MessageManager() {
@@ -47,24 +47,34 @@ public class MessageManager {
         return name.hashCode();
     }
     
-    public void registerHandler(int msg, Handler h) {
+    public boolean isRegistered(String name) {
+        return this.messages.contains(name);
+    }
+    
+    public void registerHandler(int msg, MessageHandler h) {
         if(!this.hashes.contains(msg)) {
             throw new IllegalArgumentException("Message type unknown.");
         }
         this.handlers.get(msg).add(h);
     }
     
-    public void registerHandler(Collection<Integer> msges, Handler h) {
+    public void registerHandler(Collection<Integer> msges, MessageHandler h) {
         msges.stream().forEach(msg -> {
             this.registerHandler(msg, h);
         });
+    }
+    
+    public void registerHandler(int[] msges, MessageHandler h) {
+        for(int msg : msges) {
+            this.registerHandler(msg, h);
+        }
     }
     
     // TODO: where does the queue come in?
     // *when* are messages handled?
     public void dispatch(Message msg) {
         this.handlers.get(msg.getType()).stream().forEach(h -> {
-            h.handle(msg);
+            h.handleMessage(msg);
         });
     }
     

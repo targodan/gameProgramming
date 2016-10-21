@@ -14,7 +14,7 @@ import java.util.*;
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
 public class EntityManager {
-    private Map<Class<?>, List<Component>> components;
+    private final Map<Class<?>, List<Component>> components;
     private int nextEntity;
     
     public EntityManager() {

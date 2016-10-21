@@ -20,13 +20,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
 public class MessageManager {
-    protected Set<String> messages;
-    protected Set<Integer> hashes;
-    protected Map<Integer, Set<Handler>> handlers;
-    protected Queue<Message> queue;
+    protected final Set<String> messages;
+    protected final Set<Integer> hashes;
+    protected final Map<Integer, Set<Handler>> handlers;
+    protected final Queue<Message> queue;
     
     public MessageManager() {
         this.messages = new HashSet<>();
+        this.hashes = new HashSet<>();
         this.handlers = new HashMap<>();
         // TODO: does this need to be thread safe?
         this.queue = new LinkedBlockingQueue<>();

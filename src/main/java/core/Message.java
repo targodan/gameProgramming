@@ -12,7 +12,7 @@ package core;
  */
 public class Message {
     protected int type;
-    protected Object payload;
+    protected final Object payload;
 
     public Message(int type, Object payload) {
         this.type = type;

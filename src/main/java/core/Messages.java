@@ -9,7 +9,7 @@ package core;
  *
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
-public class Messages extends MessageRegister {
+public class Messages extends ReflectionMSGRegisterer {
     private int MSG_SHUTDOWN;
     private int MSG_ENTITY_ADD_COMPONENT;
     private int MSG_ENTITY_REMOVE_COMPONENT;

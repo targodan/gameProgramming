@@ -17,9 +17,9 @@ import static org.mockito.Mockito.*;
  *
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
-public class MessageRegisterTest {
+public class ReflectionMSGRegistererTest {
     
-    public MessageRegisterTest() {
+    public ReflectionMSGRegistererTest() {
     }
 
     /**
@@ -29,7 +29,7 @@ public class MessageRegisterTest {
     public void testRegisterMessages_Ok() {
         System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
-        MessageRegister instance = new MessageRegisterImplOk();
+        ReflectionMSGRegisterer instance = new MessageRegisterImplOk();
         instance.RegisterMessages(manager);
         assertThat(manager.isRegistered("MSG_SOME_MESSAGE"), equalTo(true));
         assertThat(manager.isRegistered("MSG_SOME_MESSAGE2"), equalTo(true));
@@ -44,7 +44,7 @@ public class MessageRegisterTest {
     public void testRegisterMessages_WrongType() {
         System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
-        MessageRegister instance = new MessageRegisterImplWrongType();
+        ReflectionMSGRegisterer instance = new MessageRegisterImplWrongType();
         instance.RegisterMessages(manager);
     }
 
@@ -55,18 +55,18 @@ public class MessageRegisterTest {
     public void testRegisterMessages_WrongAccess() {
         System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
-        MessageRegister instance = new MessageRegisterImplWrongAccess();
+        ReflectionMSGRegisterer instance = new MessageRegisterImplWrongAccess();
         instance.RegisterMessages(manager);
     }
 
-    public class MessageRegisterImplOk extends MessageRegister {
+    public class MessageRegisterImplOk extends ReflectionMSGRegisterer {
         public int MSG_SOME_MESSAGE;
         public int MSG_SOME_MESSAGE2;
         protected int notAMessage;
         protected int notAMessage2;
     }
     
-    public class MessageRegisterImplWrongType extends MessageRegister {
+    public class MessageRegisterImplWrongType extends ReflectionMSGRegisterer {
         protected boolean MSG_NO_MESSAGE;
         protected int MSG_SOME_MESSAGE;
         protected int MSG_SOME_MESSAGE2;
@@ -74,7 +74,7 @@ public class MessageRegisterTest {
         protected int notAMessage2;
     }
     
-    public class MessageRegisterImplWrongAccess extends MessageRegister {
+    public class MessageRegisterImplWrongAccess extends ReflectionMSGRegisterer {
         private int MSG_NO_MESSAGE;
         protected int MSG_SOME_MESSAGE;
         protected int MSG_SOME_MESSAGE2;

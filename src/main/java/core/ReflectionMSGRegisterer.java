@@ -11,7 +11,8 @@ import java.lang.reflect.*;
  *
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
-public abstract class MessageRegister {
+public abstract class ReflectionMSGRegisterer implements MessageRegisterer {
+    @Override
     public void RegisterMessages(MessageManager manager) {
         for(Field f : this.getClass().getDeclaredFields()) {
             if(f.getName().startsWith("MSG_")) {

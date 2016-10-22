@@ -17,7 +17,7 @@ public class Engine implements MessageHandler {
     private Engine() {
     }
     
-    public void Startup() {
+    public void startup() {
         this.mh = new MessageManager();
         Messages.getInstance().RegisterMessages(this.mh);
         this.mh.registerHandler(Messages.getInstance().SHUTDOWN(), this);
@@ -25,7 +25,7 @@ public class Engine implements MessageHandler {
         this.run = true;
     }
     
-    public void Shutdown() {
+    public void shutdown() {
         
     }
     

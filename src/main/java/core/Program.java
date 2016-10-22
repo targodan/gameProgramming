@@ -16,9 +16,9 @@ public class Program {
      */
     public static void main(String[] args) {
         Engine eng = Engine.getInstance();
-        eng.Startup();
+        eng.startup();
         eng.doMainLoop();
-        eng.Shutdown();
+        eng.shutdown();
     }
     
 }

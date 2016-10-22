@@ -27,7 +27,7 @@ public class ReflectionMSGRegistererTest {
      */
     @Test
     public void testRegisterMessages_Ok() {
-        System.out.println("RegisterMessages");
+        java.lang.System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
         ReflectionMSGRegisterer instance = new MessageRegisterImplOk();
         instance.RegisterMessages(manager);
@@ -42,7 +42,7 @@ public class ReflectionMSGRegistererTest {
      */
     @Test(expected = WTFException.class)
     public void testRegisterMessages_WrongType() {
-        System.out.println("RegisterMessages");
+        java.lang.System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
         ReflectionMSGRegisterer instance = new MessageRegisterImplWrongType();
         instance.RegisterMessages(manager);
@@ -53,7 +53,7 @@ public class ReflectionMSGRegistererTest {
      */
     @Test(expected = WTFException.class)
     public void testRegisterMessages_WrongAccess() {
-        System.out.println("RegisterMessages");
+        java.lang.System.out.println("RegisterMessages");
         MessageManager manager = new MessageManager();
         ReflectionMSGRegisterer instance = new MessageRegisterImplWrongAccess();
         instance.RegisterMessages(manager);

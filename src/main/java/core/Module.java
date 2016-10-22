@@ -5,12 +5,14 @@
  */
 package core;
 
+import java.util.Collection;
+
 /**
  *
  * @author corbatto
  */
 public interface Module {
-    public Class<? extends Module>[] dependencies();
+    public Collection<Class<? extends Module>> dependencies();
     public void startup();
     public void shutdown();
 }

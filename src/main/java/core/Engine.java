@@ -6,6 +6,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -19,13 +20,13 @@ import java.util.stream.Stream;
  * @author Luca Corbatto {@literal <luca@corbatto.de>}
  */
 public class Engine implements MessageHandler, Module {
-    private MessageManager mh;
-    private EntityManager em;
-    private boolean run;
-    private final Map<Class<? extends Module>, Module> registeredModules;
-    private final List<Module> moduleOrder;
+    protected MessageManager mh;
+    protected EntityManager em;
+    protected boolean run;
+    protected final Map<Class<? extends Module>, Module> registeredModules;
+    protected final List<Module> moduleOrder;
     
-    private Engine() {
+    protected Engine() {
         this.registeredModules = new HashMap<>();
         this.moduleOrder = new ArrayList<>();
     }
@@ -41,7 +42,7 @@ public class Engine implements MessageHandler, Module {
             try {
                 module = moduleClass.newInstance();
             } catch(IllegalAccessException | InstantiationException e) {
-                throw new WTFException("A Module must provide a public constructor without any parameters.");
+                throw new WTFException("A Module must provide a public constructor without any parameters.", e);
             }
             if(module.dependencies() != null) {
                 for(Class<? extends Module> m : module.dependencies()) {
@@ -81,14 +82,14 @@ public class Engine implements MessageHandler, Module {
         }
     }
     
-    private void computeModuleOrder() {
+    protected void computeModuleOrder() {
         this.moduleOrder.clear();
         Set<Class<? extends Module>> alreadyOrdered = new HashSet<>();
         
         List<Module> toBeOrdered = new LinkedList<>(this.registeredModules.values());
         while(toBeOrdered.size() > 0) {
             for(int i = 0; i < toBeOrdered.size(); ++i) {
-                if(this.isModuleSatisfied(alreadyOrdered, toBeOrdered.get(i))) {
+                if(Engine.isModuleSatisfied(alreadyOrdered, toBeOrdered.get(i))) {
                     this.moduleOrder.add(toBeOrdered.get(i));
                     alreadyOrdered.add(toBeOrdered.get(i).getClass());
                     toBeOrdered.remove(i);
@@ -98,11 +99,11 @@ public class Engine implements MessageHandler, Module {
         }
     }
     
-    private boolean isModuleSatisfied(Set<Class<? extends Module>> alreadyOrdered, Module m) {
-        if(m.dependencies() == null || m.dependencies().length == 0) {
+    protected static boolean isModuleSatisfied(Set<Class<? extends Module>> alreadyOrdered, Module m) {
+        if(m.dependencies() == null || m.dependencies().isEmpty()) {
             return true;
         }
-        return Stream.of(m.dependencies()).map(d -> alreadyOrdered.contains(d)).reduce(true, (a, b) -> a && b);
+        return m.dependencies().stream().map(d -> alreadyOrdered.contains(d)).reduce(true, (a, b) -> a && b);
     }
     
     public MessageManager getMessageManager() {
@@ -125,7 +126,7 @@ public class Engine implements MessageHandler, Module {
     }
 
     @Override
-    public Class<? extends Module>[] dependencies() {
+    public Collection<Class<? extends Module>> dependencies() {
         return null;
     }
     

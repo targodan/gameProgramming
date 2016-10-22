@@ -51,22 +51,22 @@ public class MessageManager {
         return this.messages.contains(name);
     }
     
-    public void registerHandler(int msg, MessageHandler h) {
+    public void registerHandler(MessageHandler h, int msg) {
         if(!this.hashes.contains(msg)) {
             throw new IllegalArgumentException("Message type unknown.");
         }
         this.handlers.get(msg).add(h);
     }
     
-    public void registerHandler(Collection<Integer> msges, MessageHandler h) {
+    public void registerHandler(MessageHandler h, Collection<Integer> msges) {
         msges.stream().forEach(msg -> {
-            this.registerHandler(msg, h);
+            this.registerHandler(h, msg);
         });
     }
     
-    public void registerHandler(int[] msges, MessageHandler h) {
+    public void registerHandler(MessageHandler h, int... msges) {
         for(int msg : msges) {
-            this.registerHandler(msg, h);
+            this.registerHandler(h, msg);
         }
     }
     

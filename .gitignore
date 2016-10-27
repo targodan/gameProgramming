@@ -1,25 +1,32 @@
-# ---> Java
-*.class
+# Prerequisites
+*.d
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Precompiled Headers
+*.gch
+*.pch
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
 
-# ---> Gradle
-.gradle
-.nb-gradle
-build/
+# Fortran module files
+*.mod
+*.smod
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
+# Executables
+*.exe
+*.out
+*.app

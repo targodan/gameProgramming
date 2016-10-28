@@ -92,7 +92,7 @@ If the member is a boolean and it makes semantical sense the getter may start wi
 Don't shy away from namespaces.
 Our engine classes and functions will be in theire own namespace.
 Namespaces can and should be deeper than one level.
-If the depth gets too cracy, the indentation may be altered as seen in ("Files and folders")[#Files-and-folders] below.
+If the depth gets too cracy, the indentation may be altered as seen in ["Files and folders"](#Files-and-folders) below.
 
 ```cpp
 namespace engine {

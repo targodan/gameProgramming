@@ -6,12 +6,16 @@ CC = g++
 DEBUG = false
 
 # compiler flags:
+# -Wall turns on most, but not all, compiler warnings
+# -fPIC neccessary for shared library (Position Independent Code)
 C_FLAGS_COMMON = -Wall -fPIC -I../engine
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
-C_FLAGS_RELEASE  = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG
+# -O3 Optimize as much as possible
+# -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
+C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native
 #  -g    adds debugging information to the executable file
-#  -Wall turns on most, but not all, compiler warnings
-C_FLAGS_DEBUG  = $(C_FLAGS_COMMON) -g
+# -Og	optimize a bit, but keep debugging available
+C_FLAGS_DEBUG  = $(C_FLAGS_COMMON) -g -Og
 ifeq ($(DEBUG),true)
 	C_FLAGS  = $(C_FLAGS_DEBUG)
 else

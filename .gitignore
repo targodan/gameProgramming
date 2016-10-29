@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+*demo[0-9]+
 
 # Netbeans
 */nbproject/private/*

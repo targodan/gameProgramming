@@ -125,6 +125,8 @@ Each namespace (except our root namespace "engine") should have its own folder w
 Header files should only contain declarations, not definitions.
 Only very small inline functions or templated classes and functions may be defined in header files.
 
+Header files end on ".h", body files end on ".cpp".
+
 Each class should be in its own header and body file of the same name.
 The filname should only consist of lower-case letters though.
 See example:
@@ -165,11 +167,51 @@ namespace bar {
 }
 ```
 
-The first two lines of a header file always have to look like this:
+The first two lines and the last line of a header file always have to look like this:
 
 ```cpp
 #ifndef FILENAME_H
 #define FILENAME_H
 // ...
 #endif
+```
+
+### Git Workflow
+
+The master branch should always be clean, i. e. it should at least compile.
+That means before merging please test.
+
+Under no circumstances may the master branch be fore-pushed.
+
+If you do work-in-progress stuff please work on your own branch.
+
+```bash
+$ git checkout -b tim
+```
+
+If you accidentally worked on the master branch and already changed things before checking out your branch here is a little fix for it.
+
+```bash
+# Say you already have 2 commits on the master branch.
+
+# First: commit current changes
+$ git add -A
+$ git commit
+# That makes 3 commits
+
+# Go to your branch and update it
+$ git checkout yourBranch
+$ git rebase master
+
+# Now clean up the master branch
+$ git checkout master
+# Go back 3 commits.
+$ git reset --hard HEAD~3
+```
+
+I would advise to pull using the rebase flag.
+This is less conflict prone.
+
+```bash
+$ git pull --rebase
 ```

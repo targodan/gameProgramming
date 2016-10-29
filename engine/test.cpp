@@ -9,5 +9,5 @@ void test() {
     float test = v[0];
     v[1] = test;
     
-    v += v + v + v;
+    v += v + v * 2 + 2 *v;
 }

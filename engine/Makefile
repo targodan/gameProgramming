@@ -24,8 +24,8 @@ endif
 LD_FLAGS = -shared
 BUILDDIR = build
 
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(addprefix $(BUILDDIR)/,$(notdir $(SOURCES:.cpp=.o)))
+SOURCES = $(wildcard *.cpp) $(wildcard **/*.cpp)
+OBJECTS = $(addprefix $(BUILDDIR)/,$(SOURCES:.cpp=.o))
 
 # the build target executable:
 TARGET = libengine.so
@@ -36,7 +36,7 @@ all: test
 build: mkdir $(SOURCES) $(TARGET)
 
 mkdir:
-	@mkdir $(BUILDDIR) &>/dev/null || true
+	@find . -type d -not -name $(BUILDDIR) -exec mkdir -p $(BUILDDIR)/{} \;
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(LD_FLAGS) -o $@ $^

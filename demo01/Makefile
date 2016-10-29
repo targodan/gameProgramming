@@ -42,7 +42,7 @@ lnengine:
 	@ln -sf ../engine/libengine.so libengine.so
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(LD_FLAGS) -o $@ $<
+	$(CC) $(LD_FLAGS) -o $@ $^
 
 $(BUILDDIR)/%.o: %.cpp
 	$(CC) $(C_FLAGS) -c -o $@ $<

@@ -39,7 +39,7 @@ mkdir:
 	@mkdir $(BUILDDIR) &>/dev/null || true
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(LD_FLAGS) -o $@ $<
+	$(CC) $(LD_FLAGS) -o $@ $^
 
 $(BUILDDIR)/%.o: %.cpp
 	$(CC) $(C_FLAGS) -c -o $@ $<

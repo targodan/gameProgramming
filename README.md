@@ -60,6 +60,15 @@ Long terms should look like this.
 (a && b) || (b && c);
 ```
 
+When declaring variables or members avoid using "," as it leads to ambiguities.
+The "\*" and "&" for pointers/references belong to the type, so do it like this.
+
+```cpp
+int* intptr;
+int* anotherptr;
+int& ref = *intptr;
+```
+
 ### Always use curly brackets!
 
 Under (almost) no circumstances is any statement like `if` or `else` to be used without curly brackets.

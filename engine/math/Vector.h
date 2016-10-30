@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstdarg>
+#include <cstring>
 
 #include "functions.h"
 #include "InvalidDimensionException.h"
@@ -13,10 +14,6 @@ namespace engine {
         class Vector {
         protected:
             float elements[dimension];
-            
-            void swap(Vector<dimension>& v) {
-                std::swap(this->elements, v.elements);
-            }
 
         public:
             Vector() {}
@@ -26,17 +23,14 @@ namespace engine {
                 va_start(args, elems);
 
                 for(int i = 0; i < dimension; ++i) {
-                    this->elements[i] = va_arg(args, int);
+                    this->elements[i] = va_arg(args, float);
                 }
 
                 va_end(args);
             }
 
             Vector(const Vector& orig) {
-                for(int i = 0; i < dimension; ++i) {
-                    this->elements[i] = orig.elements[i];
-                }
-                std::cout << "COPY" << std::endl;
+                std::memcpy(this->elements, orig.elements, dimension * sizeof(float));
             }
 
             ~Vector() {}
@@ -100,7 +94,7 @@ namespace engine {
             }
             
             float operator[](int i) const {
-                if(i >= dimension) {
+                if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
                         );
@@ -109,7 +103,7 @@ namespace engine {
             }
             
             float& operator[](int i) {
-                if(i >= dimension) {
+                if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
                         );

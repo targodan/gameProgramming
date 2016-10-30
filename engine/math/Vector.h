@@ -10,6 +10,8 @@
 
 namespace engine {
     namespace math {
+        class Vector3;
+        
         template<int dimension>
         class Vector {
         protected:
@@ -23,7 +25,7 @@ namespace engine {
                 va_start(args, elems);
 
                 for(int i = 0; i < dimension; ++i) {
-                    this->elements[i] = va_arg(args, float);
+                    this->elements[i] = static_cast<float>(va_arg(args, double));
                 }
 
                 va_end(args);
@@ -176,9 +178,14 @@ namespace engine {
             }
             
             Vector<dimension>& operator=(Vector<dimension> v) {
-                swap(v);
+                std::memcpy(this->elements, v.elements, dimension * sizeof(float));
                 return *this;
             }
+            
+            template<class, class>
+            friend class Matrix;
+            
+            friend class Vector3;
         };
     }
 }

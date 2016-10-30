@@ -4,6 +4,8 @@
     <df root="." name="0">
       <df name="math">
         <in>Matrix.cpp</in>
+        <in>Vector3.cpp</in>
+        <in>functions.cpp</in>
       </df>
       <in>Exception.cpp</in>
       <in>test.cpp</in>
@@ -30,7 +32,6 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0" commonFlags="-fPIC -Og"/>
-        <element flagsID="1" commonFlags="-std=c++14"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -60,7 +61,19 @@
         </ccTool>
       </folder>
       <item path="math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="math/MatrixSq.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="math/functions.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="test.cpp" ex="false" tool="1" flavor2="0">

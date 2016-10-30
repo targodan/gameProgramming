@@ -93,6 +93,14 @@ Class names start with a capital letter, function names, variable names and name
 Variable names are *not* to be prefixed like this ~~`iNumber`, `pVec` or `m_member`~~.
 Just call them reasonably like `number`, `vec` or `member`.
 
+Inside a class alsways use the `this` pointer to access members.
+
+```cpp
+int getSomeInt() {
+    return this->someInt;
+}
+```
+
 Except for very rare exceptions member variable should be private or protected and have getters and setters if they should be accessible from outside of the class.
 Setters should always start with `set` followed by the capitalized member name.
 Getters should mostly start with `get` followed by the capitalized member name.

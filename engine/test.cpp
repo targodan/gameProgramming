@@ -6,7 +6,7 @@
 using namespace engine::math;
 
 void test() {
-    Vector<3> v(0., 1., 0.);
+    Vector<3> v = {0., 1., 0.};
     float test = v[0];
     v[1] = test;
     
@@ -15,8 +15,15 @@ void test() {
     
     v = v3 + 2 * v;
     
-    Matrix<3, 3> m;
-    MatrixSq<3> m2;
+    Vector<3> vInit = {1, 2, 3};
+    Vector3 vInit3 = {1, 2, 3};
+    
+    Matrix<3, 3> m = {1, 2, 3,
+                      4, 5, 6,
+                      7, 8, 9};
+    MatrixSq<3> m2 = {1, 2, 3,
+                      4, 5, 6,
+                      7, 8, 9};
     
     m2[0][1] = m[1][1];
     

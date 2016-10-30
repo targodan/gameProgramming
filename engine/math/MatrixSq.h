@@ -1,7 +1,7 @@
 #ifndef MATRIXSQ_H
 #define MATRIXSQ_H
 
-#include <cstdarg>
+#include <initializer_list>
 
 #include "Matrix.h"
 #include "../WTFException.h"
@@ -13,21 +13,17 @@ namespace engine {
         public:
             MatrixSq() : Matrix<dimension, dimension>() {}
             
-            MatrixSq(const Matrix<dimension, dimension>& orig) {
-                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
+            MatrixSq(std::initializer_list<float> list) : MatrixSq() {
+                if(list.size() < dimension * dimension) {
+                    throw InvalidDimensionException("Not enough elements in list.");
+                } else if(list.size() > dimension * dimension) {
+                    throw InvalidDimensionException("Too many elements in list.");
+                }
+                std::memcpy(this->elements, list.begin(), dimension * dimension * sizeof(float));
             }
             
-            MatrixSq(float elems...) {
-                va_list args;
-                va_start(args, elems);
-
-                for(int y = 0; y < dimension; ++y) {
-                    for(int x = 0; x < dimension; ++x) {
-                        this->elements[this->coordToIndex(x, y)] = static_cast<float>(va_arg(args, double));
-                    }
-                }
-
-                va_end(args);
+            MatrixSq(const Matrix<dimension, dimension>& orig) {
+                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
             }
             
             MatrixSq<dimension>& operator=(const Matrix<dimension, dimension>& orig) {

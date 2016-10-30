@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <cstdarg>
+#include <initializer_list>
 
 #include "InvalidDimensionException.h"
 #include "Vector.h"
@@ -72,19 +72,13 @@ namespace engine {
                 std::fill(this->elements, this->elements + (dimCols * dimRows), 0.);
             }
             
-            Matrix(float elems...) {
-                this->elements = new float[dimRows * dimCols];
-                
-                va_list args;
-                va_start(args, elems);
-
-                for(int y = 0; y < dimRows; ++y) {
-                    for(int x = 0; x < dimCols; ++x) {
-                        this->elements[this->coordToIndex(x, y)] = static_cast<float>(va_arg(args, double));
-                    }
+            Matrix(std::initializer_list<float> list) : Matrix() {
+                if(list.size() < dimCols * dimRows) {
+                    throw InvalidDimensionException("Not enough elements in list.");
+                } else if(list.size() > dimCols * dimRows) {
+                    throw InvalidDimensionException("Too many elements in list.");
                 }
-
-                va_end(args);
+                std::memcpy(this->elements, list.begin(), dimCols * dimRows * sizeof(float));
             }
             
             Matrix(const Matrix& orig) {
@@ -103,6 +97,15 @@ namespace engine {
             Matrix& operator=(Matrix&& m) {
                 Matrix::swap(*this, m);
                 return *this;
+            }
+            
+            Matrix<dimCols, dimRows>& operator=(std::initializer_list<float> list) {
+                if(list.size() < dimCols * dimRows) {
+                    throw InvalidDimensionException("Not enough elements in list.");
+                } else if(list.size() > dimCols * dimRows) {
+                    throw InvalidDimensionException("Too many elements in list.");
+                }
+                std::memcpy(this->elements, list.begin(), dimCols * dimRows * sizeof(float));
             }
             
             Vector<dimRows> mul(const Vector<dimCols>& v) const {

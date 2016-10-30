@@ -2,8 +2,8 @@
 #define VECTOR_H
 
 #include <iostream>
-#include <cstdarg>
 #include <cstring>
+#include <initializer_list>
 
 #include "functions.h"
 #include "InvalidDimensionException.h"
@@ -30,16 +30,13 @@ namespace engine {
                 std::fill(this->elements, this->elements + dimension, 0.);
             }
             
-            Vector(float elems...) {
-                this->elements = new float[dimension];
-                va_list args;
-                va_start(args, elems);
-
-                for(unsigned int i = 0; i < dimension; ++i) {
-                    this->elements[i] = static_cast<float>(va_arg(args, double));
+            Vector(std::initializer_list<float> list) : Vector() {
+                if(list.size() < dimension) {
+                    throw InvalidDimensionException("Not enough elements in list.");
+                } else if(list.size() > dimension) {
+                    throw InvalidDimensionException("Too many elements in list.");
                 }
-
-                va_end(args);
+                std::memcpy(this->elements, list.begin(), dimension * sizeof(float));
             }
 
             Vector(const Vector& orig) {
@@ -58,6 +55,15 @@ namespace engine {
             Vector<dimension>& operator=(Vector<dimension>&& v) {
                 Vector<dimension>::swap(*this, v);
                 return *this;
+            }
+            
+            Vector<dimension>& operator=(std::initializer_list<float> list) {
+                if(list.size() < dimension) {
+                    throw InvalidDimensionException("Not enough elements in list.");
+                } else if(list.size() > dimension) {
+                    throw InvalidDimensionException("Too many elements in list.");
+                }
+                std::memcpy(this->elements, list.begin(), dimension * sizeof(float));
             }
 
             Vector<dimension>& add(const Vector<dimension>& v) {

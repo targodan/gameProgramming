@@ -5,7 +5,7 @@ namespace engine {
         Vector3::Vector3() : Vector<3>() {}
         
         Vector3::Vector3(float x, float y, float z)
-                : Vector<3>(x, y, z) {}
+                : Vector<3>({x, y, z}) {}
 
         Vector3::Vector3(const Vector<3>& orig) {
             std::memcpy(this->elements, orig.elements, 3 * sizeof(float));

@@ -2,6 +2,11 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="ECS">
+        <in>Component.h</in>
+        <in>EntityManager.cpp</in>
+        <in>EntityManager.h</in>
+      </df>
       <df name="math">
         <in>Matrix.cpp</in>
         <in>MatrixSq.cpp</in>
@@ -50,10 +55,21 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
+      <folder path="0/ECS">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <folder path="0/math">
         <ccTool>
           <incDir>
@@ -111,6 +127,12 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="ECS/Component.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ECS/EntityManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ECS/EntityManager.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>

@@ -2,7 +2,7 @@
 
 namespace engine {
     namespace math {
-        Vector3::Vector3() {}
+        Vector3::Vector3() : Vector<3>() {}
         
         Vector3::Vector3(float x, float y, float z)
                 : Vector<3>(x, y, z) {}

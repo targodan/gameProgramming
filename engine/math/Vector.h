@@ -10,21 +10,26 @@
 
 namespace engine {
     namespace math {
+        template<unsigned int dimCols, unsigned int dimRows>
+        class Matrix;
+            
         class Vector3;
         
-        template<int dimension>
+        template<unsigned int dimension>
         class Vector {
         protected:
             float elements[dimension];
 
         public:
-            Vector() {}
+            Vector() {
+                std::fill(this->elements, this->elements + dimension, 0.);
+            }
             
             Vector(float elems...) {
                 va_list args;
                 va_start(args, elems);
 
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] = static_cast<float>(va_arg(args, double));
                 }
 
@@ -38,42 +43,42 @@ namespace engine {
             ~Vector() {}
 
             Vector<dimension>& add(const Vector<dimension>& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] += v.elements[i];
                 }
                 return *this;
             }
 
             Vector<dimension>& sub(const Vector<dimension>& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] -= v.elements[i];
                 }
                 return *this;
             }
 
             Vector<dimension>& add(const float& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] += v;
                 }
                 return *this;
             }
 
             Vector<dimension>& sub(const float& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] -= v;
                 }
                 return *this;
             }
 
             Vector<dimension>& mul(const float& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] *= v;
                 }
                 return *this;
             }
 
             Vector<dimension>& div(const float& v) {
-                for(int i = 0; i < dimension; ++i) {
+                for(unsigned int i = 0; i < dimension; ++i) {
                     this->elements[i] /= v;
                 }
                 return *this;
@@ -95,7 +100,7 @@ namespace engine {
                 return sqrt(this->lengthSquare());
             }
             
-            float operator[](int i) const {
+            float operator[](unsigned int i) const {
                 if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
@@ -104,7 +109,7 @@ namespace engine {
                 return this->elements[i];
             }
             
-            float& operator[](int i) {
+            float& operator[](unsigned int i) {
                 if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
@@ -182,7 +187,7 @@ namespace engine {
                 return *this;
             }
             
-            template<class, class>
+            template<unsigned int, unsigned int>
             friend class Matrix;
             
             friend class Vector3;

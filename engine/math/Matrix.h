@@ -5,10 +5,14 @@
 
 #include "InvalidDimensionException.h"
 #include "Vector.h"
+#include "Vector3.h"
 
 namespace engine {
     namespace math {
-        template<int dimCols, int dimRows>
+        template<unsigned int dimension>
+        class MatrixSq;
+            
+        template<unsigned int dimCols, unsigned int dimRows>
         class Matrix {
         protected:
             // Coords are (col, row) or (x, y).
@@ -16,18 +20,52 @@ namespace engine {
             // { (0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), .... }
             float elements[dimRows * dimCols];
             
-            inline void checkCoords(int x, int y) const {
+            inline void checkCoords(unsigned int x, unsigned int y) const {
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
                     throw InvalidDimensionException("Coordinates exceed Matrix dimensions.");
                 }
             }
             
-            inline int coordToIndex(int x, int y) const {
+            inline unsigned int coordToIndex(unsigned int x, unsigned int y) const {
                 return x + y * dimRows;
             }
             
+            class Proxy {
+            protected:
+                Matrix* mat;
+                unsigned int x;
+                
+            public:
+                Proxy(Matrix* mat, unsigned int x) : mat(mat), x(x) {}
+                
+                float& operator[](unsigned int y) {
+                    if(y < 0 || y >= dimRows) {
+                        throw InvalidDimensionException("y exceeds matrix rows.");
+                    }
+                    return mat->elements[mat->coordToIndex(this->x, y)];
+                }
+            };
+            
+            class ConstProxy {
+            protected:
+                const Matrix* mat;
+                int x;
+                
+            public:
+                ConstProxy(const Matrix* mat, int x) : mat(mat), x(x) {}
+                
+                float operator[](int y) const {
+                    if(y < 0 || y >= dimRows) {
+                        throw InvalidDimensionException("y exceeds matrix rows.");
+                    }
+                    return mat->elements[mat->coordToIndex(this->x, y)];
+                }
+            };
+            
         public:
-            Matrix() {}
+            Matrix() {
+                std::fill(this->elements, this->elements + (dimCols * dimRows), 0.);
+            }
             
             Matrix(float elems...) {
                 va_list args;
@@ -80,11 +118,11 @@ namespace engine {
             Matrix<dimRows, dimRows> mul(const Matrix<dimRows, dimCols>& m) const {
                 Matrix<dimRows, dimRows> ret;
                 
-                for(int y = 0; y < dimRows; ++y) {
-                    for(int x = 0; x < dimRows; ++x) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimRows; ++x) {
                         ret.elements[ret.coordToIndex(x, y)] = 0;
                         
-                        for(int i = 0; i < dimCols; ++i) {
+                        for(unsigned int i = 0; i < dimCols; ++i) {
                             ret.elements[ret.coordToIndex(x, y)] += 
                                     this->elements[this->coordToIndex(i, y)]
                                     * m.elements[m.coordToIndex(x, i)];
@@ -95,7 +133,19 @@ namespace engine {
                 return ret;
             }
             
-            template<int subDimCols, int subDimRows>
+            Matrix<dimRows, dimCols> transpose() const {
+                Matrix<dimRows, dimCols> ret;
+                
+                for(int y = 0; y < dimRows; ++y) {
+                    for(int x = 0; x < dimCols; ++x) {
+                        ret.elements[ret.coordToIndex(y, x)] = this->elements[this->coordToIndex(x, y)];
+                    }
+                }
+                
+                return ret;
+            }
+            
+            template<unsigned int subDimCols, unsigned int subDimRows>
             Matrix<subDimCols, subDimRows> getSubMatrix(int xTopLeft, int yTopLeft) const {
                 if(subDimCols + xTopLeft >= dimCols || subDimRows + yTopLeft >= dimRows) {
                     throw InvalidDimensionException("The sub matrix is out of bounds.");
@@ -145,6 +195,34 @@ namespace engine {
                 }
                 return ret;
             }
+            
+            Proxy operator[](unsigned int x) {
+                if(x < 0 || x >= dimCols) {
+                    throw InvalidDimensionException("x exceeds matrix columns.");
+                }
+                return Proxy(this, x);
+            }
+            
+            const ConstProxy operator[](unsigned int x) const {
+                if(x < 0 || x >= dimCols) {
+                    throw InvalidDimensionException("x exceeds matrix columns.");
+                }
+                return ConstProxy(this, x);
+            }
+            
+            friend Matrix<dimRows, dimRows> operator*(
+                    const Matrix<dimCols, dimRows>& m1,
+                    const Matrix<dimRows, dimCols>& m2) {
+                return m1.mul(m2);
+            }
+            
+            friend Vector<dimRows> operator*(
+                    const Matrix<dimCols, dimRows>& m,
+                    const Vector<dimRows>& v) {
+                return m.mul(v);
+            }
+            
+            friend class MatrixSq<dimCols>;
         };
     }
 }

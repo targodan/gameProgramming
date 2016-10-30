@@ -51,6 +51,15 @@ thisIsAVeryLongFunction(
     );
 ```
 
+Long terms should look like this.
+
+```cpp
+((a + b * c) / d);
+// Use extra brackets where the operator priority is not absolutely clear.
+(a || b) && (b || c);
+(a && b) || (b && c);
+```
+
 ### Always use curly brackets!
 
 Under (almost) no circumstances is any statement like `if` or `else` to be used without curly brackets.
@@ -128,11 +137,10 @@ Only very small inline functions or templated classes and functions may be defin
 Header files end on ".h", body files end on ".cpp".
 
 Each class should be in its own header and body file of the same name.
-The filname should only consist of lower-case letters though.
 See example:
 
 ```cpp
-// file "engine/foo/bar/foobar.h"
+// file "engine/foo/bar/FooBar.h"
 
 #ifndef FOOBAR_H
 #define FOOBAR_H

@@ -4,6 +4,7 @@
     <df root="." name="0">
       <df name="math">
         <in>Matrix.cpp</in>
+        <in>MatrixSq.cpp</in>
         <in>Vector3.cpp</in>
         <in>functions.cpp</in>
       </df>
@@ -24,24 +25,24 @@
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="Default" type="0">
+    <conf name="Debug" type="0">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-fPIC -Og"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC -Og"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile DEBUG=true</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j16 DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
-          <ccTool flags="0">
+          <ccTool flags="-fPIC -Og">
           </ccTool>
         </makeTool>
         <preBuild>
@@ -49,11 +50,9 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="Exception.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
-      </item>
-      <item path="WTFException.h" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="0/math">
         <ccTool>
@@ -66,19 +65,80 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="math/MatrixSq.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="0">
+      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="math/functions.cpp" ex="false" tool="1" flavor2="0">
+      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+    </conf>
+    <conf name="Release" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC -O3 -march=native"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile -j16</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
+          <executablePath>libengine.so</executablePath>
+          <ccTool flags="-fPIC -Og">
+            <preprocessorList>
+              <Elem>BOOST_UBLAS_NDEBUG</Elem>
+              <Elem>NDEBUG</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <folder path="0/math">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>

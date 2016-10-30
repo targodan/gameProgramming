@@ -18,7 +18,7 @@ namespace engine {
             // Coords are (col, row) or (x, y).
             // Saved like this:
             // { (0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), .... }
-            float elements[dimRows * dimCols];
+            float* elements;
             
             inline void checkCoords(unsigned int x, unsigned int y) const {
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
@@ -28,6 +28,10 @@ namespace engine {
             
             inline unsigned int coordToIndex(unsigned int x, unsigned int y) const {
                 return x + y * dimRows;
+            }
+            
+            static void swap(Matrix& m1, Matrix& m2) {
+                std::swap(m1.elements, m2.elements);
             }
             
             class Proxy {
@@ -64,10 +68,13 @@ namespace engine {
             
         public:
             Matrix() {
+                this->elements = new float[dimRows * dimCols];
                 std::fill(this->elements, this->elements + (dimCols * dimRows), 0.);
             }
             
             Matrix(float elems...) {
+                this->elements = new float[dimRows * dimCols];
+                
                 va_list args;
                 va_start(args, elems);
 
@@ -81,7 +88,21 @@ namespace engine {
             }
             
             Matrix(const Matrix& orig) {
+                this->elements = new float[dimRows * dimCols];
                 std::memcpy(this->elements, orig.elements, dimCols * dimRows * sizeof(float));
+            }
+            
+            Matrix(Matrix&& orig) : Matrix() {
+                Matrix::swap(*this, orig);
+            }
+            
+            ~Matrix() {
+                delete[] this->elements;
+            }
+            
+            Matrix& operator=(Matrix&& m) {
+                Matrix::swap(*this, m);
+                return *this;
             }
             
             Vector<dimRows> mul(const Vector<dimCols>& v) const {

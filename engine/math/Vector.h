@@ -18,14 +18,20 @@ namespace engine {
         template<unsigned int dimension>
         class Vector {
         protected:
-            float elements[dimension];
+            float* elements;
+            
+            static void swap(Vector<dimension>& v1, Vector<dimension>& v2) {
+                std::swap(v1.elements, v2.elements);
+            }
 
         public:
             Vector() {
+                this->elements = new float[dimension];
                 std::fill(this->elements, this->elements + dimension, 0.);
             }
             
             Vector(float elems...) {
+                this->elements = new float[dimension];
                 va_list args;
                 va_start(args, elems);
 
@@ -37,10 +43,22 @@ namespace engine {
             }
 
             Vector(const Vector& orig) {
+                this->elements = new float[dimension];
                 std::memcpy(this->elements, orig.elements, dimension * sizeof(float));
             }
 
-            ~Vector() {}
+            Vector(Vector<dimension>&& orig) : Vector<dimension>() {
+                Vector<dimension>::swap(*this, orig);
+            }
+
+            ~Vector() {
+                delete[] this->elements;
+            }
+            
+            Vector<dimension>& operator=(Vector<dimension>&& v) {
+                Vector<dimension>::swap(*this, v);
+                return *this;
+            }
 
             Vector<dimension>& add(const Vector<dimension>& v) {
                 for(unsigned int i = 0; i < dimension; ++i) {
@@ -180,11 +198,6 @@ namespace engine {
             
             friend Vector<dimension> operator/(const float& f, Vector<dimension> v) {
                 return v.div(f);
-            }
-            
-            Vector<dimension>& operator=(Vector<dimension> v) {
-                std::memcpy(this->elements, v.elements, dimension * sizeof(float));
-                return *this;
             }
             
             template<unsigned int, unsigned int>

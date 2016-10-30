@@ -13,7 +13,7 @@ void test() {
     Vector3 v3(0., 0., 5.2);
     v3 = v3.add(v);
     
-    v += v + v * 2 + 2 *v;
+    v = v3 + 2 * v;
     
     Matrix<3, 3> m;
     MatrixSq<3> m2;

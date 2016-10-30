@@ -192,6 +192,44 @@ The first two lines and the last line of a header file always have to look like 
 #endif
 ```
 
+### Important C++ keywords
+
+Always use the `const` keyword where applicable and avoid call by value on large arguments.
+If you need a crash course on all the uses of the `const` keyword just ask me. :wink:
+
+```cpp
+class Vector {
+    // ...
+
+    // const here!
+    float getX() const {
+        return x;
+    }
+
+    // member not const but arg is const ref in order to avoid copying.
+    void add(const Vector& v) {
+        // ...
+    }
+};
+```
+
+Please make use of the `override` keyword, it really helps detect errors early.
+
+```cpp
+class A {
+    // To be overridden
+    void someMethod() const = 0;
+};
+
+class B : public A {
+    void someMethod() const override {}
+};
+```
+
+Please make extensive use of smart pointers.
+There are three types `std::unique_ptr`, `std::shared_ptr` and `std::weak_ptr`.
+I found the top voted answer [here](http://stackoverflow.com/questions/106508/what-is-a-smart-pointer-and-when-should-i-use-one) to be quite well explained.
+
 ### Git Workflow
 
 The master branch should always be clean, i. e. it should at least compile.

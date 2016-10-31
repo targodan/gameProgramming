@@ -13,7 +13,6 @@
           <in>functions.cpp</in>
         </df>
         <in>Exception.cpp</in>
-        <in>InvalidDimensionException.h</in>
         <in>test.cpp</in>
       </df>
       <df name="test">
@@ -48,14 +47,11 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j16 build DEBUG=true</buildCommand>
+          <buildCommand>${MAKE} -f Makefile -j16 build_test DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
-            <incDir>
-              <pElem>.</pElem>
-            </incDir>
             <preprocessorList>
               <Elem>DEBUG</Elem>
             </preprocessorList>
@@ -66,6 +62,21 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <folder path="0/src">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/test">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -73,8 +84,6 @@
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
-      </item>
-      <item path="src/InvalidDimensionException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

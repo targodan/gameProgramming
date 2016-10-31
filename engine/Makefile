@@ -48,7 +48,7 @@ all: test
 
 build: mkdir $(SOURCES) $(TARGET)
 
-build_test: mkdir build $(SOURCES_TEST) $(TARGET_TEST)
+build_test: build $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@find . -type d -not -name $(BUILDDIR) -exec mkdir -p $(BUILDDIR)/{} \;
@@ -56,7 +56,7 @@ mkdir:
 $(TARGET): $(OBJECTS)
 	$(CC) $(LD_FLAGS) -o $@ $^
 
-$(TARGET_TEST): $(OBJECTS_TEST)
+$(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
 	$(CC) $(LD_FLAGS_TEST) -o $@ $^
 
 $(BUILDDIR)/src/%.o: src/%.cpp

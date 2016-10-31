@@ -169,6 +169,14 @@ namespace engine {
                 return ret;
             }
             
+            inline unsigned int getDimensionRows() const {
+                return dimRows;
+            }
+            
+            inline unsigned int getDimensionCols() const {
+                return dimCols;
+            }
+            
             template<unsigned int subDimCols, unsigned int subDimRows>
             Matrix<subDimCols, subDimRows> getSubMatrix(int xTopLeft, int yTopLeft) const {
                 if(subDimCols + xTopLeft >= dimCols || subDimRows + yTopLeft >= dimRows) {
@@ -218,6 +226,50 @@ namespace engine {
                     ++yDest;
                 }
                 return ret;
+            }
+            
+            bool operator==(const Matrix<dimCols, dimRows>& right) const {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
+                        if(this->elements[this->coordToIndex(x, y)]
+                                != right.elements[right.coordToIndex(x, y)]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            
+            bool operator!=(const Matrix<dimCols, dimRows>& right) const {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
+                        if(this->elements[this->coordToIndex(x, y)]
+                                == right.elements[right.coordToIndex(x, y)]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            
+            std::string toString() const {
+                std::stringstream ss;
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    ss << "| ";
+                    for(unsigned int x = 0; x < dimCols; ++x) {
+                        ss << std::setw(8) << this->elements[this->coordToIndex(x, y)];
+                        if(x+1 < dimCols) {
+                            ss << " ";
+                        }
+                    }
+                    ss << " |" << std::endl;
+                }
+                return ss.str();
+            }
+            
+            friend std::ostream& operator<<(std::ostream& os, const Matrix<dimCols, dimRows>& m) {
+                os << m.toString();
+                return os;
             }
             
             Proxy operator[](unsigned int x) {

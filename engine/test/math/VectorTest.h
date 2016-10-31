@@ -2,7 +2,7 @@
 #define VECTORTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <iostream>
+#include "../out.h"
 
 #include "../macros.h"
 
@@ -14,6 +14,7 @@ class VectorTest : public CppUnit::TestFixture {
 public:
     CPPUNIT_TEST_SUITE(VectorTest);
     CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testToString);
     CPPUNIT_TEST_SUITE_END();
     
     void testConstructor() {
@@ -26,6 +27,11 @@ public:
         Vector<2> vCpy = v;
         v[0] = 666;
         CPPUNIT_ASSERT(FLOAT_EQUALS(vCpy[0], 1) && FLOAT_EQUALS(vCpy[1], 4.7));
+    }
+    
+    void testToString() {
+        Vector<3> v = {42.1, 65.9, -24};
+        out << std::endl << v << std::endl;
     }
 };
 

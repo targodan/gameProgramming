@@ -35,7 +35,11 @@ namespace engine {
                 MatrixSq<dimension> ret;
                 std::fill(ret.elements, ret.elements + dimension, 0.);
                 return ret;
-            } 
+            }
+            
+            inline unsigned int getDimension() const {
+                return dimension;
+            }
             
             float determinant() const {
                 // Using Laplace recursively.

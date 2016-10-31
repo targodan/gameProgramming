@@ -17,11 +17,15 @@
       </df>
       <df name="test">
         <df name="math">
+          <in>MatrixTest.cpp</in>
+          <in>MatrixTest.h</in>
           <in>VectorTest.cpp</in>
           <in>VectorTest.h</in>
         </df>
         <in>macros.h</in>
         <in>main.cpp</in>
+        <in>out.cpp</in>
+        <in>out.h</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -116,9 +120,17 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/math/MatrixTest.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/out.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/out.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="0">
@@ -150,9 +162,17 @@
       </makefileType>
       <item path="test/macros.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/math/MatrixTest.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/math/VectorTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/out.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/out.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

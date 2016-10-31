@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cstring>
 #include <initializer_list>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 #include "functions.h"
 #include "InvalidDimensionException.h"
@@ -143,6 +146,10 @@ namespace engine {
                 return this->elements[i];
             }
             
+            inline unsigned int getDimension() const {
+                return dimension;
+            }
+            
             Vector<dimension>& operator+=(const Vector<dimension>& v) {
                 return this->add(v);
             }
@@ -205,6 +212,42 @@ namespace engine {
             
             friend Vector<dimension> operator/(const float& f, Vector<dimension> v) {
                 return v.div(f);
+            }
+
+            bool operator==(const Vector<dimension>& right) const {
+                for(unsigned int i = 0; i < dimension; ++i) {
+                    if(this->elements[i] != right.elements[i]) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            
+            bool operator!=(const Vector<dimension>& right) const {
+                for(unsigned int i = 0; i < dimension; ++i) {
+                    if(this->elements[i] == right.elements[i]) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            
+            std::string toString() const {
+                std::stringstream ss;
+                ss << "(";
+                for(unsigned int i = 0; i < dimension; ++i) {
+                    ss << std::setw(8) << this->elements[i];
+                    if(i+1 < dimension) {
+                        ss << " ";
+                    }
+                }
+                ss << ")";
+                return ss.str();
+            }
+            
+            friend std::ostream& operator<<(std::ostream& os, const Vector<dimension>& v) {
+                os << v.toString();
+                return os;
             }
             
             template<unsigned int, unsigned int>

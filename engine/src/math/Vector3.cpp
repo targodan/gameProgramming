@@ -55,5 +55,10 @@ namespace engine {
             std::memcpy(this->elements, v.elements, 3 * sizeof(float));
             return *this;
         }
+        
+        Vector3& Vector3::operator=(const Vector3& v) {
+            std::memcpy(this->elements, v.elements, 3 * sizeof(float));
+            return *this;
+        }
     }
 }

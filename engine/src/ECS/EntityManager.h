@@ -5,22 +5,26 @@
 #include <memory>
 
 #include "Component.h"
+#include "Entity.h"
 
 using std::vector;
 using std::shared_ptr;
 
-typedef unsigned int uuid;
-    
-class EntityManager {
-private:
-    vector<shared_ptr<Component>> components;
-    uuid nextId;
-    
-public:
-    EntityManager();
-    EntityManager(const EntityManager& orig);
-    virtual ~EntityManager();
-};
+namespace engine {
+    namespace ECS {
+        class EntityManager {
+        private:
+            vector<shared_ptr<Component>> components;
+
+        public:
+            EntityManager();
+            EntityManager(const EntityManager& orig);
+            virtual ~EntityManager();
+            
+            Entity addEntity();
+        };
+    }
+}
 
 #endif /* ENTITYMANAGER_H */
 

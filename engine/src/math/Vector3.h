@@ -23,6 +23,7 @@ namespace engine {
             Vector3 cross(const Vector3& v) const;
             
             Vector3& operator=(const Vector<3>& v);
+            Vector3& operator=(const Vector3& v);
             
             friend Vector3 operator%(const Vector3& v1, const Vector3& v2) {
                 return v1.cross(v2);

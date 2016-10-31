@@ -1,11 +1,19 @@
 #include "EntityManager.h"
 
-EntityManager::EntityManager() {
-}
+namespace engine {
+    namespace ECS {
+        EntityManager::EntityManager() {
+        }
 
-EntityManager::EntityManager(const EntityManager& orig) {
-}
+        EntityManager::EntityManager(const EntityManager& orig) {
+        }
 
-EntityManager::~EntityManager() {
+        EntityManager::~EntityManager() {
+        }
+        
+        Entity addEntity() {
+            
+        }
+    }
 }
 

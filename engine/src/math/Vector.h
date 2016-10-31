@@ -236,9 +236,9 @@ namespace engine {
                 std::stringstream ss;
                 ss << "(";
                 for(unsigned int i = 0; i < dimension; ++i) {
-                    ss << std::setw(8) << this->elements[i];
+                    ss << this->elements[i];
                     if(i+1 < dimension) {
-                        ss << " ";
+                        ss << ", ";
                     }
                 }
                 ss << ")";

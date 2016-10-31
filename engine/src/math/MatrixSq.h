@@ -31,6 +31,11 @@ namespace engine {
                 return *this;
             }
             
+            MatrixSq<dimension>& operator=(const MatrixSq<dimension>& orig) {
+                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
+                return *this;
+            }
+            
             static MatrixSq<dimension> NewIdentity() {
                 MatrixSq<dimension> ret;
                 std::fill(ret.elements, ret.elements + dimension, 0.);

@@ -4,7 +4,16 @@
     <df root="." name="0">
       <df name="src">
         <df name="ECS">
+          <in>ComponentRegisterer.h</in>
+          <in>ComponentRegistry.cpp</in>
+          <in>ComponentRegistry.h</in>
+          <in>Entity.cpp</in>
+          <in>Entity.h</in>
           <in>EntityManager.cpp</in>
+        </df>
+        <df name="ECSCommon">
+          <in>PlacementComponent.cpp</in>
+          <in>PlacementComponent.h</in>
         </df>
         <df name="math">
           <in>Matrix.cpp</in>
@@ -13,7 +22,6 @@
           <in>functions.cpp</in>
         </df>
         <in>Exception.cpp</in>
-        <in>test.cpp</in>
       </df>
       <df name="test">
         <df name="math">
@@ -86,9 +94,26 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/ComponentRegistry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/PlacementComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -107,10 +132,6 @@
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -160,6 +181,23 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/ComponentRegistry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/macros.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">

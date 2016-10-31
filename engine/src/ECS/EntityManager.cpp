@@ -11,8 +11,13 @@ namespace engine {
         EntityManager::~EntityManager() {
         }
         
-        Entity addEntity() {
-            
+        Entity EntityManager::addEntity(const std::string& name) {
+            Entity e(name);
+            return e;
+        }
+        
+        EntityManager::ComponentIterator EntityManager::getComponentIterator(std::initializer_list<int> componentTypes) {
+            return ComponentIterator(*this, componentTypes);
         }
     }
 }

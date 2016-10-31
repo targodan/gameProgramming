@@ -1,14 +1,18 @@
 #ifndef COMPONENTREGISTRY_H
 #define COMPONENTREGISTRY_H
 
+#include <stdlib.h>
+
+#include "Component.h"
+
 namespace engine {
     namespace ECS {
         class ComponentRegistry {
         private:
-            static int nextId;
+            static compTypeId nextId;
 
         public:
-            static int getNextId() {
+            static compTypeId getNextId() {
                 return ComponentRegistry::nextId++;
             }
         };

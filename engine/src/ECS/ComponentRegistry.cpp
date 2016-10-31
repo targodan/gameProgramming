@@ -1,3 +1,3 @@
 #include "ComponentRegistry.h"
 
-int engine::ECS::ComponentRegistry::nextId = 0;
+engine::ECS::compTypeId engine::ECS::ComponentRegistry::nextId = 0;

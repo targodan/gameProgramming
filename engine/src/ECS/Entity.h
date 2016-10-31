@@ -10,13 +10,13 @@ using std::shared_ptr;
 
 namespace engine {
     namespace ECS {
-        typedef unsigned int id_t;
+        typedef std::size_t entityId;
         
         class Entity {
         private:
-            static id_t nextId;
+            static entityId nextId;
 
-            id_t id;
+            entityId id;
             shared_ptr<string> name;
 
         public:
@@ -24,10 +24,34 @@ namespace engine {
             Entity(const Entity& orig) = default;
             virtual ~Entity() = default;
             
-            id_t getId() const;
+            entityId getId() const;
             shared_ptr<const string> getName() const;
             
             string toString() const;
+            
+            bool operator!=(const Entity& right) const {
+                return !(*this == right);
+            }
+
+            bool operator<(const Entity& right) const {
+                return right > * this;
+            }
+
+            bool operator<=(const Entity& right) const {
+                return !(*this > right);
+            }
+
+            bool operator==(const Entity& right) const {
+                return this->id == right.id;
+            }
+
+            bool operator>(const Entity& right) const {
+                return this->id > right.id;
+            }
+
+            bool operator>=(const Entity& right) const {
+                return !(right > *this);
+            }
             
             friend std::ostream& operator<<(std::ostream& os, const Entity& e);
         };

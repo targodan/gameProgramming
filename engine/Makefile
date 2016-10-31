@@ -23,24 +23,31 @@ else
 endif
 LD_FLAGS_COMMON = -shared
 LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON)
-LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON) -lcppunit
+LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON)
 ifeq ($(DEBUG),true)
 	LD_FLAGS  = $(LD_FLAGS_DEBUG)
 else
 	LD_FLAGS  = $(LD_FLAGS_RELEASE)
 endif
+LD_FLAGS_TEST  = -lcppunit
 BUILDDIR = build
 
-SOURCES = $(wildcard *.cpp) $(wildcard **/*.cpp)
+SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
 OBJECTS = $(addprefix $(BUILDDIR)/,$(SOURCES:.cpp=.o))
+
+SOURCES_TEST = $(wildcard test/*.cpp) $(wildcard test/**/*.cpp)
+OBJECTS_TEST = $(addprefix $(BUILDDIR)/,$(SOURCES_TEST:.cpp=.o))
 
 # the build target executable:
 TARGET = libengine.so
+TARGET_TEST = runTests
 
 # All is same as build test
 all: test
 
 build: mkdir $(SOURCES) $(TARGET)
+
+build_test: mkdir build $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@find . -type d -not -name $(BUILDDIR) -exec mkdir -p $(BUILDDIR)/{} \;
@@ -48,10 +55,13 @@ mkdir:
 $(TARGET): $(OBJECTS)
 	$(CC) $(LD_FLAGS) -o $@ $^
 
+$(TARGET_TEST): $(OBJECTS_TEST)
+	$(CC) $(LD_FLAGS_TEST) -o $@ $^
+
 $(BUILDDIR)/%.o: %.cpp
 	$(CC) $(C_FLAGS) -c -o $@ $<
 
-test: build
+test: build_test
 	@echo Tests are not implemented yet.
 
 clean:

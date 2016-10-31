@@ -8,7 +8,7 @@ DEBUG = false
 # compiler flags:
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
-C_FLAGS_COMMON = -std=c++14 -Wall -fPIC -I../engine
+C_FLAGS_COMMON = -std=c++14 -Wall -fPIC -I../engine/src
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation

@@ -2,19 +2,23 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
-      <df name="ECS">
-        <in>Component.h</in>
-        <in>EntityManager.cpp</in>
-        <in>EntityManager.h</in>
+      <df name="src">
+        <df name="ECS">
+          <in>EntityManager.cpp</in>
+        </df>
+        <df name="math">
+          <in>Matrix.cpp</in>
+          <in>MatrixSq.cpp</in>
+          <in>Vector3.cpp</in>
+          <in>functions.cpp</in>
+        </df>
+        <in>Exception.cpp</in>
+        <in>InvalidDimensionException.h</in>
+        <in>test.cpp</in>
       </df>
-      <df name="math">
-        <in>Matrix.cpp</in>
-        <in>MatrixSq.cpp</in>
-        <in>Vector3.cpp</in>
-        <in>functions.cpp</in>
+      <df name="test">
+        <in>main.cpp</in>
       </df>
-      <in>Exception.cpp</in>
-      <in>test.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -44,11 +48,14 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j16 DEBUG=true</buildCommand>
+          <buildCommand>${MAKE} -f Makefile -j16 build DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
+            <incDir>
+              <pElem>.</pElem>
+            </incDir>
             <preprocessorList>
               <Elem>DEBUG</Elem>
             </preprocessorList>
@@ -59,45 +66,37 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <folder path="0/ECS">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/math">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <item path="math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/InvalidDimensionException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="math/functions.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -108,9 +107,6 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
-      <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -fPIC -O3 -march=native"/>
-      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -132,43 +128,6 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="ECS/Component.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="ECS/EntityManager.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="ECS/EntityManager.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <folder path="0/math">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <item path="math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="test.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -16,6 +16,7 @@ C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=nat
 # -g    adds debugging information to the executable file
 # -Og	optimize a bit, but keep debugging available
 C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -Og -DDEBUG
+C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
 ifeq ($(DEBUG),true)
 	C_FLAGS  = $(C_FLAGS_DEBUG)
 else
@@ -29,7 +30,7 @@ ifeq ($(DEBUG),true)
 else
 	LD_FLAGS  = $(LD_FLAGS_RELEASE)
 endif
-LD_FLAGS_TEST  = -lcppunit
+LD_FLAGS_TEST = -L. -lcppunit -lengine -Wl,-rpath=.
 BUILDDIR = build
 
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
@@ -58,12 +59,17 @@ $(TARGET): $(OBJECTS)
 $(TARGET_TEST): $(OBJECTS_TEST)
 	$(CC) $(LD_FLAGS_TEST) -o $@ $^
 
-$(BUILDDIR)/%.o: %.cpp
+$(BUILDDIR)/src/%.o: src/%.cpp
 	$(CC) $(C_FLAGS) -c -o $@ $<
 
+$(BUILDDIR)/test/%.o: test/%.cpp
+	$(CC) $(C_FLAGS_TEST) -c -o $@ $<
+
 test: build_test
-	@echo Tests are not implemented yet.
+	./$(TARGET_TEST)
 
 clean:
 	$(RM) $(OBJECTS)
 	$(RM) $(TARGET)
+	$(RM) $(OBJECTS_TEST)
+	$(RM) $(TARGET_TEST)

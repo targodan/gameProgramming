@@ -15,13 +15,20 @@ C_FLAGS_COMMON = -std=c++14 -Wall -fPIC
 C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native
 # -g    adds debugging information to the executable file
 # -Og	optimize a bit, but keep debugging available
-C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -Og
+C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -Og -DDEBUG
 ifeq ($(DEBUG),true)
 	C_FLAGS  = $(C_FLAGS_DEBUG)
 else
 	C_FLAGS  = $(C_FLAGS_RELEASE)
 endif
-LD_FLAGS = -shared
+LD_FLAGS_COMMON = -shared
+LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON)
+LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON) -lcppunit
+ifeq ($(DEBUG),true)
+	LD_FLAGS  = $(LD_FLAGS_DEBUG)
+else
+	LD_FLAGS  = $(LD_FLAGS_RELEASE)
+endif
 BUILDDIR = build
 
 SOURCES = $(wildcard *.cpp) $(wildcard **/*.cpp)

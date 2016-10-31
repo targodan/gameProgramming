@@ -48,6 +48,10 @@
           <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
+            <standard>11</standard>
+            <preprocessorList>
+              <Elem>DEBUG</Elem>
+            </preprocessorList>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -116,6 +120,7 @@
           <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
+            <standard>11</standard>
             <preprocessorList>
               <Elem>BOOST_UBLAS_NDEBUG</Elem>
               <Elem>NDEBUG</Elem>

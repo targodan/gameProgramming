@@ -16,6 +16,11 @@
         <in>test.cpp</in>
       </df>
       <df name="test">
+        <df name="math">
+          <in>VectorTest.cpp</in>
+          <in>VectorTest.h</in>
+        </df>
+        <in>macros.h</in>
         <in>main.cpp</in>
       </df>
     </df>
@@ -105,7 +110,13 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="test/macros.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -137,6 +148,12 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="test/macros.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/math/VectorTest.h" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

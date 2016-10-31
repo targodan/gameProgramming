@@ -15,7 +15,7 @@ C_FLAGS_COMMON = -std=c++14 -Wall -fPIC
 C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native
 # -g    adds debugging information to the executable file
 # -Og	optimize a bit, but keep debugging available
-C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -Og -DDEBUG
+C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -DDEBUG
 C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
 ifeq ($(DEBUG),true)
 	C_FLAGS  = $(C_FLAGS_DEBUG)
@@ -65,7 +65,7 @@ $(BUILDDIR)/src/%.o: src/%.cpp
 $(BUILDDIR)/test/%.o: test/%.cpp
 	$(CC) $(C_FLAGS_TEST) -c -o $@ $<
 
-test: build_test
+test: build_test $(TARGET_TEST)
 	./$(TARGET_TEST)
 
 clean:

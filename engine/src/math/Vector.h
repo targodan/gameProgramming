@@ -30,12 +30,13 @@ namespace engine {
                 std::fill(this->elements, this->elements + dimension, 0.);
             }
             
-            Vector(std::initializer_list<float> list) : Vector() {
+            Vector(std::initializer_list<float> list) {
                 if(list.size() < dimension) {
                     throw InvalidDimensionException("Not enough elements in list.");
                 } else if(list.size() > dimension) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
+                this->elements = new float[dimension];
                 std::memcpy(this->elements, list.begin(), dimension * sizeof(float));
             }
 

@@ -57,7 +57,7 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -fPIC -Og"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -94,15 +94,13 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECS/ComponentRegistry.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -111,9 +109,9 @@
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -135,23 +133,21 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/macros.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/math/MatrixTest.h" ex="false" tool="3" flavor2="0">
+      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/out.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/out.h" ex="false" tool="3" flavor2="0">
+      <item path="test/out.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
     <conf name="Release" type="0">

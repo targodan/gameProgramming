@@ -38,6 +38,7 @@ demo05
 demo06
 demo07
 runTests
+vgcore.*
 
 # Netbeans
 **/nbproject/private/*

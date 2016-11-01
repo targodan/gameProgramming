@@ -2,6 +2,8 @@
 #define MATRIX_H
 
 #include <initializer_list>
+#include <memory>
+#include <sstream>
 
 #include "InvalidDimensionException.h"
 #include "Vector.h"
@@ -18,16 +20,16 @@ namespace engine {
             // Coords are (col, row) or (x, y).
             // Saved like this:
             // { (0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), .... }
-            float* elements;
+            float* elements = nullptr;
             
             inline void checkCoords(unsigned int x, unsigned int y) const {
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
-                    throw InvalidDimensionException("Coordinates exceed Matrix dimensions.");
+                    throw InvalidDimensionException("Coordinates (%du, %du) exceed Matrix dimensions.", x, y);
                 }
             }
             
             inline unsigned int coordToIndex(unsigned int x, unsigned int y) const {
-                return x + y * dimRows;
+                return x + y * dimCols;
             }
             
             static void swap(Matrix& m1, Matrix& m2) {
@@ -69,29 +71,32 @@ namespace engine {
         public:
             Matrix() {
                 this->elements = new float[dimRows * dimCols];
-                std::fill(this->elements, this->elements + (dimCols * dimRows), 0.);
+                std::fill(this->elements, this->elements + dimCols * dimRows, 0.);
             }
             
-            Matrix(std::initializer_list<float> list) : Matrix() {
+            Matrix(std::initializer_list<float> list) {
                 if(list.size() < dimCols * dimRows) {
                     throw InvalidDimensionException("Not enough elements in list.");
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::memcpy(this->elements, list.begin(), dimCols * dimRows * sizeof(float));
+                this->elements = new float[dimRows * dimCols];
+                std::copy(list.begin(), list.end(), this->elements);
             }
             
             Matrix(const Matrix& orig) {
                 this->elements = new float[dimRows * dimCols];
-                std::memcpy(this->elements, orig.elements, dimCols * dimRows * sizeof(float));
+                std::copy(orig.elements, orig.elements + dimCols * dimRows, this->elements);
             }
             
-            Matrix(Matrix&& orig) : Matrix() {
+            Matrix(Matrix&& orig) {
                 Matrix::swap(*this, orig);
             }
             
             ~Matrix() {
-                delete[] this->elements;
+                if(this->elements != nullptr) {
+                    delete[] this->elements;
+                }
             }
             
             Matrix& operator=(Matrix&& m) {
@@ -105,7 +110,8 @@ namespace engine {
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::memcpy(this->elements, list.begin(), dimCols * dimRows * sizeof(float));
+                std::copy(list.begin(), list.end(), this->elements);
+                return *this;
             }
             
             Vector<dimRows> mul(const Vector<dimCols>& v) const {
@@ -155,6 +161,29 @@ namespace engine {
                 }
                 
                 return ret;
+            }
+            
+            Matrix<dimCols, dimRows>& add(const Matrix<dimCols, dimRows>& m) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
+                        this->checkCoords(x, y);
+                        this->elements[this->coordToIndex(x, y)] += 
+                                m.elements[m.coordToIndex(x, y)];
+                    }
+                }
+                
+                return *this;
+            }
+            
+            Matrix<dimCols, dimRows>& sub(const Matrix<dimCols, dimRows>& m) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
+                        this->elements[this->coordToIndex(x, y)] -= 
+                                m.elements[m.coordToIndex(x, y)];
+                    }
+                }
+                
+                return *this;
             }
             
             Matrix<dimRows, dimCols> transpose() const {
@@ -296,6 +325,58 @@ namespace engine {
                     const Matrix<dimCols, dimRows>& m,
                     const Vector<dimRows>& v) {
                 return m.mul(v);
+            }
+            
+            friend Matrix<dimCols, dimRows> operator+(
+                    Matrix<dimCols, dimRows> m1,
+                    const Matrix<dimCols, dimRows>& m2) {
+                return m1.add(m2);
+            }
+            
+            friend Matrix<dimCols, dimRows> operator-(
+                    Matrix<dimCols, dimRows> m1,
+                    const Matrix<dimCols, dimRows>& m2) {
+                return m1.sub(m2);
+            }
+            
+            friend Matrix<dimRows, dimRows> operator*(
+                    Matrix<dimCols, dimRows> m,
+                    const float& f) {
+                return m.mul(f);
+            }
+            
+            friend Matrix<dimRows, dimRows> operator*(
+                    const float& f,
+                    Matrix<dimCols, dimRows> m) {
+                return m.mul(f);
+            }
+            
+            friend Matrix<dimRows, dimRows> operator/(
+                    Matrix<dimCols, dimRows> m,
+                    const float& f) {
+                return m.div(f);
+            }
+            
+            friend Matrix<dimRows, dimRows> operator/(
+                    const float& f,
+                    Matrix<dimCols, dimRows> m) {
+                return m.div(f);
+            }
+            
+            Matrix<dimCols, dimRows>& operator+=(const Matrix<dimCols, dimRows>& m) {
+                return this->add(m);
+            }
+            
+            Matrix<dimCols, dimRows>& operator-=(const Matrix<dimCols, dimRows>& m) {
+                return this->sub(m);
+            }
+            
+            Matrix<dimCols, dimRows>& operator*=(const float& f) {
+                return this->mul(f);
+            }
+            
+            Matrix<dimCols, dimRows>& operator/=(const float& f) {
+                return this->div(f);
             }
             
             friend class MatrixSq<dimCols>;

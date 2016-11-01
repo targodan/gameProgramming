@@ -10,7 +10,9 @@ namespace engine {
             Vector3();
             Vector3(float x, float y, float z);
             Vector3(const Vector<3>& orig);
+            Vector3(Vector<3>&& orig);
             Vector3(const Vector3& orig);
+            Vector3(Vector3&& orig);
             
             float getX() const;
             float getY() const;
@@ -24,6 +26,11 @@ namespace engine {
             
             Vector3& operator=(const Vector<3>& v);
             Vector3& operator=(const Vector3& v);
+            
+            Vector3& operator%=(const Vector3& v) {
+                *this = this->cross(v);
+                return *this;
+            }
             
             friend Vector3 operator%(const Vector3& v1, const Vector3& v2) {
                 return v1.cross(v2);

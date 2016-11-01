@@ -8,11 +8,19 @@ namespace engine {
                 : Vector<3>({x, y, z}) {}
 
         Vector3::Vector3(const Vector<3>& orig) {
-            std::memcpy(this->elements, orig.elements, 3 * sizeof(float));
+            std::copy(orig.elements, orig.elements + 3, this->elements);
+        }
+
+        Vector3::Vector3(Vector<3>&& orig) {
+            Vector<3>::swap(*this, orig);
         }
 
         Vector3::Vector3(const Vector3& orig) {
-            std::memcpy(this->elements, orig.elements, 3 * sizeof(float));
+            std::copy(orig.elements, orig.elements + 3, this->elements);
+        }
+
+        Vector3::Vector3(Vector3&& orig) {
+            Vector<3>::swap(*this, orig);
         }
 
         Vector3 Vector3::cross(const Vector3& v2) const {
@@ -52,12 +60,12 @@ namespace engine {
         }
         
         Vector3& Vector3::operator=(const Vector<3>& v) {
-            std::memcpy(this->elements, v.elements, 3 * sizeof(float));
+            std::copy(v.elements, v.elements + 3, this->elements);
             return *this;
         }
         
         Vector3& Vector3::operator=(const Vector3& v) {
-            std::memcpy(this->elements, v.elements, 3 * sizeof(float));
+            std::copy(v.elements, v.elements + 3, this->elements);
             return *this;
         }
     }

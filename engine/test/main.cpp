@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     runner.addTest(registry.makeTest());
     bool success = runner.run();
     
-    std::cout << "----------------- Test Output -----------------" << std::endl
+    std::cout << "----------------- Additional Output -----------------" << std::endl
             << out.str() << std::endl;
     
     return success ? 0 : -1;

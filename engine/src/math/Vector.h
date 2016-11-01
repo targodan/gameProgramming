@@ -21,7 +21,7 @@ namespace engine {
         template<unsigned int dimension>
         class Vector {
         protected:
-            float* elements;
+            float* elements = nullptr;
             
             static void swap(Vector<dimension>& v1, Vector<dimension>& v2) {
                 std::swap(v1.elements, v2.elements);
@@ -40,20 +40,22 @@ namespace engine {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
                 this->elements = new float[dimension];
-                std::memcpy(this->elements, list.begin(), dimension * sizeof(float));
+                std::copy(list.begin(), list.end(), this->elements);
             }
 
             Vector(const Vector& orig) {
                 this->elements = new float[dimension];
-                std::memcpy(this->elements, orig.elements, dimension * sizeof(float));
+                std::copy(orig.elements, orig.elements + dimension, this->elements);
             }
 
-            Vector(Vector<dimension>&& orig) : Vector<dimension>() {
+            Vector(Vector<dimension>&& orig) {
                 Vector<dimension>::swap(*this, orig);
             }
 
             ~Vector() {
-                delete[] this->elements;
+                if(this->elements != nullptr) {
+                    delete[] this->elements;
+                }
             }
             
             Vector<dimension>& operator=(Vector<dimension>&& v) {
@@ -67,7 +69,7 @@ namespace engine {
                 } else if(list.size() > dimension) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::memcpy(this->elements, list.begin(), dimension * sizeof(float));
+                std::copy(list.begin(), list.end(), this->elements);
             }
 
             Vector<dimension>& add(const Vector<dimension>& v) {
@@ -219,8 +221,8 @@ namespace engine {
                     if(this->elements[i] != right.elements[i]) {
                         return false;
                     }
-                    return true;
                 }
+                return true;
             }
             
             bool operator!=(const Vector<dimension>& right) const {
@@ -228,8 +230,8 @@ namespace engine {
                     if(this->elements[i] == right.elements[i]) {
                         return false;
                     }
-                    return true;
                 }
+                return true;
             }
             
             std::string toString() const {

@@ -36,9 +36,12 @@ namespace engine {
                 return *this;
             }
             
-            static MatrixSq<dimension> NewIdentity() {
+            static MatrixSq<dimension> identity() {
                 MatrixSq<dimension> ret;
                 std::fill(ret.elements, ret.elements + dimension, 0.);
+                for(unsigned int i = 0; i < dimension; ++i) {
+                    ret.elements[ret.coordToIndex(i, i)] = 1;
+                }
                 return ret;
             }
             
@@ -66,7 +69,7 @@ namespace engine {
                 return det;
             }
             
-            MatrixSq<dimension> invert() const {
+            MatrixSq<dimension> inverse() const {
                 // Only implemented for dimensions 3, 2 and 1.
                 // This is done via template specialization.
                 throw WTFException("Matrix inversion is only supported for dimensions 3, 2 and 1.");
@@ -83,13 +86,13 @@ namespace engine {
         float MatrixSq<3>::determinant() const;
         
         template<>
-        MatrixSq<1> MatrixSq<1>::invert() const;
+        MatrixSq<1> MatrixSq<1>::inverse() const;
         
         template<>
-        MatrixSq<2> MatrixSq<2>::invert() const;
+        MatrixSq<2> MatrixSq<2>::inverse() const;
         
         template<>
-        MatrixSq<3> MatrixSq<3>::invert() const;
+        MatrixSq<3> MatrixSq<3>::inverse() const;
     }
 }
 

@@ -189,8 +189,8 @@ namespace engine {
             Matrix<dimRows, dimCols> transpose() const {
                 Matrix<dimRows, dimCols> ret;
                 
-                for(int y = 0; y < dimRows; ++y) {
-                    for(int x = 0; x < dimCols; ++x) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
                         ret.elements[ret.coordToIndex(y, x)] = this->elements[this->coordToIndex(x, y)];
                     }
                 }
@@ -379,7 +379,11 @@ namespace engine {
                 return this->div(f);
             }
             
-            friend class MatrixSq<dimCols>;
+            // All matricies are freinds. Aaawwww :D
+            template<unsigned int, unsigned int>
+            friend class Matrix;
+            
+            friend class MatrixSq<dimRows>;
         };
     }
 }

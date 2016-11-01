@@ -46,14 +46,14 @@ namespace engine {
         }
         
         template<>
-        MatrixSq<1> MatrixSq<1>::invert() const {
+        MatrixSq<1> MatrixSq<1>::inverse() const {
             MatrixSq<1> ret;
             ret.elements[0] = 1. / this->elements[0];
             return ret;
         }
         
         template<>
-        MatrixSq<2> MatrixSq<2>::invert() const {
+        MatrixSq<2> MatrixSq<2>::inverse() const {
             MatrixSq<2> ret;
             
             float rDet = 1. / this->determinant();
@@ -71,7 +71,7 @@ namespace engine {
         }
         
         template<>
-        MatrixSq<3> MatrixSq<3>::invert() const {
+        MatrixSq<3> MatrixSq<3>::inverse() const {
             MatrixSq<3> ret;
             
             float rDet = 1. / this->determinant();

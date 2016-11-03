@@ -19,26 +19,26 @@ namespace engine {
                 } else if(list.size() > dimension * dimension) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::memcpy(this->elements, list.begin(), dimension * dimension * sizeof(float));
+                std::copy(list.begin(), list.end(), this->elements.begin());
             }
             
             MatrixSq(const Matrix<dimension, dimension>& orig) {
-                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
             }
             
             MatrixSq<dimension>& operator=(const Matrix<dimension, dimension>& orig) {
-                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
                 return *this;
             }
             
             MatrixSq<dimension>& operator=(const MatrixSq<dimension>& orig) {
-                std::memcpy(this->elements, orig.elements, dimension * dimension * sizeof(float));
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
                 return *this;
             }
             
             static MatrixSq<dimension> identity() {
                 MatrixSq<dimension> ret;
-                std::fill(ret.elements, ret.elements + dimension, 0.);
+                std::fill(ret.elements.begin(), ret.elements.end(), 0.);
                 for(unsigned int i = 0; i < dimension; ++i) {
                     ret.elements[ret.coordToIndex(i, i)] = 1;
                 }

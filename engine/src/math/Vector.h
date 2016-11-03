@@ -11,6 +11,10 @@
 #include "functions.h"
 #include "InvalidDimensionException.h"
 
+#include "../util/Array.h"
+
+using engine::util::Array;
+
 namespace engine {
     namespace math {
         template<unsigned int dimCols, unsigned int dimRows>
@@ -21,42 +25,35 @@ namespace engine {
         template<unsigned int dimension>
         class Vector {
         protected:
-            float* elements = nullptr;
+            Array<float> elements;
             
             static void swap(Vector<dimension>& v1, Vector<dimension>& v2) {
                 std::swap(v1.elements, v2.elements);
             }
 
         public:
-            Vector() {
-                this->elements = new float[dimension];
-                std::fill(this->elements, this->elements + dimension, 0.);
+            Vector() : elements(dimension) {
+                std::fill(this->elements.begin(), this->elements.end(), 0.);
             }
             
-            Vector(std::initializer_list<float> list) {
+            Vector(std::initializer_list<float> list) : elements(dimension) {
                 if(list.size() < dimension) {
                     throw InvalidDimensionException("Not enough elements in list.");
                 } else if(list.size() > dimension) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                this->elements = new float[dimension];
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
             }
 
-            Vector(const Vector& orig) {
-                this->elements = new float[dimension];
-                std::copy(orig.elements, orig.elements + dimension, this->elements);
+            Vector(const Vector& orig) : elements(dimension) {
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
             }
 
             Vector(Vector<dimension>&& orig) {
                 Vector<dimension>::swap(*this, orig);
             }
 
-            ~Vector() {
-                if(this->elements != nullptr) {
-                    delete[] this->elements;
-                }
-            }
+            ~Vector() {}
             
             Vector<dimension>& operator=(Vector<dimension>&& v) {
                 Vector<dimension>::swap(*this, v);
@@ -69,7 +66,7 @@ namespace engine {
                 } else if(list.size() > dimension) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
             }
 
             Vector<dimension>& add(const Vector<dimension>& v) {

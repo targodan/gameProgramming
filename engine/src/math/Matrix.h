@@ -8,6 +8,7 @@
 #include "InvalidDimensionException.h"
 #include "Vector.h"
 #include "Vector3.h"
+#include "../util/Array.h"
 
 namespace engine {
     namespace math {
@@ -20,7 +21,7 @@ namespace engine {
             // Coords are (col, row) or (x, y).
             // Saved like this:
             // { (0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), .... }
-            float* elements = nullptr;
+            Array<float> elements;
             
             inline void checkCoords(unsigned int x, unsigned int y) const {
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
@@ -69,35 +70,28 @@ namespace engine {
             };
             
         public:
-            Matrix() {
-                this->elements = new float[dimRows * dimCols];
-                std::fill(this->elements, this->elements + dimCols * dimRows, 0.);
+            Matrix() : elements(dimRows * dimCols) {
+                std::fill(this->elements.begin(), this->elements.end(), 0.);
             }
             
-            Matrix(std::initializer_list<float> list) {
+            Matrix(std::initializer_list<float> list) : elements(dimRows * dimCols) {
                 if(list.size() < dimCols * dimRows) {
                     throw InvalidDimensionException("Not enough elements in list.");
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                this->elements = new float[dimRows * dimCols];
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
             }
             
-            Matrix(const Matrix& orig) {
-                this->elements = new float[dimRows * dimCols];
-                std::copy(orig.elements, orig.elements + dimCols * dimRows, this->elements);
+            Matrix(const Matrix& orig) : elements(dimRows * dimCols) {
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
             }
             
-            Matrix(Matrix&& orig) {
+            Matrix(Matrix&& orig) : elements(0) {
                 Matrix::swap(*this, orig);
             }
             
-            ~Matrix() {
-                if(this->elements != nullptr) {
-                    delete[] this->elements;
-                }
-            }
+            ~Matrix() {}
             
             Matrix& operator=(Matrix&& m) {
                 Matrix::swap(*this, m);
@@ -110,7 +104,7 @@ namespace engine {
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
                 return *this;
             }
             

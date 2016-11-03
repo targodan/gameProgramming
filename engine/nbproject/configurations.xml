@@ -21,6 +21,10 @@
           <in>Vector3.cpp</in>
           <in>functions.cpp</in>
         </df>
+        <df name="util">
+          <in>Array.h</in>
+          <in>IndexOutOfBoundsException.h</in>
+        </df>
         <in>Exception.cpp</in>
       </df>
       <df name="test">
@@ -133,6 +137,13 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/IndexOutOfBoundsException.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -193,6 +204,13 @@
             flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/IndexOutOfBoundsException.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="test/macros.h" ex="false" tool="3" flavor2="0">
       </item>

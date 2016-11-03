@@ -211,10 +211,6 @@ namespace engine {
             friend Vector<dimension> operator*(const float& f, Vector<dimension> v) {
                 return v.mul(f);
             }
-            
-            friend Vector<dimension> operator/(const float& f, Vector<dimension> v) {
-                return v.div(f);
-            }
 
             bool operator==(const Vector<dimension>& right) const {
                 for(unsigned int i = 0; i < dimension; ++i) {

@@ -357,12 +357,6 @@ namespace engine {
                 return m.div(f);
             }
             
-            friend Matrix<dimRows, dimRows> operator/(
-                    const float& f,
-                    Matrix<dimCols, dimRows> m) {
-                return m.div(f);
-            }
-            
             Matrix<dimCols, dimRows>& operator+=(const Matrix<dimCols, dimRows>& m) {
                 return this->add(m);
             }

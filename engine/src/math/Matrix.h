@@ -24,9 +24,11 @@ namespace engine {
             Array<float> elements;
             
             inline void checkCoords(unsigned int x, unsigned int y) const {
+#ifdef DEBUG
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
                     throw InvalidDimensionException("Coordinates (%du, %du) exceed Matrix dimensions.", x, y);
                 }
+#endif
             }
             
             inline unsigned int coordToIndex(unsigned int x, unsigned int y) const {
@@ -46,9 +48,11 @@ namespace engine {
                 Proxy(Matrix* mat, unsigned int x) : mat(mat), x(x) {}
                 
                 float& operator[](unsigned int y) {
+#ifdef DEBUG
                     if(y < 0 || y >= dimRows) {
                         throw InvalidDimensionException("y exceeds matrix rows.");
                     }
+#endif
                     return mat->elements[mat->coordToIndex(this->x, y)];
                 }
             };
@@ -62,9 +66,11 @@ namespace engine {
                 ConstProxy(const Matrix* mat, int x) : mat(mat), x(x) {}
                 
                 float operator[](int y) const {
+#ifdef DEBUG
                     if(y < 0 || y >= dimRows) {
                         throw InvalidDimensionException("y exceeds matrix rows.");
                     }
+#endif
                     return mat->elements[mat->coordToIndex(this->x, y)];
                 }
             };
@@ -202,9 +208,11 @@ namespace engine {
             
             template<unsigned int subDimCols, unsigned int subDimRows>
             Matrix<subDimCols, subDimRows> getSubMatrix(int xTopLeft, int yTopLeft) const {
+#ifdef DEBUG
                 if(subDimCols + xTopLeft >= dimCols || subDimRows + yTopLeft >= dimRows) {
                     throw InvalidDimensionException("The sub matrix is out of bounds.");
                 }
+#endif
                 Matrix<subDimCols, subDimRows> ret;
                 for(int y = 0; y < subDimRows; ++y) {
                     std::memcpy(
@@ -217,9 +225,11 @@ namespace engine {
             }
             
             Matrix<dimCols-1, dimRows-1> getSubMatrixWithoutAxis(int x, int y) const {
+#ifdef DEBUG
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
                     throw InvalidDimensionException("The axis is out of bounds.");
                 }
+#endif
                 if(x == 0 && y == 0) {
                     return this->getSubMatrix<dimCols-1, dimRows-1>(1, 1);
                 } else if(x == 0 && y == dimRows-1) {

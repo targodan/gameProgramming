@@ -128,20 +128,24 @@ namespace engine {
             }
             
             float operator[](unsigned int i) const {
+#ifdef DEBUG
                 if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
                         );
                 }
+#endif
                 return this->elements[i];
             }
             
             float& operator[](unsigned int i) {
+#ifdef DEBUG
                 if(i < 0 || i >= dimension) {
                     throw InvalidDimensionException(
                             "Tried to access an element that does not exist."
                         );
                 }
+#endif
                 return this->elements[i];
             }
             

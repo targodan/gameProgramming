@@ -8,7 +8,7 @@ namespace engine {
                 : Vector<3>({x, y, z}) {}
 
         Vector3::Vector3(const Vector<3>& orig) {
-            std::copy(orig.elements, orig.elements + 3, this->elements);
+            std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
         }
 
         Vector3::Vector3(Vector<3>&& orig) {
@@ -16,7 +16,7 @@ namespace engine {
         }
 
         Vector3::Vector3(const Vector3& orig) {
-            std::copy(orig.elements, orig.elements + 3, this->elements);
+            std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
         }
 
         Vector3::Vector3(Vector3&& orig) {
@@ -60,12 +60,12 @@ namespace engine {
         }
         
         Vector3& Vector3::operator=(const Vector<3>& v) {
-            std::copy(v.elements, v.elements + 3, this->elements);
+            std::copy(v.elements.begin(), v.elements.end(), this->elements.begin());
             return *this;
         }
         
         Vector3& Vector3::operator=(const Vector3& v) {
-            std::copy(v.elements, v.elements + 3, this->elements);
+            std::copy(v.elements.begin(), v.elements.end(), this->elements.begin());
             return *this;
         }
     }

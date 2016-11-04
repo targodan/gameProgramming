@@ -8,6 +8,7 @@
 #include "InvalidDimensionException.h"
 #include "Vector.h"
 #include "Vector3.h"
+#include "../util/Array.h"
 
 namespace engine {
     namespace math {
@@ -20,12 +21,14 @@ namespace engine {
             // Coords are (col, row) or (x, y).
             // Saved like this:
             // { (0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), .... }
-            float* elements = nullptr;
+            Array<float> elements;
             
             inline void checkCoords(unsigned int x, unsigned int y) const {
+#ifdef DEBUG
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
                     throw InvalidDimensionException("Coordinates (%du, %du) exceed Matrix dimensions.", x, y);
                 }
+#endif
             }
             
             inline unsigned int coordToIndex(unsigned int x, unsigned int y) const {
@@ -45,9 +48,11 @@ namespace engine {
                 Proxy(Matrix* mat, unsigned int x) : mat(mat), x(x) {}
                 
                 float& operator[](unsigned int y) {
+#ifdef DEBUG
                     if(y < 0 || y >= dimRows) {
                         throw InvalidDimensionException("y exceeds matrix rows.");
                     }
+#endif
                     return mat->elements[mat->coordToIndex(this->x, y)];
                 }
             };
@@ -61,43 +66,38 @@ namespace engine {
                 ConstProxy(const Matrix* mat, int x) : mat(mat), x(x) {}
                 
                 float operator[](int y) const {
+#ifdef DEBUG
                     if(y < 0 || y >= dimRows) {
                         throw InvalidDimensionException("y exceeds matrix rows.");
                     }
+#endif
                     return mat->elements[mat->coordToIndex(this->x, y)];
                 }
             };
             
         public:
-            Matrix() {
-                this->elements = new float[dimRows * dimCols];
-                std::fill(this->elements, this->elements + dimCols * dimRows, 0.);
+            Matrix() : elements(dimRows * dimCols) {
+                std::fill(this->elements.begin(), this->elements.end(), 0.);
             }
             
-            Matrix(std::initializer_list<float> list) {
+            Matrix(std::initializer_list<float> list) : elements(dimRows * dimCols) {
                 if(list.size() < dimCols * dimRows) {
                     throw InvalidDimensionException("Not enough elements in list.");
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                this->elements = new float[dimRows * dimCols];
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
             }
             
-            Matrix(const Matrix& orig) {
-                this->elements = new float[dimRows * dimCols];
-                std::copy(orig.elements, orig.elements + dimCols * dimRows, this->elements);
+            Matrix(const Matrix& orig) : elements(dimRows * dimCols) {
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
             }
             
-            Matrix(Matrix&& orig) {
+            Matrix(Matrix&& orig) : elements(0) {
                 Matrix::swap(*this, orig);
             }
             
-            ~Matrix() {
-                if(this->elements != nullptr) {
-                    delete[] this->elements;
-                }
-            }
+            ~Matrix() {}
             
             Matrix& operator=(Matrix&& m) {
                 Matrix::swap(*this, m);
@@ -110,7 +110,7 @@ namespace engine {
                 } else if(list.size() > dimCols * dimRows) {
                     throw InvalidDimensionException("Too many elements in list.");
                 }
-                std::copy(list.begin(), list.end(), this->elements);
+                std::copy(list.begin(), list.end(), this->elements.begin());
                 return *this;
             }
             
@@ -208,9 +208,11 @@ namespace engine {
             
             template<unsigned int subDimCols, unsigned int subDimRows>
             Matrix<subDimCols, subDimRows> getSubMatrix(int xTopLeft, int yTopLeft) const {
+#ifdef DEBUG
                 if(subDimCols + xTopLeft >= dimCols || subDimRows + yTopLeft >= dimRows) {
                     throw InvalidDimensionException("The sub matrix is out of bounds.");
                 }
+#endif
                 Matrix<subDimCols, subDimRows> ret;
                 for(int y = 0; y < subDimRows; ++y) {
                     std::memcpy(
@@ -223,9 +225,11 @@ namespace engine {
             }
             
             Matrix<dimCols-1, dimRows-1> getSubMatrixWithoutAxis(int x, int y) const {
+#ifdef DEBUG
                 if(x < 0 || x >= dimCols || y < 0 || y >= dimRows) {
                     throw InvalidDimensionException("The axis is out of bounds.");
                 }
+#endif
                 if(x == 0 && y == 0) {
                     return this->getSubMatrix<dimCols-1, dimRows-1>(1, 1);
                 } else if(x == 0 && y == dimRows-1) {

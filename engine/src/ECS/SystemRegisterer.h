@@ -1,8 +1,8 @@
-#ifndef COMPONENTREGISTERER_H
-#define COMPONENTREGISTERER_H
+#ifndef SYSTEMREGISTERER_H
+#define SYSTEMREGISTERER_H
 
 #include "macros.h"
-#include "ComponentRegistry.h"
+#include "SystemRegistry.h"
 
 #define ECS_REGISTER_COMPONENT(comp) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)
 
@@ -18,5 +18,5 @@ namespace engine {
     }
 }
 
-#endif /* COMPONENTREGISTERER_H */
+#endif /* SYSTEMREGISTERER_H */
 

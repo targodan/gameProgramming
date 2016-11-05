@@ -110,12 +110,32 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/ECS/System.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/System.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegisterer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegistry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/macros.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -198,12 +218,32 @@
       </item>
       <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/ECS/System.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/System.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegisterer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECS/SystemRegistry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/macros.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PlacementSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
       </item>

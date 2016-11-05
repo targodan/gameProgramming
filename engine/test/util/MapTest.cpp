@@ -38,6 +38,7 @@ void MapTest::setUp() {
         char* tmp = new char[len+1];
         gen_random(tmp, len);
         m_strings[i] = std::string(tmp);
+        delete[] tmp;
     }
 }
 

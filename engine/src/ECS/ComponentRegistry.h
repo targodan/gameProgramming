@@ -9,10 +9,10 @@ namespace engine {
     namespace ECS {
         class ComponentRegistry {
         private:
-            static compTypeId nextId;
+            static componentId_t nextId;
 
         public:
-            static compTypeId getNextId() {
+            static componentId_t getNextId() {
                 return ComponentRegistry::nextId++;
             }
         };

@@ -7,10 +7,10 @@ namespace engine {
     namespace ECS {
         class SystemRegistry {
         private:
-            static systemTypeId nextId;
+            static systemId_t nextId;
 
         public:
-            static systemTypeId getNextId() {
+            static systemId_t getNextId() {
                 return SystemRegistry::nextId++;
             }
         };

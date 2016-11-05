@@ -1,10 +1,3 @@
-/* 
- * File:   hashes.h
- * Author: Luca Corbatto<corbatto@ika.rwth-aachen.de>
- *
- * Created on 3. August 2015, 11:13
- */
-
 #ifndef HASHES_H
 #define	HASHES_H
 

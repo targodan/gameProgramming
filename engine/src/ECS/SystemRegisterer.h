@@ -4,15 +4,15 @@
 #include "macros.h"
 #include "SystemRegistry.h"
 
-#define ECS_REGISTER_COMPONENT(comp) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)
+#define ECS_REGISTER_SYSTEM(comp) static engine::ECS::SystemRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)
 
 namespace engine {
     namespace ECS {
-        template<class ComponentT>
-        class ComponentRegisterer {
+        template<class SystemT>
+        class SystemRegisterer {
         public:
-            ComponentRegisterer() {
-                ComponentT::setComponentTypeId(ComponentRegistry::getNextId());
+            SystemRegisterer() {
+                SystemT::setSystemTypeId(SystemRegistry::getNextId());
             }
         };
     }

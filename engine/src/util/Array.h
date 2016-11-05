@@ -11,13 +11,13 @@ namespace engine {
         template<class T>
         class Array {
         protected:
-            std::size_t size;
+            std::size_t m_size;
             T* data = nullptr;
             
             inline void checkIndex(const std::size_t& i) {
 #ifdef DEBUG
-                if(i >= this->size) {
-                    throw IndexOutOfBoundsException("Index %du is out of bounds. Array size is %du.", i, this->size);
+                if(i >= this->m_size) {
+                    throw IndexOutOfBoundsException("Index %du is out of bounds. Array size is %du.", i, this->m_size);
                 }
 #endif
             }
@@ -102,12 +102,12 @@ namespace engine {
             
         public:
             Array(std::size_t size) {
-                this->size = size;
-                this->data = new T[this->size];
+                this->m_size = size;
+                this->data = new T[this->m_size];
             }
             
-            Array(const Array& orig) : Array(orig.size) {
-                std::copy(orig.data, orig.data + orig.size, this->data);
+            Array(const Array& orig) : Array(orig.m_size) {
+                std::copy(orig.data, orig.data + orig.m_size, this->data);
             }
             
             Array(const std::initializer_list<T>& list) : Array(list.size()) {
@@ -115,7 +115,7 @@ namespace engine {
             }
             
             Array(Array&& orig) {
-                this->size = size;
+                this->m_size = m_size;
                 this->data = orig.data;
                 orig.data = nullptr;
             }
@@ -139,7 +139,7 @@ namespace engine {
             }
             
             Iterator end() {
-                return Iterator(this, this->size);
+                return Iterator(this, this->m_size);
             }
             
             ConstIterator begin() const {
@@ -147,11 +147,15 @@ namespace engine {
             }
             
             ConstIterator end() const {
-                return ConstIterator(this, this->size);
+                return ConstIterator(this, this->m_size);
+            }
+                
+            std::size_t size() const {
+                return this->m_size;
             }
             
             static void swap(Array& left, Array& right) {
-                std::swap(left.size, right.size);
+                std::swap(left.m_size, right.m_size);
                 std::swap(left.data, right.data);
             }
         };

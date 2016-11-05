@@ -11,7 +11,6 @@
 using namespace engine::math;
 
 class MatrixTest : public CppUnit::TestFixture {
-public:
     CPPUNIT_TEST_SUITE(MatrixTest);
     CPPUNIT_TEST(testToString);
     CPPUNIT_TEST(testMatrixAddition);
@@ -20,6 +19,7 @@ public:
     CPPUNIT_TEST(testInverse);
     CPPUNIT_TEST_SUITE_END();
 
+private:
     void testToString() {
         Matrix<4, 3> m = {
             1, 2, 3, 4,

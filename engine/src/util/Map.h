@@ -104,7 +104,7 @@ namespace engine {
                 size_t m_index;
             };
 
-            Map(size_t initialCapacity = 205) : m_capacity(initialCapacity), m_size(0) {
+            Map(size_t initialCapacity = 9) : m_capacity(initialCapacity), m_size(0) {
                 if(m_capacity % 2 == 0) {
                     ++m_capacity;
                 }

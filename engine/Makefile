@@ -51,7 +51,7 @@ build: mkdir $(SOURCES) $(TARGET)
 build_test: build $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
-	@find . -type d -not -name $(BUILDDIR) -exec mkdir -p $(BUILDDIR)/{} \;
+	@find . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(LD_FLAGS) -o $@ $^

@@ -110,6 +110,10 @@ namespace engine {
                 std::copy(orig.data, orig.data + orig.size, this->data);
             }
             
+            Array(const std::initializer_list<T>& list) : Array(list.size()) {
+                std::copy(list.begin(), list.end(), this->data);
+            }
+            
             Array(Array&& orig) {
                 this->size = size;
                 this->data = orig.data;

@@ -2,7 +2,6 @@
 #define MATRIXTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "../out.h"
 
 #include "../macros.h"
 
@@ -27,8 +26,8 @@ public:
             5, 6.66666666666, 7, 8,
             9, 10, 11, 12
         };
-        out << std::endl << m << std::endl;
-        out << std::endl << MatrixSq<3>::identity() << std::endl;
+        std::cout << std::endl << m << std::endl;
+        std::cout << std::endl << MatrixSq<3>::identity() << std::endl;
     }
     
     void testMatrixAddition() {

@@ -2,7 +2,6 @@
 #define VECTORTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "../out.h"
 
 #include "../macros.h"
 
@@ -78,7 +77,7 @@ public:
     
     void testToString() {
         Vector<3> v = {42.1, 65.9, -24};
-        out << std::endl << v << std::endl;
+        std::cout << std::endl << v << std::endl;
     }
 };
 

@@ -6,6 +6,7 @@
 
 #include "../macros.h"
 
+#include "ECS/DependencyException.h"
 #include "ECS/SystemManager.h"
 
 #include "SystemImplementations.h"
@@ -16,6 +17,8 @@ using std::shared_ptr;
 class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST_SUITE(SystemManagerTest);
     CPPUNIT_TEST(testBuildDependencyGraph);
+    CPPUNIT_TEST(testIsGraphCircular_true);
+    CPPUNIT_TEST(testIsGraphCircular_false);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -63,6 +66,34 @@ private:
         
         CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[0]->children.size());
         CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[1]->children.size());
+    }
+    
+    void testIsGraphCircular_true() {
+        this->enableSystem<LoopTest1>();
+        this->enableSystem<LoopTest2>();
+        this->enableSystem<LoopTest3>();
+        
+        auto roots = this->buildDependencyGraph();
+        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
+        
+        this->enableSystem<LoopTest0>();
+        
+        roots = this->buildDependencyGraph();
+        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
+    }
+    
+    void testIsGraphCircular_false() {
+        this->enableSystem<TestSystem1>();
+        this->enableSystem<TestSystem2>();
+        this->enableSystem<TestSystem3>();
+        this->enableSystem<TestSystem4>();
+        this->enableSystem<TestSystem5>();
+        this->enableSystem<TestSystem6>();
+        this->enableSystem<TestSystem7>();
+        this->enableSystem<TestSystem8>();
+        
+        auto roots = this->buildDependencyGraph();
+        CPPUNIT_ASSERT_EQUAL(false, this->isGraphCircular(roots));
     }
 };
 

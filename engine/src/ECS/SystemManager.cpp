@@ -3,6 +3,7 @@
 #include "DependencyException.h"
 
 #include <iostream>
+#include <algorithm>
 
 namespace engine {
     namespace ECS {
@@ -16,7 +17,10 @@ namespace engine {
             if(!this->checkDependencySatisfaction()) {
                 throw DependencyException("Some enabled Systems have unsatisfied dependencies.");
             }
-            vector<unique_ptr<System>> roots;
+            vector<shared_ptr<depNode>> roots = this->buildDependencyGraph();
+            if(this->isGraphCircular(roots)) {
+                throw DependencyException("Your System dependencies are circular. This is not allowed!");
+            }
             for(size_t i = 0; i < this->systemsPreAnalysis.size(); ++i) {
                 
             }
@@ -73,6 +77,33 @@ namespace engine {
             }
             
             return roots;
+        }
+        
+        bool SystemManager::__isGraphCircular(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>> visited) const {
+            if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
+                return true;
+            }
+            visited.push_back(node);
+            for(auto& child : node->children) {
+                if(this->__isGraphCircular(child, visited)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        bool SystemManager::isGraphCircular(const vector<shared_ptr<depNode>>& roots) const {
+            if(roots.size() == 0) {
+                // If it does not have a node without any dependencies it is a circle.
+                return true;
+            }
+            for(auto& root : roots) {
+                vector<shared_ptr<depNode>> visited;
+                if(this->__isGraphCircular(root, visited)) {
+                    return true;
+                }
+            }
+            return false;
         }
         
         bool SystemManager::checkDependencySatisfaction() const {

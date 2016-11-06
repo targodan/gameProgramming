@@ -27,6 +27,8 @@ namespace engine {
             
             bool checkDependencySatisfaction() const;
             vector<shared_ptr<depNode>> buildDependencyGraph() const;
+            bool __isGraphCircular(const shared_ptr<depNode>& root, vector<shared_ptr<depNode>> visited) const;
+            bool isGraphCircular(const vector<shared_ptr<depNode>>& roots) const;
             
         public:
             SystemManager();

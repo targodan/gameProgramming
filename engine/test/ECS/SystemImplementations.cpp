@@ -9,6 +9,11 @@ DEFINE_SYSTEM_ID(TestSystem6);
 DEFINE_SYSTEM_ID(TestSystem7);
 DEFINE_SYSTEM_ID(TestSystem8);
 
+DEFINE_SYSTEM_ID(LoopTest0);
+DEFINE_SYSTEM_ID(LoopTest1);
+DEFINE_SYSTEM_ID(LoopTest2);
+DEFINE_SYSTEM_ID(LoopTest3);
+
 ECS_REGISTER_SYSTEM(TestSystem1);
 ECS_REGISTER_SYSTEM(TestSystem2);
 ECS_REGISTER_SYSTEM(TestSystem3);
@@ -17,3 +22,12 @@ ECS_REGISTER_SYSTEM(TestSystem5);
 ECS_REGISTER_SYSTEM(TestSystem6);
 ECS_REGISTER_SYSTEM(TestSystem7);
 ECS_REGISTER_SYSTEM(TestSystem8);
+
+ECS_REGISTER_SYSTEM(LoopTest0);
+ECS_REGISTER_SYSTEM(LoopTest1);
+ECS_REGISTER_SYSTEM(LoopTest2);
+ECS_REGISTER_SYSTEM(LoopTest3);
+
+Array<systemId_t> LoopTest3::getDependencies() const {
+    return {LoopTest2::systemTypeId()};
+}

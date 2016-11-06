@@ -60,5 +60,32 @@ CREATE_TEST_SYSTEM(TestSystem6, {}, {});
 CREATE_TEST_SYSTEM(TestSystem7, {}, {TestSystem5::systemTypeId()});
 CREATE_TEST_SYSTEM(TestSystem8, {TestSystem6::systemTypeId()}, {TestSystem5::systemTypeId()});
 
+
+class LoopTest3 : public System {
+private:
+    static systemId_t systemId;
+public:
+    void run(EntityManager& em) override {}
+    Array<systemId_t> getDependencies() const override;
+    Array<systemId_t> getOptionalDependencies() const override {
+        return {};
+    }
+    std::string getSystemName() const override {
+        return "LoopTest3";
+    }
+    systemId_t getSystemTypeId() const override {
+        return LoopTest3::systemId;
+    }
+    static systemId_t systemTypeId() {
+        return LoopTest3::systemId;
+    }
+    static void setSystemTypeId(systemId_t id) {
+        LoopTest3::systemId = id;
+    }
+};
+CREATE_TEST_SYSTEM(LoopTest0, {}, {});
+CREATE_TEST_SYSTEM(LoopTest1, {LoopTest3::systemTypeId()}, {LoopTest0::systemTypeId()});
+CREATE_TEST_SYSTEM(LoopTest2, {LoopTest1::systemTypeId()}, {});
+
 #endif /* SYSTEMIMPLEMENTATIONS_H */
 

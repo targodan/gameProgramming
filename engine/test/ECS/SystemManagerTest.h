@@ -6,6 +6,7 @@
 
 #include "../macros.h"
 
+#include "util/ostream_helper.h"
 #include "ECS/DependencyException.h"
 #include "ECS/SystemManager.h"
 
@@ -19,6 +20,7 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST(testBuildDependencyGraph);
     CPPUNIT_TEST(testIsGraphCircular_true);
     CPPUNIT_TEST(testIsGraphCircular_false);
+    CPPUNIT_TEST(testMergeDependencySublists);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -94,6 +96,49 @@ private:
         
         auto roots = this->buildDependencyGraph();
         CPPUNIT_ASSERT_EQUAL(false, this->isGraphCircular(roots));
+    }
+    
+    void testMergeDependencySublists() {
+        auto s1 = std::make_shared<TestSystem1>();
+        auto s2 = std::make_shared<TestSystem2>();
+        auto s3 = std::make_shared<TestSystem3>();
+        auto s4 = std::make_shared<TestSystem4>();
+        auto s5 = std::make_shared<TestSystem5>();
+        auto s6 = std::make_shared<TestSystem6>();
+        auto s7 = std::make_shared<TestSystem7>();
+        auto s8 = std::make_shared<TestSystem8>();
+        
+        {
+            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> sec = {s2, s6, s7, s8, s5};
+            vector<shared_ptr<System>> exp = {s1, s2, s6, s7, s8, s3, s4, s5};
+            auto result = this->mergeDependencySublists(prim, sec);
+            CPPUNIT_ASSERT_EQUAL(exp, result);
+        }
+        
+        {
+            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> sec = {s2, s6, s5};
+            vector<shared_ptr<System>> exp = {s1, s2, s6, s3, s4, s5};
+            auto result = this->mergeDependencySublists(prim, sec);
+            CPPUNIT_ASSERT_EQUAL(exp, result);
+        }
+        
+        {
+            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> sec = {s2, s6};
+            CPPUNIT_ASSERT_THROW_MESSAGE("No merge point => should throw.",
+                    this->mergeDependencySublists(prim, sec),
+                    engine::WTFException);
+        }
+        
+        {
+            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> sec = {s6, s7, s3};
+            CPPUNIT_ASSERT_THROW_MESSAGE("No split point => should throw.",
+                    this->mergeDependencySublists(prim, sec),
+                    engine::WTFException);
+        }
     }
 };
 

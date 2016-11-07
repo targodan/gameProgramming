@@ -4,6 +4,7 @@
 #include <string>
 #include <stdlib.h>
 #include <initializer_list>
+#include <iostream>
 
 #include "../util/Array.h"
 
@@ -34,6 +35,11 @@ namespace engine {
             virtual std::string getSystemName() const = 0;
             virtual std::string toString() const {
                 return this->getSystemName();
+            }
+            
+            friend std::ostream& operator<<(std::ostream& os, const System& sys) {
+                os << sys.toString();
+                return os;
             }
         };
     }

@@ -27,6 +27,8 @@
         <df name="util">
           <in>Array.h</in>
           <in>IndexOutOfBoundsException.h</in>
+          <in>ostream_helper.cpp</in>
+          <in>ostream_helper.h</in>
         </df>
         <in>Exception.cpp</in>
       </df>
@@ -159,6 +161,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/util/ostream_helper.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/ECS/SystemImplementations.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/ECS/SystemImplementations.h" ex="false" tool="3" flavor2="0">
@@ -234,6 +240,10 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/util/ostream_helper.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/ECS/SystemImplementations.cpp" ex="false" tool="1" flavor2="0">
       </item>

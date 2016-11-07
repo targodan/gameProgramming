@@ -29,6 +29,8 @@ namespace engine {
             vector<shared_ptr<depNode>> buildDependencyGraph() const;
             bool __isGraphCircular(const shared_ptr<depNode>& root, vector<shared_ptr<depNode>> visited) const;
             bool isGraphCircular(const vector<shared_ptr<depNode>>& roots) const;
+            vector<shared_ptr<System>> mergeDependencySublists(const vector<shared_ptr<System>>& primary, const vector<shared_ptr<System>>& secondary) const;
+            void linearizeDependencyGraph(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>>& visited);
             
         public:
             SystemManager();

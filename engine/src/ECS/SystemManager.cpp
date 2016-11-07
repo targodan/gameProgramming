@@ -79,6 +79,43 @@ namespace engine {
             return roots;
         }
         
+        vector<shared_ptr<System>> SystemManager::mergeDependencySublists(
+                const vector<shared_ptr<System>>& primary,
+                const vector<shared_ptr<System>>& secondary) const {
+            vector<shared_ptr<System>> ret;
+            auto splitpoint = std::find(primary.begin(), primary.end(), secondary[0]);
+            auto mergepoint = std::find(splitpoint, primary.end(), secondary[secondary.size()-1]);
+            if(splitpoint == primary.end() || mergepoint == primary.end()) {
+                throw WTFException("Could not find merge or split point while merging.");
+            }
+            if(splitpoint == mergepoint) {
+                throw WTFException("Looks like there are two links from the same origin-node to the same target-node. This should never happen.");
+            }
+            if(secondary.size() == 2) {
+                // Nothing to add.
+                return primary;
+            }
+            ret.reserve(primary.size() + secondary.size() - 2);
+            for(auto it = primary.begin(); it != splitpoint; ++it) {
+                // Copy primary until splitpoint
+                ret.push_back(*it);
+            }
+            for(auto it = secondary.begin(); it != secondary.end()-1; ++it) {
+                // Now copy secondary.
+                // But watch out not to copy the mergepoint twice.
+                ret.push_back(*it);
+            }
+            for(auto it = splitpoint+1; it != primary.end(); ++it) {
+                // Now copy the rest of primary.
+                ret.push_back(*it);
+            }
+            return ret;
+        }
+        
+        void SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>>& visited) {
+            
+        }
+        
         bool SystemManager::__isGraphCircular(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>> visited) const {
             if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
                 return true;

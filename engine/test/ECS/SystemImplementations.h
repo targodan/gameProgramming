@@ -60,6 +60,15 @@ CREATE_TEST_SYSTEM(TestSystem6, {}, {});
 CREATE_TEST_SYSTEM(TestSystem7, {}, {TestSystem5::systemTypeId()});
 CREATE_TEST_SYSTEM(TestSystem8, {TestSystem6::systemTypeId()}, {TestSystem5::systemTypeId()});
 
+CREATE_TEST_SYSTEM(TestSystemParallel1, {}, {});
+CREATE_TEST_SYSTEM(TestSystemParallel2, {}, {});
+CREATE_TEST_SYSTEM(TestSystemParallel3, DEPENDENCIES(TestSystemParallel1::systemTypeId(), TestSystemParallel2::systemTypeId()), {});
+CREATE_TEST_SYSTEM(TestSystemParallel4, {TestSystemParallel2::systemTypeId()}, {});
+CREATE_TEST_SYSTEM(TestSystemParallel5, DEPENDENCIES(TestSystemParallel3::systemTypeId(), TestSystemParallel4::systemTypeId()), {});
+CREATE_TEST_SYSTEM(TestSystemParallel6, {}, {});
+CREATE_TEST_SYSTEM(TestSystemParallel7, {}, {TestSystemParallel5::systemTypeId()});
+CREATE_TEST_SYSTEM(TestSystemParallel8, {TestSystemParallel6::systemTypeId()}, {TestSystemParallel5::systemTypeId()});
+
 
 class LoopTest3 : public System {
 private:

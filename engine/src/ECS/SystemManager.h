@@ -22,7 +22,7 @@ namespace engine {
             struct depNode {
                 depNode(shared_ptr<System> sys) : system(sys) {}
                 vector<shared_ptr<depNode>> children;
-                vector<shared_ptr<depNode>> parents;
+                vector<weak_ptr<depNode>> parents;
                 shared_ptr<System> system;
             };
             

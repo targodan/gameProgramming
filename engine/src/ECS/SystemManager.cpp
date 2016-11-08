@@ -23,38 +23,10 @@ namespace engine {
             if(this->isGraphCircular(roots)) {
                 throw DependencyException("Your System dependencies are circular. This is not allowed!");
             }
-            size_t parent = 0;
             vector<shared_ptr<depNode>> visited;
-            for(auto& root : roots) {
+//            for(auto& root : roots) {
                 this->systems.push_back({});
-                this->linearizeDependencyGraph(root, visited, this->systems.size()-1);
-            }
-//            for(size_t i = 0; i < this->systems.size(); ++i) {
-//                if(this->systems[i].size() == 0) {
-//                    continue;
-//                }
-//                for(size_t j = 0; j < this->systems.size(); ++j) {
-//                    if(i == j || this->systems[j].size() == 0) {
-//                        continue;
-//                    }
-//                    try {
-//                        std::cerr << "MERGIN:" << std::endl
-//                                << this->systems[i] << std::endl
-//                                << "with" << std::endl
-//                                << this->systems[j] << std::endl;
-//                        this->systems[i] = this->mergeDependencySublists(
-//                                this->systems[i],
-//                                this->systems[j]);
-//                        std::cerr << "RESULT:" << std::endl
-//                                << this->systems[i] << std::endl
-//                                << std::endl;
-//                        this->systems[j].clear();
-//                    } catch(WTFException) {
-//                        std::cerr << "FAIL" << std::endl
-//                                << std::endl;
-//                        continue;
-//                    }
-//                }
+                this->linearizeDependencyGraph(roots[0], visited, this->systems.size()-1);
 //            }
             // Remove empty lists.
             auto newEnd = std::remove_if(this->systems.begin(), this->systems.end(),
@@ -160,21 +132,41 @@ namespace engine {
             std::cout << this->systems << std::endl;
         }
         
-        void SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& node,
+        void SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& root,
                 vector<shared_ptr<depNode>>& visited,
                 size_t listIndex) {
-            if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
+            if(std::find(visited.begin(), visited.end(), root) != visited.end()) {
                 return;
-            } else {
+            }
+            // Basically used as a queue.
+            vector<shared_ptr<depNode>> fringe;
+            fringe.reserve(this->systems.size());
+            size_t fringeIndex = 0;
+            fringe.push_back(root);
+            visited.push_back(root);
+            while(fringe.size() - fringeIndex > 0) {
+                auto node = fringe[fringeIndex++];
                 visited.push_back(node);
-                for(auto& parent : node->parents) {
-                    this->linearizeDependencyGraph(parent, visited, listIndex);
+                bool parentsAdded = false;
+                for(auto n : node->parents) {
+                    if(std::find(visited.begin(), visited.end(), n.lock()) == visited.end()
+                            && std::find(fringe.begin(), fringe.end(), n.lock()) == fringe.end()) {
+                        fringe.push_back(n.lock());
+                        parentsAdded = true;
+                    }
                 }
-                this->systems[listIndex].push_back(node->system);
-                for(auto& child : node->children) {
-                    this->linearizeDependencyGraph(child, visited, listIndex);
+                if(parentsAdded) {
+                    fringe.push_back(node);
+                } else {
+                    this->systems[listIndex].push_back(node->system);
+                    for(auto n : node->children) {
+                        if(std::find(visited.begin(), visited.end(), n) == visited.end()
+                            // Why THE FUCK does the line below give me a segfault?!!
+                            /*&& std::find(fringe.begin(), fringe.end(), n) == fringe.end()*/) {
+                            fringe.push_back(n);
+                        }
+                    }
                 }
-                return;
             }
         }
         

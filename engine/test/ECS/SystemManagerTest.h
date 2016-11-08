@@ -51,6 +51,9 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
 public:
     void tearDown() override {
         this->systemsPreAnalysis.clear();
+        for(auto& v : this->systems) {
+            v.clear();
+        }
         this->systems.clear();
     }
     
@@ -75,46 +78,46 @@ private:
         
         CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), roots[1]->system->getSystemName());
         CPPUNIT_ASSERT_EQUAL(2ul, roots[1]->children.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem3"), roots[1]->children[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem3"), roots[1]->children[1]->system->getSystemName());
         CPPUNIT_ASSERT_EQUAL(std::string("TestSystem4"), roots[1]->children[1]->system->getSystemName());
         
-        CPPUNIT_ASSERT_EQUAL(1ul, roots[1]->children[0]->children.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), roots[1]->children[0]->children[0]->system->getSystemName());
         CPPUNIT_ASSERT_EQUAL(1ul, roots[1]->children[1]->children.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), roots[1]->children[1]->children[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), roots[1]->children[1]->children[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(1ul, roots[1]->children[1]->children.size());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), roots[1]->children[1]->children[1]->system->getSystemName());
         
-        CPPUNIT_ASSERT_EQUAL(2ul, roots[1]->children[0]->children[0]->children.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem7"), roots[1]->children[0]->children[0]->children[0]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem8"), roots[1]->children[0]->children[0]->children[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, roots[1]->children[1]->children[1]->children.size());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem7"), roots[1]->children[1]->children[1]->children[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem8"), roots[1]->children[1]->children[1]->children[1]->system->getSystemName());
         
         CPPUNIT_ASSERT_EQUAL(std::string("TestSystem6"), roots[2]->system->getSystemName());
         CPPUNIT_ASSERT_EQUAL(1ul, roots[2]->children.size());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem8"), roots[2]->children[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem8"), roots[2]->children[1]->system->getSystemName());
         
-        CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[0]->children.size());
-        CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[1]->children.size());
+        CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[1]->children[1]->children[1]->children.size());
+        CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[1]->children[1]->children[1]->children.size());
         
-        auto s7 = roots[1]->children[0]->children[0]->children[0];
-        auto s8 = roots[1]->children[0]->children[0]->children[1];
+        auto s7 = roots[1]->children[1]->children[1]->children[1];
+        auto s8 = roots[1]->children[1]->children[1]->children[1];
         
         CPPUNIT_ASSERT_EQUAL(0ul, roots[0]->parents.size());
         CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->parents.size());
         CPPUNIT_ASSERT_EQUAL(0ul, roots[2]->parents.size());
         
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), s8->parents[1]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem6"), s8->parents[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), s8->parents[1].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem6"), s8->parents[0].lock()->system->getSystemName());
         CPPUNIT_ASSERT_EQUAL(2ul, s8->parents.size());
         
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem3"), s8->parents[1]->parents[0]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem4"), s8->parents[1]->parents[1]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1]->parents.size());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem3"), s8->parents[1].lock()->parents[0].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem4"), s8->parents[1].lock()->parents[1].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1].lock()->parents.size());
         
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem1"), s8->parents[1]->parents[0]->parents[0]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1]->parents[0]->parents[1]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1]->parents[0]->parents.size());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem1"), s8->parents[1].lock()->parents[0].lock()->parents[0].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1].lock()->parents[0].lock()->parents[1].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1].lock()->parents[0].lock()->parents.size());
         
-        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1]->parents[1]->parents[0]->system->getSystemName());
-        CPPUNIT_ASSERT_EQUAL(1ul, s8->parents[1]->parents[1]->parents.size());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1].lock()->parents[1].lock()->parents[0].lock()->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(1ul, s8->parents[1].lock()->parents[1].lock()->parents.size());
     }
     
     void testIsGraphCircular_true() {

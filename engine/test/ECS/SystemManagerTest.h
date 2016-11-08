@@ -134,50 +134,105 @@ private:
         auto s8 = std::make_shared<TestSystem8>();
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
-            vector<shared_ptr<System>> sec = {s2, s6, s7, s8, s5};
-            vector<shared_ptr<System>> exp = {s1, s2, s6, s7, s8, s3, s4, s5};
-            auto result = this->mergeDependencySublists(prim, sec);
-            CPPUNIT_ASSERT_EQUAL(exp, result);
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s2, s6, s7, s8, s5};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s6, s7, s8, s5};
+            vector<shared_ptr<System>> exp2 = {s1, s2, s6, s7, s8, s3, s4, s5};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
         }
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3};
-            vector<shared_ptr<System>> sec = {s3, s4, s5};
-            vector<shared_ptr<System>> exp = {s1, s2, s3, s4, s5};
-            auto result = this->mergeDependencySublists(prim, sec);
-            CPPUNIT_ASSERT_EQUAL(exp, result);
+            vector<shared_ptr<System>> v1 = {s1, s2, s3};
+            vector<shared_ptr<System>> v2 = {s3, s4, s5};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> exp2 = {s1, s2, s3, s4, s5};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
         }
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
-            vector<shared_ptr<System>> sec = {s2, s6, s5};
-            vector<shared_ptr<System>> exp = {s1, s2, s6, s3, s4, s5};
-            auto result = this->mergeDependencySublists(prim, sec);
-            CPPUNIT_ASSERT_EQUAL(exp, result);
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s2, s6, s5};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s6, s5};
+            vector<shared_ptr<System>> exp2 = {s1, s2, s6, s3, s4, s5};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
         }
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
-            vector<shared_ptr<System>> sec = {s6, s7, s5};
-            vector<shared_ptr<System>> exp = {s1, s2, s3, s4, s6, s7, s5};
-            auto result = this->mergeDependencySublists(prim, sec);
-            CPPUNIT_ASSERT_EQUAL(exp, result);
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s6, s7, s5};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s6, s7, s5};
+            vector<shared_ptr<System>> exp2 = {s6, s7, s1, s2, s3, s4, s5};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
         }
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
-            vector<shared_ptr<System>> sec = {s4, s6, s7};
-            vector<shared_ptr<System>> exp = {s1, s2, s3, s4, s6, s7, s5};
-            auto result = this->mergeDependencySublists(prim, sec);
-            CPPUNIT_ASSERT_EQUAL(exp, result);
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s4, s6, s7};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s5, s6, s7};
+            vector<shared_ptr<System>> exp2 = {s1, s2, s3, s4, s6, s7, s5};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
         }
         
         {
-            vector<shared_ptr<System>> prim = {s1, s2, s3, s4, s5};
-            vector<shared_ptr<System>> sec = {s6, s7};
-            CPPUNIT_ASSERT_THROW_MESSAGE("No merge or split point => should throw.",
-                    this->mergeDependencySublists(prim, sec),
+            vector<shared_ptr<System>> v1 = {s1, s3, s4, s5, s7, s8};
+            vector<shared_ptr<System>> v2 = {s1, s2, s3, s4, s6, s8};
+            vector<shared_ptr<System>> exp1 = {s1, s2, s3, s4, s5, s7, s6, s8};
+            vector<shared_ptr<System>> exp2 = {s1, s2, s3, s4, s6, s5, s7, s8};
+            CPPUNIT_ASSERT_EQUAL(exp1, this->mergeDependencySublists(v1, v2));
+            CPPUNIT_ASSERT_EQUAL(exp2, this->mergeDependencySublists(v2, v1));
+        }
+        
+        {
+            vector<shared_ptr<System>> v1 = {s1, s3, s4, s5, s7, s8};
+            CPPUNIT_ASSERT_EQUAL(v1, this->mergeDependencySublists(v1, v1));
+        }
+        
+        {
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s6, s7};
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v1, v2),
+                    engine::WTFException);
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v2, v1),
+                    engine::WTFException);
+        }
+        
+        {
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {};
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v1, v2),
+                    engine::WTFException);
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v2, v1),
+                    engine::WTFException);
+        }
+        
+        {
+            vector<shared_ptr<System>> v1 = {};
+            vector<shared_ptr<System>> v2 = {};
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v1, v2),
+                    engine::WTFException);
+            CPPUNIT_ASSERT_THROW_MESSAGE("Disjoint => should throw.",
+                    this->mergeDependencySublists(v2, v1),
+                    engine::WTFException);
+        }
+        
+        {
+            vector<shared_ptr<System>> v1 = {s1, s2, s3, s4, s5};
+            vector<shared_ptr<System>> v2 = {s4, s2};
+            CPPUNIT_ASSERT_THROW_MESSAGE("Invalid order => should throw.",
+                    this->mergeDependencySublists(v1, v2),
+                    engine::WTFException);
+            CPPUNIT_ASSERT_THROW_MESSAGE("Invalid order => should throw.",
+                    this->mergeDependencySublists(v2, v1),
                     engine::WTFException);
         }
     }

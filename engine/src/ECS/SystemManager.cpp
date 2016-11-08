@@ -27,7 +27,7 @@ namespace engine {
             vector<shared_ptr<depNode>> visited;
             for(auto& root : roots) {
                 this->systems.push_back({});
-                parent = this->linearizeDependencyGraph(root, visited, this->systems.size()-1, parent);
+                this->linearizeDependencyGraph(root, visited, this->systems.size()-1, parent);
             }
             this->dbg_printSystems();
             for(size_t i = 0; i < this->systems.size(); ++i) {
@@ -39,11 +39,20 @@ namespace engine {
                         continue;
                     }
                     try {
+                        std::cerr << "MERGIN:" << std::endl
+                                << this->systems[i] << std::endl
+                                << "with" << std::endl
+                                << this->systems[j] << std::endl;
                         this->systems[i] = this->mergeDependencySublists(
                                 this->systems[i],
                                 this->systems[j]);
+                        std::cerr << "RESULT:" << std::endl
+                                << this->systems[i] << std::endl
+                                << std::endl;
                         this->systems[j].clear();
                     } catch(WTFException) {
+                        std::cerr << "FAIL" << std::endl
+                                << std::endl;
                         continue;
                     }
                 }
@@ -108,62 +117,40 @@ namespace engine {
         }
         
         vector<shared_ptr<System>> SystemManager::mergeDependencySublists(
-                const vector<shared_ptr<System>>& primary,
-                const vector<shared_ptr<System>>& secondary) const {
+                const vector<shared_ptr<System>>& v1,
+                const vector<shared_ptr<System>>& v2) const {
             vector<shared_ptr<System>> ret;
-            auto splitpoint = std::find(primary.begin(), primary.end(), secondary[0]);
-            auto mergepoint = std::find(primary.begin(), primary.end(), secondary[secondary.size()-1]);
-            if(splitpoint == primary.end() && mergepoint == primary.end()) {
-                throw WTFException("Could not find merge or split point while merging.");
+            ret.reserve(v1.size() + v2.size());
+            bool disjoint = true;
+            auto oldIt1 = v1.begin();
+            auto oldIt2 = v2.begin();
+            for(auto it1 = v1.begin(); it1 != v1.end(); ++it1) {
+                for(auto it2 = v2.begin(); it2 != v2.end(); ++it2) {
+                    if(*it1 == *it2) {
+                        if(oldIt2 > it2) {
+                            throw WTFException("Elements are contained in different orders. Cannot merge!");
+                        }
+                        disjoint = false;
+                        for(auto it = oldIt1; it != it1; ++it) {
+                            ret.push_back(*it);
+                        }
+                        for(auto it = oldIt2; it != it2; ++it) {
+                            ret.push_back(*it);
+                        }
+                        ret.push_back(*it1);
+                        oldIt1 = it1+1;
+                        oldIt2 = it2+1;
+                    }
+                }
             }
-            if(splitpoint == mergepoint) {
-                throw WTFException("Looks like there are two links from the same origin-node to the same target-node. This should never happen.");
+            if(disjoint) {
+                throw WTFException("The two lists are disjoint. Cannot merge!");
             }
-            ret.reserve(primary.size() + secondary.size() - 2);
-            if(splitpoint != primary.end() && mergepoint != primary.end()) {
-                // Split and merge point
-                for(auto it = primary.begin(); it != splitpoint; ++it) {
-                    // Copy primary until split point
-                    ret.push_back(*it);
-                }
-                for(auto it = secondary.begin(); it != secondary.end()-1; ++it) {
-                    // Now copy secondary.
-                    // But watch out not to copy the merge point twice.
-                    ret.push_back(*it);
-                }
-                for(auto it = splitpoint+1; it != primary.end(); ++it) {
-                    // Now copy the rest of primary.
-                    ret.push_back(*it);
-                }
-            } else if(mergepoint != primary.end()) {
-                // only a merge point
-                for(auto it = primary.begin(); it != mergepoint; ++it) {
-                    // Copy primary until merge point
-                    ret.push_back(*it);
-                }
-                for(auto it = secondary.begin(); it != secondary.end()-1; ++it) {
-                    // Now copy secondary.
-                    // But watch out not to copy the merge point twice.
-                    ret.push_back(*it);
-                }
-                for(auto it = mergepoint; it != primary.end(); ++it) {
-                    // Now copy the rest of primary.
-                    ret.push_back(*it);
-                }
-            } else {
-                // only a split point
-                for(auto it = primary.begin(); it != splitpoint; ++it) {
-                    // Copy primary until split point
-                    ret.push_back(*it);
-                }
-                for(auto it = secondary.begin(); it != secondary.end(); ++it) {
-                    // Now copy secondary.
-                    ret.push_back(*it);
-                }
-                for(auto it = splitpoint+1; it != primary.end(); ++it) {
-                    // Now copy the rest of primary.
-                    ret.push_back(*it);
-                }
+            for(auto it = oldIt1; it != v1.end(); ++it) {
+                ret.push_back(*it);
+            }
+            for(auto it = oldIt2; it != v2.end(); ++it) {
+                ret.push_back(*it);
             }
             return ret;
         }
@@ -178,34 +165,18 @@ namespace engine {
             this->systems[listIndex].push_back(node->system);
             if(std::find(visited.begin(), visited.end(), node) != visited.end() || node->children.size() == 0) {
                 visited.push_back(node);
-                if(listIndex == parentIndex) {
-                    return parentIndex;
-                }
-                for(int i = 0; i < this->systems.size(); ++i) {
-                    if(i == listIndex || this->systems[i].size() == 0) {
-                        continue;
-                    }
-                    try {
-                        this->systems[i] = this->mergeDependencySublists(
-                                this->systems[i],
-                                this->systems[listIndex]);
-                        this->systems[listIndex].clear();
-                        return i;
-                    } catch(WTFException) {
-                    }
-                }
-                        return listIndex;
+                return 0;
             } else {
                 visited.push_back(node);
                 bool firstChild = true;
                 for(auto& child : node->children) {
                     if(firstChild) {
                         firstChild = false;
-                        listIndex = this->linearizeDependencyGraph(child, visited, listIndex, parentIndex);
+                        this->linearizeDependencyGraph(child, visited, listIndex, parentIndex);
                     } else {
                         this->systems.push_back({node->system});
                         size_t newListIndex = this->systems.size()-1;
-                        listIndex = this->linearizeDependencyGraph(child, visited, newListIndex, listIndex);
+                        this->linearizeDependencyGraph(child, visited, newListIndex, listIndex);
                     }
                 }
                 return listIndex;

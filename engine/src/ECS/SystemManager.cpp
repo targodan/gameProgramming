@@ -27,36 +27,35 @@ namespace engine {
             vector<shared_ptr<depNode>> visited;
             for(auto& root : roots) {
                 this->systems.push_back({});
-                this->linearizeDependencyGraph(root, visited, this->systems.size()-1, parent);
+                this->linearizeDependencyGraph(root, visited, this->systems.size()-1);
             }
-            this->dbg_printSystems();
-            for(size_t i = 0; i < this->systems.size(); ++i) {
-                if(this->systems[i].size() == 0) {
-                    continue;
-                }
-                for(size_t j = 0; j < this->systems.size(); ++j) {
-                    if(i == j || this->systems[j].size() == 0) {
-                        continue;
-                    }
-                    try {
-                        std::cerr << "MERGIN:" << std::endl
-                                << this->systems[i] << std::endl
-                                << "with" << std::endl
-                                << this->systems[j] << std::endl;
-                        this->systems[i] = this->mergeDependencySublists(
-                                this->systems[i],
-                                this->systems[j]);
-                        std::cerr << "RESULT:" << std::endl
-                                << this->systems[i] << std::endl
-                                << std::endl;
-                        this->systems[j].clear();
-                    } catch(WTFException) {
-                        std::cerr << "FAIL" << std::endl
-                                << std::endl;
-                        continue;
-                    }
-                }
-            }
+//            for(size_t i = 0; i < this->systems.size(); ++i) {
+//                if(this->systems[i].size() == 0) {
+//                    continue;
+//                }
+//                for(size_t j = 0; j < this->systems.size(); ++j) {
+//                    if(i == j || this->systems[j].size() == 0) {
+//                        continue;
+//                    }
+//                    try {
+//                        std::cerr << "MERGIN:" << std::endl
+//                                << this->systems[i] << std::endl
+//                                << "with" << std::endl
+//                                << this->systems[j] << std::endl;
+//                        this->systems[i] = this->mergeDependencySublists(
+//                                this->systems[i],
+//                                this->systems[j]);
+//                        std::cerr << "RESULT:" << std::endl
+//                                << this->systems[i] << std::endl
+//                                << std::endl;
+//                        this->systems[j].clear();
+//                    } catch(WTFException) {
+//                        std::cerr << "FAIL" << std::endl
+//                                << std::endl;
+//                        continue;
+//                    }
+//                }
+//            }
             // Remove empty lists.
             auto newEnd = std::remove_if(this->systems.begin(), this->systems.end(),
                     [](auto list) {return list.size() == 0;});
@@ -101,6 +100,7 @@ namespace engine {
                     for(auto& dependency : fringe) {
                         if(dependency->system->getSystemTypeId() == dep) {
                             dependency->children.push_back(requiredBy);
+                            requiredBy->parents.push_back(dependency);
                         }
                     }
                 }
@@ -108,6 +108,7 @@ namespace engine {
                     for(auto& dependency : fringe) {
                         if(dependency->system->getSystemTypeId() == dep) {
                             dependency->children.push_back(requiredBy);
+                            requiredBy->parents.push_back(dependency);
                         }
                     }
                 }
@@ -159,27 +160,21 @@ namespace engine {
             std::cout << this->systems << std::endl;
         }
         
-        size_t SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& node,
+        void SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& node,
                 vector<shared_ptr<depNode>>& visited,
-                size_t listIndex, size_t parentIndex) {
-            this->systems[listIndex].push_back(node->system);
-            if(std::find(visited.begin(), visited.end(), node) != visited.end() || node->children.size() == 0) {
-                visited.push_back(node);
-                return 0;
+                size_t listIndex) {
+            if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
+                return;
             } else {
                 visited.push_back(node);
-                bool firstChild = true;
-                for(auto& child : node->children) {
-                    if(firstChild) {
-                        firstChild = false;
-                        this->linearizeDependencyGraph(child, visited, listIndex, parentIndex);
-                    } else {
-                        this->systems.push_back({node->system});
-                        size_t newListIndex = this->systems.size()-1;
-                        this->linearizeDependencyGraph(child, visited, newListIndex, listIndex);
-                    }
+                for(auto& parent : node->parents) {
+                    this->linearizeDependencyGraph(parent, visited, listIndex);
                 }
-                return listIndex;
+                this->systems[listIndex].push_back(node->system);
+                for(auto& child : node->children) {
+                    this->linearizeDependencyGraph(child, visited, listIndex);
+                }
+                return;
             }
         }
         

@@ -22,6 +22,7 @@ namespace engine {
             struct depNode {
                 depNode(shared_ptr<System> sys) : system(sys) {}
                 vector<shared_ptr<depNode>> children;
+                vector<shared_ptr<depNode>> parents;
                 shared_ptr<System> system;
             };
             
@@ -30,7 +31,7 @@ namespace engine {
             bool __isGraphCircular(const shared_ptr<depNode>& root, vector<shared_ptr<depNode>> visited) const;
             bool isGraphCircular(const vector<shared_ptr<depNode>>& roots) const;
             vector<shared_ptr<System>> mergeDependencySublists(const vector<shared_ptr<System>>& primary, const vector<shared_ptr<System>>& secondary) const;
-            size_t linearizeDependencyGraph(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>>& visited, size_t listIndex, size_t parentIndex);
+            void linearizeDependencyGraph(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>>& visited, size_t listIndex);
             void dbg_printSystems() const;
             
         public:

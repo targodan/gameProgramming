@@ -44,8 +44,8 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST(testIsGraphCircular_true);
     CPPUNIT_TEST(testIsGraphCircular_false);
     CPPUNIT_TEST(testMergeDependencySublists);
-    CPPUNIT_TEST(testCriticalComputeRunOrder);
-//    CPPUNIT_TEST(testComputeRunOrder);
+//    CPPUNIT_TEST(testCriticalComputeRunOrder);
+    CPPUNIT_TEST(testComputeRunOrder);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -93,6 +93,28 @@ private:
         
         CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[0]->children.size());
         CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->children[0]->children[0]->children[1]->children.size());
+        
+        auto s7 = roots[1]->children[0]->children[0]->children[0];
+        auto s8 = roots[1]->children[0]->children[0]->children[1];
+        
+        CPPUNIT_ASSERT_EQUAL(0ul, roots[0]->parents.size());
+        CPPUNIT_ASSERT_EQUAL(0ul, roots[1]->parents.size());
+        CPPUNIT_ASSERT_EQUAL(0ul, roots[2]->parents.size());
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem5"), s8->parents[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem6"), s8->parents[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents.size());
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem3"), s8->parents[1]->parents[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem4"), s8->parents[1]->parents[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1]->parents.size());
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem1"), s8->parents[1]->parents[0]->parents[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1]->parents[0]->parents[1]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(2ul, s8->parents[1]->parents[0]->parents.size());
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("TestSystem2"), s8->parents[1]->parents[1]->parents[0]->system->getSystemName());
+        CPPUNIT_ASSERT_EQUAL(1ul, s8->parents[1]->parents[1]->parents.size());
     }
     
     void testIsGraphCircular_true() {
@@ -258,8 +280,6 @@ private:
         {
             this->computeRunOrder();
             
-            this->dbg_printSystems();
-            
             // Find the right list.
             size_t sInd, psInd;
             if(std::find(this->systems[0].begin(), this->systems[0].end(), s1) != this->systems[0].end()) {
@@ -267,49 +287,132 @@ private:
                 psInd = 1;
             } else {
                 sInd = 1;
-                psInd = 2;
+                psInd = 0;
             }
             
-            CPPUNIT_ASSERT_MESSAGE("Every node must only be contained once.",
-                    const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
-                    == isSet(this->systems[0]));
-            CPPUNIT_ASSERT_MESSAGE("Every node must only be contained once.",
-                    const_cast<const std::vector<shared_ptr<System>>&>(this->systems[1]).end()
-                    == isSet(this->systems[1]));
-            
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys1 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[sInd], s1, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[sInd], s2, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys4", true,
-                    vectorContainsABeforeB(this->systems[sInd], s2, s4));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys3 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[sInd], s3, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys4 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[sInd], s4, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys7", true,
-                    vectorContainsABeforeB(this->systems[sInd], s5, s7));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[sInd], s5, s8));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys6 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[sInd], s6, s8));
-            
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps1, ps3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps2, ps3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps2, ps4));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps3, ps5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps4, ps5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps5, ps7));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps5, ps8));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps6, ps8));
+            std::string msg;
+            {
+                std::stringstream ss;
+                ss << "TestSystemIndex " << sInd << "; ParallelTestSystemIndex " << psInd << ";" << std::endl
+                    << "Enable order:" << std::endl
+                    << this->systemsPreAnalysis << std::endl
+                    << "Result:" << std::endl
+                    << this->systems << std::endl;
+                msg = ss.str();
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Every node must only be contained once.";
+                CPPUNIT_ASSERT_MESSAGE(ss.str().c_str(),
+                        const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
+                        == isSet(this->systems[0]));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Every node must only be contained once.";
+                CPPUNIT_ASSERT_MESSAGE(ss.str().c_str(),
+                        const_cast<const std::vector<shared_ptr<System>>&>(this->systems[1]).end()
+                        == isSet(this->systems[1]));
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Sys1 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s1, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s2, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys4";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s2, s4));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys3 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s3, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys4 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s4, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys7";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s5, s7));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s5, s8));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys6 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s6, s8));
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar1 needs to come before SysPar3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps1, ps3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar2 needs to come before SysPar3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps2, ps3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar2 needs to come before SysPar4";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps2, ps4));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar3 needs to come before SysPar5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps3, ps5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar4 needs to come before SysPar5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps4, ps5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar5 needs to come before SysPar7";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps5, ps7));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar5 needs to come before SysPar8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps5, ps8));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar6 needs to come before SysPar8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps6, ps8));
+            }
         }
     }
     
@@ -327,27 +430,73 @@ private:
         
         {
             this->computeRunOrder();
-            std::cout << this->systems;
-            CPPUNIT_ASSERT_MESSAGE("Every node must only be contained once.",
-                    const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
-                    == isSet(this->systems[0]));
-            
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys1 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[0], s1, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[0], s2, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys4", true,
-                    vectorContainsABeforeB(this->systems[0], s2, s4));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys3 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[0], s3, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys4 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[0], s4, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys7", true,
-                    vectorContainsABeforeB(this->systems[0], s5, s7));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[0], s5, s8));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys6 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[0], s6, s8));
+
+            std::string msg;
+            {
+                std::stringstream ss;
+                ss << "Enable order:" << std::endl
+                    << this->systemsPreAnalysis << std::endl
+                    << "Result:" << std::endl
+                    << this->systems << std::endl;
+                msg = ss.str();
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Every node must only be contained once.";
+                CPPUNIT_ASSERT_MESSAGE(ss.str().c_str(),
+                        const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
+                        == isSet(this->systems[0]));
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Sys1 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s1, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s2, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys4";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s2, s4));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys3 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s3, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys4 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s4, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys7";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s5, s7));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s5, s8));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys6 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[0], s6, s8));
+            }
         }
         
         this->systems.clear();
@@ -370,49 +519,132 @@ private:
                 psInd = 1;
             } else {
                 sInd = 1;
-                psInd = 2;
+                psInd = 0;
             }
-            
-            CPPUNIT_ASSERT_MESSAGE("Every node must only be contained once.",
-                    const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
-                    == isSet(this->systems[0]));
-            CPPUNIT_ASSERT_MESSAGE("Every node must only be contained once.",
-                    const_cast<const std::vector<shared_ptr<System>>&>(this->systems[1]).end()
-                    == isSet(this->systems[1]));
-            
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys1 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[sInd], s1, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys3", true,
-                    vectorContainsABeforeB(this->systems[sInd], s2, s3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys2 needs to come before Sys4", true,
-                    vectorContainsABeforeB(this->systems[sInd], s2, s4));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys3 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[sInd], s3, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys4 needs to come before Sys5", true,
-                    vectorContainsABeforeB(this->systems[sInd], s4, s5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys7", true,
-                    vectorContainsABeforeB(this->systems[sInd], s5, s7));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys5 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[sInd], s5, s8));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Sys6 needs to come before Sys8", true,
-                    vectorContainsABeforeB(this->systems[sInd], s6, s8));
-            
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps1, ps3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps2, ps3));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps2, ps4));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps3, ps5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps4, ps5));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps5, ps7));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps5, ps8));
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("SysPar1 needs to come before SysPar1", true,
-                    vectorContainsABeforeB(this->systems[psInd], ps6, ps8));
+                
+            std::string msg;
+            {
+                std::stringstream ss;
+                ss << "TestSystemIndex " << sInd << "; ParallelTestSystemIndex " << psInd << ";" << std::endl
+                    << "Enable order:" << std::endl
+                    << this->systemsPreAnalysis << std::endl
+                    << "Result:" << std::endl
+                    << this->systems << std::endl;
+                msg = ss.str();
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Every node must only be contained once.";
+                CPPUNIT_ASSERT_MESSAGE(ss.str().c_str(),
+                        const_cast<const std::vector<shared_ptr<System>>&>(this->systems[0]).end()
+                        == isSet(this->systems[0]));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Every node must only be contained once.";
+                CPPUNIT_ASSERT_MESSAGE(ss.str().c_str(),
+                        const_cast<const std::vector<shared_ptr<System>>&>(this->systems[1]).end()
+                        == isSet(this->systems[1]));
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "Sys1 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s1, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s2, s3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys2 needs to come before Sys4";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s2, s4));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys3 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s3, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys4 needs to come before Sys5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s4, s5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys7";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s5, s7));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys5 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s5, s8));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "Sys6 needs to come before Sys8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[sInd], s6, s8));
+            }
+
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar1 needs to come before SysPar3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps1, ps3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar2 needs to come before SysPar3";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps2, ps3));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar2 needs to come before SysPar4";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps2, ps4));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar3 needs to come before SysPar5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps3, ps5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar4 needs to come before SysPar5";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps4, ps5));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar5 needs to come before SysPar7";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps5, ps7));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar5 needs to come before SysPar8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps5, ps8));
+            }
+            {
+                std::stringstream ss;
+                ss << msg << "SysPar6 needs to come before SysPar8";
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
+                        vectorContainsABeforeB(this->systems[psInd], ps6, ps8));
+            }
         }
         
         
@@ -512,49 +744,49 @@ private:
                 
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar1 needs to come before SysPar3";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps1, ps3));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar2 needs to come before SysPar3";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps2, ps3));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar2 needs to come before SysPar4";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps2, ps4));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar3 needs to come before SysPar5";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps3, ps5));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar4 needs to come before SysPar5";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps4, ps5));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar5 needs to come before SysPar7";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps5, ps7));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar5 needs to come before SysPar8";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps5, ps8));
                 }
                 {
                     std::stringstream ss;
-                    ss << msg << "SysPar1 needs to come before SysPar1";
+                    ss << msg << "SysPar6 needs to come before SysPar8";
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(ss.str().c_str(), true,
                             vectorContainsABeforeB(this->systems[psInd], ps6, ps8));
                 }

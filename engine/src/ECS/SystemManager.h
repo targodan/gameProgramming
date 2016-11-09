@@ -16,11 +16,11 @@ namespace engine {
     namespace ECS {
         class SystemManager {
         protected:
-            vector<shared_ptr<System>> systemsPreAnalysis;
-            vector<vector<shared_ptr<System>>> systems;
+            vector<shared_ptr<System>> enabledSystems;
+            vector<vector<shared_ptr<System>>> systemOrder;
             
             struct depNode {
-                depNode(shared_ptr<System> sys) : system(sys) {}
+                depNode(shared_ptr<System>& sys) : system(sys) {}
                 vector<shared_ptr<depNode>> children;
                 vector<weak_ptr<depNode>> parents;
                 shared_ptr<System> system;
@@ -50,7 +50,7 @@ namespace engine {
                 }
 #endif
                 auto sys = std::make_shared<SystemT>();
-                this->systemsPreAnalysis.push_back(sys);
+                this->enabledSystems.push_back(sys);
                 return sys;
             }
             

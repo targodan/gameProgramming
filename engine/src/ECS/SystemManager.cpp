@@ -11,8 +11,8 @@ namespace engine {
     namespace ECS {
         SystemManager::SystemManager() {}
         SystemManager::~SystemManager() {
-            this->systemsPreAnalysis.clear();
-            this->systems.clear();
+            this->enabledSystems.clear();
+            this->systemOrder.clear();
         }
         
         void SystemManager::computeRunOrder() {
@@ -25,24 +25,24 @@ namespace engine {
             }
             vector<shared_ptr<depNode>> visited;
 //            for(auto& root : roots) {
-                this->systems.push_back({});
-                this->linearizeDependencyGraph(roots[0], visited, this->systems.size()-1);
+                this->systemOrder.push_back({});
+                this->linearizeDependencyGraph(roots[0], visited, this->systemOrder.size()-1);
 //            }
             // Remove empty lists.
-            auto newEnd = std::remove_if(this->systems.begin(), this->systems.end(),
+            auto newEnd = std::remove_if(this->systemOrder.begin(), this->systemOrder.end(),
                     [](auto list) {return list.size() == 0;});
-            this->systems.erase(newEnd, this->systems.end());
+            this->systemOrder.erase(newEnd, this->systemOrder.end());
         }
         
         vector<shared_ptr<SystemManager::depNode>> SystemManager::buildDependencyGraph() const {
-            vector<shared_ptr<SystemManager::depNode>> roots;
+            vector<shared_ptr<depNode>> roots;
             vector<unique_ptr<vector<systemId_t>>> optDeps;
-            for(auto& sys : this->systemsPreAnalysis) {
+            for(auto& sys : this->enabledSystems) {
                 auto dArr = sys->getOptionalDependencies();
                 auto deps = std::make_unique<vector<systemId_t>>();
                 deps->reserve(dArr.size());
                 for(auto d : dArr) {
-                    for(auto& s : this->systemsPreAnalysis) {
+                    for(auto& s : this->enabledSystems) {
                         // Only keep the optional dependencies that can be
                         // satisfied.
                         if(s->getSystemTypeId() == d) {
@@ -54,22 +54,22 @@ namespace engine {
                 optDeps.push_back(std::move(deps));
             }
             
-            vector<shared_ptr<SystemManager::depNode>> fringe;
+            vector<shared_ptr<depNode>> allNodes;
             // Create all nodes and find roots.
-            for(size_t i = 0; i < this->systemsPreAnalysis.size(); ++i) {
-                auto& sys = this->systemsPreAnalysis[i];
-                auto node = std::make_shared<SystemManager::depNode>(sys);
-                fringe.push_back(node);
+            for(size_t i = 0; i < this->enabledSystems.size(); ++i) {
+                auto sys = this->enabledSystems[i];
+                auto node = std::make_shared<depNode>(sys);
+                allNodes.push_back(node);
                 if(sys->getDependencies().size() == 0 && optDeps[i]->size() == 0) {
                     roots.push_back(node);
                 }
             }
             
             // Create all links.
-            for(size_t i = 0; i < fringe.size(); ++i) {
-                auto& requiredBy = fringe[i];
+            for(size_t i = 0; i < allNodes.size(); ++i) {
+                auto requiredBy = allNodes[i];
                 for(auto& dep : requiredBy->system->getDependencies()) {
-                    for(auto& dependency : fringe) {
+                    for(auto dependency : allNodes) {
                         if(dependency->system->getSystemTypeId() == dep) {
                             dependency->children.push_back(requiredBy);
                             requiredBy->parents.push_back(dependency);
@@ -77,7 +77,7 @@ namespace engine {
                     }
                 }
                 for(auto& dep : *optDeps[i]) {
-                    for(auto& dependency : fringe) {
+                    for(auto dependency : allNodes) {
                         if(dependency->system->getSystemTypeId() == dep) {
                             dependency->children.push_back(requiredBy);
                             requiredBy->parents.push_back(dependency);
@@ -129,7 +129,7 @@ namespace engine {
         }
         
         void SystemManager::dbg_printSystems() const {
-            std::cout << this->systems << std::endl;
+            std::cout << this->systemOrder << std::endl;
         }
         
         void SystemManager::linearizeDependencyGraph(const shared_ptr<depNode>& root,
@@ -140,7 +140,7 @@ namespace engine {
             }
             // Basically used as a queue.
             vector<shared_ptr<depNode>> fringe;
-            fringe.reserve(this->systems.size());
+            fringe.reserve(this->systemOrder.size());
             size_t fringeIndex = 0;
             fringe.push_back(root);
             visited.push_back(root);
@@ -151,18 +151,21 @@ namespace engine {
                 for(auto n : node->parents) {
                     if(std::find(visited.begin(), visited.end(), n.lock()) == visited.end()
                             && std::find(fringe.begin(), fringe.end(), n.lock()) == fringe.end()) {
-                        fringe.push_back(n.lock());
+                        if(auto ptr = n.lock()) {
+                            fringe.push_back(ptr);
+                        } else {
+                            std::cerr << "ERROR: Ptr invalid!" << std::endl;
+                        }
                         parentsAdded = true;
                     }
                 }
                 if(parentsAdded) {
                     fringe.push_back(node);
                 } else {
-                    this->systems[listIndex].push_back(node->system);
+                    this->systemOrder[listIndex].push_back(node->system);
                     for(auto n : node->children) {
                         if(std::find(visited.begin(), visited.end(), n) == visited.end()
-                            // Why THE FUCK does the line below give me a segfault?!!
-                            /*&& std::find(fringe.begin(), fringe.end(), n) == fringe.end()*/) {
+                            && std::find(fringe.begin(), fringe.end(), n) == fringe.end()) {
                             fringe.push_back(n);
                         }
                     }
@@ -198,10 +201,10 @@ namespace engine {
         }
         
         bool SystemManager::checkDependencySatisfaction() const {
-            for(auto& sys : this->systemsPreAnalysis) {
+            for(auto& sys : this->enabledSystems) {
                 for(auto depId : sys->getDependencies()) {
                     bool satisfied = false;
-                    for(auto& sysDep : this->systemsPreAnalysis) {
+                    for(auto& sysDep : this->enabledSystems) {
                         if(sysDep->getSystemTypeId() == depId) {
                             satisfied = true;
                             break;

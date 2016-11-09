@@ -128,6 +128,9 @@ private:
         
         this->enableSystem<LoopTest0>();
         
+        this->enabledSystems.clear();
+        this->dependencyTree.clear();
+        
         roots = this->buildDependencyGraph();
         CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
     }

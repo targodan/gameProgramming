@@ -38,6 +38,8 @@ typename std::vector<T>::const_iterator isSet(const std::vector<T>& v) {
     return v.end();
 }
 
+EntityManager em;
+
 class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST_SUITE(SystemManagerTest);
     CPPUNIT_TEST(testBuildDependencyGraph);
@@ -46,12 +48,11 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST_SUITE_END();
 
 public:
+    SystemManagerTest() : SystemManager(em) {}
+    
     void tearDown() override {
         this->enabledSystems.clear();
-        for(auto& v : this->systemOrder) {
-            v.clear();
-        }
-        this->systemOrder.clear();
+        this->dependencyTree.clear();
     }
     
 private:

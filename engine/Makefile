@@ -22,7 +22,7 @@ ifeq ($(DEBUG),true)
 else
 	C_FLAGS  = $(C_FLAGS_RELEASE)
 endif
-LD_FLAGS_COMMON = -shared
+LD_FLAGS_COMMON = -shared -lpthread
 LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON)
 LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON)
 ifeq ($(DEBUG),true)

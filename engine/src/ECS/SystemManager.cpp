@@ -2,6 +2,9 @@
 
 #include "DependencyException.h"
 #include "../util/ostream_helper.h"
+#include "../util/Map.h"
+
+using engine::util::Map;
 
 #include <iostream>
 #include <algorithm>
@@ -9,14 +12,87 @@
 
 namespace engine {
     namespace ECS {
-        SystemManager::SystemManager() {}
+        SystemManager::SystemManager(EntityManager& em) : em(em), threads(this->numThreads()) {}
         SystemManager::~SystemManager() {
             this->enabledSystems.clear();
-            this->systemOrder.clear();
         }
         
-        vector<shared_ptr<SystemManager::depNode>> SystemManager::buildDependencyGraph() const {
-            vector<shared_ptr<depNode>> roots;
+        size_t SystemManager::numThreads() const {
+            return std::thread::hardware_concurrency();
+        }
+            
+        void SystemManager::setup() {
+            if(!this->checkDependencySatisfaction()) {
+                throw WTFException("You have unsatisfied System dependencies. Maybe you forgot to enable a System.");
+            }
+            auto roots = this->buildDependencyGraph();
+            if(this->isGraphCircular(roots)) {
+                throw WTFException("Your System dependencies are circular. This is forbidden!");
+            }
+            auto& em = this->em;
+            auto& bq = this->queue;
+            for(size_t i = 0; i < this->numThreads(); ++i) {
+                auto t = std::thread([&]{
+                    while(true) {
+                        auto task = std::move(bq.pop());
+                        if(!task->stop()) {
+                            try {
+                                task->system->run(em);
+                            } catch(...) {
+                                task->promise->set_exception(std::current_exception());
+                            }
+                            task->promise->set_value();
+                        } else {
+                            break;
+                        }
+                    }
+                });
+                t.detach();
+                this->threads[i] = std::move(t);
+            }
+        }
+
+        void SystemManager::stop() {
+            for(size_t i = 0; i < this->numThreads(); ++i) {
+                this->queue.push(std::make_unique<StopTask>());
+            }
+            for(size_t i = 0; i < this->numThreads(); ++i) {
+                this->threads[i].join();
+            }
+        }
+
+        void SystemManager::run() {
+            // Traverse tree in breath first.
+            // fringe is used as a queue.
+            Map<SystemNode*, std::shared_future<void>> futures;
+            futures.set_empty_key(nullptr);
+            vector<shared_ptr<SystemNode>> fringe(this->enabledSystems.size());
+            fringe.insert(fringe.end(), this->dependencyTree.begin(), this->dependencyTree.end());
+            for(size_t fringeHead = 0; fringe.size() - fringeHead > 0; ++fringeHead) {
+                auto& node = fringe[fringeHead];
+                for(auto& child : node->children) {
+                    fringe.push_back(child);
+                }
+                // Check for dependencies
+                /* TODO: Resolve problem:
+                 * This locks up everything if the parents have not been started yet!
+                 */
+                for(auto& parent : node->parents) {
+                    // Wait for dependency to finish.
+                    futures[parent.lock().get()].get();
+                }
+                auto promise = std::make_unique<std::promise<void>>();
+                futures[node.get()] = std::move(promise->get_future().share());
+                this->queue.push(std::make_unique<Task>(node->system, std::move(promise)));
+            }
+            // Wait for the rest to finish
+            for(auto& pair : futures) {
+                pair.second.get();
+            }
+        }
+        
+        vector<shared_ptr<SystemManager::SystemNode>> SystemManager::buildDependencyGraph() const {
+            vector<shared_ptr<SystemNode>> roots;
             vector<unique_ptr<vector<systemId_t>>> optDeps;
             for(auto& sys : this->enabledSystems) {
                 auto dArr = sys->getOptionalDependencies();
@@ -35,11 +111,11 @@ namespace engine {
                 optDeps.push_back(std::move(deps));
             }
             
-            vector<shared_ptr<depNode>> allNodes;
+            vector<shared_ptr<SystemNode>> allNodes;
             // Create all nodes and find roots.
             for(size_t i = 0; i < this->enabledSystems.size(); ++i) {
                 auto sys = this->enabledSystems[i];
-                auto node = std::make_shared<depNode>(sys);
+                auto node = std::make_shared<SystemNode>(sys);
                 allNodes.push_back(node);
                 if(sys->getDependencies().size() == 0 && optDeps[i]->size() == 0) {
                     roots.push_back(node);
@@ -70,12 +146,7 @@ namespace engine {
             return roots;
         }
         
-        void SystemManager::dbg_printSystems() const {
-            std::cout << this->systemOrder << std::endl;
-        }
-        
-        
-        bool SystemManager::__isGraphCircular(const shared_ptr<depNode>& node, vector<shared_ptr<depNode>> visited) const {
+        bool SystemManager::__isGraphCircular(const shared_ptr<SystemNode>& node, vector<shared_ptr<SystemNode>> visited) const {
             if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
                 return true;
             }
@@ -88,13 +159,13 @@ namespace engine {
             return false;
         }
         
-        bool SystemManager::isGraphCircular(const vector<shared_ptr<depNode>>& roots) const {
+        bool SystemManager::isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const {
             if(roots.size() == 0) {
                 // If it does not have a node without any dependencies it is a circle.
                 return true;
             }
             for(auto& root : roots) {
-                vector<shared_ptr<depNode>> visited;
+                vector<shared_ptr<SystemNode>> visited;
                 if(this->__isGraphCircular(root, visited)) {
                     return true;
                 }

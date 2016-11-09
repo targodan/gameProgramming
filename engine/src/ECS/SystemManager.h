@@ -4,36 +4,66 @@
 #include <type_traits>
 #include <vector>
 #include <memory>
+#include <thread>
+#include <future>
 
 #include "System.h"
+#include "EntityManager.h"
+#include "../util/Array.h"
+#include "../util/BlockingQueue.h"
 
 using std::vector;
 using std::unique_ptr;
 using std::shared_ptr;
 using std::weak_ptr;
 
+using engine::util::Array;
+using engine::util::BlockingQueue;
+
 namespace engine {
     namespace ECS {
         class SystemManager {
         protected:
-            vector<shared_ptr<System>> enabledSystems;
-            vector<vector<shared_ptr<System>>> systemOrder;
-            
-            struct depNode {
-                depNode(shared_ptr<System>& sys) : system(sys) {}
-                vector<shared_ptr<depNode>> children;
-                vector<weak_ptr<depNode>> parents;
+            struct SystemNode {
+                SystemNode(shared_ptr<System>& sys) : system(sys) {}
+                vector<shared_ptr<SystemNode>> children;
+                vector<weak_ptr<SystemNode>> parents;
                 shared_ptr<System> system;
             };
             
+            struct Task {
+                Task(shared_ptr<System> system, unique_ptr<std::promise<void>> promise)
+                        : system(system), promise(std::move(promise)) {}
+                shared_ptr<System> system;
+                unique_ptr<std::promise<void>> promise;
+                virtual bool stop() const {
+                    return false;
+                }
+            };
+            
+            struct StopTask : public Task {
+                StopTask() : Task(nullptr, nullptr) {}
+                bool stop() const override {
+                    return true;
+                }
+            };
+            
+            EntityManager& em;
+            
+            vector<shared_ptr<System>> enabledSystems;
+            vector<shared_ptr<SystemNode>> dependencyTree;
+            
+            BlockingQueue<unique_ptr<Task>> queue;
+            Array<std::thread> threads;
+            
             bool checkDependencySatisfaction() const;
-            vector<shared_ptr<depNode>> buildDependencyGraph() const;
-            bool __isGraphCircular(const shared_ptr<depNode>& root, vector<shared_ptr<depNode>> visited) const;
-            bool isGraphCircular(const vector<shared_ptr<depNode>>& roots) const;
-            void dbg_printSystems() const;
+            vector<shared_ptr<SystemNode>> buildDependencyGraph() const;
+            bool __isGraphCircular(const shared_ptr<SystemNode>& root, vector<shared_ptr<SystemNode>> visited) const;
+            bool isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const;
+            size_t numThreads() const;
             
         public:
-            SystemManager();
+            SystemManager(EntityManager& em);
             SystemManager(const SystemManager& orig) = delete;
             ~SystemManager();
 
@@ -51,6 +81,11 @@ namespace engine {
                 this->enabledSystems.push_back(sys);
                 return sys;
             }
+            
+            void setup();
+            void stop();
+            
+            void run();
         };
     }
 }

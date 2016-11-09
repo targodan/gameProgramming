@@ -28,6 +28,7 @@
           <in>Array.h</in>
           <in>IndexOutOfBoundsException.h</in>
           <in>Map.h</in>
+          <in>Set.h</in>
           <in>hashes.h</in>
           <in>ostream_helper.cpp</in>
           <in>ostream_helper.h</in>
@@ -165,6 +166,8 @@
       </item>
       <item path="src/util/Map.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/util/Set.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/util/hashes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
@@ -251,6 +254,8 @@
             flavor2="0">
       </item>
       <item path="src/util/Map.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/Set.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/hashes.h" ex="false" tool="3" flavor2="0">
       </item>

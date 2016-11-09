@@ -11,6 +11,8 @@
 #include "EntityManager.h"
 #include "../util/Array.h"
 #include "../util/BlockingQueue.h"
+#include "../util/Map.h"
+#include "../util/Set.h"
 
 using std::vector;
 using std::unique_ptr;
@@ -19,6 +21,8 @@ using std::weak_ptr;
 
 using engine::util::Array;
 using engine::util::BlockingQueue;
+using engine::util::Map;
+using engine::util::Set;
 
 namespace engine {
     namespace ECS {
@@ -29,6 +33,7 @@ namespace engine {
                 vector<shared_ptr<SystemNode>> children;
                 vector<weak_ptr<SystemNode>> parents;
                 shared_ptr<System> system;
+                size_t layer = SIZE_MAX;
             };
             
             struct Task {
@@ -57,9 +62,11 @@ namespace engine {
             Array<std::thread> threads;
             
             bool checkDependencySatisfaction() const;
-            vector<shared_ptr<SystemNode>> buildDependencyGraph() const;
+            vector<shared_ptr<SystemNode>> buildDependencyGraph();
+            void assignLayers();
             bool __isGraphCircular(const shared_ptr<SystemNode>& root, vector<shared_ptr<SystemNode>> visited) const;
             bool isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const;
+            bool isSubset(const std::vector<shared_ptr<SystemNode>>& left, const Set<SystemNode*>& right) const;
             size_t numThreads() const;
             
         public:

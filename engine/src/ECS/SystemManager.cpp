@@ -24,10 +24,10 @@ namespace engine {
                 throw DependencyException("Your System dependencies are circular. This is not allowed!");
             }
             vector<shared_ptr<depNode>> visited;
-//            for(auto& root : roots) {
+            for(auto& root : roots) {
                 this->systemOrder.push_back({});
-                this->linearizeDependencyGraph(roots[0], visited, this->systemOrder.size()-1);
-//            }
+                this->linearizeDependencyGraph(root, visited, this->systemOrder.size()-1);
+            }
             // Remove empty lists.
             auto newEnd = std::remove_if(this->systemOrder.begin(), this->systemOrder.end(),
                     [](auto list) {return list.size() == 0;});
@@ -141,18 +141,18 @@ namespace engine {
             // Basically used as a queue.
             vector<shared_ptr<depNode>> fringe;
             fringe.reserve(this->systemOrder.size());
-            size_t fringeIndex = 0;
             fringe.push_back(root);
             visited.push_back(root);
-            while(fringe.size() - fringeIndex > 0) {
-                auto node = fringe[fringeIndex++];
+            for(auto fringeHead = fringe.begin(); fringeHead != fringe.end(); ++fringeHead) {
+                auto node = *fringeHead;
                 visited.push_back(node);
                 bool parentsAdded = false;
                 for(auto n : node->parents) {
                     if(std::find(visited.begin(), visited.end(), n.lock()) == visited.end()
                             && std::find(fringe.begin(), fringe.end(), n.lock()) == fringe.end()) {
                         if(auto ptr = n.lock()) {
-                            fringe.push_back(ptr);
+                            fringe.insert(fringeHead, ptr);
+//                            fringe.push_back(ptr);
                         } else {
                             std::cerr << "ERROR: Ptr invalid!" << std::endl;
                         }

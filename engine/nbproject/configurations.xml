@@ -35,6 +35,8 @@
           <in>thread_helper.h</in>
         </df>
         <in>Exception.cpp</in>
+        <in>Game.cpp</in>
+        <in>Game.h</in>
       </df>
       <df name="test">
         <df name="ECS">
@@ -149,6 +151,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/Game.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Game.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -242,6 +248,10 @@
             flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Game.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Game.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
       </item>

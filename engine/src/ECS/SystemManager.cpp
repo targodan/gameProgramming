@@ -9,6 +9,8 @@
 #include <list>
 #include <stdint.h>
 
+#include <easylogging++.h>
+
 namespace engine {
     namespace ECS {
         SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false), running(false) {
@@ -104,10 +106,12 @@ namespace engine {
                     // New layer => wait for all tasks to finish
                     while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {
                         // Wait for future to be done.
-                        // TODO: Exceptions that have been thrown in the worker thread
-                        //       have been catched but will be thrown here again.
-                        //       => catch and handle or at least log.
-                        futures[futuresHead++].get();
+                        try {
+                            futures[futuresHead++].get();
+                        } catch(std::exception& ex) {
+                            LOG(FATAL) << "Exception in SystemWorker thread. "
+                                    << ex.what();
+                        }
                     }
                     layer = node->layer;
                 }
@@ -119,10 +123,12 @@ namespace engine {
             // Wait for the last layer to finish
             while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {
                 // Wait for future to be done.
-                // TODO: Exceptions that have been thrown in the worker thread
-                //       have been catched but will be thrown here again.
-                //       => catch and handle or at least log.
-                futures[futuresHead++].get();
+                try {
+                    futures[futuresHead++].get();
+                } catch(std::exception& ex) {
+                    LOG(FATAL) << "Exception in SystemWorker thread. "
+                            << ex.what();
+                }
             }
         }
         

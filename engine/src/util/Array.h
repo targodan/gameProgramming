@@ -115,15 +115,29 @@ namespace engine {
             }
             
             Array(Array&& orig) {
-                this->m_size = m_size;
-                this->data = orig.data;
-                orig.data = nullptr;
+                this->swap(orig);
             }
             
             virtual ~Array() {
                 if(this->data != nullptr) {
                     delete[] this->data;
                 }
+            }
+            
+            void swap(Array& orig) {
+                std::swap(this->m_size, orig.m_size);
+                std::swap(this->data, orig.data);
+            }
+            
+            Array& operator=(const Array& orig) {
+                this->m_size = orig.size();
+                std::copy(orig.data, orig.data + orig.m_size, this->data);
+                return *this;
+            }
+            
+            Array& operator=(Array&& orig) {
+                this->swap(orig);
+                return *this;
             }
             
             const T& operator[](std::size_t i) const {
@@ -148,6 +162,15 @@ namespace engine {
             
             ConstIterator end() const {
                 return ConstIterator(this, this->m_size);
+            }
+            
+            void resize(size_t newSize) {
+                T* newPtr = new T[newSize];
+                std::move(this->data, this->data+this->m_size, newPtr);
+                delete[] this->data;
+                
+                this->data = newPtr;
+                this->m_size = newSize;
             }
                 
             std::size_t size() const {

@@ -13,6 +13,7 @@
 #include "../util/BlockingQueue.h"
 #include "../util/Map.h"
 #include "../util/Set.h"
+#include "../util/ostream_helper.h"
 
 using std::vector;
 using std::unique_ptr;
@@ -30,10 +31,19 @@ namespace engine {
         protected:
             struct SystemNode {
                 SystemNode(shared_ptr<System>& sys) : system(sys) {}
+                ~SystemNode() {
+                    this->children.clear();
+                    this->parents.clear();
+                }
                 vector<shared_ptr<SystemNode>> children;
                 vector<weak_ptr<SystemNode>> parents;
                 shared_ptr<System> system;
                 size_t layer = SIZE_MAX;
+                
+                friend std::ostream& operator<<(std::ostream& os, const SystemNode& n) {
+                    os << *n.system;
+                    return os;
+                }
             };
             
             struct Task {
@@ -55,19 +65,23 @@ namespace engine {
             
             EntityManager& em;
             
+            size_t numThreads;
+            
             vector<shared_ptr<System>> enabledSystems;
             vector<shared_ptr<SystemNode>> dependencyTree;
             
             BlockingQueue<unique_ptr<Task>> queue;
             Array<std::thread> threads;
             
+            bool hasBeenSetup;
+            
             bool checkDependencySatisfaction() const;
             vector<shared_ptr<SystemNode>> buildDependencyGraph();
             void assignLayers();
             bool __isGraphCircular(const shared_ptr<SystemNode>& root, vector<shared_ptr<SystemNode>> visited) const;
             bool isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const;
+            void traverse(const shared_ptr<SystemNode>& start, Set<SystemNode*>& visited) const;
             bool isSubset(const std::vector<shared_ptr<SystemNode>>& left, const Set<SystemNode*>& right) const;
-            size_t numThreads() const;
             
         public:
             SystemManager(EntityManager& em);
@@ -88,6 +102,8 @@ namespace engine {
                 this->enabledSystems.push_back(sys);
                 return sys;
             }
+            
+            void setNumberOfThreads(size_t n);
             
             void setup();
             void stop();

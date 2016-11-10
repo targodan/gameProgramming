@@ -6,19 +6,34 @@
 #include <iostream>
 #include <algorithm>
 #include <list>
+#include <stdint.h>
 
 namespace engine {
     namespace ECS {
-        SystemManager::SystemManager(EntityManager& em) : em(em), threads(this->numThreads()) {}
-        SystemManager::~SystemManager() {
-            this->enabledSystems.clear();
+        SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false) {
+            // Init numThreads with the number of cores.
+            this->setNumberOfThreads(std::thread::hardware_concurrency());
         }
         
-        size_t SystemManager::numThreads() const {
-            return std::thread::hardware_concurrency();
+        SystemManager::~SystemManager() {
+            this->enabledSystems.clear();
+            this->dependencyTree.clear();
+            this->queue.clear();
+        }
+        
+        void SystemManager::setNumberOfThreads(size_t n) {
+            if(this->hasBeenSetup) {
+                throw WTFException("The SystemManager has already been setup!");
+            }
+            this->numThreads = n;
+            this->threads = std::move(Array<std::thread>(n));
+            this->queue.resize(n);
         }
             
         void SystemManager::setup() {
+            if(this->hasBeenSetup) {
+                throw WTFException("The SystemManager has already been setup!");
+            }
             if(!this->checkDependencySatisfaction()) {
                 throw WTFException("You have unsatisfied System dependencies. Maybe you forgot to enable a System.");
             }
@@ -26,9 +41,10 @@ namespace engine {
             if(this->isGraphCircular(roots)) {
                 throw WTFException("Your System dependencies are circular. This is forbidden!");
             }
+            this->assignLayers();
             auto& em = this->em;
             auto& bq = this->queue;
-            for(size_t i = 0; i < this->numThreads(); ++i) {
+            for(size_t i = 0; i < this->numThreads; ++i) {
                 auto t = std::thread([&]{
                     while(true) {
                         auto task = std::move(bq.pop());
@@ -47,45 +63,64 @@ namespace engine {
                 t.detach();
                 this->threads[i] = std::move(t);
             }
+            this->hasBeenSetup = true;
         }
 
         void SystemManager::stop() {
-            for(size_t i = 0; i < this->numThreads(); ++i) {
+            if(!this->hasBeenSetup) {
+                throw WTFException("The SystemManager has not been setup yet!");
+            }
+            for(size_t i = 0; i < this->numThreads; ++i) {
                 this->queue.push(std::make_unique<StopTask>());
             }
-            for(size_t i = 0; i < this->numThreads(); ++i) {
+            for(size_t i = 0; i < this->numThreads; ++i) {
                 this->threads[i].join();
             }
         }
 
         void SystemManager::run() {
-            // Traverse tree in breath first.
-            // fringe is used as a queue.
-            Map<SystemNode*, std::shared_future<void>> futures;
-            futures.set_empty_key(nullptr);
-            vector<shared_ptr<SystemNode>> fringe(this->enabledSystems.size());
-            // TODO: use layer information once available.
-            fringe.insert(fringe.end(), this->dependencyTree.begin(), this->dependencyTree.end());
-            for(size_t fringeHead = 0; fringe.size() - fringeHead > 0; ++fringeHead) {
-                auto& node = fringe[fringeHead];
-                for(auto& child : node->children) {
-                    fringe.push_back(child);
+#ifdef DEBUG
+            if(this->hasBeenSetup) {
+                throw WTFException("The SystemManager has already been setup!");
+            }
+#endif
+            // This is used as a queue.
+            vector<std::shared_future<void>> futures;
+            futures.reserve(this->dependencyTree.size());
+            size_t futuresHead = 0;
+            
+            size_t layer = this->dependencyTree[0]->layer;
+            for(auto& node : this->dependencyTree) {
+                if(layer != node->layer) {
+                    // New layer => wait for all tasks to finish
+                    while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {
+                        // Wait for future to be done.
+                        // TODO: Exceptions that have been thrown in the worker thread
+                        //       have been catched but will be thrown here again.
+                        //       => catch and handle or at least log.
+                        futures[futuresHead++].get();
+                    }
+                    layer = node->layer;
                 }
-                // Check for dependencies
-                /* TODO: Resolve problem:
-                 * This locks up everything if the parents have not been started yet!
-                 */
-                for(auto& parent : node->parents) {
-                    // Wait for dependency to finish.
-                    futures[parent.lock().get()].get();
-                }
+                // Start all tasks
                 auto promise = std::make_unique<std::promise<void>>();
-                futures[node.get()] = std::move(promise->get_future().share());
+                futures.push_back(std::move(promise->get_future().share()));
                 this->queue.push(std::make_unique<Task>(node->system, std::move(promise)));
             }
-            // Wait for the rest to finish
-            for(auto& pair : futures) {
-                pair.second.get();
+            // Wait for the last layer to finish
+            while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {
+                // Wait for future to be done.
+                // TODO: Exceptions that have been thrown in the worker thread
+                //       have been catched but will be thrown here again.
+                //       => catch and handle or at least log.
+                futures[futuresHead++].get();
+            }
+        }
+        
+        void SystemManager::traverse(const shared_ptr<SystemNode>& start, Set<SystemNode*>& visited) const {
+            for(auto& node : start->children) {
+                visited.insert(node.get());
+                this->traverse(node, visited);
             }
         }
         
@@ -142,7 +177,27 @@ namespace engine {
                 }
             }
             
-            // TODO: remove transitive edges!
+            optDeps.clear();
+            
+            for(auto& node : this->dependencyTree) {
+                for(auto it = node->children.begin(); it != node->children.end();) {
+                    // Delete direct connection if there is a transitive connection
+                    Set<SystemNode*> visited;
+                    visited.set_empty_key(nullptr);
+                    for(auto it2 = node->children.begin(); it2 != node->children.end(); ++it2) {
+                        if((*it).get() == (*it2).get()) {
+                            continue;
+                        }
+                        this->traverse(*it2, visited);
+                    }
+                    if(visited.find((*it).get()) != visited.end()) {
+                        // Has another connection => delete the direct one
+                        it = node->children.erase(it);
+                    } else {
+                         ++it;
+                    }
+                }
+            }
             
             return roots;
         }
@@ -160,7 +215,11 @@ namespace engine {
             // Using the Coffman-Graham Layering Algorithm.
             // Source: https://cs.brown.edu/~rt/gdhandbook/chapters/hierarchical.pdf
             
-            size_t maxLayerWidth = this->numThreads();
+            size_t maxLayerWidth = this->numThreads;
+            
+            for(auto& node : this->dependencyTree) {
+                node->layer = SIZE_MAX;
+            }
             
             for(size_t i = 0; i < this->dependencyTree.size(); ++i) {
                 shared_ptr<SystemNode> node;
@@ -169,54 +228,60 @@ namespace engine {
                     if(n->layer != SIZE_MAX) {
                         continue;
                     }
-                    if(n->parents.size() < minNumberParents) {
+                    if(minNumberParents > n->parents.size()) {
                         minNumberParents = n->parents.size();
                         node = n;
                     }
                 }
                 node->layer = i;
+            }
                 
-                size_t k = 0;
-                Set<SystemNode*> U;
-                U.set_empty_key(nullptr);
-                Set<SystemNode*> sumL;
-                sumL.set_empty_key(nullptr);
-                vector<Set<SystemNode*>> L;
-                {
-                    Set<SystemNode*> tmp;
-                    tmp.set_empty_key(nullptr);
-                    L.push_back(std::move(tmp));
+            size_t k = 0;
+            Set<SystemNode*> visited;
+            visited.set_empty_key(nullptr);
+            Set<SystemNode*> sumLayers;
+            sumLayers.set_empty_key(nullptr);
+            vector<vector<shared_ptr<SystemNode>>> layers;
+            layers.push_back({});
+            while(visited.size() < this->dependencyTree.size()) {
+                shared_ptr<SystemNode> node;
+                size_t maxLayer = 0;
+                for(auto& n : this->dependencyTree) {
+                    if(visited.find(n.get()) != visited.end()) {
+                        continue;
+                    }
+                    if(!this->isSubset(n->children, visited)) {
+                        continue;
+                    }
+                    if(maxLayer <= n->layer) {
+                        maxLayer = n->layer;
+                        node = n;
+                    }
                 }
-                while(true) {
-                    size_t maxLayer = 0;
-                    for(auto& n : this->dependencyTree) {
-                        if(U.find(n.get()) != U.end()) {
-                            continue;
-                        }
-                        if(!this->isSubset(n->children, U)) {
-                            continue;
-                        }
-                        if(maxLayer <= n->layer) {
-                            maxLayer = n->layer;
-                            node = n;
-                        }
+                // Yes, <= *is* correct. Don't ask me why though.
+                if(layers[k].size() <= maxLayerWidth && this->isSubset(node->children, sumLayers)) {
+                    layers[k].push_back(node);
+                } else {
+                    // Update sumL
+                    for(auto& n : layers[k]) {
+                        sumLayers.insert(n.get());
                     }
-                    if(L[k].size() <= maxLayerWidth && this->isSubset(node->children, sumL)) {
-                        L[k].insert(node.get());
-                    } else {
-                        // Update sumL
-                        sumL.insert(L[k].begin(), L[k].end());
-                        ++k;
-                        {
-                            Set<SystemNode*> tmp;
-                            tmp.set_empty_key(nullptr);
-                            tmp.insert(node.get());
-                            L.push_back(std::move(tmp));
-                        }
-                    }
-                    U.insert(node.get());
+                    ++k;
+                    layers.push_back({node});
+                }
+                visited.insert(node.get());
+            }
+            
+            for(size_t i = 0; i < layers.size(); ++i) {
+                for(auto& node : layers[i]) {
+                    node->layer = i;
                 }
             }
+            
+            // As per definition of the algorithm the higher indexed layers need
+            // to be executed first. Thus descending order.
+            std::sort(this->dependencyTree.begin(), this->dependencyTree.end(),
+                    [](const auto& l, const auto& r) { return l->layer > r->layer; });
         }
         
         bool SystemManager::__isGraphCircular(const shared_ptr<SystemNode>& node, vector<shared_ptr<SystemNode>> visited) const {

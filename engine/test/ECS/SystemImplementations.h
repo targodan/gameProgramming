@@ -41,7 +41,7 @@ using namespace engine::ECS;
 /*
  * Now building up this tree:
  * 
- *  TestSystem1                                _ TestSystem7
+ *  TestSystem1_..............................._ TestSystem7
  *              \_ TestSystem3                /
  *              /             \_ (TestSystem5)
  *  TestSystem2               /               \_ TestSystem8
@@ -57,7 +57,7 @@ CREATE_TEST_SYSTEM(TestSystem3, DEPENDENCIES(TestSystem1::systemTypeId(), TestSy
 CREATE_TEST_SYSTEM(TestSystem4, {TestSystem2::systemTypeId()}, {});
 CREATE_TEST_SYSTEM(TestSystem5, DEPENDENCIES(TestSystem3::systemTypeId(), TestSystem4::systemTypeId()), {});
 CREATE_TEST_SYSTEM(TestSystem6, {}, {});
-CREATE_TEST_SYSTEM(TestSystem7, {}, {TestSystem5::systemTypeId()});
+CREATE_TEST_SYSTEM(TestSystem7, {}, DEPENDENCIES(TestSystem1::systemTypeId(), TestSystem5::systemTypeId()));
 CREATE_TEST_SYSTEM(TestSystem8, {TestSystem6::systemTypeId()}, {TestSystem5::systemTypeId()});
 
 CREATE_TEST_SYSTEM(TestSystemParallel1, {}, {});
@@ -66,7 +66,7 @@ CREATE_TEST_SYSTEM(TestSystemParallel3, DEPENDENCIES(TestSystemParallel1::system
 CREATE_TEST_SYSTEM(TestSystemParallel4, {TestSystemParallel2::systemTypeId()}, {});
 CREATE_TEST_SYSTEM(TestSystemParallel5, DEPENDENCIES(TestSystemParallel3::systemTypeId(), TestSystemParallel4::systemTypeId()), {});
 CREATE_TEST_SYSTEM(TestSystemParallel6, {}, {});
-CREATE_TEST_SYSTEM(TestSystemParallel7, {}, {TestSystemParallel5::systemTypeId()});
+CREATE_TEST_SYSTEM(TestSystemParallel7, {}, DEPENDENCIES(TestSystemParallel1::systemTypeId(), TestSystemParallel5::systemTypeId()));
 CREATE_TEST_SYSTEM(TestSystemParallel8, {TestSystemParallel6::systemTypeId()}, {TestSystemParallel5::systemTypeId()});
 
 

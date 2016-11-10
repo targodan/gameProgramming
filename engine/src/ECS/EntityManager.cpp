@@ -16,13 +16,13 @@ namespace engine {
             return e;
         }
         
-        EntityManager::ComponentIterator EntityManager::getComponentIterator(std::initializer_list<int> componentTypes) {
+        EntityManager::ComponentIterator EntityManager::getComponentIterator(const std::initializer_list<componentId_t>& componentTypes) {
             return ComponentIterator(*this, componentTypes);
         }
         
         
         EntityManager::ComponentIterator::ComponentIterator(EntityManager& em,
-                std::initializer_list<int> componentTypes) : em(em) {
+                const std::initializer_list<componentId_t>& componentTypes) : em(em) {
             this->numTypes = componentTypes.size();
             this->componentTypes = new int[this->numTypes];
             this->components = new shared_ptr<Component>[this->numTypes];

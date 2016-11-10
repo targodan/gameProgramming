@@ -12,7 +12,7 @@ C_FLAGS_COMMON = -std=c++14 -Wall -fPIC
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
-C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native
+C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
 # -g    adds debugging information to the executable file
 # -Og	optimize a bit, but keep debugging available
 C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -DDEBUG
@@ -22,7 +22,7 @@ ifeq ($(DEBUG),true)
 else
 	C_FLAGS  = $(C_FLAGS_RELEASE)
 endif
-LD_FLAGS_COMMON = -shared
+LD_FLAGS_COMMON = -shared -lpthread
 LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON)
 LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON)
 ifeq ($(DEBUG),true)
@@ -51,7 +51,7 @@ build: mkdir $(SOURCES) $(TARGET)
 build_test: build $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
-	@find . -type d -not -name $(BUILDDIR) -exec mkdir -p $(BUILDDIR)/{} \;
+	@find . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(LD_FLAGS) -o $@ $^

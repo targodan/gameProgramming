@@ -5,13 +5,13 @@
 #include "../math/Vector3.h"
 
 using engine::math::Vector3;
-using engine::ECS::compTypeId;
+using engine::ECS::componentId_t;
 
 namespace engine {
     namespace ECSCommon {
         class PlacementComponent : public engine::ECS::Component {
         private:
-            static compTypeId typeId;
+            static componentId_t typeId;
 
         protected:
             Vector3 position;
@@ -32,11 +32,11 @@ namespace engine {
             
             void setDirection(const Vector3& v);
             
-            compTypeId getComponentTypeId() const override;
             std::string getComponentName() const override;
             std::string toString() const override;
 
-            static void setComponentTypeId(compTypeId id);
+            static void setComponentTypeId(componentId_t id);
+            static componentId_t getComponentTypeId();
         };
     }
 }

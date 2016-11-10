@@ -10,10 +10,13 @@
           <in>Entity.cpp</in>
           <in>Entity.h</in>
           <in>EntityManager.cpp</in>
+          <in>SystemManager.cpp</in>
+          <in>SystemRegistry.cpp</in>
         </df>
         <df name="ECSCommon">
           <in>PlacementComponent.cpp</in>
           <in>PlacementComponent.h</in>
+          <in>PlacementSystem.cpp</in>
         </df>
         <df name="math">
           <in>Matrix.cpp</in>
@@ -24,20 +27,33 @@
         <df name="util">
           <in>Array.h</in>
           <in>IndexOutOfBoundsException.h</in>
+          <in>Map.h</in>
+          <in>Set.h</in>
+          <in>hashes.h</in>
+          <in>ostream_helper.cpp</in>
+          <in>ostream_helper.h</in>
+          <in>thread_helper.h</in>
         </df>
         <in>Exception.cpp</in>
       </df>
       <df name="test">
+        <df name="ECS">
+          <in>SystemImplementations.cpp</in>
+          <in>SystemImplementations.h</in>
+          <in>SystemManagerTest.cpp</in>
+          <in>SystemManagerTest.h</in>
+        </df>
         <df name="math">
           <in>MatrixTest.cpp</in>
           <in>MatrixTest.h</in>
           <in>VectorTest.cpp</in>
           <in>VectorTest.h</in>
         </df>
+        <df name="util">
+          <in>MapTest.cpp</in>
+        </df>
         <in>macros.h</in>
         <in>main.cpp</in>
-        <in>out.cpp</in>
-        <in>out.h</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -110,10 +126,22 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -137,12 +165,22 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="src/util/IndexOutOfBoundsException.h"
+      <item path="src/util/thread_helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
-            tool="3"
-            flavor2="0">
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -156,7 +194,7 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/out.cpp" ex="false" tool="1" flavor2="11">
+      <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
@@ -212,6 +250,26 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/util/Map.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/Set.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/hashes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/util/ostream_helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/util/thread_helper.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/ECS/SystemImplementations.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/ECS/SystemImplementations.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/ECS/SystemManagerTest.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/macros.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">
@@ -221,10 +279,6 @@
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/math/VectorTest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/out.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/out.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

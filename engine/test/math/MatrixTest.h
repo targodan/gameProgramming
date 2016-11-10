@@ -2,7 +2,6 @@
 #define MATRIXTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "../out.h"
 
 #include "../macros.h"
 
@@ -12,23 +11,23 @@
 using namespace engine::math;
 
 class MatrixTest : public CppUnit::TestFixture {
-public:
     CPPUNIT_TEST_SUITE(MatrixTest);
-    CPPUNIT_TEST(testToString);
+//    CPPUNIT_TEST(testToString);
     CPPUNIT_TEST(testMatrixAddition);
     CPPUNIT_TEST(testMatrixMultiplication);
     CPPUNIT_TEST(testDeterminant);
     CPPUNIT_TEST(testInverse);
     CPPUNIT_TEST_SUITE_END();
 
+private:
     void testToString() {
         Matrix<4, 3> m = {
             1, 2, 3, 4,
             5, 6.66666666666, 7, 8,
             9, 10, 11, 12
         };
-        out << std::endl << m << std::endl;
-        out << std::endl << MatrixSq<3>::identity() << std::endl;
+        std::cout << std::endl << m << std::endl;
+        std::cout << std::endl << MatrixSq<3>::identity() << std::endl;
     }
     
     void testMatrixAddition() {

@@ -6,7 +6,7 @@
 
 namespace engine {
     namespace ECS {
-        typedef std::size_t compTypeId;
+        typedef std::size_t componentId_t;
         
         class Component {
         public:
@@ -14,7 +14,6 @@ namespace engine {
             Component(const Component& orig) {}
             virtual ~Component() {}
 
-            virtual compTypeId getComponentTypeId() const = 0;
             virtual std::string getComponentName() const = 0;
             virtual std::string toString() const = 0;
         };

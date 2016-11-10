@@ -5,6 +5,7 @@
 #include <memory>
 #include <cstring>
 #include <map>
+#include <initializer_list>
 
 #include "../WTFException.h"
 
@@ -19,7 +20,9 @@ namespace engine {
     namespace ECS {
         class EntityManager {
         private:
-            map<std::size_t, vector<shared_ptr<Component>>> components;
+            // TODO: don't use std::map!!!!
+            // TODO: do it with unique_ptr instead of shared. Tip: use std::move.
+            map<componentId_t, vector<shared_ptr<Component>>> components;
             
         public:
             class ComponentIterator {
@@ -30,7 +33,7 @@ namespace engine {
                 shared_ptr<Component>* components = nullptr;
                
                 ComponentIterator(EntityManager& em,
-                        std::initializer_list<int> componentTypes);
+                        const std::initializer_list<componentId_t>& componentTypes);
                 
                 friend class EntityManager;
                 
@@ -53,7 +56,7 @@ namespace engine {
             
             Entity addEntity(const std::string& name);
             
-            ComponentIterator getComponentIterator(std::initializer_list<int> componentTypes);
+            ComponentIterator getComponentIterator(const std::initializer_list<componentId_t>& componentTypes);
         };
     }
 }

@@ -6,7 +6,7 @@ namespace engine {
     namespace ECSCommon {
         ECS_REGISTER_COMPONENT(PlacementComponent);
         
-        compTypeId PlacementComponent::typeId = 0;
+        componentId_t PlacementComponent::typeId = 0;
         
         PlacementComponent::PlacementComponent() {
         }
@@ -41,10 +41,6 @@ namespace engine {
             this->direction = v;
         }
             
-        compTypeId PlacementComponent::getComponentTypeId() const {
-            return PlacementComponent::typeId;
-        }
-        
         std::string PlacementComponent::getComponentName() const {
             return "Placement";
         }
@@ -57,8 +53,12 @@ namespace engine {
             return ss.str();
         }
 
-        void PlacementComponent::setComponentTypeId(compTypeId id) {
+        void PlacementComponent::setComponentTypeId(componentId_t id) {
             PlacementComponent::typeId = id;
+        }
+
+        componentId_t PlacementComponent::getComponentTypeId() {
+            return PlacementComponent::typeId;
         }
     }
 }

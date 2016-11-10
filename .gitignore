@@ -42,3 +42,4 @@ vgcore.*
 
 # Netbeans
 **/nbproject/private/*
+/engine/build/

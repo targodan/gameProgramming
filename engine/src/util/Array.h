@@ -14,7 +14,7 @@ namespace engine {
             std::size_t m_size;
             T* data = nullptr;
             
-            inline void checkIndex(const std::size_t& i) {
+            inline void checkIndex(const std::size_t& i) const {
 #ifdef DEBUG
                 if(i >= this->m_size) {
                     throw IndexOutOfBoundsException("Index %du is out of bounds. Array size is %du.", i, this->m_size);
@@ -141,10 +141,12 @@ namespace engine {
             }
             
             const T& operator[](std::size_t i) const {
+                this->checkIndex(i);
                 return this->data[i];
             }
             
             T& operator[](std::size_t i) {
+                this->checkIndex(i);
                 return this->data[i];
             }
             

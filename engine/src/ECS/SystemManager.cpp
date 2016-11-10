@@ -2,6 +2,7 @@
 
 #include "DependencyException.h"
 #include "../util/ostream_helper.h"
+#include "../util/thread_helper.h"
 
 #include <iostream>
 #include <algorithm>
@@ -10,12 +11,15 @@
 
 namespace engine {
     namespace ECS {
-        SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false) {
+        SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false), running(false) {
             // Init numThreads with the number of cores.
             this->setNumberOfThreads(std::thread::hardware_concurrency());
         }
         
         SystemManager::~SystemManager() {
+            if(this->running) {
+                this->stop();
+            }
             this->enabledSystems.clear();
             this->dependencyTree.clear();
             this->queue.clear();
@@ -27,7 +31,6 @@ namespace engine {
             }
             this->numThreads = n;
             this->threads = std::move(Array<std::thread>(n));
-            this->queue.resize(n);
         }
             
         void SystemManager::setup() {
@@ -41,16 +44,17 @@ namespace engine {
             if(this->isGraphCircular(roots)) {
                 throw WTFException("Your System dependencies are circular. This is forbidden!");
             }
+            roots.clear();
             this->assignLayers();
-            auto& em = this->em;
-            auto& bq = this->queue;
+            
             for(size_t i = 0; i < this->numThreads; ++i) {
-                auto t = std::thread([&]{
+                auto t = std::thread([this,i]{
+                    engine::util::nameThisThread("SystemWorker_%zu", i);
                     while(true) {
-                        auto task = std::move(bq.pop());
+                        auto task = std::move(this->queue.pop());
                         if(!task->stop()) {
                             try {
-                                task->system->run(em);
+                                task->system->run(this->em);
                             } catch(...) {
                                 task->promise->set_exception(std::current_exception());
                             }
@@ -60,15 +64,18 @@ namespace engine {
                         }
                     }
                 });
-                t.detach();
                 this->threads[i] = std::move(t);
             }
             this->hasBeenSetup = true;
+            this->running = true;
         }
 
         void SystemManager::stop() {
             if(!this->hasBeenSetup) {
                 throw WTFException("The SystemManager has not been setup yet!");
+            }
+            if(!this->running) {
+                throw WTFException("The SystemManager has already been stopped!");
             }
             for(size_t i = 0; i < this->numThreads; ++i) {
                 this->queue.push(std::make_unique<StopTask>());
@@ -76,12 +83,13 @@ namespace engine {
             for(size_t i = 0; i < this->numThreads; ++i) {
                 this->threads[i].join();
             }
+            this->running = false;
         }
 
         void SystemManager::run() {
 #ifdef DEBUG
-            if(this->hasBeenSetup) {
-                throw WTFException("The SystemManager has already been setup!");
+            if(!this->hasBeenSetup) {
+                throw WTFException("The SystemManager has not been setup yet!");
             }
 #endif
             // This is used as a queue.
@@ -284,12 +292,12 @@ namespace engine {
                     [](const auto& l, const auto& r) { return l->layer > r->layer; });
         }
         
-        bool SystemManager::__isGraphCircular(const shared_ptr<SystemNode>& node, vector<shared_ptr<SystemNode>> visited) const {
-            if(std::find(visited.begin(), visited.end(), node) != visited.end()) {
+        bool SystemManager::__isGraphCircular(const shared_ptr<SystemNode>& node, Set<SystemNode*> visited) const {
+            if(visited.find(node.get()) != visited.end()) {
                 return true;
             }
-            visited.push_back(node);
-            for(auto& child : node->children) {
+            visited.insert(node.get());
+            for(auto child : node->children) {
                 if(this->__isGraphCircular(child, visited)) {
                     return true;
                 }
@@ -302,8 +310,9 @@ namespace engine {
                 // If it does not have a node without any dependencies it is a circle.
                 return true;
             }
-            for(auto& root : roots) {
-                vector<shared_ptr<SystemNode>> visited;
+            for(auto root : roots) {
+                Set<SystemNode*> visited;
+                visited.set_empty_key(nullptr);
                 if(this->__isGraphCircular(root, visited)) {
                     return true;
                 }

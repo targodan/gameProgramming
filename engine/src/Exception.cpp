@@ -17,7 +17,10 @@ namespace engine {
     }
     
     void Exception::initFromList(const char* what, va_list args) {
-        this->buffSize = vsnprintf(nullptr, 0, what, args) + 1;
+        va_list tmpArgs;
+        va_copy(tmpArgs, args);
+        this->buffSize = vsnprintf(nullptr, 0, what, tmpArgs) + 1;
+        va_end(tmpArgs);
         this->_what = new char[this->buffSize];
         vsnprintf(this->_what, this->buffSize, what, args);
         this->_what[this->buffSize-1] = '\0';

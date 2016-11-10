@@ -17,7 +17,7 @@ class VectorTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(testSubtraction);
     CPPUNIT_TEST(testMultiplication);
     CPPUNIT_TEST(testCross);
-    CPPUNIT_TEST(testToString);
+//    CPPUNIT_TEST(testToString);
     CPPUNIT_TEST_SUITE_END();
     
 private:

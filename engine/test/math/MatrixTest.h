@@ -12,7 +12,7 @@ using namespace engine::math;
 
 class MatrixTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(MatrixTest);
-    CPPUNIT_TEST(testToString);
+//    CPPUNIT_TEST(testToString);
     CPPUNIT_TEST(testMatrixAddition);
     CPPUNIT_TEST(testMatrixMultiplication);
     CPPUNIT_TEST(testDeterminant);

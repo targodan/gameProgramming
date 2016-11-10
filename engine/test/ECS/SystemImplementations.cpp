@@ -1,5 +1,7 @@
 #include "SystemImplementations.h"
 
+engine::util::BlockingQueue<std::string> __executionQueue;
+
 DEFINE_SYSTEM_ID(TestSystem1);
 DEFINE_SYSTEM_ID(TestSystem2);
 DEFINE_SYSTEM_ID(TestSystem3);

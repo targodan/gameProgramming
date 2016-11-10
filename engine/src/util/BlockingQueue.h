@@ -41,11 +41,11 @@ namespace engine {
                 this->d_queue.pop_back();
                 return rc;
             }
-            void resize(size_t newSize) {
-                this->d_queue.resize(newSize);
-            }
             void clear() {
                 this->d_queue.clear();
+            }
+            bool empty() const {
+                return this->d_queue.empty();
             }
         };
     }

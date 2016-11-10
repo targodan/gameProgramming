@@ -74,11 +74,12 @@ namespace engine {
             Array<std::thread> threads;
             
             bool hasBeenSetup;
+            bool running;
             
             bool checkDependencySatisfaction() const;
             vector<shared_ptr<SystemNode>> buildDependencyGraph();
             void assignLayers();
-            bool __isGraphCircular(const shared_ptr<SystemNode>& root, vector<shared_ptr<SystemNode>> visited) const;
+            bool __isGraphCircular(const shared_ptr<SystemNode>& root, Set<SystemNode*> visited) const;
             bool isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const;
             void traverse(const shared_ptr<SystemNode>& start, Set<SystemNode*>& visited) const;
             bool isSubset(const std::vector<shared_ptr<SystemNode>>& left, const Set<SystemNode*>& right) const;
@@ -91,6 +92,9 @@ namespace engine {
             template<class SystemT>
             shared_ptr<SystemT> enableSystem() {
 #ifdef DEBUG
+                if(this->hasBeenSetup) {
+                    throw WTFException("The SystemManager has already been setup!");
+                }
                 if(!std::is_base_of<System, SystemT>::value) {
                     throw WTFException("Only subclasses of engine::ECS::System can be enabled by the SystemManager.");
                 }

@@ -3,17 +3,22 @@
 
 #include "ECS/System.h"
 #include "ECS/SystemRegisterer.h"
+#include "util/BlockingQueue.h"
 
 #include <iostream>
 
 using namespace engine::ECS;
+
+extern engine::util::BlockingQueue<std::string> __executionQueue;
 
 #define CREATE_TEST_SYSTEM(name, deps, optDeps) \
         class name : public System { \
         private: \
             static systemId_t systemId; \
         public: \
-            void run(EntityManager& em) override {} \
+            void run(EntityManager& em) override { \
+                __executionQueue.push(this->getSystemName()); \
+            } \
             Array<systemId_t> getDependencies() const override { \
                 return deps; \
             } \

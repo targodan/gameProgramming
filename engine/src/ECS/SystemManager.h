@@ -83,6 +83,7 @@ namespace engine {
             bool isGraphCircular(const vector<shared_ptr<SystemNode>>& roots) const;
             void traverse(const shared_ptr<SystemNode>& start, Set<SystemNode*>& visited) const;
             bool isSubset(const std::vector<shared_ptr<SystemNode>>& left, const Set<SystemNode*>& right) const;
+            void clearCircularGraph();
             
         public:
             SystemManager(EntityManager& em);

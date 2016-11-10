@@ -342,20 +342,22 @@ private:
     }
     
     void testIsGraphCircular_true() {
-//        this->enableSystem<LoopTest1>();
-//        this->enableSystem<LoopTest2>();
-//        this->enableSystem<LoopTest3>();
-//        
-//        auto roots = this->buildDependencyGraph();
-//        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
-//        roots.clear();
-//        this->dependencyTree.clear();
-//        
-//        this->enableSystem<LoopTest0>();
-//        
-//        roots = this->buildDependencyGraph();
-//        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
-//        roots.clear();
+        this->enableSystem<LoopTest1>();
+        this->enableSystem<LoopTest2>();
+        this->enableSystem<LoopTest3>();
+        
+        auto roots = this->buildDependencyGraph();
+        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
+        roots.clear();
+        this->clearCircularGraph();
+        this->dependencyTree.clear();
+        
+        this->enableSystem<LoopTest0>();
+        
+        roots = this->buildDependencyGraph();
+        CPPUNIT_ASSERT_EQUAL(true, this->isGraphCircular(roots));
+        roots.clear();
+        this->clearCircularGraph();
     }
     
     void testIsGraphCircular_false() {
@@ -374,7 +376,7 @@ private:
     }
     
     void testAssignLayers() {
-        const size_t NUM_SHUFFLES = 250;
+        const size_t NUM_SHUFFLES = 2;
         const size_t MAX_NUM_THREADS = 8;
         
         auto s1 = static_cast<shared_ptr<System>>(this->enableSystem<TestSystem1>());

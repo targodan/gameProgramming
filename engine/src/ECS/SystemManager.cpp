@@ -42,6 +42,7 @@ namespace engine {
             }
             auto roots = this->buildDependencyGraph();
             if(this->isGraphCircular(roots)) {
+                this->clearCircularGraph();
                 throw WTFException("Your System dependencies are circular. This is forbidden!");
             }
             roots.clear();
@@ -297,7 +298,7 @@ namespace engine {
                 return true;
             }
             visited.insert(node.get());
-            for(auto child : node->children) {
+            for(auto& child : node->children) {
                 if(this->__isGraphCircular(child, visited)) {
                     return true;
                 }
@@ -310,7 +311,7 @@ namespace engine {
                 // If it does not have a node without any dependencies it is a circle.
                 return true;
             }
-            for(auto root : roots) {
+            for(auto& root : roots) {
                 Set<SystemNode*> visited;
                 visited.set_empty_key(nullptr);
                 if(this->__isGraphCircular(root, visited)) {
@@ -318,6 +319,15 @@ namespace engine {
                 }
             }
             return false;
+        }
+        
+        void SystemManager::clearCircularGraph() {
+            // If the graph is circular we need to destroy it manually.
+            // Otherwise the shared_ptr will never be destroyed and we would leak
+            // memory.
+            for(auto& n : this->dependencyTree) {
+                n->children.clear();
+            }
         }
         
         bool SystemManager::checkDependencySatisfaction() const {

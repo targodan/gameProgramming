@@ -4,6 +4,13 @@
 #include <exception>
 #include <cstdarg>
 
+#ifndef _GLIBCXX_TXN_SAFE_DYN
+#define _GLIBCXX_TXN_SAFE_DYN
+#endif
+#ifndef _GLIBCXX_USE_NOEXCEPT
+#define _GLIBCXX_USE_NOEXCEPT
+#endif
+
 namespace engine {
     class Exception : public std::exception {
     public:

@@ -1,5 +1,8 @@
 # the compiler: gcc for C program, define as g++ for C++
 CC = g++
+ECHO = echo
+FIND = find
+LN = ln
 
 # Set to true for debug info.
 # Can also be manipulated from terminal via `make DEBUG=true`
@@ -21,7 +24,7 @@ ifeq ($(DEBUG),true)
 else
 	C_FLAGS  = $(C_FLAGS_RELEASE)
 endif
-LD_FLAGS = -L../engine -lengine -Wl,-rpath=.
+LD_FLAGS = -L../engine -lengine -pthread -Wl,-rpath=.,--as-needed
 BUILDDIR = build
 
 SOURCES = $(wildcard *.cpp)
@@ -36,13 +39,13 @@ all: lnengine test
 build: mkdir $(SOURCES) $(TARGET)
 
 mkdir:
-	@mkdir $(BUILDDIR) &>/dev/null || true
-
+	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
+	
 lnengine:
-	@ln -sf ../engine/libengine.so libengine.so
+	@$(LN) -sf ../engine/libengine.so libengine.so
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(LD_FLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LD_FLAGS)
 
 $(BUILDDIR)/%.o: %.cpp
 	$(CC) $(C_FLAGS) -c -o $@ $<

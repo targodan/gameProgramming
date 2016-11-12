@@ -5,6 +5,9 @@
 
 namespace engine {
     namespace math {
+        float fastInverseSqrt(float number);
+        float fastInverseSqrt_SingleIt(float number);
+        float fastInverseSqrt_DoubleIt(float number);
         float sqrt(float f);
     }
 }

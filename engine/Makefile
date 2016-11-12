@@ -33,7 +33,7 @@ ifeq ($(DEBUG),true)
 else
 	LD_FLAGS  = $(LD_FLAGS_RELEASE)
 endif
-LD_FLAGS_TEST = -L. -lcppunit -lengine -Wl,-rpath=.
+LD_FLAGS_TEST = -L. -lcppunit -lengine -pthread -Wl,-rpath=.,--as-needed
 BUILDDIR = build
 
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
@@ -70,7 +70,7 @@ $(TARGET): $(OBJECTS)
 
 $(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
 	@$(ECHO) "LD $@"
-	@$(CC) $(LD_FLAGS_TEST) -o $@ $^
+	@$(CC) -o $@ $^ $(LD_FLAGS_TEST)
 
 $(BUILDDIR)/src/%.o: src/%.cpp $(DEPDIR)/src/%.d
 	@$(ECHO) "CC $@"

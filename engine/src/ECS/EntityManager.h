@@ -23,21 +23,23 @@ namespace engine {
         
         class EntityManager {
         private:
+            // INVARIANT: The vectors are always sorted by entity id.
             Map<componentId_t, vector<shared_ptr<Component>>> components;
             friend Entity;
                 
             void addComponent(const Entity& e, const shared_ptr<Component>& comp);
             
         public:
-            class ComponentIterator {
+            class ComponentIterator : public std::iterator<std::input_iterator_tag, shared_ptr<Component>> {
             private:
-                EntityManager& em;
+                EntityManager* em;
                 Array<componentId_t> componentTypes;
                 Array<size_t> components;
                
-                ComponentIterator(EntityManager& em,
+                ComponentIterator(EntityManager* em,
                         const std::initializer_list<componentId_t>& componentTypes);
                 
+                void setToEnd();
                 friend class EntityManager;
             public:
                 ComponentIterator(const ComponentIterator& ci);
@@ -47,9 +49,12 @@ namespace engine {
                 ComponentIterator& operator++();
                 ComponentIterator operator++(int);
                 
-                shared_ptr<Component> operator*();
-                shared_ptr<Component> operator->();
-                shared_ptr<Component> operator[](std::size_t index);
+                shared_ptr<Component>& operator*();
+                shared_ptr<Component>& operator->();
+                shared_ptr<Component>& operator[](std::size_t index);
+                
+                bool operator!=(const ComponentIterator& right) const;
+                bool operator==(const ComponentIterator& right) const;
                 
                 void swap(ComponentIterator& ci);
             };
@@ -60,7 +65,8 @@ namespace engine {
             
             Entity createEntity(const std::string& name);
             
-            ComponentIterator getComponentIterator(const std::initializer_list<componentId_t>& componentTypes);
+            ComponentIterator begin(const std::initializer_list<componentId_t>& componentTypes);
+            ComponentIterator end(const std::initializer_list<componentId_t>& componentTypes);
         };
     }
 }

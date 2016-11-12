@@ -10,7 +10,11 @@ namespace engine {
         systemId_t PlacementSystem::systemId = 0;
             
         void PlacementSystem::run(EntityManager& em) {
-            auto it = em.getComponentIterator({PlacementComponent::getComponentTypeId()});
+            for(auto it = em.begin({PlacementComponent::getComponentTypeId()}); it != em.end({PlacementComponent::getComponentTypeId()}); ++it) {
+                auto ptr = *it;
+                auto comp = dynamic_cast<PlacementComponent*>(ptr.get());
+                comp->getPosition().add(comp->getDirection());
+            }
         }
         
         Array<systemId_t> PlacementSystem::getOptionalDependencies() const {

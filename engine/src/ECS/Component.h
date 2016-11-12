@@ -17,18 +17,21 @@ namespace engine {
         
         class Component {
         protected:
-            entityId_t entity;
+            entityId_t entityId;
 
             friend class Entity;
             friend class EntityManager;
-            void setEntity(const entityId_t& id) {
-                this->entity = id;
+            void setEntityId(const entityId_t& id) {
+                this->entityId = id;
             }
         public:
             Component() {}
             Component(const Component& orig) = delete;
             virtual ~Component() {}
 
+            virtual entityId_t getEntityId() const {
+                return this->entityId;
+            }
             virtual componentId_t getComponentId() const = 0;
             virtual std::string getComponentName() const = 0;
             virtual std::string toString() const = 0;

@@ -33,7 +33,7 @@ namespace engine {
             const std::string& getName() const;
             
             template<class CompT, typename... Args>
-            void addComponent(Args... args) {
+            shared_ptr<CompT> addComponent(Args... args) {
 #ifdef DEBUG
                 if(!std::is_base_of<Component, CompT>::value) {
                     throw WTFException("Only subclasses of engine::ECS::Component can be added to an Entity.");
@@ -42,6 +42,7 @@ namespace engine {
                 auto comp = std::make_shared<CompT>(args...);
                 comp->setEntity(this->id);
                 this->em.addComponent(*this, comp);
+                return comp;
             }
             
             std::string toString() const;

@@ -5,9 +5,17 @@
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
 
+#include <easylogging++.h>
+
 #include <iostream>
 
 int main(int argc, char** argv) {
+    // Deactivate logging
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "false");
+    el::Loggers::setDefaultConfigurations(defaultConf, true);
+    
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;
 

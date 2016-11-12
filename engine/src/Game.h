@@ -13,7 +13,7 @@ namespace engine {
         ECS::SystemManager systemManager;
 
     public:
-        Game();
+        Game(int argc, char** argv);
         Game(const Game& orig) = delete;
         virtual ~Game();
         

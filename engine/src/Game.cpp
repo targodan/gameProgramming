@@ -6,8 +6,22 @@
 INITIALIZE_EASYLOGGINGPP
 
 namespace engine {
-    Game::Game() : entityManager(), systemManager(entityManager) {
-        // TODO: Configure logger. Ideally to log both to a file and to stderr.
+    Game::Game(int argc, char** argv) : entityManager(), systemManager(entityManager) {
+        // Configure logger
+        el::Configurations defaultConf;
+        defaultConf.setToDefault();
+        defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "true");
+        defaultConf.set(el::Level::Info, el::ConfigurationType::Filename, "engine.log");
+        defaultConf.set(el::Level::Info, el::ConfigurationType::ToFile, "true");
+        defaultConf.set(el::Level::Info, el::ConfigurationType::ToStandardOutput, "true");
+        defaultConf.set(el::Level::Info, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level : [%logger] %msg");
+        el::Loggers::setDefaultConfigurations(defaultConf, true);
+        
+        START_EASYLOGGINGPP(argc, argv);
+        
+        LOG(INFO) << "Engine started up.";
+        
+        // Catch uncaught exceptions and log
         std::set_terminate([] {
             // Retrieve a possibly uncaught exception.
             std::exception_ptr exptr = std::current_exception();
@@ -29,11 +43,14 @@ namespace engine {
                 free(strings);
 #endif
             }
+            LOG(INFO) << "Execution aborted.";
             std::abort();
         });
     }
     
-    Game::~Game() {}
+    Game::~Game() {
+        LOG(INFO) << "Engine shut down.";
+    }
 
     void Game::initialize() {
         this->systemManager.setup();

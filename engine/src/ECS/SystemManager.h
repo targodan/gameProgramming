@@ -41,7 +41,7 @@ namespace engine {
                 size_t layer = SIZE_MAX;
                 
                 friend std::ostream& operator<<(std::ostream& os, const SystemNode& n) {
-                    os << *n.system;
+                    os << "Layer " << n.layer << ": " << *n.system;
                     return os;
                 }
             };

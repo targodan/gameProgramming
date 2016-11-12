@@ -36,6 +36,7 @@ namespace engine {
         }
             
         void SystemManager::setup() {
+            LOG(INFO) << "Setting up the System dependency tree.";
             if(this->hasBeenSetup) {
                 throw WTFException("The SystemManager has already been setup!");
             }
@@ -48,7 +49,15 @@ namespace engine {
                 throw WTFException("Your System dependencies are circular. This is forbidden!");
             }
             roots.clear();
+            
+            VLOG(1) << "Tree looks good, everything is satisfied, no circles.";
+            LOG(INFO) << "Assigning layers.";
+            
             this->assignLayers();
+            
+            VLOG(1) << this->dependencyTree;
+            
+            LOG(INFO) << "Starting threads.";
             
             for(size_t i = 0; i < this->numThreads; ++i) {
                 auto t = std::thread([this,i]{
@@ -71,6 +80,8 @@ namespace engine {
             }
             this->hasBeenSetup = true;
             this->running = true;
+            
+            LOG(INFO) << "System dependencies complete.";
         }
 
         void SystemManager::stop() {

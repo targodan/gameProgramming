@@ -90,8 +90,8 @@ namespace engine {
             SystemManager(const SystemManager& orig) = delete;
             ~SystemManager();
 
-            template<class SystemT>
-            shared_ptr<SystemT> enableSystem() {
+            template<class SystemT, typename... Args>
+            shared_ptr<SystemT> enableSystem(Args... args) {
 #ifdef DEBUG
                 if(this->hasBeenSetup) {
                     throw WTFException("The SystemManager has already been setup!");
@@ -99,11 +99,8 @@ namespace engine {
                 if(!std::is_base_of<System, SystemT>::value) {
                     throw WTFException("Only subclasses of engine::ECS::System can be enabled by the SystemManager.");
                 }
-                if(!std::is_constructible<SystemT>::value) {
-                    throw WTFException("The system needs to have a constructor which does not take any arguments.");
-                }
 #endif
-                auto sys = std::make_shared<SystemT>();
+                auto sys = std::make_shared<SystemT>(args...);
                 this->enabledSystems.push_back(sys);
                 return sys;
             }

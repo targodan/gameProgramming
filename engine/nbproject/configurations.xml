@@ -9,6 +9,7 @@
           <in>ComponentRegistry.h</in>
           <in>Entity.cpp</in>
           <in>Entity.h</in>
+          <in>EntityId.h</in>
           <in>EntityManager.cpp</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
@@ -125,6 +126,8 @@
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECS/EntityId.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -247,6 +250,8 @@
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECS/EntityId.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

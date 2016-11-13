@@ -67,11 +67,11 @@ private:
         for(float f = 0; f < 100.f; f += 1) {
             auto start = std::chrono::high_resolution_clock::now();
             for(size_t i = 0; i < NUM_CALLS; ++i) {
-                volatile float res = engine::math::fastInverseSqrt_SingleIt(f);
+                volatile float res = 1 / engine::math::fastInverseSqrt_SingleIt(f);
             }
             auto end = std::chrono::high_resolution_clock::now();
             auto diff = end - start;
-            auto timeFISR = std::chrono::duration<unsigned long long, std::nano>(diff).count() / NUM_CALLS;
+            auto timeFISR = std::chrono::duration<unsigned long long, std::nano>(diff).count();
             
             start = std::chrono::high_resolution_clock::now();
             for(size_t i = 0; i < NUM_CALLS; ++i) {
@@ -79,9 +79,9 @@ private:
             }
             end = std::chrono::high_resolution_clock::now();
             diff = end - start;
-            auto time = std::chrono::duration<unsigned long long, std::nano>(diff).count() / NUM_CALLS;
+            auto time = std::chrono::duration<unsigned long long, std::nano>(diff).count();
             
-            double speedup = static_cast<double>(time) / static_cast<double>(timeFISR);
+            double speedup = static_cast<double>(time) / static_cast<double>(timeFISR) - 1;
             totalSpeedup += speedup;
             if(maxSpeedup < speedup) {
                 maxSpeedup = speedup;
@@ -108,11 +108,11 @@ private:
         for(float f = 0; f < 100.f; f += 1) {
             auto start = std::chrono::high_resolution_clock::now();
             for(size_t i = 0; i < NUM_CALLS; ++i) {
-                volatile float res = engine::math::fastInverseSqrt_DoubleIt(f);
+                volatile float res = 1 / engine::math::fastInverseSqrt_DoubleIt(f);
             }
             auto end = std::chrono::high_resolution_clock::now();
             auto diff = end - start;
-            auto timeFISR = std::chrono::duration<unsigned long long, std::nano>(diff).count() / NUM_CALLS;
+            auto timeFISR = std::chrono::duration<unsigned long long, std::nano>(diff).count();
             
             start = std::chrono::high_resolution_clock::now();
             for(size_t i = 0; i < NUM_CALLS; ++i) {
@@ -120,9 +120,9 @@ private:
             }
             end = std::chrono::high_resolution_clock::now();
             diff = end - start;
-            auto time = std::chrono::duration<unsigned long long, std::nano>(diff).count() / NUM_CALLS;
+            auto time = std::chrono::duration<unsigned long long, std::nano>(diff).count();
             
-            double speedup = static_cast<double>(time) / static_cast<double>(timeFISR);
+            double speedup = static_cast<double>(time) / static_cast<double>(timeFISR) - 1;
             totalSpeedup += speedup;
             if(maxSpeedup < speedup) {
                 maxSpeedup = speedup;

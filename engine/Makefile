@@ -18,22 +18,22 @@ C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC
 C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
 # -g    adds debugging information to the executable file
 # -Og	optimize a bit, but keep debugging available
-C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -DDEBUG -rdynamic
+C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -DDEBUG -rdynamic -fvar-tracking-assignments -gdwarf-4
 C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
 ifeq ($(DEBUG),true)
 	C_FLAGS  = $(C_FLAGS_DEBUG)
 else
 	C_FLAGS  = $(C_FLAGS_RELEASE)
 endif
-LD_FLAGS_COMMON = -shared -lpthread
-LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON)
+LD_FLAGS_COMMON = -shared -lm -lpthread -Wl,--as-needed
+LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON) -Wl,-O3
 LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON)
 ifeq ($(DEBUG),true)
 	LD_FLAGS  = $(LD_FLAGS_DEBUG)
 else
 	LD_FLAGS  = $(LD_FLAGS_RELEASE)
 endif
-LD_FLAGS_TEST = -L. -lcppunit -lengine -Wl,-rpath=.
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -Wl,-rpath=.,--as-needed
 BUILDDIR = build
 
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
@@ -66,11 +66,11 @@ mkdir:
 
 $(TARGET): $(OBJECTS)
 	@$(ECHO) "LD $@"
-	@$(CC) $(LD_FLAGS) -o $@ $^
+	@$(CC) -o $@ $^ $(LD_FLAGS) 
 
 $(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
 	@$(ECHO) "LD $@"
-	@$(CC) $(LD_FLAGS_TEST) -o $@ $^
+	@$(CC) -o $@ $^ $(LD_FLAGS_TEST) 
 
 $(BUILDDIR)/src/%.o: src/%.cpp $(DEPDIR)/src/%.d
 	@$(ECHO) "CC $@"

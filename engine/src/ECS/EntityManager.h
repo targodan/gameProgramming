@@ -10,10 +10,13 @@
 #include "../util/Array.h"
 #include "../util/Map.h"
 
+#include "EntityId.h"
 #include "Component.h"
 
 using std::vector;
 using std::shared_ptr;
+using std::weak_ptr;
+using std::unique_ptr;
 using engine::util::Map;
 using engine::util::Array;
 
@@ -22,7 +25,9 @@ namespace engine {
         class Entity;
         
         class EntityManager {
-        private:
+        protected:
+            entityId_t nextEntityId;
+            
             // INVARIANT: The vectors are always sorted by entity id.
             Map<componentId_t, vector<shared_ptr<Component>>> components;
             friend Entity;
@@ -35,9 +40,11 @@ namespace engine {
                 EntityManager* em;
                 Array<componentId_t> componentTypes;
                 Array<size_t> components;
+                bool isEnd;
                
                 ComponentIterator(EntityManager* em,
                         const std::initializer_list<componentId_t>& componentTypes);
+                ComponentIterator(EntityManager* em);
                 
                 void setToEnd();
                 friend class EntityManager;
@@ -66,7 +73,7 @@ namespace engine {
             Entity createEntity(const std::string& name);
             
             ComponentIterator begin(const std::initializer_list<componentId_t>& componentTypes);
-            ComponentIterator end(const std::initializer_list<componentId_t>& componentTypes);
+            ComponentIterator end();
         };
     }
 }

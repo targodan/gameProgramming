@@ -103,7 +103,7 @@ namespace engine {
         public:
             Array(std::size_t size) {
                 this->m_size = size;
-                this->data = new T[this->m_size];
+                this->data = new T[this->m_size]();
             }
             
             Array(const Array& orig) : Array(orig.m_size) {

@@ -4,10 +4,8 @@
 
 namespace engine {
     namespace ECS {
-        entityId_t Entity::nextId = 0;
-
-        Entity::Entity(EntityManager& em, const std::string& name)
-                : id(Entity::nextId++), em(em), name(name) {}
+        Entity::Entity(entityId_t id, EntityManager* em, const std::string& name)
+                : id(id), em(em), name(name) {}
         
         entityId_t Entity::getId() const {
             return this->id;

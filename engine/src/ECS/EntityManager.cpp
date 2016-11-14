@@ -4,7 +4,7 @@
 
 namespace engine {
     namespace ECS {
-        EntityManager::EntityManager() {
+        EntityManager::EntityManager() : nextEntityId(0) {
             components.set_empty_key(SIZE_MAX);
         }
 
@@ -12,7 +12,7 @@ namespace engine {
         }
         
         Entity EntityManager::createEntity(const std::string& name) {
-            return Entity(*this, name);
+            return Entity(this->nextEntityId++, this, name);
         }
         
         void EntityManager::addComponent(const Entity& e, const shared_ptr<Component>& comp) {
@@ -26,24 +26,28 @@ namespace engine {
             return ComponentIterator(this, componentTypes);
         }
         
-        EntityManager::ComponentIterator EntityManager::end(const std::initializer_list<componentId_t>& componentTypes) {
-            auto it = ComponentIterator(this, componentTypes);
-            it.setToEnd();
+        EntityManager::ComponentIterator EntityManager::end() {
+            auto it = ComponentIterator(this);
             return it;
         }
         
         
         EntityManager::ComponentIterator::ComponentIterator(EntityManager* em,
                 const std::initializer_list<componentId_t>& componentTypes)
-                : em(em), componentTypes(componentTypes), components(componentTypes.size()) {
+                : em(em), componentTypes(componentTypes), components(componentTypes.size()), isEnd(false) {
+        }
+        
+        EntityManager::ComponentIterator::ComponentIterator(EntityManager* em)
+                : em(em), componentTypes(0), components(0), isEnd(true) {
         }
 
         EntityManager::ComponentIterator::ComponentIterator(const ComponentIterator& ci)
-                : em(ci.em), componentTypes(ci.componentTypes), components(ci.components) {
+                : em(ci.em), componentTypes(ci.componentTypes), components(ci.components), isEnd(ci.isEnd) {
         }
 
         EntityManager::ComponentIterator::ComponentIterator(ComponentIterator&& ci)
-                : em(ci.em), componentTypes(std::move(ci.componentTypes)), components(std::move(ci.components)) {}
+                : em(ci.em), componentTypes(std::move(ci.componentTypes))
+                    , components(std::move(ci.components)), isEnd(std::move(ci.isEnd)) {}
 
         EntityManager::ComponentIterator::~ComponentIterator() {}
         
@@ -51,29 +55,28 @@ namespace engine {
             std::swap(this->em, ci.em);
             std::swap(this->components, ci.components);
             std::swap(this->componentTypes, ci.componentTypes);
+            std::swap(this->isEnd, ci.isEnd);
         }
         
         void EntityManager::ComponentIterator::setToEnd() {
-            for(size_t i = 0; i < this->componentTypes.size(); ++i) {
-                this->components[i] = this->em->components[this->componentTypes[this->components[0]]].size();
-            }
+            this->isEnd = true;
         }
 
         EntityManager::ComponentIterator& EntityManager::ComponentIterator::operator++() {
-            if(this->components[0] >= this->em->components[this->componentTypes[this->components[0]]].size()) {
+            if(this->isEnd) {
                 // Allready at end.
                 return *this;
             }
-            do {
-                ++this->components[0];
+            ++this->components[0];
+            while(this->components[0] < this->em->components[this->componentTypes[0]].size()) {
                 entityId_t nextId = this->operator[](0)->getEntityId();
                 bool found = true;
                 for(size_t t = 1; t < this->componentTypes.size(); ++t) {
                     auto& compList = this->em->components[this->componentTypes[t]];
-                    do {
+                    while(this->components[t] < compList.size()
+                            && compList[this->components[t]]->getEntityId() < nextId) {
                         ++this->components[t];
-                    } while(this->components[t] < compList.size()
-                            && compList[this->components[t]]->getEntityId() <= nextId);
+                    }
                     
                     if(this->components[t] == compList.size()
                             || compList[this->components[t]]->getEntityId() != nextId) {
@@ -84,9 +87,10 @@ namespace engine {
                 if(found) {
                     break;
                 }
-            } while(this->components[0] < this->em->components[this->componentTypes[this->components[0]]].size());
+                ++this->components[0];
+            }
             
-            if(this->components[0] >= this->em->components[this->componentTypes[this->components[0]]].size()) {
+            if(this->components[0] >= this->em->components[this->componentTypes[0]].size()) {
                 this->setToEnd();
             }
             return *this;
@@ -111,11 +115,20 @@ namespace engine {
         }
         
         bool EntityManager::ComponentIterator::operator!=(const ComponentIterator& right) const {
+            if(this->isEnd != right.isEnd) {
+                return true;
+            }
             bool result = !(*this == right); // Reuse equals operator
             return result;
         }
         bool EntityManager::ComponentIterator::operator==(const ComponentIterator& right) const {
-            if(this->em != right.em || this->componentTypes.size() != right.componentTypes.size()
+            if(this->em != right.em) {
+                return false;
+            }
+            if(this->isEnd == right.isEnd) {
+                return true;
+            }
+            if(this->componentTypes.size() != right.componentTypes.size()
                     || this->components.size() != right.components.size()) {
                 return false;
             }

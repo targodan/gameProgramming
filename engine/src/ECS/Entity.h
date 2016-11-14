@@ -17,14 +17,12 @@ namespace engine {
     namespace ECS {
         class Entity {
         private:
-            static entityId_t nextId;
-
             entityId_t id;
-            EntityManager& em;
+            EntityManager* em;
             std::string name;
             
             friend class EntityManager;
-            Entity(EntityManager& em, const std::string& name);
+            Entity(entityId_t id, EntityManager* em, const std::string& name);
         public:
             Entity(const Entity& orig) = default;
             virtual ~Entity() = default;
@@ -33,16 +31,16 @@ namespace engine {
             const std::string& getName() const;
             
             template<class CompT, typename... Args>
-            shared_ptr<CompT> addComponent(Args... args) {
+            Entity& addComponent(Args... args) {
 #ifdef DEBUG
                 if(!std::is_base_of<Component, CompT>::value) {
                     throw WTFException("Only subclasses of engine::ECS::Component can be added to an Entity.");
                 }
 #endif
                 auto comp = std::make_shared<CompT>(args...);
-                comp->setEntity(this->id);
-                this->em.addComponent(*this, comp);
-                return comp;
+                comp->setEntityId(this->id);
+                this->em->addComponent(*this, comp);
+                return *this;
             }
             
             std::string toString() const;
@@ -60,7 +58,7 @@ namespace engine {
             }
 
             bool operator==(const Entity& right) const {
-                return this->id == right.id;
+                return this->em == right.em && this->id == right.id;
             }
 
             bool operator>(const Entity& right) const {

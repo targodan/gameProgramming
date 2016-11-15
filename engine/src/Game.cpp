@@ -6,7 +6,7 @@
 INITIALIZE_EASYLOGGINGPP
 
 namespace engine {
-    Game::Game(int argc, char** argv) : entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, double ups) : ups(ups), entityManager(), systemManager(entityManager) {
         // Configure logger
         el::Configurations defaultConf;
         defaultConf.setToDefault();
@@ -24,6 +24,7 @@ namespace engine {
         // Catch uncaught exceptions and log
         std::set_terminate([] {
             // Retrieve a possibly uncaught exception.
+            // TODO: Try-catch really necessary here?
             std::exception_ptr exptr = std::current_exception();
             try {
                 std::rethrow_exception(exptr);
@@ -57,10 +58,43 @@ namespace engine {
     }
     
     void Game::run() {
-        // TODO: main loop
+        double currentTime = glfwGetTime();
+        double newTime = 0.0;
+        double lag = 0.0;  // Time since last update
+        const double dt = 1.f / this->ups;
+        double accumulator = dt;
+        
+        this->running = true;
+        while(window.isOpened() && !this->aboutToClose) {
+            newTime = glfwGetTime();
+            
+            lag = (newTime - currentTime) > 0.25 ? (newTime - currentTime) : 0.25;
+            accumulator += lag;
+            currentTime = newTime;
+            while(accumulator >= dt) { // Keep physics up-to-date with visuals
+                accumulator -= dt;
+                
+                this->processEvents(); 
+                this->update();
+            }
+            this->render();
+        }
+        this->running = false;
     }
     
     void Game::shutdown() {
         this->systemManager.stop();
+    }
+    
+    bool Game::isRunning() const {
+        return this->running;
+    }
+    
+    const int Game::getUPS() const {
+        return this->ups;
+    }
+    
+    bool Game::isAboutToClose() const {
+        return this->aboutToClose;
     }
 }

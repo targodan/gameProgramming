@@ -5,6 +5,7 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"
+#include "Window.h"
 
 namespace engine {
     class Game {
@@ -14,6 +15,7 @@ namespace engine {
         bool aboutToClose = false; // Note: Probably temporary, used for testing
         
     protected:
+        Window window{1024,768};
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
         

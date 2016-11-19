@@ -24,12 +24,16 @@
         <df name="util">
           <in>ostream_helper.cpp</in>
         </df>
+        <in>EmptyQueueException.h</in>
         <in>Exception.cpp</in>
         <in>Game.cpp</in>
       </df>
       <df name="test">
         <df name="ECS">
           <in>EntityManagerTest.cpp</in>
+          <in>MessageHandlerTest.cpp</in>
+          <in>MockMessage.h</in>
+          <in>MockReceiver.h</in>
           <in>SystemImplementations.cpp</in>
           <in>SystemManagerTest.cpp</in>
         </df>
@@ -138,6 +142,8 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/EmptyQueueException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -169,6 +175,14 @@
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="test/ECS/MockMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/ECS/MockReceiver.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
@@ -286,6 +300,8 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/EmptyQueueException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -317,6 +333,10 @@
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/ECS/MockMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/ECS/MockReceiver.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"

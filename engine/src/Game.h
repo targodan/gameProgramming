@@ -5,12 +5,14 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"
+#include "ECS/MessageHandler.h"
 
 namespace engine {
     class Game {
     protected:
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
+        ECS::MessageHandler messageHandler;
 
     public:
         Game(int argc, char** argv);

@@ -4,13 +4,13 @@
 #include <string>
 #include <memory>
 #include <sstream>
-#include <vector>
 
+#include "../util/vector.h"
 #include "Component.h"
 #include "EntityManager.h"
 #include "EntityId.h"
 
-using std::vector;
+using engine::util::vector;
 using std::shared_ptr;
 
 namespace engine {

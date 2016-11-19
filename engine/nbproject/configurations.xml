@@ -4,19 +4,15 @@
     <df root="." name="0">
       <df name="src">
         <df name="ECS">
-          <in>ComponentRegisterer.h</in>
           <in>ComponentRegistry.cpp</in>
-          <in>ComponentRegistry.h</in>
           <in>Entity.cpp</in>
-          <in>Entity.h</in>
-          <in>EntityId.h</in>
           <in>EntityManager.cpp</in>
+          <in>MessageHandler.cpp</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
         </df>
         <df name="ECSCommon">
           <in>PlacementComponent.cpp</in>
-          <in>PlacementComponent.h</in>
           <in>PlacementSystem.cpp</in>
         </df>
         <df name="math">
@@ -26,14 +22,7 @@
           <in>functions.cpp</in>
         </df>
         <df name="util">
-          <in>Array.h</in>
-          <in>IndexOutOfBoundsException.h</in>
-          <in>Map.h</in>
-          <in>Set.h</in>
-          <in>hashes.h</in>
           <in>ostream_helper.cpp</in>
-          <in>ostream_helper.h</in>
-          <in>thread_helper.h</in>
         </df>
         <in>DummyInputHandler.cpp</in>
         <in>DummyInputHandler.h</in>
@@ -46,25 +35,17 @@
       <df name="test">
         <df name="ECS">
           <in>EntityManagerTest.cpp</in>
-          <in>EntityManagerTest.h</in>
-          <in>MockComponents.h</in>
           <in>SystemImplementations.cpp</in>
-          <in>SystemImplementations.h</in>
           <in>SystemManagerTest.cpp</in>
-          <in>SystemManagerTest.h</in>
         </df>
         <df name="math">
           <in>MatrixTest.cpp</in>
-          <in>MatrixTest.h</in>
           <in>SqrtTest.cpp</in>
-          <in>SqrtTest.h</in>
           <in>VectorTest.cpp</in>
-          <in>VectorTest.h</in>
         </df>
         <df name="util">
           <in>MapTest.cpp</in>
         </df>
-        <in>macros.h</in>
         <in>main.cpp</in>
       </df>
     </df>
@@ -89,10 +70,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0"
-                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC"/>
-        <element flagsID="1" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -104,6 +83,9 @@
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
+            <preprocessorList>
+              <Elem>DEBUG</Elem>
+            </preprocessorList>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -111,31 +93,19 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/util">
+      <folder path="0/src">
         <ccTool>
           <incDir>
-            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
       </folder>
-      <folder path="0/test/math">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/test/util">
+      <folder path="0/test">
         <ccTool>
           <incDir>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/DummyInputHandler.cpp" ex="false" tool="1" flavor2="0">
@@ -143,106 +113,46 @@
       <item path="src/DummyInputHandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/math</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>src/math</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/Window.cpp" ex="false" tool="1" flavor2="0">
@@ -250,133 +160,58 @@
       <item path="src/Window.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src/math</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>test</pElem>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>test/math</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
     </conf>
@@ -386,6 +221,10 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
+      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -396,10 +235,6 @@
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
-            <preprocessorList>
-              <Elem>BOOST_UBLAS_NDEBUG</Elem>
-              <Elem>NDEBUG</Elem>
-            </preprocessorList>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -407,25 +242,64 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+<<<<<<< edcc9e601a825625348283a3f4606730ac2b6d9b
       <item path="src/DummyInputHandler.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/DummyInputHandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
+=======
+      <folder path="0/src">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/test">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+>>>>>>> Added index-safe vector wrapper
       </item>
-      <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/ECS/ComponentRegistry.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/ECS/Entity.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/ECS/EntityId.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
+<<<<<<< edcc9e601a825625348283a3f4606730ac2b6d9b
             flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
@@ -454,36 +328,74 @@
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/util/ostream_helper.h" ex="false" tool="3" flavor2="0">
+=======
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+>>>>>>> Added index-safe vector wrapper
       </item>
-      <item path="src/util/thread_helper.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/EntityManagerTest.h" ex="false" tool="3" flavor2="0">
+      <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/MockComponents.h" ex="false" tool="3" flavor2="0">
+      <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/SystemImplementations.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/SystemImplementations.h" ex="false" tool="3" flavor2="0">
+      <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/ECS/SystemManagerTest.h" ex="false" tool="3" flavor2="0">
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="test/macros.h" ex="false" tool="3" flavor2="0">
+      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/SystemImplementations.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/MatrixTest.h" ex="false" tool="3" flavor2="0">
+      <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/SqrtTest.h" ex="false" tool="3" flavor2="0">
+      <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/math/VectorTest.h" ex="false" tool="3" flavor2="0">
+      <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
   </confs>

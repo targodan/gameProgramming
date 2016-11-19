@@ -5,6 +5,7 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"
+#include "ECS/MessageHandler.h"
 #include "Window.h"
 
 namespace engine {
@@ -18,10 +19,13 @@ namespace engine {
         Window window{1024,768};
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
-        
+        ECS::MessageHandler messageHandler;
+
         virtual void render() = 0;
         virtual void update() = 0;
         virtual void processEvents() = 0;
+        
+        
     public:
         Game(int argc, char** argv, double ups);
         Game(const Game& orig) = delete;

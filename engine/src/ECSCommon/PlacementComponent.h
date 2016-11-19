@@ -1,10 +1,10 @@
 #ifndef PLACEMENT_H
 #define PLACEMENT_H
 
-#include "../ECS/Component.h"
-#include "../math/Vector3.h"
+#include <glm/glm.hpp>
 
-using engine::math::Vector3;
+#include "../ECS/Component.h"
+
 using engine::ECS::componentId_t;
 
 namespace engine {
@@ -14,23 +14,23 @@ namespace engine {
             static componentId_t typeId;
 
         protected:
-            Vector3 position;
-            Vector3 direction;
+            glm::vec3 position;
+            glm::vec3 direction;
 
         public:
             PlacementComponent();
             PlacementComponent(const PlacementComponent& orig);
             virtual ~PlacementComponent();
             
-            const Vector3& getPosition() const;
-            Vector3& getPosition();
+            const glm::vec3& getPosition() const;
+            glm::vec3& getPosition();
             
-            void setPosition(const Vector3& v);
+            void setPosition(const glm::vec3& v);
             
-            const Vector3& getDirection() const;
-            Vector3& getDirection();
+            const glm::vec3& getDirection() const;
+            glm::vec3& getDirection();
             
-            void setDirection(const Vector3& v);
+            void setDirection(const glm::vec3& v);
             
             std::string getComponentName() const override;
             std::string toString() const override;

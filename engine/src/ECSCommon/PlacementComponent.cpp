@@ -1,5 +1,9 @@
 #include "PlacementComponent.h"
 
+#include <sstream>
+
+#include "../util/ostream_helper.h"
+
 #include "../ECS/ComponentRegisterer.h"
 
 namespace engine {
@@ -17,27 +21,27 @@ namespace engine {
         PlacementComponent::~PlacementComponent() {
         }
 
-        const Vector3& PlacementComponent::getPosition() const {
+        const glm::vec3& PlacementComponent::getPosition() const {
             return this->position;
         }
         
-        Vector3& PlacementComponent::getPosition() {
+        glm::vec3& PlacementComponent::getPosition() {
             return this->position;
         }
         
-        void PlacementComponent::setPosition(const Vector3& v) {
+        void PlacementComponent::setPosition(const glm::vec3& v) {
             this->position = v;
         }
 
-        const Vector3& PlacementComponent::getDirection() const {
+        const glm::vec3& PlacementComponent::getDirection() const {
             return this->direction;
         }
         
-        Vector3& PlacementComponent::getDirection() {
+        glm::vec3& PlacementComponent::getDirection() {
             return this->direction;
         }
             
-        void PlacementComponent::setDirection(const Vector3& v) {
+        void PlacementComponent::setDirection(const glm::vec3& v) {
             this->direction = v;
         }
             
@@ -47,8 +51,8 @@ namespace engine {
         
         std::string PlacementComponent::toString() const {
             std::stringstream ss;
-            ss << "{" << "Position: " << this->position.toString()
-                    << ", Direction: " << this->direction.toString()
+            ss << "{" << "Position: " << this->position
+                    << ", Direction: " << this->direction
                     << "}";
             return ss.str();
         }

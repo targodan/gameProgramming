@@ -13,7 +13,7 @@ namespace engine {
             for(auto it = em.begin({PlacementComponent::getComponentTypeId()}); it != em.end(); ++it) {
                 auto ptr = *it;
                 auto comp = dynamic_cast<PlacementComponent*>(ptr.get());
-                comp->getPosition().add(comp->getDirection());
+                comp->getPosition() += comp->getDirection();
             }
         }
         

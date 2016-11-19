@@ -1,7 +1,6 @@
 #ifndef ENTITYMANAGER_H
 #define ENTITYMANAGER_H
 
-#include <vector>
 #include <memory>
 #include <cstring>
 #include <initializer_list>
@@ -9,11 +8,12 @@
 #include "../WTFException.h"
 #include "../util/Array.h"
 #include "../util/Map.h"
+#include "../util/vector.h"
 
 #include "EntityId.h"
 #include "Component.h"
 
-using std::vector;
+using engine::util::vector;
 using std::shared_ptr;
 using std::weak_ptr;
 using std::unique_ptr;

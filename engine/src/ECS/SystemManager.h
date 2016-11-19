@@ -2,7 +2,6 @@
 #define SYSTEMMANAGER_H
 
 #include <type_traits>
-#include <vector>
 #include <memory>
 #include <thread>
 #include <future>
@@ -14,8 +13,9 @@
 #include "../util/Map.h"
 #include "../util/Set.h"
 #include "../util/ostream_helper.h"
+#include "../util/vector.h"
 
-using std::vector;
+using engine::util::vector;
 using std::unique_ptr;
 using std::shared_ptr;
 using std::weak_ptr;

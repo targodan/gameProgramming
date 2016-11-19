@@ -5,6 +5,7 @@
 #include <vector>
 #include <type_traits>
 #include <memory>
+#include <glm/glm.hpp>
 
 namespace std {
     template <typename T> 
@@ -14,6 +15,10 @@ namespace std {
     template <typename T> 
     struct is_pointer<weak_ptr<T>> : std::true_type {};
 }
+
+std::ostream& operator<<(std::ostream& os, const glm::vec2& vec);
+std::ostream& operator<<(std::ostream& os, const glm::vec3& vec);
+std::ostream& operator<<(std::ostream& os, const glm::vec4& vec);
 
 template<class T, typename std::enable_if<std::is_pointer<T>::value, bool>::type = 0>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& list) {

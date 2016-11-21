@@ -39,6 +39,8 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST(testAssignLayers);
     CPPUNIT_TEST(testSetupStop);
     CPPUNIT_TEST(testRun);
+    // TODO: Test exceptions thrown in Systems.
+    // TODO: Test passing the dT parameter to Systems.
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -158,7 +160,7 @@ private:
         vector<std::string> executionOrder;
         executionOrder.reserve(this->enabledSystems.size());
         for(size_t i = 0; i < NUM_RUNS; ++i) {
-            this->run();
+            this->run(SystemType::UPDATE, 0);
             
             executionOrder.clear();
             while(!__executionQueue.empty()) {

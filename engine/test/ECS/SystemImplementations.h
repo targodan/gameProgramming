@@ -113,5 +113,32 @@ CREATE_TEST_SYSTEM(LoopTest0, {}, {});
 CREATE_TEST_SYSTEM(LoopTest1, {LoopTest3::systemTypeId()}, {LoopTest0::systemTypeId()});
 CREATE_TEST_SYSTEM(LoopTest2, {LoopTest1::systemTypeId()}, {});
 
+class ThrowTest : public System {
+private:
+    static systemId_t systemId;
+public:
+    void run(EntityManager& em, float dT) override {
+        throw engine::Exception("This is a test exception.");
+    }
+    bool isUpdateSystem() const override {
+        return true;
+    }
+    bool isRenderSystem() const override {
+        return false;
+    }
+    std::string getSystemName() const override {
+        return "ThrowTest";
+    }
+    systemId_t getSystemTypeId() const override {
+        return ThrowTest::systemId;
+    }
+    static systemId_t systemTypeId() {
+        return ThrowTest::systemId;
+    }
+    static void setSystemTypeId(systemId_t id) {
+        ThrowTest::systemId = id;
+    }
+};
+
 #endif /* SYSTEMIMPLEMENTATIONS_H */
 

@@ -8,6 +8,7 @@
 
 #include "System.h"
 #include "EntityManager.h"
+#include "SystemType.h"
 #include "../util/Array.h"
 #include "../util/BlockingQueue.h"
 #include "../util/Map.h"
@@ -47,17 +48,18 @@ namespace engine {
             };
             
             struct Task {
-                Task(shared_ptr<System> system, unique_ptr<std::promise<void>> promise)
-                        : system(system), promise(std::move(promise)) {}
+                Task(shared_ptr<System> system, unique_ptr<std::promise<void>> promise, float dT)
+                        : system(system), promise(std::move(promise)), dT(dT) {}
                 shared_ptr<System> system;
                 unique_ptr<std::promise<void>> promise;
+                float dT;
                 virtual bool stop() const {
                     return false;
                 }
             };
             
             struct StopTask : public Task {
-                StopTask() : Task(nullptr, nullptr) {}
+                StopTask() : Task(nullptr, nullptr, NAN) {}
                 bool stop() const override {
                     return true;
                 }
@@ -110,7 +112,13 @@ namespace engine {
             void setup();
             void stop();
             
-            void run();
+            void run(SystemType type, float dT);
+            inline void update(float dT) {
+                this->run(SystemType::UPDATE, dT);
+            }
+            inline void render(float dT) {
+                this->run(SystemType::RENDER, dT);
+            }
         };
     }
 }

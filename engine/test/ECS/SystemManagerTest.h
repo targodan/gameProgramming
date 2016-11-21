@@ -5,6 +5,8 @@
 #include <memory>
 #include <random>
 #include <algorithm>
+#include <easylogging++.h>
+#include <boost/filesystem.hpp>
 
 #include "../macros.h"
 
@@ -39,6 +41,8 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST(testAssignLayers);
     CPPUNIT_TEST(testSetupStop);
     CPPUNIT_TEST(testRun);
+    CPPUNIT_TEST(testThrow);
+    // TODO: Test passing the dT parameter to Systems.
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -158,7 +162,7 @@ private:
         vector<std::string> executionOrder;
         executionOrder.reserve(this->enabledSystems.size());
         for(size_t i = 0; i < NUM_RUNS; ++i) {
-            this->run();
+            this->run(SystemType::UPDATE, 0);
             
             executionOrder.clear();
             while(!__executionQueue.empty()) {
@@ -772,6 +776,43 @@ private:
                     }
                 }
             }
+        }
+    }
+    
+    void testThrow() {
+        auto s = this->enableSystem<ThrowTest>();
+        this->setup();
+        
+        auto temp = boost::filesystem::temp_directory_path();
+        temp.append("enginetest.log");
+        
+        auto logger = el::Loggers::getLogger("default", false);
+        auto origConf = logger->configurations();
+        auto conf = *origConf;
+        conf.set(el::Level::Fatal, el::ConfigurationType::Enabled, "true");
+        conf.set(el::Level::Fatal, el::ConfigurationType::Filename, temp.c_str());
+        el::Loggers::reconfigureLogger(logger, conf);
+        bool hadFlag = el::Loggers::hasFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
+        el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
+        
+        this->run(SystemType::UPDATE, 0);
+        logger->flush();
+        
+        std::ifstream log(temp.c_str());
+        std::string logcontent;
+        log.seekg(0, std::ios::end);
+        logcontent.reserve(log.tellg());
+        log.seekg(0, std::ios::beg);
+        logcontent.assign((std::istreambuf_iterator<char>(log)),
+                            std::istreambuf_iterator<char>());
+        
+        std::stringstream ss;
+        ss << "The exception should have been logged to \"" << temp.c_str() << "\".";
+        CPPUNIT_ASSERT_MESSAGE(ss.str(), logcontent.find("This is a test exception.") != std::string::npos);
+        
+        el::Loggers::reconfigureLogger(logger, *origConf);
+        if(!hadFlag) {
+            el::Loggers::removeFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
         }
     }
 };

@@ -10,6 +10,7 @@
           <in>MessageHandler.cpp</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
+          <in>SystemType.h</in>
         </df>
         <df name="ECSCommon">
           <in>PlacementComponent.cpp</in>
@@ -97,6 +98,9 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test">
@@ -105,6 +109,20 @@
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/test/ECS">
+        <ccTool>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/test/math">
+        <ccTool>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
@@ -142,8 +160,6 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/EmptyQueueException.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -180,10 +196,6 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="test/ECS/MockMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/ECS/MockReceiver.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
@@ -197,6 +209,9 @@
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
@@ -288,6 +303,8 @@
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECS/SystemType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

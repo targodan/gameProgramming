@@ -9,11 +9,11 @@ namespace engine {
         
         systemId_t PlacementSystem::systemId = 0;
             
-        void PlacementSystem::run(EntityManager& em) {
+        void PlacementSystem::run(EntityManager& em, float dT) {
             for(auto it = em.begin({PlacementComponent::getComponentTypeId()}); it != em.end(); ++it) {
                 auto ptr = *it;
                 auto comp = dynamic_cast<PlacementComponent*>(ptr.get());
-                comp->getPosition() += comp->getDirection();
+                comp->getPosition() += comp->getDirection() * dT;
             }
         }
         

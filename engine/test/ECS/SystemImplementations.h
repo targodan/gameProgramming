@@ -16,8 +16,14 @@ extern engine::util::BlockingQueue<std::string> __executionQueue;
         private: \
             static systemId_t systemId; \
         public: \
-            void run(EntityManager& em) override { \
+            void run(EntityManager& em, float dT) override { \
                 __executionQueue.push(this->getSystemName()); \
+            } \
+            bool isUpdateSystem() const override { \
+                return true; \
+            } \
+            bool isRenderSystem() const override { \
+                return true; \
             } \
             Array<systemId_t> getDependencies() const override { \
                 return deps; \
@@ -79,7 +85,13 @@ class LoopTest3 : public System {
 private:
     static systemId_t systemId;
 public:
-    void run(EntityManager& em) override {}
+    void run(EntityManager& em, float dT) override {}
+    bool isUpdateSystem() const override {
+        return true;
+    }
+    bool isRenderSystem() const override {
+        return false;
+    }
     Array<systemId_t> getDependencies() const override;
     Array<systemId_t> getOptionalDependencies() const override {
         return {};

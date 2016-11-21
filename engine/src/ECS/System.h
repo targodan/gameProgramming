@@ -22,7 +22,9 @@ namespace engine {
             System(const System& orig) {}
             virtual ~System() {}
             
-            virtual void run(EntityManager& em) = 0;
+            virtual void run(EntityManager& em, float dT) = 0;
+            virtual bool isUpdateSystem() const = 0;
+            virtual bool isRenderSystem() const = 0;
             
             virtual Array<systemId_t> getDependencies() const {
                 return {};

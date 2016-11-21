@@ -66,7 +66,7 @@ namespace engine {
                         auto task = std::move(this->queue.pop());
                         if(!task->stop()) {
                             try {
-                                task->system->run(this->em);
+                                task->system->run(this->em, task->dT);
                             } catch(...) {
                                 task->promise->set_exception(std::current_exception());
                             }
@@ -99,8 +99,8 @@ namespace engine {
             }
             this->running = false;
         }
-
-        void SystemManager::run() {
+        
+        void SystemManager::run(SystemType type, float dT) {
 #ifdef DEBUG
             if(!this->hasBeenSetup) {
                 throw WTFException("The SystemManager has not been setup yet!");
@@ -113,6 +113,10 @@ namespace engine {
             
             size_t layer = this->dependencyTree[0]->layer;
             for(auto& node : this->dependencyTree) {
+                if((type == SystemType::UPDATE && !node->system->isUpdateSystem())
+                        || (type == SystemType::RENDER && !node->system->isRenderSystem())) {
+                    continue;
+                }
                 if(layer != node->layer) {
                     // New layer => wait for all tasks to finish
                     while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {
@@ -129,7 +133,7 @@ namespace engine {
                 // Start all tasks
                 auto promise = std::make_unique<std::promise<void>>();
                 futures.push_back(std::move(promise->get_future().share()));
-                this->queue.push(std::make_unique<Task>(node->system, std::move(promise)));
+                this->queue.push(std::make_unique<Task>(node->system, std::move(promise), dT));
             }
             // Wait for the last layer to finish
             while(futures.size() - futuresHead > 0 /*i.e. queue not empty*/) {

@@ -17,7 +17,14 @@ namespace engine {
             PlacementSystem(const PlacementSystem& orig) {}
             virtual ~PlacementSystem() {}
             
-            void run(EntityManager& em) override;
+            void run(EntityManager& em, float dT) override;
+            
+            bool isUpdateSystem() const override {
+                return true;
+            }
+            bool isRenderSystem() const override {
+                return false;
+            }
             
             Array<systemId_t> getOptionalDependencies() const override;
             

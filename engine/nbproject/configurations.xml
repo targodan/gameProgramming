@@ -10,6 +10,7 @@
           <in>MessageHandler.cpp</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
+          <in>SystemType.h</in>
         </df>
         <df name="ECSCommon">
           <in>PlacementComponent.cpp</in>
@@ -130,6 +131,8 @@
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECS/SystemType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -288,6 +291,8 @@
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECS/SystemType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

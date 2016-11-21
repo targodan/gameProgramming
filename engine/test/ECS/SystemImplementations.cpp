@@ -51,3 +51,6 @@ ECS_REGISTER_SYSTEM(LoopTest3);
 Array<systemId_t> LoopTest3::getDependencies() const {
     return {LoopTest2::systemTypeId()};
 }
+
+DEFINE_SYSTEM_ID(ThrowTest);
+ECS_REGISTER_SYSTEM(ThrowTest);

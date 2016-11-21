@@ -11,7 +11,7 @@ DEBUG = false
 # compiler flags:
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
@@ -33,7 +33,7 @@ ifeq ($(DEBUG),true)
 else
 	LD_FLAGS  = $(LD_FLAGS_RELEASE)
 endif
-LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -Wl,-rpath=.,--as-needed
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lboost_system -lboost_filesystem -Wl,-rpath=.,--as-needed
 BUILDDIR = build
 
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)

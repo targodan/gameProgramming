@@ -69,6 +69,7 @@ namespace engine {
                                 task->system->run(this->em, task->dT);
                             } catch(...) {
                                 task->promise->set_exception(std::current_exception());
+                                continue;
                             }
                             task->promise->set_value();
                         } else {

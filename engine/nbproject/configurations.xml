@@ -25,16 +25,9 @@
         <df name="util">
           <in>ostream_helper.cpp</in>
         </df>
-        <in>DummyInputHandler.cpp</in>
-        <in>DummyInputHandler.h</in>
         <in>EmptyQueueException.h</in>
-        <in>DummyInputHandler.cpp</in>
-        <in>DummyInputHandler.h</in>
         <in>Exception.cpp</in>
         <in>Game.cpp</in>
-        <in>Game.h</in>
-        <in>Window.cpp</in>
-        <in>Window.h</in>
       </df>
       <df name="test">
         <df name="ECS">
@@ -118,10 +111,6 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/DummyInputHandler.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/DummyInputHandler.h" ex="false" tool="3" flavor2="0">
-      </item>
       <folder path="0/test/ECS">
         <ccTool>
           <preprocessorList>
@@ -178,10 +167,6 @@
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/Window.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/Window.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -273,17 +258,6 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-<<<<<<< 4902b9f544ff152302b91f7f165eb2b938c6535e
-<<<<<<< edcc9e601a825625348283a3f4606730ac2b6d9b
-      <item path="src/DummyInputHandler.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/DummyInputHandler.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
-=======
-=======
-<<<<<<< 1655d794a8d45cce6327dc73a68e15ecc91e3009
->>>>>>> Clean up messy commit
       <folder path="0/src">
         <ccTool>
           <incDir>
@@ -309,17 +283,6 @@
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-<<<<<<< 4902b9f544ff152302b91f7f165eb2b938c6535e
->>>>>>> Added index-safe vector wrapper
-=======
-=======
-      <item path="src/DummyInputHandler.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/DummyInputHandler.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECS/ComponentRegisterer.h" ex="false" tool="3" flavor2="0">
->>>>>>> Clean up messy commit
->>>>>>> Clean up messy commit
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -346,62 +309,9 @@
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
-<<<<<<< 4902b9f544ff152302b91f7f165eb2b938c6535e
-<<<<<<< edcc9e601a825625348283a3f4606730ac2b6d9b
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Game.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/Game.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Window.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/Window.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/IndexOutOfBoundsException.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/util/Map.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/Set.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/hashes.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/util/ostream_helper.h" ex="false" tool="3" flavor2="0">
-=======
             flavor2="11">
         <ccTool flags="1">
         </ccTool>
->>>>>>> Added index-safe vector wrapper
-=======
-<<<<<<< 1655d794a8d45cce6327dc73a68e15ecc91e3009
-            flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-=======
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/PlacementComponent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Game.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/Game.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Window.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/Window.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/Array.h" ex="false" tool="3" flavor2="0">
->>>>>>> Clean up messy commit
->>>>>>> Clean up messy commit
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">

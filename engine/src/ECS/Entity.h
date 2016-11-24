@@ -39,7 +39,7 @@ namespace engine {
 #endif
                 auto comp = std::make_shared<CompT>(args...);
                 comp->setEntityId(this->id);
-                this->em->addComponent(*this, comp);
+                this->em->addComponent(this->id, comp);
                 return *this;
             }
             

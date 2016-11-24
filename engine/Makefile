@@ -8,32 +8,45 @@ FIND = find
 # Can also be manipulated from terminal via `make DEBUG=true`
 DEBUG = false
 
-# compiler flags:
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
+#C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC
+# -shared: build a shared library
+# -lm -lpthread: Link against math and pthread
+# -Wl,--as-needed: feel free to not link if no symbols of a library are needed
+LD_FLAGS_COMMON = -shared -lm -lpthread -Wl,--as-needed
+
+ifeq ($(CC),g++)
+	C_FLAGS_DEBUG+=-fvar-tracking-assignments
+else ifeq ($(CC),clang)
+	C_FLAGS_COMMON+=-stdlib=libc++14 -Wno-c++11-extensions-warning
+	LD_FLAGS_COMMON+=-nodefaultlibs -lstdc++ -lc++ -lc++abi -lgcc_s -lgcc -lc
+endif
+
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
-C_FLAGS_RELEASE = $(C_FLAGS_COMMON) -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
+C_FLAGS_RELEASE = -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
 # -g    adds debugging information to the executable file
-# -Og	optimize a bit, but keep debugging available
-C_FLAGS_DEBUG = $(C_FLAGS_COMMON) -g -DDEBUG -rdynamic -fvar-tracking-assignments -gdwarf-4
+# -gdwarf4: use the newer v4 format for debugging information
+C_FLAGS_DEBUG = -O0 -g -DDEBUG -gdwarf-4
+# -Wl,-O3: optimize as hard as you can
+LD_FLAGS_RELEASE = -Wl,-O3
+# -rdynamic: dunno, people say it makes debugging better
+LD_FLAGS_DEBUG = -rdynamic
+
+ifeq ($(DEBUG),true)
+	C_FLAGS   = $(C_FLAGS_COMMON) $(C_FLAGS_DEBUG)
+	LD_FLAGS  = $(LD_FLAGS_COMMON) $(LD_FLAGS_DEBUG)
+else
+	C_FLAGS   = $(C_FLAGS_COMMON) $(C_FLAGS_RELEASE)
+	LD_FLAGS  = $(LD_FLAGS_COMMON) $(LD_FLAGS_RELEASE)
+endif
+
 C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
-ifeq ($(DEBUG),true)
-	C_FLAGS  = $(C_FLAGS_DEBUG)
-else
-	C_FLAGS  = $(C_FLAGS_RELEASE)
-endif
-LD_FLAGS_COMMON = -shared -lm -lpthread -Wl,--as-needed
-LD_FLAGS_RELEASE = $(LD_FLAGS_COMMON) -Wl,-O3
-LD_FLAGS_DEBUG = $(LD_FLAGS_COMMON)
-ifeq ($(DEBUG),true)
-	LD_FLAGS  = $(LD_FLAGS_DEBUG)
-else
-	LD_FLAGS  = $(LD_FLAGS_RELEASE)
-endif
-LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lboost_system -lboost_filesystem -Wl,-rpath=.,--as-needed
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
+
 BUILDDIR = build
 
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
@@ -56,13 +69,21 @@ TARGET_TEST = runTests
 # All is same as build test
 all: test
 
-build: mkdir $(SOURCES) $(TARGET)
+build: flags mkdir $(SOURCES) $(TARGET)
 
-build_test: build $(SOURCES_TEST) $(TARGET_TEST)
+build_test: flags_test build $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
 	@$(FIND) . -type d -not -path "*$(DEPDIR)*" -exec mkdir -p $(DEPDIR)/{} \;
+
+flags:
+	@$(ECHO) "C_FLAGS = $(C_FLAGS)"
+	@$(ECHO) "LD_FLAGS = $(LD_FLAGS)"
+
+flags_test:
+	@$(ECHO) "C_FLAGS_TEST = $(C_FLAGS_TEST)"
+	@$(ECHO) "LD_FLAGS_TEST = $(LD_FLAGS_TEST)"
 
 $(TARGET): $(OBJECTS)
 	@$(ECHO) "LD $@"

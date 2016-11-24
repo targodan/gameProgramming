@@ -5,21 +5,41 @@
 namespace engine {
     namespace ECS {
         EntityManager::EntityManager() : nextEntityId(0) {
-            components.set_empty_key(SIZE_MAX);
+            this->components.set_empty_key(SIZE_MAX);
+            this->entities.set_empty_key(SIZE_MAX);
         }
 
         EntityManager::~EntityManager() {
         }
         
         Entity EntityManager::createEntity(const std::string& name) {
-            return Entity(this->nextEntityId++, this, name);
+            auto ret = Entity(this->nextEntityId++, this, name);
+            this->entities[ret.getId()].set_empty_key(SIZE_MAX);
+            return ret;
         }
         
-        void EntityManager::addComponent(const Entity& e, const shared_ptr<Component>& comp) {
-            auto& vec = this->components[comp->getComponentId()];
-            vec.push_back(comp);
-            std::sort(vec.begin(), vec.end(),
-                    [](const auto& l, const auto& r) {return l->getEntityId() < r->getEntityId();});
+        void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> comp) {
+            auto it = this->components.find(comp->getComponentId());
+            if(it == this->components.end()) {
+                this->components[comp->getComponentId()] = {};
+                it = this->components.find(comp->getComponentId());
+            }
+            it->second.push_back(comp);
+            auto itMap = this->entities.find(eId);
+            if(itMap == this->entities.end()) {
+                this->entities[eId] = Map<componentId_t, size_t>();
+                this->entities[eId].set_empty_key(SIZE_MAX);
+                itMap = this->entities.find(eId);
+            }
+            itMap->second[comp->getComponentId()] = it->second.size()-1;
+        }
+        
+        shared_ptr<Component> EntityManager::getComponentOfEntity(entityId_t eId, componentId_t compId) {
+            return this->components[compId][this->entities[eId][compId]];
+        }
+        
+        bool EntityManager::hasEntityComponent(entityId_t eId, componentId_t compId) {
+            return this->entities[eId].find(compId) != this->entities[eId].end();
         }
             
         EntityManager::ComponentIterator EntityManager::begin(const std::initializer_list<componentId_t>& componentTypes) {

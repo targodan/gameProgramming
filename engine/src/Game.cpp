@@ -3,8 +3,6 @@
 #include <execinfo.h>
 #include <stdlib.h>
 
-INITIALIZE_EASYLOGGINGPP
-
 namespace engine {
     Game::Game(int argc, char** argv) : entityManager(), systemManager(entityManager) {
         // Configure logger

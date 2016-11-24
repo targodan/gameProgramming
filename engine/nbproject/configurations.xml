@@ -10,7 +10,6 @@
           <in>MessageHandler.cpp</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
-          <in>SystemType.h</in>
         </df>
         <df name="ECSCommon">
           <in>PlacementComponent.cpp</in>
@@ -25,7 +24,6 @@
         <df name="util">
           <in>ostream_helper.cpp</in>
         </df>
-        <in>EmptyQueueException.h</in>
         <in>Exception.cpp</in>
         <in>Game.cpp</in>
       </df>
@@ -33,8 +31,7 @@
         <df name="ECS">
           <in>EntityManagerTest.cpp</in>
           <in>MessageHandlerTest.cpp</in>
-          <in>MockMessage.h</in>
-          <in>MockReceiver.h</in>
+          <in>MockComponents.cpp</in>
           <in>SystemImplementations.cpp</in>
           <in>SystemManagerTest.cpp</in>
         </df>
@@ -60,6 +57,7 @@
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
     <Elem>.</Elem>
+    <Elem>.</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -78,8 +76,8 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j16 build_test DEBUG=true</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j4 build_test DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
@@ -98,9 +96,6 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test">
@@ -109,20 +104,6 @@
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/test/ECS">
-        <ccTool>
-          <preprocessorList>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/test/math">
-        <ccTool>
-          <preprocessorList>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
@@ -189,42 +170,27 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
+      </item>
+      <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
+      </item>
+      <item path="test/helper.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-          <preprocessorList>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -238,16 +204,15 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fPIC"/>
-        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
+        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j16</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile -j16 clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j4</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-fPIC -Og">
             <standard>11</standard>
@@ -281,106 +246,90 @@
         </ccTool>
       </folder>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
-      </item>
-      <item path="src/ECS/SystemType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/EmptyQueueException.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/ECS/MockMessage.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/ECS/MockReceiver.h" ex="false" tool="3" flavor2="0">
+      <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
+      </item>
+      <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
+      </item>
+      <item path="test/helper.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
     </conf>
   </confs>

@@ -9,6 +9,12 @@
 
 #include <iostream>
 
+#include "brief.h"
+
+bool BRIEF_TESTS = false;
+
+INITIALIZE_EASYLOGGINGPP
+
 int main(int argc, char** argv) {
     // Deactivate logging
     el::Configurations defaultConf;
@@ -22,6 +28,15 @@ int main(int argc, char** argv) {
     defaultConf.set(el::Level::Verbose, el::ConfigurationType::Enabled, "false");
     defaultConf.set(el::Level::Warning, el::ConfigurationType::Enabled, "false");
     el::Loggers::setDefaultConfigurations(defaultConf, true);
+    
+    if(argc == 2) {
+        if(std::string(argv[1]) == "--brief" || std::string(argv[1]) == "-b") {
+            BRIEF_TESTS = true;
+        } else {
+            std::cout << "Usage: " << argv[0] << " [--brief|-b]" << std::endl;
+            return 1;
+        }
+    }
     
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;

@@ -320,6 +320,19 @@ private:
                 this->getComponentOfEntity(e5.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 4ul, 
                 this->getComponentOfEntity(e5.getId(), SortComponent::getComponentTypeId())->to<SortComponent>().getOrder());
+        
+        // test iteration again
+        {
+            size_t i = 0;
+            vector<size_t> exp2 = {4, 2, 7, 11};
+            vector<size_t> exp4 = {5, 3, 8, 12};
+            for(auto it = this->begin({Comp2::getComponentTypeId(), Comp4::getComponentTypeId()}); it != this->end(); ++it, ++i) {
+                CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks iterating.",
+                        exp2[i], dynamic_cast<Comp2&>(*it[0]).getData());
+                CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks iterating.",
+                        exp4[i], dynamic_cast<Comp4&>(*it[1]).getData());
+            }
+        }
     }
 };
 

@@ -34,6 +34,9 @@ namespace engine {
             friend Entity;
                 
             void addComponent(entityId_t eId, shared_ptr<Component> comp);
+            inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
+                return this->entities[eId][compId];
+            }
             shared_ptr<Component> getComponentOfEntity(entityId_t eId, componentId_t compId);
             bool hasEntityComponent(entityId_t eId, componentId_t compId);
             

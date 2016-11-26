@@ -182,8 +182,6 @@
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
-      <item path="test/helper.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
@@ -320,8 +318,6 @@
             flavor2="11">
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-      </item>
-      <item path="test/helper.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
       </item>

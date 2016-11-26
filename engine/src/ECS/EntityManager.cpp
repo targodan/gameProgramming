@@ -19,23 +19,19 @@ namespace engine {
         }
         
         void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> comp) {
-            auto it = this->components.find(comp->getComponentId());
-            if(it == this->components.end()) {
-                this->components[comp->getComponentId()] = {};
-                it = this->components.find(comp->getComponentId());
-            }
-            it->second.push_back(comp);
+            auto& vec = this->components[comp->getComponentId()];
+            vec.push_back(comp);
+            
             auto itMap = this->entities.find(eId);
+            auto& map = this->entities[eId];
             if(itMap == this->entities.end()) {
-                this->entities[eId] = Map<componentId_t, size_t>();
-                this->entities[eId].set_empty_key(SIZE_MAX);
-                itMap = this->entities.find(eId);
+                map.set_empty_key(SIZE_MAX);
             }
-            itMap->second[comp->getComponentId()] = it->second.size()-1;
+            map[comp->getComponentId()] = vec.size()-1;
         }
         
         shared_ptr<Component> EntityManager::getComponentOfEntity(entityId_t eId, componentId_t compId) {
-            return this->components[compId][this->entities[eId][compId]];
+            return this->components[compId][this->getComponentIndexOfEntity(eId, compId)];
         }
         
         bool EntityManager::hasEntityComponent(entityId_t eId, componentId_t compId) {
@@ -84,34 +80,31 @@ namespace engine {
 
         EntityManager::ComponentIterator& EntityManager::ComponentIterator::operator++() {
             if(this->isEnd) {
-                // Allready at end.
+                // Already at end.
                 return *this;
             }
-            ++this->components[0];
-            while(this->components[0] < this->em->components[this->componentTypes[0]].size()) {
-                entityId_t nextId = this->operator[](0)->getEntityId();
-                bool found = true;
-                for(size_t t = 1; t < this->componentTypes.size(); ++t) {
-                    auto& compList = this->em->components[this->componentTypes[t]];
-                    while(this->components[t] < compList.size()
-                            && compList[this->components[t]]->getEntityId() < nextId) {
-                        ++this->components[t];
+            while(true) {
+                ++this->components[0];
+                if(this->components[0] >= this->em->components[this->componentTypes[0]].size()) {
+                    this->setToEnd();
+                    break;
+                }
+                auto eId = this->operator[](0)->getEntityId();
+                bool allGood = true;
+                for(size_t i = 1; i < this->componentTypes.size(); ++i) {
+                    if(!this->em->hasEntityComponent(eId, this->componentTypes[i])) {
+                        allGood = false;
+                        break;
                     }
-                    
-                    if(this->components[t] == compList.size()
-                            || compList[this->components[t]]->getEntityId() != nextId) {
-                        found = false;
+                    this->components[i] = this->em->getComponentIndexOfEntity(eId, this->componentTypes[i]);
+                    if(this->components[i] >= this->em->components[this->componentTypes[i]].size()) {
+                        allGood = false;
                         break;
                     }
                 }
-                if(found) {
+                if(allGood) {
                     break;
                 }
-                ++this->components[0];
-            }
-            
-            if(this->components[0] >= this->em->components[this->componentTypes[0]].size()) {
-                this->setToEnd();
             }
             return *this;
         }

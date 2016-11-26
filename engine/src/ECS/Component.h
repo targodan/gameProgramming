@@ -32,6 +32,25 @@ namespace engine {
             virtual entityId_t getEntityId() const {
                 return this->entityId;
             }
+            
+            template<class T>
+            T& to() {
+#ifdef DEBUG
+                return dynamic_cast<T&>(*this);
+#else
+                return static_cast<T&>(*this);
+#endif
+            }
+            
+            template<class T>
+            const T& to() const {
+#ifdef DEBUG
+                return dynamic_cast<const T&>(*this);
+#else
+                return static_cast<const T&>(*this);
+#endif
+            }
+            
             virtual componentId_t getComponentId() const = 0;
             virtual std::string getComponentName() const = 0;
             virtual std::string toString() const = 0;

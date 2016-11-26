@@ -25,7 +25,20 @@ namespace engine {
             
             template<class T>
             T& to() {
+#ifdef DEBUG
                 return dynamic_cast<T&>(*this);
+#else
+                return static_cast<T&>(*this);
+#endif
+            }
+            
+            template<class T>
+            const T& to() const {
+#ifdef DEBUG
+                return dynamic_cast<const T&>(*this);
+#else
+                return static_cast<const T&>(*this);
+#endif
             }
         };
     }

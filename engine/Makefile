@@ -1,8 +1,13 @@
 # the compiler: gcc for C program, define as g++ for C++
 CC = g++
+PROTOC = protoc
 ECHO = echo
 MV = mv
 FIND = find
+
+BUILDDIR = build
+SRCDIR = src
+TESTDIR = test
 
 # Set to true for debug info.
 # Can also be manipulated from terminal via `make DEBUG=true`
@@ -11,11 +16,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -lm -lpthread -Wl,--as-needed
+LD_FLAGS_COMMON = -shared -lm -lpthread -lprotobuf -Wl,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -47,20 +52,24 @@ endif
 C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
 LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
 
-BUILDDIR = build
+PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')
+PROTO_GENERATED_H = $(PROTO_FILES:.proto=.pb.h)
+PROTO_GENERATED_CC = $(PROTO_FILES:.proto=.pb.cc)
 
-SOURCES = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp)
-OBJECTS = $(addprefix $(BUILDDIR)/,$(SOURCES:.cpp=.o))
+SOURCES_CPP = $(shell find $(SRCDIR) -type f -name '*.cpp')
+SOURCES_CC = $(PROTO_GENERATED_CC)
+SOURCES = $(SOURCES_CPP) $(SOURCES_CC)
+OBJECTS = $(addprefix $(BUILDDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 
-SOURCES_TEST = $(wildcard test/*.cpp) $(wildcard test/**/*.cpp)
+SOURCES_TEST = $(shell find $(TESTDIR) -type f -name '*.cpp')
 OBJECTS_TEST = $(addprefix $(BUILDDIR)/,$(SOURCES_TEST:.cpp=.o))
 
 # Resolve dependecies like header files
 DEPDIR = .d
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/src/$*.Td
-DEPFLAGS_TEST = -MT $@ -MMD -MP -MF $(DEPDIR)/test/$*.Td
-POSTCOMPILE = $(MV) -f $(DEPDIR)/src/$*.Td $(DEPDIR)/src/$*.d
-POSTCOMPILE_TEST = $(MV) -f $(DEPDIR)/test/$*.Td $(DEPDIR)/test/$*.d
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(SRCDIR)/$*.Td
+DEPFLAGS_TEST = -MT $@ -MMD -MP -MF $(DEPDIR)/$(TESTDIR)/$*.Td
+POSTCOMPILE = $(MV) -f $(DEPDIR)/$(SRCDIR)/$*.Td $(DEPDIR)/$(SRCDIR)/$*.d
+POSTCOMPILE_TEST = $(MV) -f $(DEPDIR)/$(TESTDIR)/$*.Td $(DEPDIR)/$(TESTDIR)/$*.d
 
 # the build target executable:
 TARGET = libengine.so
@@ -69,7 +78,16 @@ TARGET_TEST = runTests
 # All is same as build test
 all: test
 
-build: flags mkdir $(SOURCES) $(TARGET)
+generate: $(PROTO_GENERATED_H) $(PROTO_GENERATED_CPP)
+
+$(SRCDIR)/%.pb.h: $(SRCDIR)/%.proto
+	@$(ECHO) "GEN $@"
+	@$(PROTOC) -I$(abspath $(SRCDIR)) --cpp_out=$(SRCDIR) $(abspath $<)
+$(SRCDIR)/%.pb.cc: $(SRCDIR)/%.proto
+	@$(ECHO) "GEN $@"
+	@$(PROTOC) -I$(abspath $(SRCDIR)) --cpp_out=$(SRCDIR) $(abspath $<)
+
+build: flags mkdir generate $(SOURCES) $(TARGET)
 
 build_test: flags_test build $(SOURCES_TEST) $(TARGET_TEST)
 
@@ -87,18 +105,23 @@ flags_test:
 
 $(TARGET): $(OBJECTS)
 	@$(ECHO) "LD $@"
-	@$(CC) -o $@ $^ $(LD_FLAGS) 
+	@$(CC) -o $@ $^ $(LD_FLAGS)
 
 $(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
 	@$(ECHO) "LD $@"
 	@$(CC) -o $@ $^ $(LD_FLAGS_TEST) 
 
-$(BUILDDIR)/src/%.o: src/%.cpp $(DEPDIR)/src/%.d
+$(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cc $(DEPDIR)/$(SRCDIR)/%.d
+	@$(ECHO) "CC $@"
+	@$(CC) $(DEPFLAGS) $(C_FLAGS) -I$(SRCDIR) -c -o $@ $<
+	@$(POSTCOMPILE)
+
+$(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cpp $(DEPDIR)/$(SRCDIR)/%.d
 	@$(ECHO) "CC $@"
 	@$(CC) $(DEPFLAGS) $(C_FLAGS) -c -o $@ $<
 	@$(POSTCOMPILE)
 
-$(BUILDDIR)/test/%.o: test/%.cpp $(DEPDIR)/test/%.d
+$(BUILDDIR)/$(TESTDIR)/%.o: $(TESTDIR)/%.cpp $(DEPDIR)/$(TESTDIR)/%.d
 	@$(ECHO) "CC $@"
 	@$(CC) $(DEPFLAGS_TEST) $(C_FLAGS_TEST) -c -o $@ $<
 	@$(POSTCOMPILE_TEST)
@@ -112,13 +135,15 @@ clean:
 	@$(RM) $(TARGET)
 	@$(RM) $(OBJECTS_TEST)
 	@$(RM) $(TARGET_TEST)
+	@$(RM) $(PROTO_GENERATED_H)
+	@$(RM) $(PROTO_GENERATED_CPP)
 
+$(DEPDIR)/$(SRCDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/$(SRCDIR)/%.d
 
-$(DEPDIR)/src/%.d: ;
-.PRECIOUS: $(DEPDIR)/src/%.d
+$(DEPDIR)/$(TESTDIR)/%.d: ;
+.PRECIOUS: $(DEPDIR)/$(TESTDIR)/%.d
 
-$(DEPDIR)/test/%.d: ;
-.PRECIOUS: $(DEPDIR)/src/%.d
-
--include $(addprefix $(DEPDIR)/,$(SOURCES:.cpp=.d))
+-include $(addprefix $(DEPDIR)/,$(SOURCES_CPP:.cpp=.d))
+-include $(addprefix $(DEPDIR)/,$(SOURCES_CC:.cc=.d))
 -include $(addprefix $(DEPDIR)/,$(SOURCES_TEST:.cpp=.d))

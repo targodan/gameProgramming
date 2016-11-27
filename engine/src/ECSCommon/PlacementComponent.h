@@ -4,18 +4,27 @@
 #include <glm/glm.hpp>
 
 #include "../ECS/Component.h"
+#include "../util/vec3.h"
+
+#include "../IO/Serializable.h"
+#include "pb/Placement.pb.h"
 
 using engine::ECS::componentId_t;
+using engine::util::vec3;
 
 namespace engine {
     namespace ECSCommon {
-        class PlacementComponent : public engine::ECS::Component {
+        class PlacementComponent : public engine::ECS::Component, public engine::IO::Serializable<pb::Placement> {
         private:
             static componentId_t typeId;
 
         protected:
-            glm::vec3 position;
-            glm::vec3 direction;
+            vec3 position;
+            vec3 direction;
+            
+            pb::Placement msg;
+            
+            google::protobuf::Message& getProtobufMessage() override;
 
         public:
             PlacementComponent();

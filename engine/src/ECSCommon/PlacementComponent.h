@@ -25,6 +25,7 @@ namespace engine {
             pb::Placement msg;
             
             google::protobuf::Message& getProtobufMessage() override;
+            void afterProtobufMessageUpdate() override;
 
         public:
             PlacementComponent();

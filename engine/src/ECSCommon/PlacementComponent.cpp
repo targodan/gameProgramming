@@ -50,6 +50,11 @@ namespace engine {
             this->msg.set_allocated_direction(this->direction.toProtobufMessage());
             return this->msg;
         }
+        
+        void PlacementComponent::afterProtobufMessageUpdate() {
+            this->position.fromProtobufMessage(this->msg.position());
+            this->direction.fromProtobufMessage(this->msg.direction());
+        }
             
         std::string PlacementComponent::getComponentName() const {
             return "Placement";

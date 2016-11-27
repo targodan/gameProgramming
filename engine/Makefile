@@ -49,8 +49,8 @@ else
 	LD_FLAGS  = $(LD_FLAGS_COMMON) $(LD_FLAGS_RELEASE)
 endif
 
-C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I./src
-LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
+C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I$(SRCDIR) -I$(TESTDIR)
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lprotobuf -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
 
 PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')
 PROTO_GENERATED_H = $(PROTO_FILES:.proto=.pb.h)
@@ -61,8 +61,14 @@ SOURCES_CC = $(PROTO_GENERATED_CC)
 SOURCES = $(SOURCES_CPP) $(SOURCES_CC)
 OBJECTS = $(addprefix $(BUILDDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 
-SOURCES_TEST = $(shell find $(TESTDIR) -type f -name '*.cpp')
-OBJECTS_TEST = $(addprefix $(BUILDDIR)/,$(SOURCES_TEST:.cpp=.o))
+PROTO_FILES_TEST = $(shell find $(TESTDIR) -type f -name '*.proto')
+PROTO_GENERATED_TEST_H = $(PROTO_FILES_TEST:.proto=.pb.h)
+PROTO_GENERATED_TEST_CC = $(PROTO_FILES_TEST:.proto=.pb.cc)
+
+SOURCES_TEST_CPP = $(shell find $(TESTDIR) -type f -name '*.cpp')
+SOURCES_TEST_CC = $(PROTO_GENERATED_TEST_CC)
+SOURCES_TEST = $(SOURCES_TEST_CPP) $(SOURCES_TEST_CC)
+OBJECTS_TEST = $(addprefix $(BUILDDIR)/,$(addsuffix .o,$(basename $(SOURCES_TEST))))
 
 # Resolve dependecies like header files
 DEPDIR = .d
@@ -78,7 +84,8 @@ TARGET_TEST = runTests
 # All is same as build test
 all: test
 
-generate: $(PROTO_GENERATED_H) $(PROTO_GENERATED_CPP)
+generate: $(PROTO_GENERATED_H) $(PROTO_GENERATED_CC)
+generate_test: $(PROTO_GENERATED_TEST_H) $(PROTO_GENERATED_TEST_CC)
 
 $(SRCDIR)/%.pb.h: $(SRCDIR)/%.proto
 	@$(ECHO) "GEN $@"
@@ -87,9 +94,16 @@ $(SRCDIR)/%.pb.cc: $(SRCDIR)/%.proto
 	@$(ECHO) "GEN $@"
 	@$(PROTOC) -I$(abspath $(SRCDIR)) --cpp_out=$(SRCDIR) $(abspath $<)
 
+$(TESTDIR)/%.pb.h: $(TESTDIR)/%.proto
+	@$(ECHO) "GEN $@"
+	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
+$(TESTDIR)/%.pb.cc: $(TESTDIR)/%.proto
+	@$(ECHO) "GEN $@"
+	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
+
 build: flags mkdir generate $(SOURCES) $(TARGET)
 
-build_test: flags_test build $(SOURCES_TEST) $(TARGET_TEST)
+build_test: flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
@@ -122,6 +136,11 @@ $(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cpp $(DEPDIR)/$(SRCDIR)/%.d
 	@$(POSTCOMPILE)
 
 $(BUILDDIR)/$(TESTDIR)/%.o: $(TESTDIR)/%.cpp $(DEPDIR)/$(TESTDIR)/%.d
+	@$(ECHO) "CC $@"
+	@$(CC) $(DEPFLAGS_TEST) $(C_FLAGS_TEST) -c -o $@ $<
+	@$(POSTCOMPILE_TEST)
+
+$(BUILDDIR)/$(TESTDIR)/%.o: $(TESTDIR)/%.cc $(DEPDIR)/$(TESTDIR)/%.d
 	@$(ECHO) "CC $@"
 	@$(CC) $(DEPFLAGS_TEST) $(C_FLAGS_TEST) -c -o $@ $<
 	@$(POSTCOMPILE_TEST)

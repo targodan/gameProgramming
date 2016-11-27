@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Test1 {
+    int32 some_int = 1;
+    string some_text = 2;
+}
+
+message Test2 {
+    float some_float = 1;
+    string some_text = 2;
+}

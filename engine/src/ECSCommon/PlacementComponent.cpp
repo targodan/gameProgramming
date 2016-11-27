@@ -8,7 +8,7 @@
 
 namespace engine {
     namespace ECSCommon {
-        ECS_REGISTER_SERIALIZABLE_COMPONENT(PlacementComponent, pb::Placement);
+        ECS_REGISTER_COMPONENT(PlacementComponent);
         
         componentId_t PlacementComponent::typeId = 0;
         

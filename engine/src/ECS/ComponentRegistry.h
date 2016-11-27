@@ -21,7 +21,6 @@ namespace engine {
         private:
             static componentId_t nextId;
             static std::unique_ptr<Map<componentId_t, ComponentInstantiator*>> instantiators;
-            static std::unique_ptr<Map<componentId_t, ProtobufMessageInstantiator*>> messageInstantiators;
 
         public:
             static componentId_t getNextId() {
@@ -29,9 +28,7 @@ namespace engine {
             }
             
             static void registerInstantiator(componentId_t id, ComponentInstantiator* ci);
-            static void registerProtobufMessageInstantiator(componentId_t id, ProtobufMessageInstantiator* ci);
             static Component* makeComponentOfType(componentId_t id);
-            static google::protobuf::Message* makeProtobufMessageForComponentOfType(componentId_t id);
         };
     }
 }

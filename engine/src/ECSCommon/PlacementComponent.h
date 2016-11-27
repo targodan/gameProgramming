@@ -9,11 +9,11 @@
 #include "../IO/Serializable.h"
 #include "pb/Placement.pb.h"
 
-using engine::ECS::componentId_t;
-using engine::util::vec3;
-
 namespace engine {
     namespace ECSCommon {
+        using engine::ECS::componentId_t;
+        using engine::util::vec3;
+        
         class PlacementComponent : public engine::ECS::Component, public engine::IO::Serializable<pb::Placement> {
         private:
             static componentId_t typeId;

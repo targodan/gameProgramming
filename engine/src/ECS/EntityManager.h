@@ -14,15 +14,15 @@
 #include "EntityId.h"
 #include "Component.h"
 
-using engine::util::vector;
-using std::shared_ptr;
-using std::weak_ptr;
-using std::unique_ptr;
-using engine::util::Map;
-using engine::util::Array;
-
 namespace engine {
     namespace ECS {
+        using engine::util::vector;
+        using std::shared_ptr;
+        using std::weak_ptr;
+        using std::unique_ptr;
+        using engine::util::Map;
+        using engine::util::Array;
+
         class Entity;
         
         class EntityManager {

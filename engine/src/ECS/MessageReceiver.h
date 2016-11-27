@@ -3,12 +3,12 @@
 
 #include <memory>
 
-using std::shared_ptr;
-
 #include "Message.h"
 
 namespace engine {
     namespace ECS {
+        using std::shared_ptr;
+        
         class MessageReceiver {
         public:
             MessageReceiver() {}

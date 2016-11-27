@@ -10,11 +10,11 @@
 #include "EntityManager.h"
 #include "EntityId.h"
 
-using engine::util::vector;
-using std::shared_ptr;
-
 namespace engine {
     namespace ECS {
+        using engine::util::vector;
+        using std::shared_ptr;
+        
         class Entity {
         private:
             entityId_t id;

@@ -9,9 +9,6 @@
 
 namespace engine {
     namespace util {
-//        template<typename _Tp,typename _Alloc=std::allocator<_Tp>>
-//        using vector = std::vector<_Tp, _Alloc>;
-        
         template<typename _Tp,typename _Alloc=std::allocator<_Tp>>
         class vector : public std::vector<_Tp, _Alloc> {
         private:

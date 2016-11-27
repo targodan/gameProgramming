@@ -4,10 +4,10 @@
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
 
-using namespace engine::ECS;
-
 namespace engine {
     namespace ECSCommon {
+        using namespace engine::ECS;
+        
         class PlacementSystem : public System {
         private:
             static systemId_t systemId;

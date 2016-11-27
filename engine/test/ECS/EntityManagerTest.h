@@ -18,6 +18,7 @@
 
 using engine::ECS::EntityManager;
 using engine::ECS::Entity;
+using engine::util::vector;
 
 class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST_SUITE(EntityManagerTest);
@@ -257,23 +258,23 @@ private:
             return l.getOrder() < r.getOrder();
         });
         
-        auto comp1 = map_to<shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp1::getComponentTypeId()], [](const auto& _c) {
+        auto comp1 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp1::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp1&>(*_c.get());
             return c.getData();
         });
-        auto comp2 = map_to<shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp2::getComponentTypeId()], [](const auto& _c) {
+        auto comp2 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp2::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp2&>(*_c.get());
             return c.getData();
         });
-        auto comp4 = map_to<shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp4::getComponentTypeId()], [](const auto& _c) {
+        auto comp4 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp4::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp4&>(*_c.get());
             return c.getData();
         });
-        auto comp5 = map_to<shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp5::getComponentTypeId()], [](const auto& _c) {
+        auto comp5 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp5::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp5&>(*_c.get());
             return c.getData();
         });
-        auto sortComp = map_to<shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[SortComponent::getComponentTypeId()], [](const auto& _c) {
+        auto sortComp = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[SortComponent::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const SortComponent&>(*_c.get());
             return c.getOrder();
         });

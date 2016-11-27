@@ -105,6 +105,17 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <folder path="0/src/ECS">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
       <folder path="0/src/ECSCommon">
         <ccTool>
           <incDir>
@@ -127,12 +138,15 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <folder path="0/test/math">
+      <folder path="0/test/ECS">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test/util">
@@ -148,69 +162,26 @@
       </folder>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
@@ -248,32 +219,36 @@
         </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/math</pElem>
             <pElem>src</pElem>
-            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src/math</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
+            <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
@@ -299,67 +274,19 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -372,20 +299,21 @@
         </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>/usr/include/cppunit/extensions</pElem>
             <pElem>test/math</pElem>
             <pElem>test</pElem>
             <pElem>.</pElem>
@@ -393,15 +321,14 @@
         </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">

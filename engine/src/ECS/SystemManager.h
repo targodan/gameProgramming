@@ -16,18 +16,18 @@
 #include "../util/ostream_helper.h"
 #include "../util/vector.h"
 
-using engine::util::vector;
-using std::unique_ptr;
-using std::shared_ptr;
-using std::weak_ptr;
-
-using engine::util::Array;
-using engine::util::BlockingQueue;
-using engine::util::Map;
-using engine::util::Set;
-
 namespace engine {
     namespace ECS {
+        using engine::util::vector;
+        using std::unique_ptr;
+        using std::shared_ptr;
+        using std::weak_ptr;
+
+        using engine::util::Array;
+        using engine::util::BlockingQueue;
+        using engine::util::Map;
+        using engine::util::Set;
+
         class SystemManager {
         protected:
             struct SystemNode {

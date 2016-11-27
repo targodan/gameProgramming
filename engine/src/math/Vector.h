@@ -13,10 +13,10 @@
 
 #include "../util/Array.h"
 
-using engine::util::Array;
-
 namespace engine {
     namespace math {
+        using engine::util::Array;
+        
         template<unsigned int dimCols, unsigned int dimRows>
         class Matrix;
             

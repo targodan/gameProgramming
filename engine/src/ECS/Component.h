@@ -7,13 +7,12 @@
 
 #include "EntityId.h"
 
-using std::shared_ptr;
-
 namespace engine {
     namespace ECS {
         typedef std::size_t componentId_t;
         
         class Entity;
+        using std::shared_ptr;
         
         class Component {
         protected:

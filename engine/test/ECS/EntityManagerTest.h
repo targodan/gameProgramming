@@ -410,8 +410,8 @@ private:
         std::string buf;
         engine::IO::SerializerFactory::binarySerializer().serialize(*this, buf);
         
-        EntityManager em;
-        engine::IO::SerializerFactory::binarySerializer().deserialize(em, buf);
+        this->clear();
+        engine::IO::SerializerFactory::binarySerializer().deserialize(*this, buf);
         
         testDeserialization(entities);
     }

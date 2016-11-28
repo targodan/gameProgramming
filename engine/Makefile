@@ -5,6 +5,8 @@ ECHO = echo
 MV = mv
 FIND = find
 
+TAB = $(shell echo -e "\t")
+
 BUILDDIR = build
 SRCDIR = src
 TESTDIR = test
@@ -88,17 +90,17 @@ generate: $(PROTO_GENERATED_H) $(PROTO_GENERATED_CC)
 generate_test: $(PROTO_GENERATED_TEST_H) $(PROTO_GENERATED_TEST_CC)
 
 $(SRCDIR)/%.pb.h: $(SRCDIR)/%.proto
-	@$(ECHO) "GEN $@"
+	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(SRCDIR)) --cpp_out=$(SRCDIR) $(abspath $<)
 $(SRCDIR)/%.pb.cc: $(SRCDIR)/%.proto
-	@$(ECHO) "GEN $@"
+	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(SRCDIR)) --cpp_out=$(SRCDIR) $(abspath $<)
 
 $(TESTDIR)/%.pb.h: $(TESTDIR)/%.proto
-	@$(ECHO) "GEN $@"
+	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
 $(TESTDIR)/%.pb.cc: $(TESTDIR)/%.proto
-	@$(ECHO) "GEN $@"
+	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
 
 build: flags mkdir generate $(SOURCES) $(TARGET)
@@ -118,30 +120,30 @@ flags_test:
 	@$(ECHO) "LD_FLAGS_TEST = $(LD_FLAGS_TEST)"
 
 $(TARGET): $(OBJECTS)
-	@$(ECHO) "LD $@"
+	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS)
 
 $(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
-	@$(ECHO) "LD $@"
+	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS_TEST) 
 
 $(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cc $(DEPDIR)/$(SRCDIR)/%.d
-	@$(ECHO) "CC $@"
+	@$(ECHO) "CC$(TAB)$@"
 	@$(CC) $(DEPFLAGS) $(C_FLAGS) -I$(SRCDIR) -c -o $@ $<
 	@$(POSTCOMPILE)
 
 $(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cpp $(DEPDIR)/$(SRCDIR)/%.d
-	@$(ECHO) "CC $@"
+	@$(ECHO) "CC$(TAB)$@"
 	@$(CC) $(DEPFLAGS) $(C_FLAGS) -c -o $@ $<
 	@$(POSTCOMPILE)
 
 $(BUILDDIR)/$(TESTDIR)/%.o: $(TESTDIR)/%.cpp $(DEPDIR)/$(TESTDIR)/%.d
-	@$(ECHO) "CC $@"
+	@$(ECHO) "CC$(TAB)$@"
 	@$(CC) $(DEPFLAGS_TEST) $(C_FLAGS_TEST) -c -o $@ $<
 	@$(POSTCOMPILE_TEST)
 
 $(BUILDDIR)/$(TESTDIR)/%.o: $(TESTDIR)/%.cc $(DEPDIR)/$(TESTDIR)/%.d
-	@$(ECHO) "CC $@"
+	@$(ECHO) "CC$(TAB)$@"
 	@$(CC) $(DEPFLAGS_TEST) $(C_FLAGS_TEST) -c -o $@ $<
 	@$(POSTCOMPILE_TEST)
 

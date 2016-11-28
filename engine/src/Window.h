@@ -1,8 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "../../lib/glloadgen/gl_core_32.hh"
-#include "../../lib/glfw/include/GLFW/glfw3.h"
+#include <glloadgen/gl_core_32.hh>
+#include <GLFW/glfw3.h>
 
 #include <string>
 

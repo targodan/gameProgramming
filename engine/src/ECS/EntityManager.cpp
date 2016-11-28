@@ -9,6 +9,12 @@ namespace engine {
             this->components.set_empty_key(SIZE_MAX);
             this->entities.set_empty_key(SIZE_MAX);
         }
+            entityId_t nextEntityId;
+            
+            Map<componentId_t, vector<shared_ptr<Component>>> components;
+            Map<entityId_t, Map<componentId_t, size_t>> entities;
+            pb::EntityManager msg;
+            vector<SerializableComponent*> serializables;
 
         EntityManager::~EntityManager() {
         }
@@ -68,7 +74,7 @@ namespace engine {
             for(const auto& compMsg : this->msg.components()) {
                 auto itE = this->entities.find(compMsg.entity_id());
                 // Does the entity exists yet?
-                if(itE != this->entities.end()) {
+                if(itE == this->entities.end()) {
                     // No => Create entity
                     this->createEntity(compMsg.entity_id(), "FromSerialization");
                     itE = this->entities.find(compMsg.entity_id());

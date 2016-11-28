@@ -29,7 +29,8 @@ class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST(testIterateComponents);
     CPPUNIT_TEST(testGetComponentOfEntity);
     CPPUNIT_TEST(testSort);
-    CPPUNIT_TEST(testSerializeDeserialize);
+    CPPUNIT_TEST(testSerializeDeserializeHuman);
+    CPPUNIT_TEST(testSerializeDeserializeBinary);
     CPPUNIT_TEST_SUITE_END();
     
 public:
@@ -337,18 +338,82 @@ private:
         }
     }
     
-    void testSerializeDeserialize() {
-        this->createEntity("test1")
+    engine::ECS::entityId_t serializedNextId;
+    
+    vector<Entity> fillForSerialization() {
+        vector<Entity> ret;
+        ret.push_back(this->createEntity("test1")
                 .addComponent<Comp1>(42)
-                .addComponent<Comp3>(666);
-        this->createEntity("test2")
+                .addComponent<Comp3>(666));
+        ret.push_back(this->createEntity("test2")
                 .addComponent<Comp1>(9)
-                .addComponent<Comp2>(10);
-        this->createEntity("test2")
+                .addComponent<Comp2>(10));
+        ret.push_back(this->createEntity("test3")
                 .addComponent<Comp3>(90)
-                .addComponent<Comp4>(100);
+                .addComponent<Comp4>(100));
         
-        engine::IO::SerializerFactory::humanReadableSerializer().serialize(*this, std::cout);
+        serializedNextId = this->nextEntityId;
+        return ret;
+    }
+    
+    void testDeserialization(vector<Entity> entities) {
+        CPPUNIT_ASSERT_EQUAL(serializedNextId, this->nextEntityId);
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All entities must be present.", entities.size(), this->entities.size());
+        for(auto e : entities) {
+            CPPUNIT_ASSERT_MESSAGE("All entities must be present.", this->entities.find(e.getId()) != this->entities.end());
+        }
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.", 6ul, this->serializables.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                42ul, this->serializables[0]->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                666ul, this->serializables[1]->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                9ul, this->serializables[2]->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                10ul, this->serializables[3]->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                90ul, this->serializables[4]->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                100ul, this->serializables[5]->to<Comp4>().getData());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                42ul, this->getComponentOfEntity(entities[0].getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                666ul, this->getComponentOfEntity(entities[0].getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                9ul, this->getComponentOfEntity(entities[1].getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                10ul, this->getComponentOfEntity(entities[1].getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                90ul, this->getComponentOfEntity(entities[2].getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                100ul, this->getComponentOfEntity(entities[2].getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+    }
+    
+    void testSerializeDeserializeHuman() {
+        auto entities = fillForSerialization();
+        
+        std::string buf;
+        engine::IO::SerializerFactory::humanReadableSerializer().serialize(*this, buf);
+        
+        this->clear();
+        engine::IO::SerializerFactory::humanReadableSerializer().deserialize(*this, buf);
+        
+        testDeserialization(entities);
+    }
+    
+    void testSerializeDeserializeBinary() {
+        auto entities = fillForSerialization();
+        
+        std::string buf;
+        engine::IO::SerializerFactory::binarySerializer().serialize(*this, buf);
+        
+        EntityManager em;
+        engine::IO::SerializerFactory::binarySerializer().deserialize(em, buf);
+        
+        testDeserialization(entities);
     }
 };
 

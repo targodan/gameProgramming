@@ -10,7 +10,9 @@ namespace engine {
         class Serializer {
         public:
             virtual bool serialize(const google::protobuf::Message& msg, std::string& serialized) = 0;
+            virtual bool serialize(const google::protobuf::Message& msg, std::ostream& serialized) = 0;
             virtual bool deserialize(google::protobuf::Message& msg, const std::string& serialized) = 0;
+            virtual bool deserialize(google::protobuf::Message& msg, std::istream& serialized) = 0;
         };
     }
 }

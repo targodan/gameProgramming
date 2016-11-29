@@ -4,6 +4,9 @@
     <df root="." name="0">
       <df name="src">
         <df name="ECS">
+          <df name="pb">
+            <in>EntityManager.proto</in>
+          </df>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
@@ -249,6 +252,8 @@
             <pElem>.</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -572,6 +577,8 @@
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

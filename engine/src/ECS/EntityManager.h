@@ -48,9 +48,6 @@ namespace engine {
             pb::EntityManager msg;
             vector<SerializableComponent*> serializables;
             
-            google::protobuf::Message& getProtobufMessage() override;
-            void afterProtobufMessageUpdate() override;
-            
         public:
             class ComponentIterator : public std::iterator<std::input_iterator_tag, shared_ptr<Component>> {
             private:
@@ -95,6 +92,10 @@ namespace engine {
                 this->nextEntityId = 0;
                 this->serializables.clear();
             }
+            
+            google::protobuf::Message& fromProtobufMessage() override;
+            void afterProtobufMessageUpdate() override;
+            const google::protobuf::Message& toProtobufMessage() override;
             
             void sort(componentId_t sortBy, std::function<bool(shared_ptr<Component>,shared_ptr<Component>)> comparator) {
                 // Sort all except the sortBy component

@@ -11,6 +11,8 @@
 #include "ECS/EntityManager.h"
 #include "ECS/Entity.h"
 
+#include "IO/SerializerFactory.h"
+
 #include "MockComponents.h"
 
 #include "util/ostream_helper.h"
@@ -27,15 +29,14 @@ class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST(testIterateComponents);
     CPPUNIT_TEST(testGetComponentOfEntity);
     CPPUNIT_TEST(testSort);
+    CPPUNIT_TEST(testSerializeDeserialize);
     CPPUNIT_TEST_SUITE_END();
     
 public:
     void setUp() override {
     }
     void tearDown() override {
-        this->nextEntityId = 0;
-        this->components.clear();
-        this->entities.clear();
+        this->clear();
     }
     
 private:
@@ -334,6 +335,20 @@ private:
                         exp4[i], dynamic_cast<Comp4&>(*it[1]).getData());
             }
         }
+    }
+    
+    void testSerializeDeserialize() {
+        this->createEntity("test1")
+                .addComponent<Comp1>(42)
+                .addComponent<Comp3>(666);
+        this->createEntity("test2")
+                .addComponent<Comp1>(9)
+                .addComponent<Comp2>(10);
+        this->createEntity("test2")
+                .addComponent<Comp3>(90)
+                .addComponent<Comp4>(100);
+        
+        engine::IO::SerializerFactory::humanReadableSerializer().serialize(*this, std::cout);
     }
 };
 

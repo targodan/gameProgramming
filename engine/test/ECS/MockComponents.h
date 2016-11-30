@@ -1,26 +1,28 @@
 #ifndef MOCKCOMPONENTS_H
 #define MOCKCOMPONENTS_H
 
-#include "ECS/Component.h"
+#include "ECS/SerializableComponent.h"
 #include "ECS/ComponentRegisterer.h"
+
+#include "pb/mockcomponents.pb.h"
 
 #include <iostream>
 
 using engine::ECS::componentId_t;
 
 #define MOCK_COMPONENT(name) \
-class name : public engine::ECS::Component { \
+class name : public engine::ECS::SerializableComponent { \
 private: \
     static componentId_t typeId; \
-    size_t someData; \
- \
+    pb::name msg; \
+     \
 public: \
-    name() : someData(0) {} \
-    name(size_t data) : someData(data) {} \
+    name() { msg.set_data(0); } \
+    name(size_t data) { msg.set_data(data); } \
     virtual ~name() {} \
      \
     size_t getData() const { \
-        return this->someData; \
+        return this->msg.data(); \
     } \
     std::string getComponentName() const override { \
         return #name; \
@@ -31,6 +33,10 @@ public: \
     componentId_t getComponentId() const { \
         return name::typeId; \
     } \
+     \
+    google::protobuf::Message& fromProtobufMessage() override {return this->msg;} \
+    const google::protobuf::Message& toProtobufMessage() override {return this->msg;} \
+    void afterProtobufMessageUpdate() {} \
      \
     static void setComponentTypeId(componentId_t id) { \
         name::typeId = id; \

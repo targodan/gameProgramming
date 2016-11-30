@@ -23,9 +23,6 @@ namespace engine {
             vec3 direction;
             
             pb::Placement msg;
-            
-            google::protobuf::Message& getProtobufMessage() override;
-            void afterProtobufMessageUpdate() override;
 
         public:
             PlacementComponent();
@@ -41,6 +38,10 @@ namespace engine {
             glm::vec3& getDirection();
             
             void setDirection(const glm::vec3& v);
+            
+            google::protobuf::Message& fromProtobufMessage() override;
+            void afterProtobufMessageUpdate() override;
+            const google::protobuf::Message& toProtobufMessage() override;
             
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;

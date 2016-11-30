@@ -40,7 +40,11 @@ namespace engine {
             }
         }
         
-        google::protobuf::Message& EntityManager::getProtobufMessage() {
+        google::protobuf::Message& EntityManager::fromProtobufMessage() {
+            return this->msg;
+        }
+        
+        const google::protobuf::Message& EntityManager::toProtobufMessage() {
             this->msg.set_next_entity_id(this->nextEntityId);
             for(auto& elem : this->serializables) {
                 google::protobuf::Any* wrapper = new google::protobuf::Any();
@@ -78,10 +82,9 @@ namespace engine {
                 auto& comp = this->getComponentOfEntity(compMsg.entity_id(), compMsg.component_type_id())
                                     ->to<SerializableComponent>();
                 // Update the Component
-                auto* msg = ComponentRegistry::makeProtobufMessageForComponentOfType(compMsg.component_type_id());
-                compMsg.child().UnpackTo(msg);
-                comp.fromProtobufMessage(*msg);
-                delete msg;
+                auto& msg = comp.fromProtobufMessage();
+                compMsg.child().UnpackTo(&msg);
+                comp.afterProtobufMessageUpdate();
             }
             this->msg.Clear();
         }

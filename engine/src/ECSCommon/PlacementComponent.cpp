@@ -45,7 +45,11 @@ namespace engine {
             this->direction = v;
         }
         
-        google::protobuf::Message& PlacementComponent::getProtobufMessage() {
+        google::protobuf::Message& PlacementComponent::fromProtobufMessage() {
+            return this->msg;
+        }
+        
+        const google::protobuf::Message& PlacementComponent::toProtobufMessage() {
             this->msg.set_allocated_position(this->position.toProtobufMessage());
             this->msg.set_allocated_direction(this->direction.toProtobufMessage());
             return this->msg;

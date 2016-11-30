@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package pb;
+
+message Comp1 {
+    uint64 data = 1;
+}
+
+message Comp2 {
+    uint64 data = 1;
+}
+
+message Comp3 {
+    uint64 data = 1;
+}
+
+message Comp4 {
+    uint64 data = 1;
+}
+
+message Comp5 {
+    uint64 data = 1;
+}
+
+message Comp6 {
+    uint64 data = 1;
+}

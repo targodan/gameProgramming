@@ -6,18 +6,10 @@
 namespace engine {
     namespace IO {
         class Serializable {
-        protected:
-            virtual google::protobuf::Message& getProtobufMessage() = 0;
-            virtual void afterProtobufMessageUpdate() = 0;
-            
         public:
-            virtual void fromProtobufMessage(const google::protobuf::Message& msg) {
-                this->getProtobufMessage().CopyFrom(msg);
-                this->afterProtobufMessageUpdate();
-            }
-            virtual const google::protobuf::Message& toProtobufMessage() const {
-                return const_cast<Serializable*>(this)->getProtobufMessage();
-            }
+            virtual google::protobuf::Message& fromProtobufMessage() = 0;
+            virtual void afterProtobufMessageUpdate() = 0;
+            virtual const google::protobuf::Message& toProtobufMessage() = 0;
         };
     }
 }

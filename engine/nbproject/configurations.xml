@@ -52,6 +52,10 @@
       </df>
       <df name="test">
         <df name="ECS">
+          <df name="pb">
+            <in>mockcomponents.pb.cc</in>
+            <in>mockcomponents.proto</in>
+          </df>
           <in>EntityManagerTest.cpp</in>
           <in>MessageHandlerTest.cpp</in>
           <in>MockComponents.cpp</in>
@@ -168,6 +172,18 @@
           </incDir>
         </ccTool>
       </folder>
+      <folder path="0/test/ECS/pb">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>test</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
       <folder path="0/test/IO">
         <ccTool>
           <incDir>
@@ -199,8 +215,6 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <item path="src/CastException.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
           <incDir>
@@ -376,7 +390,7 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool>
           <incDir>
             <pElem>src</pElem>
             <pElem>test</pElem>
@@ -441,6 +455,8 @@
             <Elem>DEBUG</Elem>
           </preprocessorList>
         </ccTool>
+      </item>
+      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
@@ -648,6 +664,8 @@
             flavor2="11">
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
+      </item>
+      <item path="test/ECS/pb/mockcomponents.proto" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="0">
       </item>

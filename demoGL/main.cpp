@@ -6,6 +6,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace ogl;
 
 #define DEBUG 0
 

@@ -8,18 +8,18 @@
 #include "../util/Map.h"
 #include "../util/vector.h"
 
-using engine::util::Set;
-using engine::util::Map;
-using engine::util::vector;
-using std::deque;
-using std::shared_ptr;
-
 #include "messageId.h"
 #include "Message.h"
 #include "MessageReceiver.h"
 
 namespace engine {
     namespace ECS {
+        using engine::util::Set;
+        using engine::util::Map;
+        using engine::util::vector;
+        using std::deque;
+        using std::shared_ptr;
+
         class MessageHandler {
         protected:
             messageId_t nextId;

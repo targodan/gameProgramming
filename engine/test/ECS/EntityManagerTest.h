@@ -5,29 +5,39 @@
 #include <memory>
 #include <random>
 #include <algorithm>
+#include <functional>
 #include <sstream>
 
 #include "ECS/EntityManager.h"
 #include "ECS/Entity.h"
 
+#include "IO/SerializerFactory.h"
+
 #include "MockComponents.h"
+
+#include "util/ostream_helper.h"
+#include "../helper.h"
 
 using engine::ECS::EntityManager;
 using engine::ECS::Entity;
+using engine::util::vector;
 
 class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST_SUITE(EntityManagerTest);
     CPPUNIT_TEST(testCreateEntity);
     CPPUNIT_TEST(testAddComponent);
     CPPUNIT_TEST(testIterateComponents);
+    CPPUNIT_TEST(testGetComponentOfEntity);
+    CPPUNIT_TEST(testSort);
+    CPPUNIT_TEST(testSerializeDeserializeHuman);
+    CPPUNIT_TEST(testSerializeDeserializeBinary);
     CPPUNIT_TEST_SUITE_END();
     
 public:
     void setUp() override {
     }
     void tearDown() override {
-        this->nextEntityId = 0;
-        this->components.clear();
+        this->clear();
     }
     
 private:
@@ -189,6 +199,221 @@ private:
                         exp4[i], dynamic_cast<Comp4&>(*it[2]).getData());
             }
         }
+    }
+    
+    void testGetComponentOfEntity() {
+        auto e1 = this->createEntity("Test")
+            .addComponent<Comp1>(1)
+            .addComponent<Comp2>(2)
+            .addComponent<Comp4>(3);
+        auto e2 = this->createEntity("Test")
+            .addComponent<Comp2>(4)
+            .addComponent<Comp4>(5)
+            .addComponent<Comp5>(6);
+        
+        CPPUNIT_ASSERT_EQUAL(1ul, 
+                this->getComponentOfEntity(e1.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL(2ul, 
+                this->getComponentOfEntity(e1.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL(3ul, 
+                this->getComponentOfEntity(e1.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL(4ul, 
+                this->getComponentOfEntity(e2.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL(5ul, 
+                this->getComponentOfEntity(e2.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL(6ul, 
+                this->getComponentOfEntity(e2.getId(), Comp5::getComponentTypeId())->to<Comp5>().getData());
+    }
+    
+    void testSort() {
+        auto e1 = this->createEntity("Test")
+            .addComponent<Comp1>(1)
+            .addComponent<Comp2>(2)
+            .addComponent<Comp4>(3)
+            .addComponent<SortComponent>(2);
+        auto e2 = this->createEntity("Test")
+            .addComponent<Comp2>(4)
+            .addComponent<Comp4>(5)
+            .addComponent<Comp5>(6)
+            .addComponent<SortComponent>(1);
+        auto e3 = this->createEntity("Test")
+            .addComponent<Comp2>(7)
+            .addComponent<Comp4>(8)
+            .addComponent<SortComponent>(3);
+        auto e4 = this->createEntity("Test")
+            .addComponent<Comp1>(9);
+        auto e5 = this->createEntity("Test")
+            .addComponent<Comp1>(10)
+            .addComponent<Comp2>(11)
+            .addComponent<Comp4>(12)
+            .addComponent<SortComponent>(4);
+        
+        vector<size_t> comp1Order = {9, 1, 10};
+        vector<size_t> comp2Order = {4, 2, 7, 11};
+        vector<size_t> comp4Order = {5, 3, 8, 12};
+        vector<size_t> comp5Order = {6};
+        vector<size_t> sortCompOrder = {1, 2, 3, 4};
+        
+        this->sort(SortComponent::getComponentTypeId(), [](const auto& _l, const auto& _r) {
+            auto& l = static_cast<SortComponent&>(*_l.get());
+            auto& r = static_cast<SortComponent&>(*_r.get());
+            return l.getOrder() < r.getOrder();
+        });
+        
+        auto comp1 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp1::getComponentTypeId()], [](const auto& _c) {
+            const auto& c = static_cast<const Comp1&>(*_c.get());
+            return c.getData();
+        });
+        auto comp2 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp2::getComponentTypeId()], [](const auto& _c) {
+            const auto& c = static_cast<const Comp2&>(*_c.get());
+            return c.getData();
+        });
+        auto comp4 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp4::getComponentTypeId()], [](const auto& _c) {
+            const auto& c = static_cast<const Comp4&>(*_c.get());
+            return c.getData();
+        });
+        auto comp5 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp5::getComponentTypeId()], [](const auto& _c) {
+            const auto& c = static_cast<const Comp5&>(*_c.get());
+            return c.getData();
+        });
+        auto sortComp = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[SortComponent::getComponentTypeId()], [](const auto& _c) {
+            const auto& c = static_cast<const SortComponent&>(*_c.get());
+            return c.getOrder();
+        });
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Not sorted correctly!", comp1Order, comp1);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Not sorted correctly!", comp2Order, comp2);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Not sorted correctly!", comp4Order, comp4);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Not sorted correctly!", comp5Order, comp5);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Not sorted correctly!", sortCompOrder, sortComp);
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 1ul, 
+                this->getComponentOfEntity(e1.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 2ul, 
+                this->getComponentOfEntity(e1.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 3ul, 
+                this->getComponentOfEntity(e1.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 2ul, 
+                this->getComponentOfEntity(e1.getId(), SortComponent::getComponentTypeId())->to<SortComponent>().getOrder());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 4ul, 
+                this->getComponentOfEntity(e2.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 5ul, 
+                this->getComponentOfEntity(e2.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 6ul, 
+                this->getComponentOfEntity(e2.getId(), Comp5::getComponentTypeId())->to<Comp5>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 1ul, 
+                this->getComponentOfEntity(e2.getId(), SortComponent::getComponentTypeId())->to<SortComponent>().getOrder());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 7ul, 
+                this->getComponentOfEntity(e3.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 8ul, 
+                this->getComponentOfEntity(e3.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 3ul, 
+                this->getComponentOfEntity(e3.getId(), SortComponent::getComponentTypeId())->to<SortComponent>().getOrder());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 9ul, 
+                this->getComponentOfEntity(e4.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 10ul, 
+                this->getComponentOfEntity(e5.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 11ul, 
+                this->getComponentOfEntity(e5.getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 12ul, 
+                this->getComponentOfEntity(e5.getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks getComponentOfEntity!", 4ul, 
+                this->getComponentOfEntity(e5.getId(), SortComponent::getComponentTypeId())->to<SortComponent>().getOrder());
+        
+        // test iteration again
+        {
+            size_t i = 0;
+            vector<size_t> exp2 = {4, 2, 7, 11};
+            vector<size_t> exp4 = {5, 3, 8, 12};
+            for(auto it = this->begin({Comp2::getComponentTypeId(), Comp4::getComponentTypeId()}); it != this->end(); ++it, ++i) {
+                CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks iterating.",
+                        exp2[i], dynamic_cast<Comp2&>(*it[0]).getData());
+                CPPUNIT_ASSERT_EQUAL_MESSAGE("Sorting breaks iterating.",
+                        exp4[i], dynamic_cast<Comp4&>(*it[1]).getData());
+            }
+        }
+    }
+    
+    engine::ECS::entityId_t serializedNextId;
+    
+    vector<Entity> fillForSerialization() {
+        vector<Entity> ret;
+        ret.push_back(this->createEntity("test1")
+                .addComponent<Comp1>(42)
+                .addComponent<Comp3>(666));
+        ret.push_back(this->createEntity("test2")
+                .addComponent<Comp1>(9)
+                .addComponent<Comp2>(10));
+        ret.push_back(this->createEntity("test3")
+                .addComponent<Comp3>(90)
+                .addComponent<Comp4>(100));
+        
+        serializedNextId = this->nextEntityId;
+        return ret;
+    }
+    
+    void testDeserialization(vector<Entity> entities) {
+        CPPUNIT_ASSERT_EQUAL(serializedNextId, this->nextEntityId);
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All entities must be present.", entities.size(), this->entities.size());
+        for(auto e : entities) {
+            CPPUNIT_ASSERT_MESSAGE("All entities must be present.", this->entities.find(e.getId()) != this->entities.end());
+        }
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.", 6ul, this->serializables.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                42ul, this->serializables[0]->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                666ul, this->serializables[1]->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                9ul, this->serializables[2]->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                10ul, this->serializables[3]->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                90ul, this->serializables[4]->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.",
+                100ul, this->serializables[5]->to<Comp4>().getData());
+        
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                42ul, this->getComponentOfEntity(entities[0].getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                666ul, this->getComponentOfEntity(entities[0].getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                9ul, this->getComponentOfEntity(entities[1].getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                10ul, this->getComponentOfEntity(entities[1].getId(), Comp2::getComponentTypeId())->to<Comp2>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                90ul, this->getComponentOfEntity(entities[2].getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All components must be present.",
+                100ul, this->getComponentOfEntity(entities[2].getId(), Comp4::getComponentTypeId())->to<Comp4>().getData());
+    }
+    
+    void testSerializeDeserializeHuman() {
+        auto entities = fillForSerialization();
+        
+        std::string buf;
+        engine::IO::SerializerFactory::humanReadableSerializer().serialize(*this, buf);
+        
+        this->clear();
+        engine::IO::SerializerFactory::humanReadableSerializer().deserialize(*this, buf);
+        
+        testDeserialization(entities);
+    }
+    
+    void testSerializeDeserializeBinary() {
+        auto entities = fillForSerialization();
+        
+        std::string buf;
+        engine::IO::SerializerFactory::binarySerializer().serialize(*this, buf);
+        
+        this->clear();
+        engine::IO::SerializerFactory::binarySerializer().deserialize(*this, buf);
+        
+        testDeserialization(entities);
     }
 };
 

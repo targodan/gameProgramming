@@ -10,11 +10,11 @@
 #include "EntityManager.h"
 #include "EntityId.h"
 
-using engine::util::vector;
-using std::shared_ptr;
-
 namespace engine {
     namespace ECS {
+        using engine::util::vector;
+        using std::shared_ptr;
+        
         class Entity {
         private:
             entityId_t id;
@@ -39,7 +39,7 @@ namespace engine {
 #endif
                 auto comp = std::make_shared<CompT>(args...);
                 comp->setEntityId(this->id);
-                this->em->addComponent(*this, comp);
+                this->em->addComponent(this->id, comp);
                 return *this;
             }
             

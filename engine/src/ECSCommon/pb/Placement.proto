@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package engine.ECSCommon.pb;
+
+import public "util/pb/vec.proto";
+
+message Placement {
+    engine.util.pb.vec position = 1;
+    engine.util.pb.vec direction = 2;
+}

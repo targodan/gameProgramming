@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package engine.ECS.pb;
+
+import "google/protobuf/any.proto";
+
+message Component {
+    uint64 entity_id = 1;
+    uint64 component_type_id = 2;
+    google.protobuf.Any child = 15; // last single-byte index
+}
+
+message EntityManager {
+    uint64 next_entity_id = 1;
+    repeated Component components = 15; // last single-byte index
+}

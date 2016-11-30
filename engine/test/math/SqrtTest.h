@@ -10,6 +10,8 @@
 
 #include "math/functions.h"
 
+#include "../brief.h"
+
 class SqrtTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(SqrtTest);
     CPPUNIT_TEST(testPrecision_singleIt);
@@ -20,6 +22,11 @@ class SqrtTest : public CppUnit::TestFixture {
 
 private:
     void testPrecision_singleIt() {
+        if(BRIEF_TESTS) {
+            std::cout << " SKIPPED";
+            return;
+        }
+        
         double maxErr = 0;
         double errSum = 0;
         size_t i = 0;
@@ -37,6 +44,11 @@ private:
         std::cout << " AvgErr = " << avgErr << " MaxErr = " << maxErr << " ";
     }
     void testPrecision_doubleIt() {
+        if(BRIEF_TESTS) {
+            std::cout << " SKIPPED";
+            return;
+        }
+        
         double maxErr = 0;
         double errSum = 0;
         size_t i = 0;
@@ -57,6 +69,11 @@ private:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
     void benchPrecision_singleIt() {
+        if(BRIEF_TESTS) {
+            std::cout << " SKIPPED";
+            return;
+        }
+        
         const size_t NUM_CALLS = 100000;
         size_t numValues = 0;
         
@@ -98,6 +115,11 @@ private:
     }
     
     void benchPrecision_doubleIt() {
+        if(BRIEF_TESTS) {
+            std::cout << " SKIPPED";
+            return;
+        }
+        
         const size_t NUM_CALLS = 100000;
         size_t numValues = 0;
         

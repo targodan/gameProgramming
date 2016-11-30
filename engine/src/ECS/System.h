@@ -10,10 +10,9 @@
 
 #include "EntityManager.h"
 
-using engine::util::Array;
-
 namespace engine {
     namespace ECS {
+        using engine::util::Array;
         typedef std::size_t systemId_t;
         
         class System {

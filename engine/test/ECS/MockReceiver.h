@@ -11,7 +11,7 @@ private:
 public:
     MockReceiver(size_t* pointer) : counter(pointer) {}
     
-    void receive(shared_ptr<engine::ECS::Message> msg) override {
+    void receive(std::shared_ptr<engine::ECS::Message> msg) override {
         auto m = msg->to<MockMessage>();
         *this->counter += m.getPayload();
     }

@@ -46,3 +46,7 @@ vgcore.*
 
 # Logs
 *.log
+
+# protobuf generated
+*.pb.h
+*.pb.cc

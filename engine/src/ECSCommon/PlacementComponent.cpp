@@ -44,6 +44,21 @@ namespace engine {
         void PlacementComponent::setDirection(const glm::vec3& v) {
             this->direction = v;
         }
+        
+        google::protobuf::Message& PlacementComponent::fromProtobufMessage() {
+            return this->msg;
+        }
+        
+        const google::protobuf::Message& PlacementComponent::toProtobufMessage() {
+            this->msg.set_allocated_position(this->position.toProtobufMessage());
+            this->msg.set_allocated_direction(this->direction.toProtobufMessage());
+            return this->msg;
+        }
+        
+        void PlacementComponent::afterProtobufMessageUpdate() {
+            this->position.fromProtobufMessage(this->msg.position());
+            this->direction.fromProtobufMessage(this->msg.direction());
+        }
             
         std::string PlacementComponent::getComponentName() const {
             return "Placement";
@@ -55,6 +70,10 @@ namespace engine {
                     << ", Direction: " << this->direction
                     << "}";
             return ss.str();
+        }
+        
+        componentId_t PlacementComponent::getComponentId() const {
+            return PlacementComponent::entityId;
         }
 
         void PlacementComponent::setComponentTypeId(componentId_t id) {

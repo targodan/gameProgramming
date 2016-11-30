@@ -3,6 +3,8 @@
 
 #include "messageId.h"
 
+#include "../CastException.h"
+
 namespace engine {
     namespace ECS {
         class Message {
@@ -25,7 +27,28 @@ namespace engine {
             
             template<class T>
             T& to() {
-                return dynamic_cast<T&>(*this);
+#ifdef DEBUG
+                T* ret = dynamic_cast<T*>(this);
+                if(ret == nullptr) {
+                    throw CastException("Type %s is not castable to %s!", typeid(this).name(), typeid(T).name());
+                }
+                return *ret;
+#else
+                return static_cast<T&>(*this);
+#endif
+            }
+            
+            template<class T>
+            const T& to() const {
+#ifdef DEBUG
+                const T* ret = dynamic_cast<const T*>(this);
+                if(ret == nullptr) {
+                    throw CastException("Type %s is not castable to %s!", typeid(this).name(), typeid(T).name());
+                }
+                return *ret;
+#else
+                return static_cast<const T&>(*this);
+#endif
             }
         };
     }

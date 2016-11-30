@@ -19,11 +19,12 @@ namespace engine {
             }
             
         public:
-            vector() : std::vector<_Tp, _Alloc>() {}
-            vector(size_t size) : std::vector<_Tp, _Alloc>(size) {}
-            vector(const vector& __x) : std::vector<_Tp, _Alloc>(__x) {}
-            vector(vector&& __x) : std::vector<_Tp, _Alloc>(std::move(__x)) {}
-            vector(std::initializer_list<_Tp> __l) : std::vector<_Tp, _Alloc>(__l) {}
+            vector() noexcept : std::vector<_Tp, _Alloc>() {}
+            vector(size_t size) noexcept : std::vector<_Tp, _Alloc>(size) {}
+            vector(const vector& __x) noexcept : std::vector<_Tp, _Alloc>(__x) {}
+            vector(vector&& __x) noexcept : std::vector<_Tp, _Alloc>(std::move(__x)) {}
+            vector(std::initializer_list<_Tp> __l) noexcept : std::vector<_Tp, _Alloc>(__l) {}
+            ~vector() noexcept {}
             
             vector& operator=(const vector& __x) {
                 std::vector<_Tp, _Alloc>::operator=(__x);

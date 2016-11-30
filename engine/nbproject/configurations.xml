@@ -5,12 +5,14 @@
       <df name="src">
         <df name="ECS">
           <df name="pb">
+            <in>EntityManager.pb.cc</in>
             <in>EntityManager.proto</in>
           </df>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
           <in>MessageHandler.cpp</in>
+          <in>SerializableComponent.h</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
         </df>
@@ -96,8 +98,9 @@
         <element flagsID="0" commonFlags="-mtune=generic -march=x86-64"/>
         <element flagsID="1"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="2" commonFlags="-std=c++14"/>
+        <element flagsID="3" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="4" commonFlags="-std=c++14 -pedantic -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -116,6 +119,17 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
+      <folder path="0/src/ECS/pb">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
       <folder path="0/src/ECSCommon/pb">
         <ccTool>
           <incDir>
@@ -192,27 +206,25 @@
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
             <pElem>src</pElem>
-            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
@@ -227,71 +239,57 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/ECS/SerializableComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/util</pElem>
             <pElem>src</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
             <pElem>src</pElem>
-            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
+      <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="4">
+        </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/util/pb</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECSCommon/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>src/util/pb</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
@@ -307,21 +305,18 @@
         </ccTool>
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
             <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
@@ -376,22 +371,15 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>test</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>src</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
+            <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
@@ -424,39 +412,36 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
             <pElem>src</pElem>
+            <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
             <pElem>src</pElem>
+            <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+        </ccTool>
       </item>
-      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -502,7 +487,7 @@
         </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
         </ccTool>
       </item>
     </conf>
@@ -569,6 +554,8 @@
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECS/SerializableComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

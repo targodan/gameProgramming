@@ -13,7 +13,11 @@ namespace engine {
         }
         
         Entity EntityManager::createEntity(const std::string& name) {
-            auto ret = Entity(this->nextEntityId++, this, name);
+            return this->createEntity(this->nextEntityId++, name);
+        }
+        
+        Entity EntityManager::createEntity(size_t id, const std::string& name) {
+            auto ret = Entity(id, this, name);
             this->entities[ret.getId()].set_empty_key(SIZE_MAX);
             return ret;
         }
@@ -28,6 +32,43 @@ namespace engine {
                 map.set_empty_key(SIZE_MAX);
             }
             map[comp->getComponentId()] = vec.size()-1;
+            
+            SerializableComponent* sc = dynamic_cast<SerializableComponent*>(comp.get());
+            if(sc != nullptr) /* is of type SerializableComponent */ {
+                this->serializables.push_back(sc);
+            }
+        }
+        
+        google::protobuf::Message& EntityManager::getProtobufMessage() {
+            this->msg.set_next_entity_id(this->nextEntityId);
+            for(auto& elem : this->serializables) {
+                google::protobuf::Any* wrapper = new google::protobuf::Any();
+                wrapper->PackFrom(elem->toProtobufMessage());
+
+                auto compMsg = this->msg.add_components();
+                compMsg->set_entity_id(elem->getEntityId());
+                compMsg->set_component_type_id(elem->getComponentId());
+                compMsg->set_allocated_child(wrapper);
+            }
+            return this->msg;
+        }
+        
+        void EntityManager::afterProtobufMessageUpdate() {
+            this->nextEntityId = this->msg.next_entity_id();
+            for(const auto& compMsg : this->msg.components()) {
+                std::shared_ptr<Component> comp;
+                auto itE = this->entities.find(comp.entity_id());
+                if(itE != this->entities.end()) {
+                    // create entity and component
+                    this->createEntity(comp.entity_id(), "FromSerialization");
+                    itE = this->entities.find(comp.entity_id());
+                }
+                if((*itE).find(compMsg.component_type_id())) {
+                    
+                }
+                comp = this->components[compMsg.component_type_id()][this->entities[compMsg.entity_id()][compMsg.component_type_id()]];
+            }
+            this->msg.Clear();
         }
         
         shared_ptr<Component> EntityManager::getComponentOfEntity(entityId_t eId, componentId_t compId) {

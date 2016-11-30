@@ -10,6 +10,9 @@
 #include "../util/Array.h"
 #include "../util/Map.h"
 #include "../util/vector.h"
+#include "../IO/Serializable.h"
+#include "pb/EntityManager.pb.h"
+#include "SerializableComponent.h"
 
 #include "EntityId.h"
 #include "Component.h"
@@ -22,10 +25,11 @@ namespace engine {
         using std::unique_ptr;
         using engine::util::Map;
         using engine::util::Array;
+        using engine::IO::Serializable;
 
         class Entity;
         
-        class EntityManager {
+        class EntityManager : public Serializable {
         protected:
             entityId_t nextEntityId;
             
@@ -33,12 +37,19 @@ namespace engine {
             Map<entityId_t, Map<componentId_t, size_t>> entities;
             friend Entity;
                 
+            Entity createEntity(size_t id, const std::string& name);
             void addComponent(entityId_t eId, shared_ptr<Component> comp);
             inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
                 return this->entities[eId][compId];
             }
             shared_ptr<Component> getComponentOfEntity(entityId_t eId, componentId_t compId);
             bool hasEntityComponent(entityId_t eId, componentId_t compId);
+            
+            pb::EntityManager msg;
+            vector<SerializableComponent*> serializables;
+            
+            google::protobuf::Message& getProtobufMessage() override;
+            void afterProtobufMessageUpdate() override;
             
         public:
             class ComponentIterator : public std::iterator<std::input_iterator_tag, shared_ptr<Component>> {
@@ -77,6 +88,13 @@ namespace engine {
             virtual ~EntityManager();
             
             Entity createEntity(const std::string& name);
+            void clear() {
+                this->components.clear();
+                this->entities.clear();
+                this->msg.Clear();
+                this->nextEntityId = 0;
+                this->serializables.clear();
+            }
             
             void sort(componentId_t sortBy, std::function<bool(shared_ptr<Component>,shared_ptr<Component>)> comparator) {
                 // Sort all except the sortBy component

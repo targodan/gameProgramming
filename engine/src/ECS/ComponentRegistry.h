@@ -15,6 +15,8 @@ namespace engine {
             static componentId_t getNextId() {
                 return ComponentRegistry::nextId++;
             }
+            
+            static Component* makeComponentOfType(componentId_t i);
         };
     }
 }

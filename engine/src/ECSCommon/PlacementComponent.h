@@ -42,6 +42,7 @@ namespace engine {
             
             void setDirection(const glm::vec3& v);
             
+            componentId_t getComponentId() const override;
             std::string getComponentName() const override;
             std::string toString() const override;
 

@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 
 #include "Entity.h"
+#include "ComponentRegistry.h"
 
 namespace engine {
     namespace ECS {
@@ -54,19 +55,33 @@ namespace engine {
         }
         
         void EntityManager::afterProtobufMessageUpdate() {
-            this->nextEntityId = this->msg.next_entity_id();
+            // Prevent future collisions
+            if(this->nextEntityId < this->msg.next_entity_id()) {
+                this->nextEntityId = this->msg.next_entity_id();
+            }
+            
+            // Iterate over all components
             for(const auto& compMsg : this->msg.components()) {
-                std::shared_ptr<Component> comp;
-                auto itE = this->entities.find(comp.entity_id());
+                auto itE = this->entities.find(compMsg.entity_id());
+                // Does the entity exists yet?
                 if(itE != this->entities.end()) {
-                    // create entity and component
-                    this->createEntity(comp.entity_id(), "FromSerialization");
-                    itE = this->entities.find(comp.entity_id());
+                    // No => Create entity
+                    this->createEntity(compMsg.entity_id(), "FromSerialization");
+                    itE = this->entities.find(compMsg.entity_id());
                 }
-                if((*itE).find(compMsg.component_type_id())) {
-                    
+                // Does the entity already have a component of this type?
+                if(itE->second.find(compMsg.component_type_id()) == itE->second.end()) {
+                    // No => Create it.
+                    this->addComponent(compMsg.entity_id(), std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(compMsg.component_type_id())));
                 }
-                comp = this->components[compMsg.component_type_id()][this->entities[compMsg.entity_id()][compMsg.component_type_id()]];
+                // Retrieve the Component (has to be a SerializableComponent)
+                auto& comp = this->getComponentOfEntity(compMsg.entity_id(), compMsg.component_type_id())
+                                    ->to<SerializableComponent>();
+                // Update the Component
+                auto* msg = ComponentRegistry::makeProtobufMessageForComponentOfType(compMsg.component_type_id());
+                compMsg.child().UnpackTo(msg);
+                comp.fromProtobufMessage(*msg);
+                delete msg;
             }
             this->msg.Clear();
         }

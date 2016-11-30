@@ -8,7 +8,7 @@
 
 namespace engine {
     namespace ECSCommon {
-        ECS_REGISTER_COMPONENT(PlacementComponent);
+        ECS_REGISTER_SERIALIZABLE_COMPONENT(PlacementComponent, pb::Placement);
         
         componentId_t PlacementComponent::typeId = 0;
         
@@ -66,6 +66,10 @@ namespace engine {
                     << ", Direction: " << this->direction
                     << "}";
             return ss.str();
+        }
+        
+        componentId_t PlacementComponent::getComponentId() const {
+            return PlacementComponent::entityId;
         }
 
         void PlacementComponent::setComponentTypeId(componentId_t id) {

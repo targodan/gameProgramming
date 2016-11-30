@@ -15,6 +15,7 @@ private: \
     size_t someData; \
  \
 public: \
+    name() : someData(0) {} \
     name(size_t data) : someData(data) {} \
     virtual ~name() {} \
      \
@@ -52,6 +53,7 @@ private:
     size_t order;
 
 public:
+    SortComponent() : order(0) {}
     SortComponent(size_t order) : order(order) {}
     virtual ~SortComponent() {}
     

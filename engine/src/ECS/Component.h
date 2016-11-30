@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "EntityId.h"
+#include "../CastException.h"
 
 namespace engine {
     namespace ECS {
@@ -35,7 +36,11 @@ namespace engine {
             template<class T>
             T& to() {
 #ifdef DEBUG
-                return dynamic_cast<T&>(*this);
+                T* ret = dynamic_cast<T*>(this);
+                if(ret == nullptr) {
+                    throw CastException("Type %s is not castable to %s!", typeid(this).name(), typeid(T).name());
+                }
+                return *ret;
 #else
                 return static_cast<T&>(*this);
 #endif
@@ -44,7 +49,11 @@ namespace engine {
             template<class T>
             const T& to() const {
 #ifdef DEBUG
-                return dynamic_cast<const T&>(*this);
+                const T* ret = dynamic_cast<const T*>(this);
+                if(ret == nullptr) {
+                    throw CastException("Type %s is not castable to %s!", typeid(this).name(), typeid(T).name());
+                }
+                return *ret;
 #else
                 return static_cast<const T&>(*this);
 #endif

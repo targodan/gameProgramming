@@ -29,6 +29,34 @@ namespace engine {
             return ret;
         }
         
+        Entity EntityManager::createEntityFromPrefab(const pb::Prefab& msg) {
+            Entity ret = this->createEntity(msg.entity_name());
+            
+            for(auto& compMsg : msg.components()) {
+                // Retrieve the Component (has to be a SerializableComponent)
+                auto& comp = this->getComponentOfEntity(ret.getId(), ComponentRegistry::getComponentTypeId(compMsg.component_type_name()))
+                                    ->to<SerializableComponent>();
+                // Update the Component
+                auto& msg = comp.fromProtobufMessage();
+                compMsg.child().UnpackTo(&msg);
+                comp.afterProtobufMessageUpdate();
+            }
+            
+            return ret;
+        }
+        
+        Entity EntityManager::createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData) {
+            pb::Prefab msg;
+            serializer.deserialize(msg, serializedData);
+            return this->createEntityFromPrefab(msg);
+        }
+        
+        Entity EntityManager::createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData) {
+            pb::Prefab msg;
+            serializer.deserialize(msg, serializedData);
+            return this->createEntityFromPrefab(msg);
+        }
+        
         void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> comp) {
             auto& vec = this->components[comp->getComponentId()];
             vec.push_back(comp);

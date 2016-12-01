@@ -3,10 +3,13 @@
 
 #include <google/protobuf/message.h>
 
+#include <string>
+
 #include "macros.h"
 #include "ComponentRegistry.h"
 
-#define ECS_REGISTER_COMPONENT(comp) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)
+#define ECS_REGISTER_COMPONENT(comp) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(#comp)
+#define ECS_REGISTER_COMPONENT_EXPLICITLY_NAMED(comp, name) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(name)
 
 namespace engine {
     namespace ECS {
@@ -20,10 +23,10 @@ namespace engine {
         protected:
             componentId_t id;
         public:
-            ComponentRegisterer() {
+            ComponentRegisterer(std::string name) {
                 this->id = ComponentRegistry::getNextId();
                 ComponentT::setComponentTypeId(this->id);
-                ComponentRegistry::registerInstantiator(this->id, this);
+                ComponentRegistry::registerComponent(this->id, name, this);
             }
             
             Component* instantiate() override {

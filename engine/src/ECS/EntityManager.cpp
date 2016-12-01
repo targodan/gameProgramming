@@ -58,7 +58,7 @@ namespace engine {
 
                 auto compMsg = this->msg.add_components();
                 compMsg->set_entity_id(elem->getEntityId());
-                compMsg->set_component_type_id(elem->getComponentId());
+                compMsg->set_component_type_name(ComponentRegistry::getComponentTypeName(elem->getComponentId()));
                 compMsg->set_allocated_child(wrapper);
             }
             return this->msg;
@@ -80,12 +80,13 @@ namespace engine {
                     itE = this->entities.find(compMsg.entity_id());
                 }
                 // Does the entity already have a component of this type?
-                if(itE->second.find(compMsg.component_type_id()) == itE->second.end()) {
+                auto componentTypeId = ComponentRegistry::getComponentTypeId(compMsg.component_type_name());
+                if(itE->second.find(componentTypeId) == itE->second.end()) {
                     // No => Create it.
-                    this->addComponent(compMsg.entity_id(), std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(compMsg.component_type_id())));
+                    this->addComponent(compMsg.entity_id(), std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(componentTypeId)));
                 }
                 // Retrieve the Component (has to be a SerializableComponent)
-                auto& comp = this->getComponentOfEntity(compMsg.entity_id(), compMsg.component_type_id())
+                auto& comp = this->getComponentOfEntity(compMsg.entity_id(), componentTypeId)
                                     ->to<SerializableComponent>();
                 // Update the Component
                 auto& msg = comp.fromProtobufMessage();

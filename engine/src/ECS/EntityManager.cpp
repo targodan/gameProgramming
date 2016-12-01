@@ -38,7 +38,7 @@ namespace engine {
                                     ->to<SerializableComponent>();
                 // Update the Component
                 auto& msg = comp.fromProtobufMessage();
-                compMsg.child().UnpackTo(&msg);
+                compMsg.component().UnpackTo(&msg);
                 comp.afterProtobufMessageUpdate();
             }
             
@@ -87,7 +87,7 @@ namespace engine {
                 auto compMsg = this->msg.add_components();
                 compMsg->set_entity_id(elem->getEntityId());
                 compMsg->set_component_type_name(ComponentRegistry::getComponentTypeName(elem->getComponentId()));
-                compMsg->set_allocated_child(wrapper);
+                compMsg->set_allocated_component(wrapper);
             }
             return this->msg;
         }
@@ -118,7 +118,7 @@ namespace engine {
                                     ->to<SerializableComponent>();
                 // Update the Component
                 auto& msg = comp.fromProtobufMessage();
-                compMsg.child().UnpackTo(&msg);
+                compMsg.component().UnpackTo(&msg);
                 comp.afterProtobufMessageUpdate();
             }
             this->msg.Clear();

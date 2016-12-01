@@ -7,7 +7,7 @@ import "google/protobuf/any.proto";
 message Component {
     uint64 entity_id = 1;
     string component_type_name = 2;
-    google.protobuf.Any child = 15; // last single-byte index
+    google.protobuf.Any component = 15; // last single-byte index
 }
 
 message EntityManager {
@@ -17,7 +17,7 @@ message EntityManager {
 
 message PrefabComponent {
     string component_type_name = 2;
-    google.protobuf.Any child = 15; // last single-byte index
+    google.protobuf.Any component = 15; // last single-byte index
 }
 
 message Prefab {

@@ -33,13 +33,26 @@ namespace engine {
             Entity ret = this->createEntity(msg.entity_name());
             
             for(auto& compMsg : msg.components()) {
-                // Retrieve the Component (has to be a SerializableComponent)
-                auto& comp = this->getComponentOfEntity(ret.getId(), ComponentRegistry::getComponentTypeId(compMsg.component_type_name()))
-                                    ->to<SerializableComponent>();
-                // Update the Component
-                auto& msg = comp.fromProtobufMessage();
-                compMsg.component().UnpackTo(&msg);
-                comp.afterProtobufMessageUpdate();
+                // Create Component
+                auto comp = std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(compMsg.component_type_name()));
+                
+#ifdef DEBUG
+                try {
+#endif
+                    // Must be SerializableComponent
+                    auto& serialiable = comp->to<SerializableComponent>();
+                
+                    // Update the Component
+                    auto& msg = serialiable.fromProtobufMessage();
+                    compMsg.component().UnpackTo(&msg);
+                    serialiable.afterProtobufMessageUpdate();
+#ifdef DEBUG
+                } catch(...) {
+                    throw WTFException("Components in Prefabs must be SerializableComponents. Component of type \"%s\" not a SerializableComponent.", compMsg.component_type_name().c_str());
+                }
+#endif
+                
+                this->addComponent(ret.getId(), comp);
             }
             
             return ret;

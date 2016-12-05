@@ -9,7 +9,7 @@ namespace engine {
                     <<  "Available commands:" << Console::endl
                     <<  "   list                            Lists all registered entities." << Console::endl
                     <<  "   get <entity> [component]        Shows all components, or only the specified [component]," << Console::endl
-                    <<  "                                   of the given <entity>." << Console::endl;
+                    <<  "                                   of the given <entity>." << Console::endl
                     <<  "   get <entity> <component> <json> Sets the <component> of the <entity> to the values as" << Console::endl
                     <<  "                                   specified by the <json> representation." << Console::endl
                     <<  Console::endl
@@ -20,11 +20,12 @@ namespace engine {
                     <<  "               necessary. (\"{\\\"field\\\": \\\"someStringWith \\\\\"quotes\\\\\"\\\"}\")" << Console::endl;
         }
         
-        int EntityCommand::main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) const {
+        int EntityCommand::main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) {
             if(args.size() < 2) {
                 this->printHelp(stderr);
                 return 1;
             }
+            return 0;
         }
     }
 }

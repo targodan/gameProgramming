@@ -10,11 +10,11 @@ namespace engine {
             void printHelp(std::ostream& out) const;
             
         public:
-            std::string getName() override {
+            std::string getName() const override {
                 return "entity";
             }
             
-            int main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) const override;
+            int main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) override;
         };
     }
 }

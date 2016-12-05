@@ -13,8 +13,9 @@ namespace engine {
         
         const std::string Console::endl = "\n";
         
-        Console::Console(size_t cmdHistorySize) : isCommandRunning(false), cmdHistory(cmdHistorySize), ps1("$> ") {
+        Console::Console(size_t cmdHistorySize, size_t outputBufferMaxSize) : isCommandRunning(false), lastExitValue(0), ps1("$> "), cmdHistory(cmdHistorySize), outputBufferMaxSize(outputBufferMaxSize) {
             this->commands.set_empty_key("");
+            this->printPS1();
         }
         
         Console::~Console() {
@@ -27,9 +28,7 @@ namespace engine {
         void Console::receiveKeypress(char key) {
             if(!this->isCommandRunning) {
                 if(key == '\n') /* Enter */ {
-                    auto args = this->parseLine(this->linebuffer.str());
-                    this->linebuffer.flush();
-                    this->executeCommand(args);
+                    this->executeCommandFromLinebuffer();
                 } else {
                     this->linebuffer << key;
                 }
@@ -42,19 +41,19 @@ namespace engine {
         }
         
         vector<std::string> Console::parseLine(const std::string line) const {
-            vector<std::string> ret;
+            vector<std::string> tokens;
             size_t i = 0;
             while(i < line.size()) {
                 std::string token = this->getNextToken(line, i);
                 if(token != "") {
-                    ret.push_back(token);
+                    tokens.push_back(token);
                 }
             }
-            return ret;
+            return tokens;
         }
         
         std::string Console::getNextToken(const std::string line, size_t& io_pos) const {
-            std::string ret;
+            std::string token;
             bool stop = false;
             bool escape = false;
             bool quotes = false;
@@ -66,20 +65,21 @@ namespace engine {
                     switch(c) {
                         case '\\':
                         case '"':
-                            ret.append(&c, 1);
+                        case ' ':
+                            token.append(&c, 1);
                             break;
                         case 't':
                             tmp = '\t';
-                            ret.append(&tmp, 1);
+                            token.append(&tmp, 1);
                             break;
                         case 'n':
                             tmp = '\n';
-                            ret.append(&tmp, 1);
+                            token.append(&tmp, 1);
                             break;
                         default:
                             tmp = '\\';
-                            ret.append(&tmp, 1);
-                            ret.append(&c, 1);
+                            token.append(&tmp, 1);
+                            token.append(&c, 1);
                     }
                     escape = false;
                 } else {
@@ -92,13 +92,13 @@ namespace engine {
                             break;
                         case ' ':
                             if(quotes) {
-                                ret.append(&c, 1);
+                                token.append(&c, 1);
                             } else {
                                 stop = true;
                             }
                             break;
                         default:
-                            ret.append(&c, 1);
+                            token.append(&c, 1);
                     }
                 }
                 
@@ -106,13 +106,21 @@ namespace engine {
                     stop = true;
                 }
             }
-            return ret;
+            return token;
+        }
+        
+        void Console::executeCommandFromLinebuffer() {
+            auto args = this->parseLine(this->linebuffer.str());
+            this->echo(this->linebuffer.str());
+            this->echo(Console::endl);
+            this->linebuffer.str("");
+            this->executeCommand(args);
         }
         
         void Console::executeCommand(const vector<std::string>& args) {
-            std::async(std::launch::deferred, [=]() { this->echo(this->ps1); });
+            this->retreiveExitCode();
             if(args.size() > 0) {
-                auto command = this->commands.find(args[0]);
+                const auto& command = this->commands.find(args[0]);
                 if(command == this->commands.end()) {
                     *this << "Invalid command \"" << args[0] << "\"" << Console::endl;
                     return;
@@ -120,14 +128,14 @@ namespace engine {
                 this->isCommandRunning = true;
                 std::promise<int> promise;
                 this->runningCommandFuture = promise.get_future();
-                this->runningCommandThread = std::thread([=](std::promise<int> promise) {
+                this->runningCommandThread = std::thread([this](std::promise<int> promise, Command* command, vector<std::string> args) {
                     try {
-                        promise.set_value(command->second->main(args, this->stdin, this->stdout, this->stderr));
+                        promise.set_value(command->main(args, this->stdin, this->stdout, this->stderr));
                     } catch(...) {
                         promise.set_exception(std::current_exception());
                     }
                     this->isCommandRunning = false;
-                }, std::move(promise));
+                }, std::move(promise), command->second, args);
             }
         }
         
@@ -142,25 +150,52 @@ namespace engine {
                 size_t overflow = this->outputBuffer.size() - this->outputBufferMaxSize;
                 size_t multiplier = 6;
                 size_t minRemainingText = this->outputBufferMaxSize / 2;
-                while(multiplier > 1 && this->outputBuffer.size() - (multiplier * overflow) >= minRemainingText) {
+                while(multiplier > 1 && this->outputBuffer.size() - (multiplier * overflow) < minRemainingText) {
                     --multiplier;
                 }
                 this->outputBuffer.erase(0, multiplier * overflow);
             }
         }
         
-        void Console::tick() {
-            if(this->isCommandRunning) {
-                this->echo(this->stdout.flush());
-                this->echo(this->stderr.flush());
-                this->shrinkOutputBufferIfNeeded();
-            }
+        void Console::updateOutputBuffer() {
+            this->echo(this->stdout.toStringThenEmpty());
+            this->echo(this->stderr.toStringThenEmpty());
+            this->shrinkOutputBufferIfNeeded();
         }
         
-        std::string Console::getOutput() const {
+        void Console::tick() {
+            if(!this->isCommandRunning) {
+                this->retreiveExitCode();
+            }
+            this->updateOutputBuffer();
+        }
+        
+        std::string Console::getOutput() {
+            this->updateOutputBuffer();
             std::string output(this->outputBuffer);
             output.append(this->linebuffer.str());
             return output;
+        }
+        
+        void Console::retreiveExitCode() {
+            if(this->runningCommandFuture.valid()) {
+                this->lastExitValue = this->runningCommandFuture.get();
+                this->runningCommandFuture = std::future<int>();
+                if(this->runningCommandThread.joinable()) {
+                    this->runningCommandThread.join();
+                }
+                this->updateOutputBuffer();
+                this->printPS1();
+            }
+        }
+        
+        int Console::waitForCommandExit() {
+            this->retreiveExitCode();
+            return this->lastExitValue;
+        }
+        
+        void Console::printPS1() {
+            this->echo(this->ps1);
         }
     }
 }

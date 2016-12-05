@@ -38,36 +38,57 @@ namespace engine {
                 std::basic_stringstream<char_t>::swap(__rhs);
                 this->mutex = std::move(__rhs.mutex);
             }
-      
-            template<class T>
-            basic_stringstreamTS& operator<<(const T& t) {
-                std::unique_lock<std::mutex> lock(this->mutex);
-                std::basic_stringstream<char_t>::operator<<(t);
-                return *this;
+            
+            #define GENERATE_STRINSTREAM_IN_OPERATOR(type) basic_stringstreamTS& operator<<(const type& t) { \
+                std::unique_lock<std::mutex> lock(this->mutex); \
+                std::basic_stringstream<char_t>::operator<<(t); \
+                return *this; \
             }
             
-            template<class T>
-            basic_stringstreamTS& operator>>(T& t) {
-                std::unique_lock<std::mutex> lock(this->mutex);
-                std::basic_stringstream<char_t>::operator>>(t);
-                return *this;
+            #define GENERATE_STRINSTREAM_OUT_OPERATOR(type) basic_stringstreamTS& operator>>(type& t) { \
+                std::unique_lock<std::mutex> lock(this->mutex); \
+                std::basic_stringstream<char_t>::operator<<(t); \
+                return *this; \
             }
+
+            #define GENERATE_STRINSTREAM_IN_OUT_OPERATOR(type) GENERATE_STRINSTREAM_IN_OPERATOR(type) \
+            GENERATE_STRINSTREAM_OUT_OPERATOR(type)
+
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(char_t)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(long)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(unsigned long)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(short)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(unsigned short)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(int)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(unsigned int)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(long long)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(unsigned long long)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(double)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(float)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(long double)
+            GENERATE_STRINSTREAM_IN_OUT_OPERATOR(void*)
+            GENERATE_STRINSTREAM_IN_OPERATOR(char_t*)
             
             std::basic_string<char_t> str() {
                 std::unique_lock<std::mutex> lock(this->mutex);
                 return std::basic_stringstream<char_t>::str();
             }
             
-            void str(std::basic_string<char_t>& s) {
+            std::basic_string<char_t> toStringThenEmpty() {
+                std::unique_lock<std::mutex> lock(this->mutex);
+                std::basic_string<char_t> ret = std::basic_stringstream<char_t>::str();
+                std::basic_stringstream<char_t>::str("");
+                return ret;
+            }
+            
+            void str(const std::basic_string<char_t>& s) {
                 std::unique_lock<std::mutex> lock(this->mutex);
                 return std::basic_stringstream<char_t>::str(s);
             }
             
-            std::basic_string<char_t> flush() {
+            typename std::basic_stringstream<char_t>::__istream_type& flush() {
                 std::unique_lock<std::mutex> lock(this->mutex);
-                std::basic_string<char_t> ret = std::basic_stringstream<char_t>::str();
-                std::basic_stringstream<char_t>::flush();
-                return ret;
+                return std::basic_stringstream<char_t>::flush();
             }
             
             typename std::basic_stringstream<char_t>::int_type get() {

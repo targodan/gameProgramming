@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <future>
+#include <atomic>
 
 #include "../CollisionException.h"
 #include "../util/Map.h"
@@ -25,6 +26,7 @@ namespace engine {
         protected:
             Map<std::string, Command*> commands;
             bool isCommandRunning;
+            int lastExitValue;
             std::future<int> runningCommandFuture;
             std::thread runningCommandThread;
             stringstreamTS stdin;
@@ -43,7 +45,12 @@ namespace engine {
             
             vector<std::string> parseLine(const std::string line) const;
             std::string getNextToken(const std::string line, size_t& io_pos) const;
+            void executeCommandFromLinebuffer();
             void executeCommand(const vector<std::string>& args);
+            
+            void retreiveExitCode();
+            void updateOutputBuffer();
+            void printPS1();
             
             void echo(const std::string& msg);
             void shrinkOutputBufferIfNeeded();
@@ -52,7 +59,7 @@ namespace engine {
             friend Console& operator<<(Console& c, const T& msg);
             
         public:
-            Console(size_t cmdHistorySize);
+            Console(size_t cmdHistorySize, size_t outputBufferMaxSize);
             Console(Console& orig) = delete;
             ~Console();
             
@@ -70,8 +77,9 @@ namespace engine {
             
             void tick();
             void receiveKeypress(char key);
+            int waitForCommandExit();
             
-            std::string getOutput() const;
+            std::string getOutput();
         };
 
         template<class T>

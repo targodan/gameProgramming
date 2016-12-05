@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <typeinfo>
 #include "../util/vector.h"
 #include "../InvalidConversionException.h"
 
@@ -27,7 +28,7 @@ namespace engine {
             virtual ~Command() {}
             
             virtual std::string getName() const = 0;
-            virtual int main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) const = 0;
+            virtual int main(const vector<std::string>& args, std::istream& stdin, std::ostream& stdout, std::ostream& stderr) = 0;
         };
     }
 }

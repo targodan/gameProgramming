@@ -10,6 +10,7 @@
 #include "../util/Map.h"
 #include "../util/Array.h"
 #include "../util/vector.h"
+#include "../util/stringstream.h"
 
 #include "Command.h"
 
@@ -18,6 +19,7 @@ namespace engine {
         using engine::util::Map;
         using engine::util::Array;
         using engine::util::vector;
+        using engine::util::stringstreamTS;
         
         class Console {
         protected:
@@ -25,11 +27,11 @@ namespace engine {
             bool isCommandRunning;
             std::future<int> runningCommandFuture;
             std::thread runningCommandThread;
-            std::stringstream stdin;
-            std::stringstream stdout;
-            std::stringstream stderr;
+            stringstreamTS stdin;
+            stringstreamTS stdout;
+            stringstreamTS stderr;
             
-            std::string linebuffer;
+            std::stringstream linebuffer;
             
             std::string ps1;
             
@@ -66,7 +68,10 @@ namespace engine {
                 return *cmd;
             }
             
+            void tick();
             void receiveKeypress(char key);
+            
+            std::string getOutput() const;
         };
 
         template<class T>

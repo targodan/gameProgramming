@@ -13,8 +13,7 @@ namespace engine {
         
         const std::string Console::endl = "\n";
         
-        Console::Console(size_t cmdHistorySize) : isCommandRunning(false), cmdHistory(cmdHistorySize) {
-            this->linebuffer.reserve(128);
+        Console::Console(size_t cmdHistorySize) : isCommandRunning(false), cmdHistory(cmdHistorySize), ps1("$> ") {
             this->commands.set_empty_key("");
         }
         
@@ -26,13 +25,20 @@ namespace engine {
         }
         
         void Console::receiveKeypress(char key) {
-            if(key == '\n') /* Enter */ {
-                auto args = this->parseLine(this->linebuffer);
-                this->linebuffer = "";
-                this->executeCommand(args);
+            if(!this->isCommandRunning) {
+                if(key == '\n') /* Enter */ {
+                    auto args = this->parseLine(this->linebuffer.str());
+                    this->linebuffer.flush();
+                    this->executeCommand(args);
+                } else {
+                    this->linebuffer << key;
+                }
             } else {
-                this->linebuffer.append(&key, 1);
+                this->stdin << key;
             }
+            
+            // TODO: Handle Ctrl-C as kill command.
+            // TODO: Handle special keys like arrows, del, backspace etc.
         }
         
         vector<std::string> Console::parseLine(const std::string line) const {
@@ -141,6 +147,20 @@ namespace engine {
                 }
                 this->outputBuffer.erase(0, multiplier * overflow);
             }
+        }
+        
+        void Console::tick() {
+            if(this->isCommandRunning) {
+                this->echo(this->stdout.flush());
+                this->echo(this->stderr.flush());
+                this->shrinkOutputBufferIfNeeded();
+            }
+        }
+        
+        std::string Console::getOutput() const {
+            std::string output(this->outputBuffer);
+            output.append(this->linebuffer.str());
+            return output;
         }
     }
 }

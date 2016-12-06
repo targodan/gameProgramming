@@ -2,6 +2,7 @@
 #include "WTFException.h"
 
 namespace engine {
+    using namespace ogl;
     Window::Window(int width, int height, std::string title) 
         : width(width), height(height), title(title.c_str()) {
 
@@ -23,7 +24,7 @@ namespace engine {
         }
         glfwMakeContextCurrent(this->glfwWindow);
 
-        int glInit = ogl_LoadFunctionsForDebug(GL_TRUE, GL_TRUE);
+        int glInit = ogl_LoadFunctions();
         if(glInit != ogl_LOAD_SUCCEEDED) {
             glfwTerminate();
             throw("Could not initialize OpenGL.");

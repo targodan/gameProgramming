@@ -1,12 +1,14 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <glloadgen/gl_core_32.hh>
+#include "renderer/glloadgen/gl_core_3_3.h"
 #include <GLFW/glfw3.h>
 
 #include <string>
 
 namespace engine {
+    using namespace ogl;	
+
     class Window {
     private:
         GLFWwindow* glfwWindow;

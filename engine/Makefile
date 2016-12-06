@@ -1,5 +1,13 @@
 # the compiler: gcc for C program, define as g++ for C++
-CC = g++
+G++VERSION = $(shell g++ -dumpversion | cut -f1 -d.)
+G++_GT_6 = $(shell echo $(G++VERSION)\>=6 | bc)
+
+ifeq ($(G++_GT_6),1) 
+	CC := g++
+else
+	CC := g++-6
+endif
+
 PROTOC = protoc
 ECHO = echo
 MV = mv

@@ -18,11 +18,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -pthread -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -lm -lpthread -lprotobuf -Wl,--as-needed
+LD_FLAGS_COMMON = -shared -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -pthread -lpthread -Wl,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -52,7 +52,7 @@ else
 endif
 
 C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I$(SRCDIR) -I$(TESTDIR)
-LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lprotobuf -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lprotobuf -pthread -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
 
 PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')
 PROTO_GENERATED_H = $(PROTO_FILES:.proto=.pb.h)

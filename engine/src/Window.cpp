@@ -1,26 +1,25 @@
 #include "Window.h"
 #include "WTFException.h"
+#include "GLException.h"
 
 namespace engine {
     using namespace ogl;
     Window::Window(int width, int height, std::string title) 
         : width(width), height(height), title(title.c_str()) {
 
-        glfwSetErrorCallback(Window::glfwErrorCallback);
         if(!glfwInit()) {
-            throw("Couldd not initialize GLFW library.");
+            throw WTFException("Failed to initialize GLFW");
         }       
 
         // TODO: Understand and use window hints
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // Request debug context
 
         // TODO: Use GLFWmonitor for full screen mode, etc
-        this->glfwWindow = glfwCreateWindow(width, height, this->title, NULL, NULL);
+        this->glfwWindow = glfwCreateWindow(width, height, this->title, nullptr, nullptr);
         if(!glfwWindow) {
-            glfwTerminate();
-            throw("Could not create OpenGL window.");
+            throw WTFException("Failed to create window");
         }
         glfwMakeContextCurrent(this->glfwWindow);
         
@@ -29,13 +28,10 @@ namespace engine {
         
         int glInit = ogl_LoadFunctions();
         if(glInit != ogl_LOAD_SUCCEEDED) {
-            glfwTerminate();
-            throw("Could not initialize OpenGL.");
+            throw GLException("Failed to initialize OpenGL");
         }
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-
-        glfwSwapInterval(1);
-        glGetError();
+        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glViewport(0,0, this->width, this->height);
     }
     
     Window::~Window() {

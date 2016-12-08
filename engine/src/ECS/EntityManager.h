@@ -37,14 +37,15 @@ namespace engine {
             entityId_t nextEntityId;
             
             Map<componentId_t, vector<shared_ptr<Component>>> components;
-            Map<entityId_t, Map<componentId_t, size_t>> entities;
+            Map<entityId_t, Map<componentId_t, size_t>> entityComponents;
+//            Map<std::string, entityId_t> entities;
             friend Entity;
                 
             Entity createEntity(size_t id, const std::string& name);
             Entity createEntityFromPrefab(const pb::Prefab& msg);
             void addComponent(entityId_t eId, shared_ptr<Component> comp);
             inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
-                return this->entities[eId][compId];
+                return this->entityComponents[eId][compId];
             }
             shared_ptr<Component> getComponentOfEntity(entityId_t eId, componentId_t compId);
             bool hasEntityComponent(entityId_t eId, componentId_t compId);
@@ -94,7 +95,7 @@ namespace engine {
             
             void clear() {
                 this->components.clear();
-                this->entities.clear();
+                this->entityComponents.clear();
                 this->msg.Clear();
                 this->nextEntityId = 0;
                 this->serializables.clear();
@@ -129,7 +130,7 @@ namespace engine {
                 for(auto& elem : this->components) {
                     size_t i = 0;
                     for(auto& comp : elem.second) {
-                        this->entities[comp->getEntityId()][comp->getComponentId()] = i++;
+                        this->entityComponents[comp->getEntityId()][comp->getComponentId()] = i++;
                     }
                 }
             }

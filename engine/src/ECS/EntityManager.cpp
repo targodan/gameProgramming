@@ -7,7 +7,7 @@ namespace engine {
     namespace ECS {
         EntityManager::EntityManager() : nextEntityId(0) {
             this->components.set_empty_key(SIZE_MAX);
-            this->entities.set_empty_key(SIZE_MAX);
+            this->entityComponents.set_empty_key(SIZE_MAX);
         }
             entityId_t nextEntityId;
             
@@ -25,7 +25,7 @@ namespace engine {
         
         Entity EntityManager::createEntity(size_t id, const std::string& name) {
             auto ret = Entity(id, this, name);
-            this->entities[ret.getId()].set_empty_key(SIZE_MAX);
+            this->entityComponents[ret.getId()].set_empty_key(SIZE_MAX);
             return ret;
         }
         
@@ -74,9 +74,9 @@ namespace engine {
             auto& vec = this->components[comp->getComponentId()];
             vec.push_back(comp);
             
-            auto itMap = this->entities.find(eId);
-            auto& map = this->entities[eId];
-            if(itMap == this->entities.end()) {
+            auto itMap = this->entityComponents.find(eId);
+            auto& map = this->entityComponents[eId];
+            if(itMap == this->entityComponents.end()) {
                 map.set_empty_key(SIZE_MAX);
             }
             map[comp->getComponentId()] = vec.size()-1;
@@ -113,12 +113,12 @@ namespace engine {
             
             // Iterate over all components
             for(const auto& compMsg : this->msg.components()) {
-                auto itE = this->entities.find(compMsg.entity_id());
+                auto itE = this->entityComponents.find(compMsg.entity_id());
                 // Does the entity exists yet?
-                if(itE == this->entities.end()) {
+                if(itE == this->entityComponents.end()) {
                     // No => Create entity
                     this->createEntity(compMsg.entity_id(), "FromSerialization");
-                    itE = this->entities.find(compMsg.entity_id());
+                    itE = this->entityComponents.find(compMsg.entity_id());
                 }
                 // Does the entity already have a component of this type?
                 auto componentTypeId = ComponentRegistry::getComponentTypeId(compMsg.component_type_name());
@@ -142,7 +142,7 @@ namespace engine {
         }
         
         bool EntityManager::hasEntityComponent(entityId_t eId, componentId_t compId) {
-            return this->entities[eId].find(compId) != this->entities[eId].end();
+            return this->entityComponents[eId].find(compId) != this->entityComponents[eId].end();
         }
             
         EntityManager::ComponentIterator EntityManager::begin(const std::initializer_list<componentId_t>& componentTypes) {

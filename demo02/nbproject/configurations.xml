@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="97">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+    </df>
+    <logicalFolder name="src"
+                   displayName="src"
+                   projectFiles="true"
+                   root="../engine/src">
+      <logicalFolder name="ECS" displayName="ECS" projectFiles="true">
+        <logicalFolder name="pb" displayName="pb" projectFiles="true">
+          <itemPath>../engine/src/ECS/pb/EntityManager.pb.cc</itemPath>
+          <itemPath>../engine/src/ECS/pb/EntityManager.pb.h</itemPath>
+        </logicalFolder>
+        <itemPath>../engine/src/ECS/CollisionException.h</itemPath>
+        <itemPath>../engine/src/ECS/Component.h</itemPath>
+        <itemPath>../engine/src/ECS/ComponentRegisterer.h</itemPath>
+        <itemPath>../engine/src/ECS/ComponentRegistry.cpp</itemPath>
+        <itemPath>../engine/src/ECS/ComponentRegistry.h</itemPath>
+        <itemPath>../engine/src/ECS/DependencyException.h</itemPath>
+        <itemPath>../engine/src/ECS/Entity.cpp</itemPath>
+        <itemPath>../engine/src/ECS/Entity.h</itemPath>
+        <itemPath>../engine/src/ECS/EntityId.h</itemPath>
+        <itemPath>../engine/src/ECS/EntityManager.cpp</itemPath>
+        <itemPath>../engine/src/ECS/EntityManager.h</itemPath>
+        <itemPath>../engine/src/ECS/Message.h</itemPath>
+        <itemPath>../engine/src/ECS/MessageHandler.cpp</itemPath>
+        <itemPath>../engine/src/ECS/MessageHandler.h</itemPath>
+        <itemPath>../engine/src/ECS/MessageReceiver.h</itemPath>
+        <itemPath>../engine/src/ECS/SerializableComponent.h</itemPath>
+        <itemPath>../engine/src/ECS/System.h</itemPath>
+        <itemPath>../engine/src/ECS/SystemManager.cpp</itemPath>
+        <itemPath>../engine/src/ECS/SystemManager.h</itemPath>
+        <itemPath>../engine/src/ECS/SystemRegisterer.h</itemPath>
+        <itemPath>../engine/src/ECS/SystemRegistry.cpp</itemPath>
+        <itemPath>../engine/src/ECS/SystemRegistry.h</itemPath>
+        <itemPath>../engine/src/ECS/SystemType.h</itemPath>
+        <itemPath>../engine/src/ECS/UnknownComponentException.h</itemPath>
+        <itemPath>../engine/src/ECS/macros.h</itemPath>
+        <itemPath>../engine/src/ECS/messageId.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="ECSCommon" displayName="ECSCommon" projectFiles="true">
+        <logicalFolder name="pb" displayName="pb" projectFiles="true">
+          <itemPath>../engine/src/ECSCommon/pb/Placement.pb.cc</itemPath>
+          <itemPath>../engine/src/ECSCommon/pb/Placement.pb.h</itemPath>
+        </logicalFolder>
+        <itemPath>../engine/src/ECSCommon/PlacementComponent.cpp</itemPath>
+        <itemPath>../engine/src/ECSCommon/PlacementComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/PlacementSystem.cpp</itemPath>
+        <itemPath>../engine/src/ECSCommon/PlacementSystem.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="IO" displayName="IO" projectFiles="true">
+        <itemPath>../engine/src/IO/Serializable.h</itemPath>
+        <itemPath>../engine/src/IO/Serializer.h</itemPath>
+        <itemPath>../engine/src/IO/SerializerFactory.cpp</itemPath>
+        <itemPath>../engine/src/IO/SerializerFactory.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="math" displayName="math" projectFiles="true">
+        <itemPath>../engine/src/math/InvalidDimensionException.h</itemPath>
+        <itemPath>../engine/src/math/Matrix.cpp</itemPath>
+        <itemPath>../engine/src/math/Matrix.h</itemPath>
+        <itemPath>../engine/src/math/MatrixSq.cpp</itemPath>
+        <itemPath>../engine/src/math/MatrixSq.h</itemPath>
+        <itemPath>../engine/src/math/Vector.h</itemPath>
+        <itemPath>../engine/src/math/Vector3.cpp</itemPath>
+        <itemPath>../engine/src/math/Vector3.h</itemPath>
+        <itemPath>../engine/src/math/functions.cpp</itemPath>
+        <itemPath>../engine/src/math/functions.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
+        <logicalFolder name="glloadgen" displayName="glloadgen" projectFiles="true">
+          <itemPath>../engine/src/renderer/glloadgen/gl_core_3_3.cpp</itemPath>
+          <itemPath>../engine/src/renderer/glloadgen/gl_core_3_3.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="util" displayName="util" projectFiles="true">
+        <logicalFolder name="pb" displayName="pb" projectFiles="true">
+          <itemPath>../engine/src/util/pb/vec.pb.cc</itemPath>
+          <itemPath>../engine/src/util/pb/vec.pb.h</itemPath>
+        </logicalFolder>
+        <itemPath>../engine/src/util/Array.h</itemPath>
+        <itemPath>../engine/src/util/BlockingQueue.h</itemPath>
+        <itemPath>../engine/src/util/IndexOutOfBoundsException.h</itemPath>
+        <itemPath>../engine/src/util/Map.h</itemPath>
+        <itemPath>../engine/src/util/Set.h</itemPath>
+        <itemPath>../engine/src/util/hashes.h</itemPath>
+        <itemPath>../engine/src/util/ostream_helper.cpp</itemPath>
+        <itemPath>../engine/src/util/ostream_helper.h</itemPath>
+        <itemPath>../engine/src/util/thread_helper.h</itemPath>
+        <itemPath>../engine/src/util/vec3.h</itemPath>
+        <itemPath>../engine/src/util/vector.h</itemPath>
+      </logicalFolder>
+      <itemPath>../engine/src/CastException.h</itemPath>
+      <itemPath>../engine/src/EmptyQueueException.h</itemPath>
+      <itemPath>../engine/src/Exception.cpp</itemPath>
+      <itemPath>../engine/src/Exception.h</itemPath>
+      <itemPath>../engine/src/GLException.h</itemPath>
+      <itemPath>../engine/src/Game.cpp</itemPath>
+      <itemPath>../engine/src/Game.h</itemPath>
+      <itemPath>../engine/src/IllegalArgumentException.h</itemPath>
+      <itemPath>../engine/src/WTFException.h</itemPath>
+      <itemPath>../engine/src/Window.cpp</itemPath>
+      <itemPath>../engine/src/Window.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC -fstack-protector-strong"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile -j4 DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <ccTool>
+            <standard>11</standard>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="../engine/src/ECS/ComponentRegistry.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/EntityManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/MessageHandler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/SystemManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/SystemRegistry.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECS/pb/EntityManager.pb.cc"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECSCommon/PlacementComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECSCommon/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECSCommon/PlacementSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/ECSCommon/pb/Placement.pb.cc"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../engine/src/Exception.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/Game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/tr1</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine/src/renderer/glloadgen</pElem>
+            <pElem>/usr/local/include/GLFW</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/IO/SerializerFactory.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../engine/src/Window.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src/renderer/glloadgen</pElem>
+            <pElem>/usr/local/include/GLFW</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/math</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/math</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/math</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>../engine/src/math</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/renderer/glloadgen/gl_core_3_3.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="../engine/src/util/ostream_helper.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="../engine/src/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <folder path="0">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="src/ECS/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>/usr/local/include/google/protobuf/io</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="src/ECSCommon/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/ECSCommon/pb</pElem>
+            <pElem>/usr/local/include/google/protobuf/io</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="src/IO">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf/util</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="src/renderer">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src/renderer/glloadgen</pElem>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="src/util/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/c++/6</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/local/include/google/protobuf/io</pElem>
+            <pElem>/usr/include/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/debug</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6/bits</pElem>
+            <pElem>/usr/include/c++/6/ext</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/6/include</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/6</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+    </conf>
+  </confs>
+</configurationDescriptor>

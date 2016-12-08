@@ -19,6 +19,7 @@ namespace engine {
         const char* title;
 
         static void glfwErrorCallback(int error, const char* description);
+        static void glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
     public:
         Window(int width, int height, std::string title = {"ExplosionBoy"});
         Window(const Window& orig) = delete;

@@ -23,7 +23,10 @@ namespace engine {
             throw("Could not create OpenGL window.");
         }
         glfwMakeContextCurrent(this->glfwWindow);
-
+        
+        glfwSetErrorCallback(Window::glfwErrorCallback);
+        glfwSetWindowSizeCallback(this->glfwWindow, Window::glfwResizeCallback);
+        
         int glInit = ogl_LoadFunctions();
         if(glInit != ogl_LOAD_SUCCEEDED) {
             glfwTerminate();
@@ -52,16 +55,19 @@ namespace engine {
     }
     
     bool Window::isOpened() const {
-        return glfwWindowShouldClose(this->glfwWindow);
+        return !glfwWindowShouldClose(this->glfwWindow);
     }
     
     GLFWwindow* Window::getWindow() const {
         return this->glfwWindow;
     }
     
-
     void Window::glfwErrorCallback(int error, const char* description) {
         std::string msg = "Caught GLFW error: " + std::string(description) + std::to_string(error);
         throw WTFException(msg.c_str());
+    }
+    
+    void Window::glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
+        glViewport(0, 0, newWidth, newHeight);
     }
 }

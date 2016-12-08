@@ -26,7 +26,7 @@ namespace engine {
         virtual void processEvents() = 0;
     
     public:
-        Game(int argc, char** argv, double ups);
+        Game(int argc, char** argv, double ups=60);
         Game(const Game& orig) = delete;
         virtual ~Game();
         

@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <future>
 #include <atomic>
+#include <deque>
 
 #include "../CollisionException.h"
 #include "../util/Map.h"
@@ -21,6 +21,7 @@ namespace engine {
         using engine::util::Array;
         using engine::util::vector;
         using engine::util::stringstreamTS;
+        using engine::util::stringstreamInsertable;
         
         class Console {
         protected:
@@ -33,12 +34,13 @@ namespace engine {
             stringstreamTS stdout;
             stringstreamTS stderr;
             
-            std::stringstream linebuffer;
+            stringstreamInsertable linebuffer;
             
             std::string ps1;
             
-            Array<std::string> cmdHistory;
+            std::deque<std::string> cmdHistory;
             size_t cmdHistoryIndex;
+            size_t cmdHistorySize;
             
             std::string outputBuffer;
             size_t outputBufferMaxSize;
@@ -46,7 +48,13 @@ namespace engine {
             vector<std::string> parseLine(const std::string line) const;
             std::string getNextToken(const std::string line, size_t& io_pos) const;
             void executeCommandFromLinebuffer();
+            void addToHistory(const std::string& line);
             void executeCommand(const vector<std::string>& args);
+            void historyUp();
+            void historyDown();
+            void resetHistoryIndex();
+            void updateHistoryOnExecute();
+            void killRunningCommand();
             
             void retreiveExitCode();
             void updateOutputBuffer();

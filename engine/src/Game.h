@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <easylogging++.h>
+//#include <easylogging++.h>
 
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"

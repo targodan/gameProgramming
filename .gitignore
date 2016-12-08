@@ -51,3 +51,4 @@ vgcore.*
 # protobuf generated
 *.pb.h
 *.pb.cc
+/demoGL/build/

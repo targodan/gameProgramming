@@ -9,8 +9,8 @@ LD_FLAGS = -lglfw -lXrandr -lGL -lXi -pthread -lm -lX11 -lXxf86vm
 
 CPP_GLLOADGEN = -Wno-write-strings
 
-BUILDDIR = _build
-TARGET = demo
+BUILDDIR = build
+TARGET = demoGL
 
 SOURCES = $(wildcard *.cpp) 
 OBJECTS = $(addprefix $(BUILDDIR)/, $(SOURCES:.cpp=.o)) 
@@ -28,5 +28,5 @@ $(BUILDDIR)/%.o: %.cpp
 	$(GCC) $(CPP_FLAGS) -c -o $@ $< 
 
 clean:
-	rm -rf _build/*
-
+	rm -rf $(BUILDDIR)/*
+	rm $(TARGET)

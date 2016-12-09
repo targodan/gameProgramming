@@ -17,7 +17,7 @@ namespace engine {
             PlacementSystem(const PlacementSystem& orig) {}
             virtual ~PlacementSystem() {}
             
-            void run(EntityManager& em, float dT) override;
+            void run(EntityManager& em, float deltaTimeSeconds) override;
             
             bool isUpdateSystem() const override {
                 return true;

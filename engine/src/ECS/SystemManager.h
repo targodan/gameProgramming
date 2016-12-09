@@ -49,10 +49,10 @@ namespace engine {
             
             struct Task {
                 Task(shared_ptr<System> system, unique_ptr<std::promise<void>> promise, float dT)
-                        : system(system), promise(std::move(promise)), dT(dT) {}
+                        : system(system), promise(std::move(promise)), deltaTimeSeconds(dT) {}
                 shared_ptr<System> system;
                 unique_ptr<std::promise<void>> promise;
-                float dT;
+                float deltaTimeSeconds;
                 virtual bool stop() const {
                     return false;
                 }
@@ -76,7 +76,7 @@ namespace engine {
             Array<std::thread> threads;
             
             bool hasBeenSetup;
-            bool running;
+            bool isRunning;
             
             bool checkDependencySatisfaction() const;
             vector<shared_ptr<SystemNode>> buildDependencyGraph();

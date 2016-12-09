@@ -13,13 +13,13 @@
 
 namespace engine {
     namespace ECS {
-        SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false), running(false) {
+        SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false), isRunning(false) {
             // Init numThreads with the number of cores.
             this->setNumberOfThreads(std::thread::hardware_concurrency());
         }
         
         SystemManager::~SystemManager() {
-            if(this->running) {
+            if(this->isRunning) {
                 this->stop();
             }
             this->enabledSystems.clear();
@@ -66,7 +66,7 @@ namespace engine {
                         auto task = std::move(this->queue.pop());
                         if(!task->stop()) {
                             try {
-                                task->system->run(this->em, task->dT);
+                                task->system->run(this->em, task->deltaTimeSeconds);
                             } catch(...) {
                                 task->promise->set_exception(std::current_exception());
                                 continue;
@@ -80,7 +80,7 @@ namespace engine {
                 this->threads[i] = std::move(t);
             }
             this->hasBeenSetup = true;
-            this->running = true;
+            this->isRunning = true;
             
             LOG(INFO) << "System dependencies complete.";
         }
@@ -89,7 +89,7 @@ namespace engine {
             if(!this->hasBeenSetup) {
                 throw WTFException("The SystemManager has not been setup yet!");
             }
-            if(!this->running) {
+            if(!this->isRunning) {
                 throw WTFException("The SystemManager has already been stopped!");
             }
             for(size_t i = 0; i < this->numThreads; ++i) {
@@ -98,7 +98,7 @@ namespace engine {
             for(size_t i = 0; i < this->numThreads; ++i) {
                 this->threads[i].join();
             }
-            this->running = false;
+            this->isRunning = false;
         }
         
         void SystemManager::run(SystemType type, float dT) {

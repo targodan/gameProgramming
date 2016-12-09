@@ -33,12 +33,12 @@ namespace engine {
             MessageHandler(const MessageHandler& orig) = delete;
             ~MessageHandler();
 
-            messageId_t registerMessage(const std::string& messageName);
+            messageId_t registerMessageName(const std::string& messageName);
             messageId_t lookupMessageId(const std::string& messageName);
             void queueMessage(const shared_ptr<Message>& msg);
             
-            bool hasMessages() const;
-            shared_ptr<Message> popMessage();
+            bool hasQueuedMessages() const;
+            shared_ptr<Message> popMessageFromQueue();
             
             void registerReceiver(messageId_t msgId, MessageReceiver* recver);
             void dispatch(const shared_ptr<Message>& msg);

@@ -1,5 +1,5 @@
-#ifndef VEC3_H
-#define VEC3_H
+#ifndef VEC2_H
+#define VEC2_H
 
 #include <glm/glm.hpp>
 #include <google/protobuf/message.h>
@@ -34,5 +34,5 @@ namespace engine {
     }
 }
 
-#endif /* VEC3_H */
+#endif /* VEC2_H */
 

@@ -37,19 +37,19 @@ namespace engine {
             entityId_t nextEntityId;
             
             Map<componentId_t, vector<shared_ptr<Component>>> components;
-            Map<entityId_t, Map<componentId_t, size_t>> entities;
+            Map<entityId_t, Map<componentId_t, size_t>> entityComponentIndexes;
             friend Entity;
                 
             Entity createEntity(size_t id, const std::string& name);
             Entity createEntityFromPrefab(const pb::Prefab& msg);
-            void addComponent(entityId_t eId, shared_ptr<Component> comp);
+            void addComponent(entityId_t eId, shared_ptr<Component> component);
             inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
-                return this->entities[eId][compId];
+                return this->entityComponentIndexes[eId][compId];
             }
             shared_ptr<Component> getComponentOfEntity(entityId_t eId, componentId_t compId);
-            bool hasEntityComponent(entityId_t eId, componentId_t compId);
+            bool doesEntityContainComponentOfType(entityId_t eId, componentId_t compId);
             
-            pb::EntityManager msg;
+            pb::EntityManager protobufMessage;
             vector<SerializableComponent*> serializables;
             
         public:
@@ -57,7 +57,7 @@ namespace engine {
             private:
                 EntityManager* em;
                 Array<componentId_t> componentTypes;
-                Array<size_t> components;
+                Array<size_t> componentIndexes;
                 bool isEnd;
                
                 ComponentIterator(EntityManager* em,
@@ -94,8 +94,8 @@ namespace engine {
             
             void clear() {
                 this->components.clear();
-                this->entities.clear();
-                this->msg.Clear();
+                this->entityComponentIndexes.clear();
+                this->protobufMessage.Clear();
                 this->nextEntityId = 0;
                 this->serializables.clear();
             }
@@ -111,10 +111,10 @@ namespace engine {
                         continue;
                     }
                     std::sort(elem.second.begin(), elem.second.end(), [&,this](const shared_ptr<Component>& l, const shared_ptr<Component>& r) -> bool {
-                        if(!this->hasEntityComponent(l->getEntityId(), sortBy)) {
+                        if(!this->doesEntityContainComponentOfType(l->getEntityId(), sortBy)) {
                             return true;
                         }
-                        if(!this->hasEntityComponent(r->getEntityId(), sortBy)) {
+                        if(!this->doesEntityContainComponentOfType(r->getEntityId(), sortBy)) {
                             return false;
                         }
                         auto lOrder = this->getComponentOfEntity(l->getEntityId(), sortBy);
@@ -129,7 +129,7 @@ namespace engine {
                 for(auto& elem : this->components) {
                     size_t i = 0;
                     for(auto& comp : elem.second) {
-                        this->entities[comp->getEntityId()][comp->getComponentId()] = i++;
+                        this->entityComponentIndexes[comp->getEntityId()][comp->getComponentId()] = i++;
                     }
                 }
             }

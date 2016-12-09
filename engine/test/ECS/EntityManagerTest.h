@@ -360,9 +360,9 @@ private:
     void testDeserialization(vector<Entity> entities) {
         CPPUNIT_ASSERT_EQUAL(serializedNextId, this->nextEntityId);
         
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("All entities must be present.", entities.size(), this->entities.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("All entities must be present.", entities.size(), this->entityComponentIndexes.size());
         for(auto e : entities) {
-            CPPUNIT_ASSERT_MESSAGE("All entities must be present.", this->entities.find(e.getId()) != this->entities.end());
+            CPPUNIT_ASSERT_MESSAGE("All entities must be present.", this->entityComponentIndexes.find(e.getId()) != this->entityComponentIndexes.end());
         }
         
         CPPUNIT_ASSERT_EQUAL_MESSAGE("All serializable components must be present.", 6ul, this->serializables.size());

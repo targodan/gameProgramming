@@ -73,7 +73,7 @@ namespace engine {
         }
         
         componentId_t PlacementComponent::getComponentId() const {
-            return PlacementComponent::entityId;
+            return PlacementComponent::typeId;
         }
 
         void PlacementComponent::setComponentTypeId(componentId_t id) {

@@ -16,7 +16,7 @@ namespace engine {
         MessageHandler::~MessageHandler() {
         }
         
-        messageId_t MessageHandler::registerMessage(const std::string& messageName) {
+        messageId_t MessageHandler::registerMessageName(const std::string& messageName) {
             if(messageName == "") {
                 throw IllegalArgumentException("Empty string is not a valid message name.");
             }
@@ -30,11 +30,11 @@ namespace engine {
         }
         
         messageId_t MessageHandler::lookupMessageId(const std::string& messageName) {
-            auto it = this->names.find(messageName);
-            if(it == this->names.end()) {
+            auto idIterator = this->names.find(messageName);
+            if(idIterator == this->names.end()) {
                 throw IllegalArgumentException("Message \"%s\" has not been registered yet.", messageName.c_str());
             }
-            return it->second;
+            return idIterator->second;
         }
         
         void MessageHandler::queueMessage(const shared_ptr<Message>& msg) {
@@ -44,12 +44,12 @@ namespace engine {
             this->queue.push_back(msg);
         }
         
-        bool MessageHandler::hasMessages() const {
+        bool MessageHandler::hasQueuedMessages() const {
             return !this->queue.empty();
         }
         
-        shared_ptr<Message> MessageHandler::popMessage() {
-            if(!this->hasMessages()) {
+        shared_ptr<Message> MessageHandler::popMessageFromQueue() {
+            if(!this->hasQueuedMessages()) {
                 throw EmptyQueueException("Popping on an empty queue is a bad idea.");
             }
             shared_ptr<Message> ret = this->queue.front();
@@ -65,8 +65,8 @@ namespace engine {
             if(this->ids.find(msg->getId()) == this->ids.end()) {
                 throw IllegalArgumentException("The message id %zu is unknown. Did you forget to register?", msg->getId());
             }
-            for(auto& recver : this->receivers[msg->getId()]) {
-                recver->receive(msg);
+            for(auto& receiver : this->receivers[msg->getId()]) {
+                receiver->receive(msg);
             }
         }
     }

@@ -5,14 +5,14 @@
 #include "../WTFException.h"
 
 engine::ECS::componentId_t engine::ECS::ComponentRegistry::nextId = 0;
-std::unique_ptr<engine::util::Map<engine::ECS::componentId_t, engine::ECS::ComponentRegistry::CompInfo>> engine::ECS::ComponentRegistry::registeredComponents = nullptr;
+std::unique_ptr<engine::util::Map<engine::ECS::componentId_t, engine::ECS::ComponentRegistry::ComponentInfo>> engine::ECS::ComponentRegistry::registeredComponents = nullptr;
 std::unique_ptr<engine::util::Map<std::string, engine::ECS::componentId_t>> engine::ECS::ComponentRegistry::componentNames = nullptr;
 
 namespace engine {
     namespace ECS {
         void ComponentRegistry::registerComponent(componentId_t id, std::string name, ComponentInstantiator* ci) {
             if(ComponentRegistry::registeredComponents == nullptr) {
-                ComponentRegistry::registeredComponents = std::make_unique<Map<componentId_t, ComponentRegistry::CompInfo>>();
+                ComponentRegistry::registeredComponents = std::make_unique<Map<componentId_t, ComponentRegistry::ComponentInfo>>();
                 ComponentRegistry::registeredComponents->set_empty_key(SIZE_MAX);
             }
             if(ComponentRegistry::componentNames == nullptr) {
@@ -25,11 +25,11 @@ namespace engine {
             if(ComponentRegistry::componentNames->find(name) != ComponentRegistry::componentNames->end()) {
                 throw CollisionException("Component name %s is ambiguous!", name.c_str());
             }
-            (*ComponentRegistry::registeredComponents)[id] = ComponentRegistry::CompInfo(name, ci);
+            (*ComponentRegistry::registeredComponents)[id] = ComponentRegistry::ComponentInfo(name, ci);
             (*ComponentRegistry::componentNames)[name] = id;
         }
         
-        Component* ComponentRegistry::makeComponentOfType(componentId_t id) {
+        Component* ComponentRegistry::constructComponentOfType(componentId_t id) {
             auto it = ComponentRegistry::registeredComponents->find(id);
             if(it == ComponentRegistry::registeredComponents->end()) {
                 throw UnknownComponentException("Component of type %zu is not registered!", id);
@@ -37,12 +37,12 @@ namespace engine {
             return it->second.instantiator->instantiate();
         }
         
-        Component* ComponentRegistry::makeComponentOfType(std::string name) {
+        Component* ComponentRegistry::constructComponentOfType(std::string name) {
             auto it = ComponentRegistry::componentNames->find(name);
             if(it == ComponentRegistry::componentNames->end()) {
                 throw UnknownComponentException("Component of name %s is not registered!", name.c_str());
             }
-            return ComponentRegistry::makeComponentOfType(it->second);
+            return ComponentRegistry::constructComponentOfType(it->second);
         }
         
         componentId_t ComponentRegistry::getComponentTypeId(std::string name) {

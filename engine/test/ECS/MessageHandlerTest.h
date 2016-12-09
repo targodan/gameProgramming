@@ -42,28 +42,28 @@ private:
         CPPUNIT_ASSERT_EQUAL(0ul, this->ids.size());
         CPPUNIT_ASSERT_EQUAL(0ul, this->names.size());
         
-        this->registerMessage("test");
+        this->registerMessageName("test");
         CPPUNIT_ASSERT_EQUAL(1ul, this->ids.size());
         CPPUNIT_ASSERT_EQUAL(1ul, this->names.size());
         
-        this->registerMessage("test2");
+        this->registerMessageName("test2");
         CPPUNIT_ASSERT_EQUAL(2ul, this->ids.size());
         CPPUNIT_ASSERT_EQUAL(2ul, this->names.size());
         
         CPPUNIT_ASSERT_THROW_MESSAGE("Duplicate names should throw.",
-                this->registerMessage("test"),
+                this->registerMessageName("test"),
                 engine::CollisionException);
         
         CPPUNIT_ASSERT_THROW_MESSAGE("Empty name not allowed.",
-                this->registerMessage(""),
+                this->registerMessageName(""),
                 engine::IllegalArgumentException);
     }
     
     void testLoookupMessageId() {
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         CPPUNIT_ASSERT_EQUAL(id, this->lookupMessageId("test"));
         
-        auto id2 = this->registerMessage("test2");
+        auto id2 = this->registerMessageName("test2");
         CPPUNIT_ASSERT_EQUAL(id, this->lookupMessageId("test"));
         CPPUNIT_ASSERT_EQUAL(id2, this->lookupMessageId("test2"));
         
@@ -75,7 +75,7 @@ private:
     void testQueueMessage() {
         CPPUNIT_ASSERT_EQUAL(0ul, this->queue.size());
         
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         this->queueMessage(std::make_shared<engine::ECS::Message>(id));
         CPPUNIT_ASSERT_EQUAL(1ul, this->queue.size());
         
@@ -88,39 +88,39 @@ private:
     }
     
     void testHasMessages() {
-        CPPUNIT_ASSERT_EQUAL(false, this->hasMessages());
+        CPPUNIT_ASSERT_EQUAL(false, this->hasQueuedMessages());
         
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         this->queueMessage(std::make_shared<engine::ECS::Message>(id));
-        CPPUNIT_ASSERT_EQUAL(true, this->hasMessages());
+        CPPUNIT_ASSERT_EQUAL(true, this->hasQueuedMessages());
         
-        this->popMessage();
+        this->popMessageFromQueue();
         
-        CPPUNIT_ASSERT_EQUAL(false, this->hasMessages());
+        CPPUNIT_ASSERT_EQUAL(false, this->hasQueuedMessages());
     }
     
     void testPopMessage() {
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         auto msg1 = std::make_shared<engine::ECS::Message>(id);
         this->queueMessage(msg1);
         auto msg2 = std::make_shared<engine::ECS::Message>(id);
         this->queueMessage(msg2);
         
-        CPPUNIT_ASSERT_EQUAL(msg1, this->popMessage());
-        CPPUNIT_ASSERT_EQUAL(msg2, this->popMessage());
+        CPPUNIT_ASSERT_EQUAL(msg1, this->popMessageFromQueue());
+        CPPUNIT_ASSERT_EQUAL(msg2, this->popMessageFromQueue());
         CPPUNIT_ASSERT_THROW_MESSAGE("Popping on an empty queue should throw.",
-                this->popMessage(),
+                this->popMessageFromQueue(),
                 engine::EmptyQueueException);
     }
     
     void testRegisterReceiver() {
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         MockReceiver mr(nullptr);
         CPPUNIT_ASSERT_EQUAL(0ul, this->receivers[id].size());
         this->registerReceiver(id, &mr);
         CPPUNIT_ASSERT_EQUAL(1ul, this->receivers[id].size());
         
-        auto id2 = this->registerMessage("test2");
+        auto id2 = this->registerMessageName("test2");
         CPPUNIT_ASSERT_EQUAL(0ul, this->receivers[id2].size());
         this->registerReceiver(id2, &mr);
         CPPUNIT_ASSERT_EQUAL(1ul, this->receivers[id2].size());
@@ -130,8 +130,8 @@ private:
     void testDispatchMessage() {
         size_t counter1 = 0;
         size_t counter2 = 0;
-        auto id = this->registerMessage("test");
-        auto id2 = this->registerMessage("test2");
+        auto id = this->registerMessageName("test");
+        auto id2 = this->registerMessageName("test2");
         MockReceiver mr(&counter1);
         MockReceiver mr2(&counter2);
         this->registerReceiver(id, &mr);
@@ -164,7 +164,7 @@ private:
     
     void testUsualUsage() {
         size_t counter = 0;
-        auto id = this->registerMessage("test");
+        auto id = this->registerMessageName("test");
         MockReceiver mr(&counter);
         this->registerReceiver(id, &mr);
         
@@ -174,8 +174,8 @@ private:
         this->dispatch(std::make_shared<MockMessage>(id, 1));
         this->dispatch(std::make_shared<MockMessage>(id, 1));
         
-        while(this->hasMessages()) {
-            auto msg = this->popMessage();
+        while(this->hasQueuedMessages()) {
+            auto msg = this->popMessageFromQueue();
             this->dispatch(msg);
         }
         CPPUNIT_ASSERT_EQUAL(5ul, counter);

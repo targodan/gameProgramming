@@ -18,7 +18,6 @@
 #include "SerializableComponent.h"
 
 #include "EntityId.h"
-#include "Component.h"
 
 namespace engine {
     namespace ECS {
@@ -31,13 +30,15 @@ namespace engine {
         using engine::IO::Serializable;
 
         class Entity;
+        class Component;
         
         class EntityManager : public Serializable {
         protected:
             entityId_t nextEntityId;
             
-            Map<componentId_t, vector<shared_ptr<Component>>> components;
+            Map<componentId_t, vector<shared_ptr<Component>>> m_components;
             Map<entityId_t, Map<componentId_t, size_t>> entityComponentIndexes;
+            Map<std::string, Entity> m_entities;
             friend Entity;
                 
             Entity createEntity(size_t id, const std::string& name);
@@ -61,7 +62,7 @@ namespace engine {
                 bool isEnd;
                
                 ComponentIterator(EntityManager* em,
-                        const std::initializer_list<componentId_t>& componentTypes);
+                        const Array<componentId_t>& componentTypes);
                 ComponentIterator(EntityManager* em);
                 
                 void setToEnd();
@@ -91,50 +92,30 @@ namespace engine {
             Entity createEntity(const std::string& name);
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData);
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData);
+            void getAllEntites() const;
             
-            void clear() {
-                this->components.clear();
-                this->entityComponentIndexes.clear();
-                this->protobufMessage.Clear();
-                this->nextEntityId = 0;
-                this->serializables.clear();
-            }
+            void clear();
             
             google::protobuf::Message& fromProtobufMessage() override;
             void afterProtobufMessageUpdate() override;
             const google::protobuf::Message& toProtobufMessage() override;
             
-            void sort(componentId_t sortBy, std::function<bool(shared_ptr<Component>,shared_ptr<Component>)> comparator) {
-                // Sort all except the sortBy component
-                for(auto& elem : this->components) {
-                    if(elem.first == sortBy) {
-                        continue;
-                    }
-                    std::sort(elem.second.begin(), elem.second.end(), [&,this](const shared_ptr<Component>& l, const shared_ptr<Component>& r) -> bool {
-                        if(!this->doesEntityContainComponentOfType(l->getEntityId(), sortBy)) {
-                            return true;
-                        }
-                        if(!this->doesEntityContainComponentOfType(r->getEntityId(), sortBy)) {
-                            return false;
-                        }
-                        auto lOrder = this->getComponentOfEntity(l->getEntityId(), sortBy);
-                        auto rOrder = this->getComponentOfEntity(r->getEntityId(), sortBy);
-                        return bool(comparator(lOrder, rOrder));
-                    });
-                }
-                // Sort the sortBy component
-                std::sort(this->components[sortBy].begin(), this->components[sortBy].end(), comparator);
+            void sort(componentId_t sortBy, std::function<bool(shared_ptr<Component>,shared_ptr<Component>)> comparator);
+            
+            class ComponentsProxy {
+            protected:
+                EntityManager* em;
+                Array<componentId_t> componentTypes;
                 
-                // update all this->entities[*] entries
-                for(auto& elem : this->components) {
-                    size_t i = 0;
-                    for(auto& comp : elem.second) {
-                        this->entityComponentIndexes[comp->getEntityId()][comp->getComponentId()] = i++;
-                    }
-                }
-            }
-            ComponentIterator begin(const std::initializer_list<componentId_t>& componentTypes);
-            ComponentIterator end();
+            public:
+                ComponentsProxy(EntityManager* em, const std::initializer_list<componentId_t>& componentTypes)
+                : em(em), componentTypes(componentTypes) {}
+                
+                ComponentIterator begin();
+                ComponentIterator end();
+            };
+            
+            ComponentsProxy components(const std::initializer_list<componentId_t>& componentTypes);
         };
     }
 }

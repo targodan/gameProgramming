@@ -1,22 +1,27 @@
 #include "EntityManager.h"
 
 #include "Entity.h"
+#include "Component.h"
 #include "ComponentRegistry.h"
 
 namespace engine {
     namespace ECS {
         EntityManager::EntityManager() : nextEntityId(0) {
-            this->components.set_empty_key(SIZE_MAX);
+            this->m_components.set_empty_key(SIZE_MAX);
             this->entityComponentIndexes.set_empty_key(SIZE_MAX);
+            this->m_entities.set_empty_key("");
         }
-            entityId_t nextEntityId;
-            
-            Map<componentId_t, vector<shared_ptr<Component>>> components;
-            Map<entityId_t, Map<componentId_t, size_t>> entities;
-            pb::EntityManager msg;
-            vector<SerializableComponent*> serializables;
 
         EntityManager::~EntityManager() {
+        }
+            
+        void EntityManager::clear() {
+            this->m_components.clear();
+            this->entityComponentIndexes.clear();
+            this->protobufMessage.Clear();
+            this->nextEntityId = 0;
+            this->serializables.clear();
+            this->m_entities.clear();
         }
         
         Entity EntityManager::createEntity(const std::string& name) {
@@ -24,9 +29,10 @@ namespace engine {
         }
         
         Entity EntityManager::createEntity(size_t id, const std::string& name) {
-            auto ret = Entity(id, this, name);
-            this->entityComponentIndexes[ret.getId()].set_empty_key(SIZE_MAX);
-            return ret;
+            auto entity = Entity(id, this, name);
+            this->entityComponentIndexes[entity.getId()].set_empty_key(SIZE_MAX);
+            this->m_entities[entity.getName()] = entity;
+            return entity;
         }
         
         Entity EntityManager::createEntityFromPrefab(const pb::Prefab& prefab) {
@@ -71,7 +77,7 @@ namespace engine {
         }
         
         void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> component) {
-            auto& vec = this->components[component->getComponentId()];
+            auto& vec = this->m_components[component->getComponentId()];
             vec.push_back(component);
             
             auto itMap = this->entityComponentIndexes.find(eId);
@@ -85,6 +91,40 @@ namespace engine {
             if(serializable != nullptr) /* is of type SerializableComponent */ {
                 this->serializables.push_back(serializable);
             }
+        }
+        
+        void EntityManager::sort(componentId_t sortBy, std::function<bool(shared_ptr<Component>,shared_ptr<Component>)> comparator) {
+            // Sort all except the sortBy component
+            for(auto& elem : this->m_components) {
+                if(elem.first == sortBy) {
+                    continue;
+                }
+                std::sort(elem.second.begin(), elem.second.end(), [&,this](const shared_ptr<Component>& l, const shared_ptr<Component>& r) -> bool {
+                    if(!this->doesEntityContainComponentOfType(l->getEntityId(), sortBy)) {
+                        return true;
+                    }
+                    if(!this->doesEntityContainComponentOfType(r->getEntityId(), sortBy)) {
+                        return false;
+                    }
+                    auto lOrder = this->getComponentOfEntity(l->getEntityId(), sortBy);
+                    auto rOrder = this->getComponentOfEntity(r->getEntityId(), sortBy);
+                    return bool(comparator(lOrder, rOrder));
+                });
+            }
+            // Sort the sortBy component
+            std::sort(this->m_components[sortBy].begin(), this->m_components[sortBy].end(), comparator);
+
+            // update all this->entities[*] entries
+            for(auto& elem : this->m_components) {
+                size_t i = 0;
+                for(auto& comp : elem.second) {
+                    this->entityComponentIndexes[comp->getEntityId()][comp->getComponentId()] = i++;
+                }
+            }
+        }
+        
+        void EntityManager::getAllEntites() const {
+//            return this->entities.
         }
         
         google::protobuf::Message& EntityManager::fromProtobufMessage() {
@@ -138,25 +178,25 @@ namespace engine {
         }
         
         shared_ptr<Component> EntityManager::getComponentOfEntity(entityId_t eId, componentId_t compId) {
-            return this->components[compId][this->getComponentIndexOfEntity(eId, compId)];
+            return this->m_components[compId][this->getComponentIndexOfEntity(eId, compId)];
         }
         
         bool EntityManager::doesEntityContainComponentOfType(entityId_t eId, componentId_t compId) {
             return this->entityComponentIndexes[eId].find(compId) != this->entityComponentIndexes[eId].end();
         }
             
-        EntityManager::ComponentIterator EntityManager::begin(const std::initializer_list<componentId_t>& componentTypes) {
-            return ComponentIterator(this, componentTypes);
+        EntityManager::ComponentIterator EntityManager::ComponentsProxy::begin() {
+            return ComponentIterator(this->em, this->componentTypes);
         }
         
-        EntityManager::ComponentIterator EntityManager::end() {
-            auto it = ComponentIterator(this);
+        EntityManager::ComponentIterator EntityManager::ComponentsProxy::end() {
+            auto it = ComponentIterator(this->em);
             return it;
         }
         
         
         EntityManager::ComponentIterator::ComponentIterator(EntityManager* em,
-                const std::initializer_list<componentId_t>& componentTypes)
+                const Array<componentId_t>& componentTypes)
                 : em(em), componentTypes(componentTypes), componentIndexes(componentTypes.size()), isEnd(false) {
         }
         
@@ -192,7 +232,7 @@ namespace engine {
             }
             while(true) {
                 ++this->componentIndexes[0];
-                if(this->componentIndexes[0] >= this->em->components[this->componentTypes[0]].size()) {
+                if(this->componentIndexes[0] >= this->em->m_components[this->componentTypes[0]].size()) {
                     this->setToEnd();
                     break;
                 }
@@ -204,7 +244,7 @@ namespace engine {
                         break;
                     }
                     this->componentIndexes[i] = this->em->getComponentIndexOfEntity(eId, this->componentTypes[i]);
-                    if(this->componentIndexes[i] >= this->em->components[this->componentTypes[i]].size()) {
+                    if(this->componentIndexes[i] >= this->em->m_components[this->componentTypes[i]].size()) {
                         allGood = false;
                         break;
                     }
@@ -231,7 +271,7 @@ namespace engine {
         }
 
         shared_ptr<Component>& EntityManager::ComponentIterator::operator[](std::size_t index) {
-            return this->em->components[this->componentTypes[index]][this->componentIndexes[index]];
+            return this->em->m_components[this->componentTypes[index]][this->componentIndexes[index]];
         }
         
         bool EntityManager::ComponentIterator::operator!=(const ComponentIterator& right) const {
@@ -259,6 +299,10 @@ namespace engine {
                 }
             }
             return true;
+        }
+            
+        EntityManager::ComponentsProxy EntityManager::components(const std::initializer_list<componentId_t>& componentTypes) {
+            return ComponentsProxy(this, componentTypes);
         }
     }
 }

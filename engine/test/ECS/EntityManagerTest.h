@@ -70,23 +70,23 @@ private:
             .addComponent<Comp5>(5);
         
         {
-            CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp1::getComponentTypeId()].size());
-            auto ptr = this->components[Comp1::getComponentTypeId()][0].get();
+            CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp1::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp1::getComponentTypeId()][0].get();
             CPPUNIT_ASSERT_EQUAL(1ul, dynamic_cast<Comp1*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp2::getComponentTypeId()].size());
-            auto ptr = this->components[Comp2::getComponentTypeId()][0].get();
+            CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp2::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp2::getComponentTypeId()][0].get();
             CPPUNIT_ASSERT_EQUAL(2ul, dynamic_cast<Comp2*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp4::getComponentTypeId()].size());
-            auto ptr = this->components[Comp4::getComponentTypeId()][0].get();
+            CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp4::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp4::getComponentTypeId()][0].get();
             CPPUNIT_ASSERT_EQUAL(4ul, dynamic_cast<Comp4*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp5::getComponentTypeId()].size());
-            auto ptr = this->components[Comp5::getComponentTypeId()][0].get();
+            CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp5::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp5::getComponentTypeId()][0].get();
             CPPUNIT_ASSERT_EQUAL(5ul, dynamic_cast<Comp5*>(ptr)->getData());
         }
         
@@ -97,23 +97,23 @@ private:
             .addComponent<Comp5>(9);
         
         {
-            CPPUNIT_ASSERT_EQUAL(2ul, this->components[Comp1::getComponentTypeId()].size());
-            auto ptr = this->components[Comp1::getComponentTypeId()][1].get();
+            CPPUNIT_ASSERT_EQUAL(2ul, this->m_components[Comp1::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp1::getComponentTypeId()][1].get();
             CPPUNIT_ASSERT_EQUAL(6ul, dynamic_cast<Comp1*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp3::getComponentTypeId()].size());
-            auto ptr = this->components[Comp3::getComponentTypeId()][0].get();
+            CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp3::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp3::getComponentTypeId()][0].get();
             CPPUNIT_ASSERT_EQUAL(7ul, dynamic_cast<Comp3*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(2ul, this->components[Comp4::getComponentTypeId()].size());
-            auto ptr = this->components[Comp4::getComponentTypeId()][1].get();
+            CPPUNIT_ASSERT_EQUAL(2ul, this->m_components[Comp4::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp4::getComponentTypeId()][1].get();
             CPPUNIT_ASSERT_EQUAL(8ul, dynamic_cast<Comp4*>(ptr)->getData());
         }
         {
-            CPPUNIT_ASSERT_EQUAL(2ul, this->components[Comp5::getComponentTypeId()].size());
-            auto ptr = this->components[Comp5::getComponentTypeId()][1].get();
+            CPPUNIT_ASSERT_EQUAL(2ul, this->m_components[Comp5::getComponentTypeId()].size());
+            auto ptr = this->m_components[Comp5::getComponentTypeId()][1].get();
             CPPUNIT_ASSERT_EQUAL(9ul, dynamic_cast<Comp5*>(ptr)->getData());
         }
     }
@@ -261,23 +261,23 @@ private:
             return l.getOrder() < r.getOrder();
         });
         
-        auto comp1 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp1::getComponentTypeId()], [](const auto& _c) {
+        auto comp1 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->m_components[Comp1::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp1&>(*_c.get());
             return c.getData();
         });
-        auto comp2 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp2::getComponentTypeId()], [](const auto& _c) {
+        auto comp2 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->m_components[Comp2::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp2&>(*_c.get());
             return c.getData();
         });
-        auto comp4 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp4::getComponentTypeId()], [](const auto& _c) {
+        auto comp4 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->m_components[Comp4::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp4&>(*_c.get());
             return c.getData();
         });
-        auto comp5 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[Comp5::getComponentTypeId()], [](const auto& _c) {
+        auto comp5 = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->m_components[Comp5::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const Comp5&>(*_c.get());
             return c.getData();
         });
-        auto sortComp = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->components[SortComponent::getComponentTypeId()], [](const auto& _c) {
+        auto sortComp = map_to<std::shared_ptr<engine::ECS::Component>, size_t, vector<size_t>>(this->m_components[SortComponent::getComponentTypeId()], [](const auto& _c) {
             const auto& c = static_cast<const SortComponent&>(*_c.get());
             return c.getOrder();
         });
@@ -435,8 +435,8 @@ private:
             );
         
         CPPUNIT_ASSERT_EQUAL(std::string("test1"), e1.getName());
-        CPPUNIT_ASSERT_EQUAL(1ul, this->components.size());
-        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp1::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->m_components.size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp1::getComponentTypeId()].size());
         CPPUNIT_ASSERT_EQUAL(42ul, this->getComponentOfEntity(e1.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
         
         auto e2 = this->createEntityFromPrefab(serializer,
@@ -462,10 +462,10 @@ private:
             );
         
         CPPUNIT_ASSERT_EQUAL(std::string("test2"), e2.getName());
-        CPPUNIT_ASSERT_EQUAL(3ul, this->components.size());
-        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp1::getComponentTypeId()].size());
-        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp3::getComponentTypeId()].size());
-        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp5::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(3ul, this->m_components.size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp1::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp3::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->m_components[Comp5::getComponentTypeId()].size());
         CPPUNIT_ASSERT_EQUAL(666ul, this->getComponentOfEntity(e2.getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
         CPPUNIT_ASSERT_EQUAL(12ul, this->getComponentOfEntity(e2.getId(), Comp5::getComponentTypeId())->to<Comp5>().getData());
     }

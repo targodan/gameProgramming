@@ -218,19 +218,14 @@
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
@@ -250,15 +245,14 @@
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
             <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
@@ -280,19 +274,14 @@
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
@@ -303,43 +292,25 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/util/pb</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECSCommon/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>src/util/pb</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
@@ -347,29 +318,25 @@
         </ccTool>
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
             <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
@@ -442,13 +409,14 @@
         </ccTool>
       </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="4">
           <incDir>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/glm</pElem>
+            <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
@@ -560,7 +528,7 @@
         </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
+        <ccTool flags="2">
           <incDir>
             <pElem>src</pElem>
             <pElem>test</pElem>

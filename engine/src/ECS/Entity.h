@@ -24,8 +24,11 @@ namespace engine {
             friend class EntityManager;
             Entity(entityId_t id, EntityManager* em, const std::string& name);
         public:
-            Entity(const Entity& orig) = default;
+            Entity(const Entity& orig);
             virtual ~Entity() = default;
+            
+            Entity& operator=(const Entity& orig);
+            Entity& operator=(Entity&& orig);
             
             entityId_t getId() const;
             const std::string& getName() const;

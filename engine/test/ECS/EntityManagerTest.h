@@ -31,6 +31,7 @@ class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST(testSort);
     CPPUNIT_TEST(testSerializeDeserializeHuman);
     CPPUNIT_TEST(testSerializeDeserializeBinary);
+    CPPUNIT_TEST(testCreatePrefab);
     CPPUNIT_TEST_SUITE_END();
     
 public:
@@ -414,6 +415,59 @@ private:
         engine::IO::SerializerFactory::binarySerializer().deserialize(*this, buf);
         
         testDeserialization(entities);
+    }
+    
+    void testCreatePrefab() {
+        auto& serializer = engine::IO::SerializerFactory::humanReadableSerializer();
+        auto e1 = this->createEntityFromPrefab(serializer,
+                "{"
+                "   \"entityName\": \"test1\","
+                "   \"components\": ["
+                "       {"
+                "           \"componentTypeName\": \"Comp1\","
+                "           \"component\": {"
+                "               \"@type\": \"type.googleapis.com/pb.Comp1\","
+                "               \"data\": 42"
+                "           }"
+                "       }"
+                "   ]"
+                "}"
+            );
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("test1"), e1.getName());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->components.size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp1::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(42ul, this->getComponentOfEntity(e1.getId(), Comp1::getComponentTypeId())->to<Comp1>().getData());
+        
+        auto e2 = this->createEntityFromPrefab(serializer,
+                "{"
+                "   \"entityName\": \"test2\","
+                "   \"components\": ["
+                "       {"
+                "           \"componentTypeName\": \"Comp3\","
+                "           \"component\": {"
+                "               \"@type\": \"type.googleapis.com/pb.Comp3\","
+                "               \"data\": 666"
+                "           }"
+                "       },"
+                "       {"
+                "           \"componentTypeName\": \"Comp5\","
+                "           \"component\": {"
+                "               \"@type\": \"type.googleapis.com/pb.Comp5\","
+                "               \"data\": 12"
+                "           }"
+                "       }"
+                "   ]"
+                "}"
+            );
+        
+        CPPUNIT_ASSERT_EQUAL(std::string("test2"), e2.getName());
+        CPPUNIT_ASSERT_EQUAL(3ul, this->components.size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp1::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp3::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(1ul, this->components[Comp5::getComponentTypeId()].size());
+        CPPUNIT_ASSERT_EQUAL(666ul, this->getComponentOfEntity(e2.getId(), Comp3::getComponentTypeId())->to<Comp3>().getData());
+        CPPUNIT_ASSERT_EQUAL(12ul, this->getComponentOfEntity(e2.getId(), Comp5::getComponentTypeId())->to<Comp5>().getData());
     }
 };
 

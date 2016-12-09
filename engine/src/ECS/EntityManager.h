@@ -5,12 +5,15 @@
 #include <cstring>
 #include <initializer_list>
 #include <functional>
+#include <string>
+#include <iostream>
 
 #include "../WTFException.h"
 #include "../util/Array.h"
 #include "../util/Map.h"
 #include "../util/vector.h"
 #include "../IO/Serializable.h"
+#include "../IO/Serializer.h"
 #include "pb/EntityManager.pb.h"
 #include "SerializableComponent.h"
 
@@ -38,6 +41,7 @@ namespace engine {
             friend Entity;
                 
             Entity createEntity(size_t id, const std::string& name);
+            Entity createEntityFromPrefab(const pb::Prefab& msg);
             void addComponent(entityId_t eId, shared_ptr<Component> comp);
             inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
                 return this->entities[eId][compId];
@@ -85,6 +89,9 @@ namespace engine {
             virtual ~EntityManager();
             
             Entity createEntity(const std::string& name);
+            Entity createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData);
+            Entity createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData);
+            
             void clear() {
                 this->components.clear();
                 this->entities.clear();

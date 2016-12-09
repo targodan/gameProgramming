@@ -26,6 +26,12 @@
           <in>PlacementSystem.cpp</in>
         </df>
         <df name="IO">
+          <in>Command.h</in>
+          <in>Console.cpp</in>
+          <in>Console.h</in>
+          <in>EntityCommand.cpp</in>
+          <in>EntityCommand.h</in>
+          <in>Keys.h</in>
           <in>Serializable.h</in>
           <in>Serializer.h</in>
           <in>SerializerFactory.cpp</in>
@@ -42,6 +48,7 @@
             <in>vec.pb.cc</in>
           </df>
           <in>ostream_helper.cpp</in>
+          <in>stringstream.h</in>
           <in>vec2.h</in>
           <in>vec3.h</in>
           <in>vec4.h</in>
@@ -50,6 +57,7 @@
         <in>Exception.cpp</in>
         <in>GLException.h</in>
         <in>Game.cpp</in>
+        <in>InvalidConversionException.h</in>
       </df>
       <df name="test">
         <df name="ECS">
@@ -64,6 +72,9 @@
           <in>SystemManagerTest.cpp</in>
         </df>
         <df name="IO">
+          <in>ConsoleTest.cpp</in>
+          <in>ConsoleTest.h</in>
+          <in>MockCommands.h</in>
           <in>SerializerTest.cpp</in>
           <in>SerializerTest.h</in>
           <in>serializer_test.pb.cc</in>
@@ -105,9 +116,8 @@
         <element flagsID="0" commonFlags="-mtune=generic -march=x86-64"/>
         <element flagsID="1"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14"/>
-        <element flagsID="3" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="4" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="2" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -147,16 +157,6 @@
             <pElem>src/ECSCommon/pb</pElem>
             <pElem>/usr/include/google/protobuf/io</pElem>
             <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/src/IO">
-        <ccTool>
-          <incDir>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf/util</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -208,6 +208,7 @@
         <ccTool flags="1">
           <incDir>
             <pElem>src/ECS</pElem>
+            <pElem>src</pElem>
             <pElem>/usr/include/sparsehash</pElem>
             <pElem>/usr/include/sparsehash/internal</pElem>
             <pElem>/usr/include/google/protobuf/stubs</pElem>
@@ -217,58 +218,81 @@
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
+            <pElem>src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
+            <pElem>src/util</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
             <pElem>src</pElem>
+            <pElem>src/util</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>src/IO</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
             <pElem>src</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>src/util</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
+            <pElem>src/util</pElem>
             <pElem>src</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
+            <pElem>src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
+            <pElem>src/util</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
@@ -299,14 +323,23 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
           <incDir>
+            <pElem>src/ECS</pElem>
+            <pElem>src/ECSCommon</pElem>
+            <pElem>src/util</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>src/util/pb</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
@@ -324,7 +357,36 @@
       <item path="src/GLException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>src/util</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>src/IO</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="3">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="3">
           <incDir>
             <pElem>src</pElem>
             <pElem>.</pElem>
@@ -336,6 +398,12 @@
       </item>
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>src/IO</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf/util</pElem>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
@@ -390,27 +458,44 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>/usr/include/cppunit/extensions</pElem>
+            <pElem>src/util</pElem>
+            <pElem>src/IO</pElem>
             <pElem>src</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf/util</pElem>
+            <pElem>test/ECS/pb</pElem>
+            <pElem>test/ECS</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
             <pElem>test</pElem>
+            <pElem>/usr/include/cppunit/portability</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
+        <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>/usr/include/cppunit/extensions</pElem>
             <pElem>src</pElem>
-            <pElem>test</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>test/ECS</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>src/util</pElem>
+            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="11">
@@ -434,31 +519,58 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="0">
           <incDir>
+            <pElem>src/ECS</pElem>
+            <pElem>test/ECS</pElem>
+            <pElem>src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>test</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>/usr/include/cppunit/extensions</pElem>
+            <pElem>src/ECS</pElem>
+            <pElem>test/ECS</pElem>
+            <pElem>src/util</pElem>
+            <pElem>/usr/include/cppunit/portability</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src</pElem>
-            <pElem>test</pElem>
+            <pElem>src/ECS/pb</pElem>
+            <pElem>src/IO</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>test</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
@@ -533,7 +645,7 @@
         </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="2">
         </ccTool>
       </item>
     </conf>
@@ -643,6 +755,18 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/IO/Command.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/IO/Console.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/IO/EntityCommand.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/IO/Keys.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/IO/Serializable.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/IO/Serializer.h" ex="false" tool="3" flavor2="0">
@@ -650,6 +774,8 @@
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/IO/SerializerFactory.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/InvalidConversionException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -671,6 +797,8 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/util/stringstream.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/util/vec2.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/vec3.h" ex="false" tool="3" flavor2="0">
@@ -691,6 +819,12 @@
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/ECS/pb/mockcomponents.proto" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/IO/ConsoleTest.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="test/IO/MockCommands.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="0">
       </item>

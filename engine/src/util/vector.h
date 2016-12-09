@@ -12,7 +12,7 @@ namespace engine {
         template<typename _Tp,typename _Alloc=std::allocator<_Tp>>
         class vector : public std::vector<_Tp, _Alloc> {
         private:
-            inline void checkIndex(size_t i) {
+            inline void checkIndex(size_t i) const {
                 if(i >= this->size()) {
                     throw IndexOutOfBoundsException("Index %zu out of bounds. Size %zu.", i, this->size());
                 }

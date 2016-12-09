@@ -8,7 +8,7 @@
 #include <sstream>
 
 #include "ECS/MessageHandler.h"
-#include "ECS/CollisionException.h"
+#include "CollisionException.h"
 #include "IllegalArgumentException.h"
 #include "EmptyQueueException.h"
 
@@ -52,7 +52,7 @@ private:
         
         CPPUNIT_ASSERT_THROW_MESSAGE("Duplicate names should throw.",
                 this->registerMessage("test"),
-                engine::ECS::CollisionException);
+                engine::CollisionException);
         
         CPPUNIT_ASSERT_THROW_MESSAGE("Empty name not allowed.",
                 this->registerMessage(""),

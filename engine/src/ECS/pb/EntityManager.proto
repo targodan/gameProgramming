@@ -6,11 +6,21 @@ import "google/protobuf/any.proto";
 
 message Component {
     uint64 entity_id = 1;
-    uint64 component_type_id = 2;
-    google.protobuf.Any child = 15; // last single-byte index
+    string component_type_name = 2;
+    google.protobuf.Any component = 15; // last single-byte index
 }
 
 message EntityManager {
     uint64 next_entity_id = 1;
     repeated Component components = 15; // last single-byte index
+}
+
+message PrefabComponent {
+    string component_type_name = 2;
+    google.protobuf.Any component = 15; // last single-byte index
+}
+
+message Prefab {
+    string entity_name = 1;
+    repeated PrefabComponent components = 15; // last single-byte index
 }

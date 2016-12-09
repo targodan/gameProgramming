@@ -50,7 +50,15 @@ namespace engine {
                     return google::protobuf::util::JsonStringToMessage(serialized, &msg) == google::protobuf::util::Status::OK;
                 }
                 bool deserialize(google::protobuf::Message& msg, std::istream& serialized) override {
-                    std::string buf(std::istreambuf_iterator<char>(serialized), {});
+                    std::string buf;
+                    
+                    auto begin = serialized.tellg();
+                    serialized.seekg(std::ios::end);
+                    buf.reserve(serialized.tellg()-begin);
+                    serialized.seekg(begin);
+                    
+                    buf.append(std::istreambuf_iterator<char>(serialized), {});
+                    
                     return this->deserialize(msg, buf);
                 }
             };

@@ -29,6 +29,47 @@ namespace engine {
             return ret;
         }
         
+        Entity EntityManager::createEntityFromPrefab(const pb::Prefab& msg) {
+            Entity ret = this->createEntity(msg.entity_name());
+            
+            for(auto& compMsg : msg.components()) {
+                // Create Component
+                auto comp = std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(compMsg.component_type_name()));
+                
+#ifdef DEBUG
+                try {
+#endif
+                    // Must be SerializableComponent
+                    auto& serialiable = comp->to<SerializableComponent>();
+                
+                    // Update the Component
+                    auto& msg = serialiable.fromProtobufMessage();
+                    compMsg.component().UnpackTo(&msg);
+                    serialiable.afterProtobufMessageUpdate();
+#ifdef DEBUG
+                } catch(...) {
+                    throw WTFException("Components in Prefabs must be SerializableComponents. Component of type \"%s\" not a SerializableComponent.", compMsg.component_type_name().c_str());
+                }
+#endif
+                
+                this->addComponent(ret.getId(), comp);
+            }
+            
+            return ret;
+        }
+        
+        Entity EntityManager::createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData) {
+            pb::Prefab msg;
+            serializer.deserialize(msg, serializedData);
+            return this->createEntityFromPrefab(msg);
+        }
+        
+        Entity EntityManager::createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData) {
+            pb::Prefab msg;
+            serializer.deserialize(msg, serializedData);
+            return this->createEntityFromPrefab(msg);
+        }
+        
         void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> comp) {
             auto& vec = this->components[comp->getComponentId()];
             vec.push_back(comp);
@@ -58,8 +99,8 @@ namespace engine {
 
                 auto compMsg = this->msg.add_components();
                 compMsg->set_entity_id(elem->getEntityId());
-                compMsg->set_component_type_id(elem->getComponentId());
-                compMsg->set_allocated_child(wrapper);
+                compMsg->set_component_type_name(ComponentRegistry::getComponentTypeName(elem->getComponentId()));
+                compMsg->set_allocated_component(wrapper);
             }
             return this->msg;
         }
@@ -80,16 +121,17 @@ namespace engine {
                     itE = this->entities.find(compMsg.entity_id());
                 }
                 // Does the entity already have a component of this type?
-                if(itE->second.find(compMsg.component_type_id()) == itE->second.end()) {
+                auto componentTypeId = ComponentRegistry::getComponentTypeId(compMsg.component_type_name());
+                if(itE->second.find(componentTypeId) == itE->second.end()) {
                     // No => Create it.
-                    this->addComponent(compMsg.entity_id(), std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(compMsg.component_type_id())));
+                    this->addComponent(compMsg.entity_id(), std::shared_ptr<Component>(ComponentRegistry::makeComponentOfType(componentTypeId)));
                 }
                 // Retrieve the Component (has to be a SerializableComponent)
-                auto& comp = this->getComponentOfEntity(compMsg.entity_id(), compMsg.component_type_id())
+                auto& comp = this->getComponentOfEntity(compMsg.entity_id(), componentTypeId)
                                     ->to<SerializableComponent>();
                 // Update the Component
                 auto& msg = comp.fromProtobufMessage();
-                compMsg.child().UnpackTo(&msg);
+                compMsg.component().UnpackTo(&msg);
                 comp.afterProtobufMessageUpdate();
             }
             this->msg.Clear();

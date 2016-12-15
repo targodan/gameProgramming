@@ -31,11 +31,12 @@
           <in>Game.cpp</in>
           <in>Window.cpp</in>
         </df>
-        <df name="IO">
-          <in>LevelLoader.cpp</in>
+        <df name="pb">
           <in>level.pb.cc</in>
         </df>
         <in>Game.cpp</in>
+        <in>Grid.h</in>
+        <in>LevelLoader.cpp</in>
         <in>main.cpp</in>
       </df>
       <df name="test">
@@ -80,17 +81,6 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/IO">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
       <folder path="0/src/engine">
         <ccTool>
           <incDir>
@@ -126,12 +116,15 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/IO/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="src/IO/level.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
@@ -224,6 +217,17 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/pb/level.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -262,14 +266,6 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <folder path="0/src/IO">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
       <folder path="0/src/engine">
         <ccTool>
           <incDir>
@@ -298,13 +294,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/IO/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/IO/level.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
+      <item path="src/Grid.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">

@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef ENGINE_GAME_H
+#define ENGINE_GAME_H
 
 #include <easylogging++.h>
 
@@ -25,5 +25,5 @@ namespace engine {
     };
 }
 
-#endif /* GAME_H */
+#endif /* ENGINE_GAME_H */
 

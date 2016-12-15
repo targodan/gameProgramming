@@ -11,6 +11,8 @@
 
 #include <easylogging++.h>
 
+INITIALIZE_EASYLOGGINGPP
+
 namespace engine {
     namespace ECS {
         SystemManager::SystemManager(EntityManager& em) : em(em), threads(0), hasBeenSetup(false), isRunning(false) {

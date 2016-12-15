@@ -4,7 +4,6 @@
 #include <vector>
 #include <initializer_list>
 
-#include "vector.h"
 #include "IndexOutOfBoundsException.h"
 
 namespace engine {

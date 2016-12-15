@@ -30,13 +30,14 @@
 *.exe
 *.out
 *.app
-demo01
-demo02
-demo03
-demo04
-demo05
-demo06
-demo07
+demo01/demo01
+demo02/demo02
+demo03/demo03
+demo04/demo04
+demo05/demo05
+demo06/demo06
+demo07/demo07
+demoGL/demoGL
 runTests
 vgcore.*
 explosionBoy
@@ -52,3 +53,4 @@ explosionBoy
 # protobuf generated
 *.pb.h
 *.pb.cc
+/demoGL/build/

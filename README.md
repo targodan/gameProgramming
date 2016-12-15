@@ -278,3 +278,19 @@ This is less conflict prone.
 ```bash
 $ git pull --rebase
 ```
+
+
+## Dependencies
+
+In order to not spend 90% of your time getting the engine to compile, check this brief overview of programs/external libraries you need to install or update.
+
+* g++ (> v6)
+    * Could be preinstalled as g++-6
+* GLFW3
+    * Needed for building glfw: xorg-dev, libglu1-mesa-dev
+* GLM
+* Google Sparse Hash
+* Protobuf (== v3.0.2)
+* Easylogging++
+* cppunit
+* boost

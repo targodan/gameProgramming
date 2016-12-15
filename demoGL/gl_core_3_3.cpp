@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include "gl_core_3_3.h"
 
-namespace ogl {
+namespace gl {
     #if defined(__APPLE__)
     #include <dlfcn.h>
 

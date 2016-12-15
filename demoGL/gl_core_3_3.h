@@ -981,7 +981,7 @@ extern "C" {
 #define GL_TIME_ELAPSED 0x88BF
 #define GL_VERTEX_ATTRIB_ARRAY_DIVISOR 0x88FE
 
-namespace ogl {
+namespace gl {
     extern void (CODEGEN_FUNCPTR *_ptrc_glBlendFunc)(GLenum sfactor, GLenum dfactor);
     #define glBlendFunc _ptrc_glBlendFunc
     extern void (CODEGEN_FUNCPTR *_ptrc_glClear)(GLbitfield mask);

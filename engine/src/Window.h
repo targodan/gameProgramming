@@ -1,13 +1,13 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "renderer/glloadgen/gl_core_3_3.h"
+#include "renderer/gl/gl_core_3_3.h"
 #include <GLFW/glfw3.h>
 
 #include <string>
 
 namespace engine {
-    using namespace ogl;	
+    using namespace renderer::gl;	
 
     class Window {
     private:

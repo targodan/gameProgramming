@@ -3,7 +3,7 @@
 #include "GLException.h"
 
 namespace engine {
-    using namespace ogl;
+    using namespace renderer::gl;
     Window::Window(int width, int height, std::string title) 
         : width(width), height(height), title(title.c_str()) {
 

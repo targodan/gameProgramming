@@ -11,6 +11,10 @@ namespace engine {
         class vec2 : public glm::vec2 {
         public:
             vec2() : glm::vec2() {}
+            vec2(float x, float y) : glm::vec2(x, y) {}
+            
+            vec2(const vec2& orig) : glm::vec2(orig) {}
+            vec2(vec2&& orig) : glm::vec2(std::move(orig)) {}
             
             vec2& operator=(const vec2& right) {
                 glm::vec2::operator=(right);

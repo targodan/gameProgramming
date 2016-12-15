@@ -7,6 +7,8 @@ namespace explosionBoy {
     class Game : public engine::Game {
     public:
         Game(int argc, char** argv) : engine::Game(argc, argv) {}
+        
+        void initialize() override;
     };
 }
 

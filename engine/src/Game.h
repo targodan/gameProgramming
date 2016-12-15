@@ -12,8 +12,9 @@ namespace engine {
     class Game {
     private:
         bool running = false;
-        const double ups;
+        const double updatesPerSecond;
         bool aboutToClose = false; // Note: Probably temporary, used for testing
+        bool shutdownComplete = false;
         
     protected:
         Window window{1024,768};
@@ -21,9 +22,9 @@ namespace engine {
         ECS::SystemManager systemManager;
         ECS::MessageHandler messageHandler;
 
-        virtual void render() = 0;
-        virtual void update() = 0;
-        virtual void processEvents() = 0;
+        virtual void render(double deltaTimeSeconds);
+        virtual void update(double deltaTimeSeconds);
+        virtual void processEvents();
     
     public:
         Game(int argc, char** argv, double ups=60);
@@ -36,7 +37,7 @@ namespace engine {
         virtual void run();
         
         bool isRunning() const;
-        const int getUPS() const;
+        const int getUpdatesPerSecond() const;
         bool isAboutToClose() const;
         void setAboutToClose(const bool aboutToClose);
     };

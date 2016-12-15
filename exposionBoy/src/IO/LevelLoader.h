@@ -4,6 +4,8 @@
 #include <fstream>
 
 #include "engine/ECS/EntityManager.h"
+#include "engine/renderer/Mesh.h"
+#include "engine/renderer/Vertex.h"
 
 #include "level.pb.h"
 
@@ -13,7 +15,8 @@ namespace explosionBoy {
         protected:
             std::ifstream levelFile;
             
-            void createOuterWalls(const Level& level) const;
+            engine::renderer::Mesh createOuterWallsMesh(const Level& level) const;
+            engine::renderer::Mesh createPillarsMesh(const Level& level, size_t x, size_t y) const;
 
         public:
             LevelLoader(const std::string& filename);

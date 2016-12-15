@@ -13,6 +13,7 @@ namespace engine {
             vec2() : glm::vec2() {}
             vec2(float x, float y) : glm::vec2(x, y) {}
             
+            vec2(const glm::vec2& orig) : glm::vec2(orig) {}
             vec2(const vec2& orig) : glm::vec2(orig) {}
             vec2(vec2&& orig) : glm::vec2(std::move(orig)) {}
             
@@ -33,6 +34,11 @@ namespace engine {
             inline void fromProtobufMessage(pb::vec& msg) {
                 this->x = msg.x();
                 this->y = msg.y();
+            }
+            
+            friend std::ostream& operator<<(std::ostream& os, const vec2& vec) {
+                os << "(" << vec.x << ", " << vec.y << ")";
+                return os;
             }
         };
     }

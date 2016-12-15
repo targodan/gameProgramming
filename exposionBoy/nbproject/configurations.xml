@@ -5,6 +5,7 @@
       <df name="src">
         <df name="engine">
           <df name="ECS">
+            <in>ComponentRegistry.cpp</in>
             <in>Entity.cpp</in>
             <in>EntityManager.cpp</in>
             <in>MessageHandler.cpp</in>
@@ -12,6 +13,7 @@
             <in>SystemRegistry.cpp</in>
           </df>
           <df name="ECSCommon">
+            <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
           </df>
           <df name="IO">
@@ -31,14 +33,18 @@
           <in>Game.cpp</in>
           <in>Window.cpp</in>
         </df>
-        <df name="IO">
-          <in>LevelLoader.cpp</in>
+        <df name="pb">
           <in>level.pb.cc</in>
         </df>
+        <in>FormatException.h</in>
         <in>Game.cpp</in>
+        <in>Grid.h</in>
+        <in>LevelLoader.cpp</in>
         <in>main.cpp</in>
       </df>
       <df name="test">
+        <in>LevelLoaderTest.cpp</in>
+        <in>LevelLoaderTest.h</in>
         <in>main.cpp</in>
       </df>
     </df>
@@ -63,8 +69,10 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -pedantic"/>
-        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
+        <element flagsID="0" commonFlags="-std=c++14"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic"/>
+        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -80,7 +88,31 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/IO">
+      <folder path="0/src/engine">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/IO">
+        <ccTool>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/renderer">
+        <ccTool>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/pb">
         <ccTool>
           <incDir>
             <pElem>src</pElem>
@@ -88,18 +120,6 @@
           </incDir>
           <preprocessorList>
             <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine">
-        <ccTool>
-          <incDir>
-            <pElem>../engine/src</pElem>
-            <pElem>../engine</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </folder>
@@ -116,7 +136,7 @@
         </ccTool>
       </folder>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>src</pElem>
             <pElem>.</pElem>
@@ -126,95 +146,150 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/IO/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+      <item path="src/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/IO/level.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+      <item path="src/engine/ECS/ComponentRegistry.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/PlacementComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/renderer/ShaderProgram.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexArray.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexBuffer.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/renderer/gl/gl_core_3_3.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>src</pElem>
             <pElem>.</pElem>
@@ -224,8 +299,16 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/pb/level.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="test/LevelLoaderTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
     </conf>
@@ -262,14 +345,6 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <folder path="0/src/IO">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
       <folder path="0/src/engine">
         <ccTool>
           <incDir>
@@ -290,6 +365,8 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <item path="src/FormatException.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
@@ -298,13 +375,7 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/IO/LevelLoader.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/IO/level.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
+      <item path="src/Grid.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
@@ -392,6 +463,10 @@
             <pElem>.</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="test/LevelLoaderTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="test/LevelLoaderTest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include "../util/vec4.h"
+
 namespace engine {
     namespace renderer {
         Mesh::Mesh(Array<Vertex> vertices, Array<GLuint> indices, GLenum usage) 
@@ -70,6 +72,22 @@ namespace engine {
         void Mesh::releaseMesh() {
             glDeleteBuffers(1, &this->vbo);
             glDeleteVertexArrays(1, &this->vao);
+        }
+        
+        void Mesh::applyTransformation(glm::mat4 transformMatrix) {
+            if(this->vertices.size() > 16) {
+                this->applyTransformation_Parallel(transformMatrix);
+            } else {
+                this->applyTransformation_Sequential(transformMatrix);
+            }
+        }
+        
+        void Mesh::applyTransformation(glm::mat3 transformMatrix) {
+            if(this->vertices.size() > 16) {
+                this->applyTransformation_Parallel(transformMatrix);
+            } else {
+                this->applyTransformation_Sequential(transformMatrix);
+            }
         }
     }
 }

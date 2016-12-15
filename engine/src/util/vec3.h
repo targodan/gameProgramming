@@ -8,11 +8,14 @@
 
 namespace engine {
     namespace util {
+        class vec4;
+        
         class vec3 : public glm::vec3 {
         public:
             vec3() : glm::vec3() {}
             vec3(float x, float y, float z) : glm::vec3(x, y, z) {}
             
+            vec3(const glm::vec3& orig) : glm::vec3(orig) {}
             vec3(const vec3& orig) : glm::vec3(orig) {}
             vec3(vec3&& orig) : glm::vec3(std::move(orig)) {}
             
@@ -38,6 +41,13 @@ namespace engine {
                 this->y = msg.y();
                 this->z = msg.z();
             }
+            
+            friend std::ostream& operator<<(std::ostream& os, const vec3& vec) {
+                os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+                return os;
+            }
+            
+            operator vec4() const;
         };
     }
 }

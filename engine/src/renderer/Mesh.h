@@ -4,6 +4,7 @@
 #include "../util/Array.h"
 #include "Vertex.h"
 #include "gl/gl_core_3_3.h"
+#include <glm/matrix.hpp>
 
 namespace engine {
     namespace renderer {
@@ -24,7 +25,10 @@ namespace engine {
             
             std::string getUsage() const;
             
-        private:
+            inline void applyTransformation(glm::mat4 transformMatrix);
+            inline void applyTransformation(glm::mat3 transformMatrix);
+            
+        protected:
             GLenum usage;
             
             GLuint vao, vbo;
@@ -34,6 +38,22 @@ namespace engine {
             
             void initMesh();
             void releaseMesh();
+            
+            template<class mat_t>
+            void applyTransformation_Parallel(mat_t transformMatrix) {
+                #pragma omp parallel for schedule(static)
+                for(size_t i = 0; i < this->vertices.size(); ++i) {
+                    this->vertices[i].position = transformMatrix * this->vertices[i].position;
+                    this->vertices[i].normal = transformMatrix * this->vertices[i].normal;
+                }
+            }
+            template<class mat_t>
+            void applyTransformation_Sequential(mat_t transformMatrix) {
+                for(size_t i = 0; i < this->vertices.size(); ++i) {
+                    this->vertices[i].position = transformMatrix * this->vertices[i].position;
+                    this->vertices[i].normal = transformMatrix * this->vertices[i].normal;
+                }
+            }
         };
     }
 }

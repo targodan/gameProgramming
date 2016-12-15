@@ -3,6 +3,9 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <df name="IO">
+          <in>LevelLoader.h</in>
+        </df>
         <in>main.cpp</in>
       </df>
       <df name="test">
@@ -74,6 +77,8 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <item path="src/IO/LevelLoader.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>

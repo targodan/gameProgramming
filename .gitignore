@@ -39,10 +39,12 @@ demo06
 demo07
 runTests
 vgcore.*
+explosionBoy
 
 # Netbeans
 **/nbproject/private/*
 /engine/build/
+/exposionBoy/build/
 
 # Logs
 *.log

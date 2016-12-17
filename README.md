@@ -1,5 +1,11 @@
 # GameDevelopment
 
+## The Coordinate System
+
+North is the negative Z-Axis, west is the negative X-Axis.
+
+![CoordinateSystem](coordinates.svg)
+
 ## Code Convention - **draft**
 
 The dos and don'ts of this project.

@@ -4,7 +4,7 @@
 
 North is the negative Z-Axis, west is the negative X-Axis.
 
-![CoordinateSystem](coordinates.svg)
+![CoordinateSystem](https://www.corbatto.de/coordinates.svg)
 
 ## Code Convention - **draft**
 

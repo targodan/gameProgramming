@@ -21,11 +21,6 @@ namespace explosionBoy {
         this->grid = Grid(this->level.grid());
     }
     
-    LevelLoader& LevelLoader::operator=(const LevelLoader& right) {
-        this->grid = right.grid;
-        this->level = right.level;
-    }
-    
     void LevelLoader::checkWallsString() const {
         if(static_cast<uint64_t>(this->level.walls().size()) != this->grid.getNumCellsY()*2-1) {
             throw FormatException("Invalid number of wall-string-rows! With %ul cells in y, you should have %ul rows in the wall-string.", this->grid.getNumCellsY(), this->grid.getNumCellsY()*2-1);
@@ -217,8 +212,76 @@ namespace explosionBoy {
     }
     
     engine::renderer::Mesh LevelLoader::createWallMeshEastOfCell(size_t x, size_t y) const {
+        vec3 lowerNorthWest = this->grid.cellToWorldCoords(0, 0).northEastCorner();
+        vec3 upperNorthWest = vec3(lowerNorthWest.x, this->grid.getCeilingHeight(), lowerNorthWest.z);
+        
+        vec3 lowerNorthEast = vec3(lowerNorthWest.x + this->grid.getWallThickness(), 0, lowerNorthWest.z);
+        vec3 upperNorthEast = vec3(lowerNorthEast.x, this->grid.getCeilingHeight(), lowerNorthEast.z);
+        
+        vec3 lowerSouthEast = vec3(lowerNorthEast.x, 0, lowerNorthEast.z + this->grid.getWallThickness());
+        vec3 upperSouthEast = vec3(lowerSouthEast.x, this->grid.getCeilingHeight(), lowerSouthEast.z);
+        
+        vec3 lowerSouthWest = vec3(lowerNorthWest.x, 0, lowerSouthEast.z);
+        vec3 upperSouthWest = vec3(lowerSouthWest.x, this->grid.getCeilingHeight(), lowerSouthWest.z);
+        
+        return Mesh({
+                    lowerNorthWest /*0*/, upperNorthWest /*1*/,
+                    lowerNorthEast /*2*/, upperNorthEast /*3*/,
+                    lowerSouthEast /*4*/, upperSouthEast /*5*/,
+                    lowerSouthWest /*6*/, upperSouthWest /*7*/
+                },{
+                    // Northern wall
+                    2, 0, 1,
+                    3, 2, 1,
+
+                    // Eastern wall
+                    4, 2, 3,
+                    5, 4, 3,
+
+                    // Southern wall
+                    6, 4, 5,
+                    7, 6, 5,
+
+                    // Western wall
+                    0, 6, 7,
+                    1, 0, 7
+                });
     }
     
     engine::renderer::Mesh LevelLoader::createWallMeshSouthOfCell(size_t x, size_t y) const {
+        vec3 lowerNorthWest = this->grid.cellToWorldCoords(0, 0).northEastCorner();
+        vec3 upperNorthWest = vec3(lowerNorthWest.x, this->grid.getCeilingHeight(), lowerNorthWest.z);
+        
+        vec3 lowerNorthEast = vec3(lowerNorthWest.x + this->grid.getWallThickness(), 0, lowerNorthWest.z);
+        vec3 upperNorthEast = vec3(lowerNorthEast.x, this->grid.getCeilingHeight(), lowerNorthEast.z);
+        
+        vec3 lowerSouthEast = vec3(lowerNorthEast.x, 0, lowerNorthEast.z + this->grid.getWallThickness());
+        vec3 upperSouthEast = vec3(lowerSouthEast.x, this->grid.getCeilingHeight(), lowerSouthEast.z);
+        
+        vec3 lowerSouthWest = vec3(lowerNorthWest.x, 0, lowerSouthEast.z);
+        vec3 upperSouthWest = vec3(lowerSouthWest.x, this->grid.getCeilingHeight(), lowerSouthWest.z);
+        
+        return Mesh({
+                    lowerNorthWest /*0*/, upperNorthWest /*1*/,
+                    lowerNorthEast /*2*/, upperNorthEast /*3*/,
+                    lowerSouthEast /*4*/, upperSouthEast /*5*/,
+                    lowerSouthWest /*6*/, upperSouthWest /*7*/
+                },{
+                    // Northern wall
+                    2, 0, 1,
+                    3, 2, 1,
+
+                    // Eastern wall
+                    4, 2, 3,
+                    5, 4, 3,
+
+                    // Southern wall
+                    6, 4, 5,
+                    7, 6, 5,
+
+                    // Western wall
+                    0, 6, 7,
+                    1, 0, 7
+                });
     }
 }

@@ -18,7 +18,7 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed

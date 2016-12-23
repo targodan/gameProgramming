@@ -8,7 +8,7 @@
 
 #include "LevelLoader.h"
 
-class LevelLoaderTest : public CppUnit::TestFixture, explosionBoy::LevelLoader {
+class LevelLoaderTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(LevelLoaderTest);
     CPPUNIT_TEST(testCheckWallsString);
     CPPUNIT_TEST_SUITE_END();
@@ -30,7 +30,7 @@ private:
             "\"spawnLocations\": []"
         "}";
         
-        *this = LevelLoader(json);
+//        *this = LevelLoader(json);
     }
 };
 

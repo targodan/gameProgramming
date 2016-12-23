@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include "../util/vec4.h"
+
 namespace engine {
     namespace renderer {
         Mesh::Mesh(Array<Vertex> vertices, Array<GLuint> indices, GLenum usage) 
@@ -38,40 +40,52 @@ namespace engine {
             return *this;
         }
         
-        void Mesh::loadMesh() {
-            if(!this->wasLoaded) {
-                // Generate and bind VBO & VAO
-                glGenVertexArrays(1, &this->vao);
-                glGenBuffers(1, &this->vbo);
-
-                glBindVertexArray(this->vao);
-                glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-
-                // Store data in bound buffer
-                glBufferData(GL_ARRAY_BUFFER, (GLint) sizeof(Vertex)*(this->vertices.size()), &this->vertices, this->usage);
-
-                // Specify vertex attributes for VAO in bound vertex array
-                glEnableVertexAttribArray(Vertex::posLoc);
-                glVertexAttribPointer(Vertex::posLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
-
-                glEnableVertexAttribArray(Vertex::normLoc);
-                glVertexAttribPointer(Vertex::normLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
-
-                glEnableVertexAttribArray(Vertex::texLoc);
-                glVertexAttribPointer(Vertex::texLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, textureCoord));
-
-                // Unbind buffers
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                glBindVertexArray(0);
-                
-                this->wasLoaded = true;
-            }
+        void Mesh::initMesh() {
+            // Generate and bind VBO & VAO
+            glGenVertexArrays(1, &this->vao);
+            glGenBuffers(1, &this->vbo);
+            
+            glBindVertexArray(this->vao);
+            glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+            
+            // Store data in bound buffer
+            glBufferData(GL_ARRAY_BUFFER, (GLint) sizeof(Vertex)*(this->vertices.size()), &this->vertices, this->usage);
+            
+            // Specify vertex attributes for VAO in bound vertex array
+            glEnableVertexAttribArray(Vertex::posLoc);
+            glVertexAttribPointer(Vertex::posLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
+            
+            glEnableVertexAttribArray(Vertex::normLoc);
+            glVertexAttribPointer(Vertex::normLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
+            
+            glEnableVertexAttribArray(Vertex::texLoc);
+            glVertexAttribPointer(Vertex::texLoc, 3, GL_FLOAT, GL_FALSE, (GLint) sizeof(Vertex), (GLvoid*) offsetof(Vertex, textureCoord));
+            
+            // Unbind buffers
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
         }
         
         void Mesh::releaseMesh() {
             if(this->wasLoaded) {
                 glDeleteBuffers(1, &this->vbo);
                 glDeleteVertexArrays(1, &this->vao);
+            }
+        }
+        
+        void Mesh::applyTransformation(glm::mat4 transformMatrix) {
+            if(this->vertices.size() > 16) {
+                this->applyTransformation_Parallel(transformMatrix);
+            } else {
+                this->applyTransformation_Sequential(transformMatrix);
+            }
+        }
+        
+        void Mesh::applyTransformation(glm::mat3 transformMatrix) {
+            if(this->vertices.size() > 16) {
+                this->applyTransformation_Parallel(transformMatrix);
+            } else {
+                this->applyTransformation_Sequential(transformMatrix);
             }
         }
     }

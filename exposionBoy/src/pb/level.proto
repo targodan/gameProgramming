@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package explosionBoy.pb;
+
+enum WallType {
+    NONE = 0;
+    BASIC = 1;
+}
+
+message CellCoordinates {
+    uint64 x = 1;
+    uint64 y = 2;
+}
+
+message Grid {
+    uint64 num_cells_x = 1;
+    uint64 num_cells_y = 2;
+    
+    float cell_width = 3;
+    float cell_height = 4;
+    
+    float ceiling_height = 5;
+    float wall_thickness = 6;
+    float pillar_thickness = 7;
+}
+
+message Level {
+    Grid grid = 1;
+    
+    repeated string walls = 10;
+    repeated CellCoordinates spawn_locations = 11;
+}

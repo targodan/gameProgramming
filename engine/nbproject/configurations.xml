@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
@@ -43,6 +43,16 @@
           <in>Vector3.cpp</in>
           <in>functions.cpp</in>
         </df>
+        <df name="renderer">
+          <df name="gl">
+            <in>gl_core_3_3.cpp</in>
+          </df>
+          <in>Material.cpp</in>
+          <in>Mesh.cpp</in>
+          <in>ShaderProgram.cpp</in>
+          <in>VertexArray.cpp</in>
+          <in>VertexBuffer.cpp</in>
+        </df>
         <df name="util">
           <df name="pb">
             <in>vec.pb.cc</in>
@@ -50,7 +60,9 @@
           <in>ostream_helper.cpp</in>
           <in>stringstream.h</in>
           <in>vec2.h</in>
+          <in>vec3.cpp</in>
           <in>vec3.h</in>
+          <in>vec4.cpp</in>
           <in>vec4.h</in>
         </df>
         <in>CastException.h</in>
@@ -58,6 +70,7 @@
         <in>GLException.h</in>
         <in>Game.cpp</in>
         <in>InvalidConversionException.h</in>
+        <in>Window.cpp</in>
       </df>
       <df name="test">
         <df name="ECS">
@@ -113,12 +126,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-mtune=generic -march=x86-64"/>
-        <element flagsID="1"
-                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14"/>
-        <element flagsID="3" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="4" commonFlags="-std=c++14 -pedantic -fPIC"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -128,8 +137,14 @@
           <buildCommand>${MAKE} -f Makefile -j4 build_test DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
-          <ccTool flags="-fPIC -Og">
+          <ccTool flags="-std=c++14 -pedantic -fPIC">
             <standard>11</standard>
+            <incDir>
+              <pElem>src</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>DEBUG</Elem>
+            </preprocessorList>
           </ccTool>
         </makeTool>
         <preBuild>
@@ -137,50 +152,24 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/ECS/pb">
+      <folder path="0/src">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>/usr/include/google/protobuf/io</pElem>
-            <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
       </folder>
-      <folder path="0/src/ECSCommon/pb">
+      <folder path="0/test/ECS">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src/util/pb</pElem>
-            <pElem>src/ECSCommon/pb</pElem>
-            <pElem>/usr/include/google/protobuf/io</pElem>
-            <pElem>src</pElem>
+            <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
       </folder>
-      <folder path="0/src/util/pb">
+      <folder path="0/test/IO">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src/util/pb</pElem>
-            <pElem>/usr/include/google/protobuf/io</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/test/ECS/pb">
-        <ccTool>
-          <incDir>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>test/ECS/pb</pElem>
-            <pElem>/usr/include/google/protobuf/io</pElem>
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
@@ -189,97 +178,40 @@
       <folder path="0/test/math">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
+            <pElem>test</pElem>
+            <pElem>.</pElem>
           </incDir>
         </ccTool>
       </folder>
       <folder path="0/test/util">
         <ccTool>
           <incDir>
-            <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
@@ -290,34 +222,11 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>src/ECSCommon</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>src/util/pb</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
@@ -326,279 +235,121 @@
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/GLException.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/Window.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/util</pElem>
-            <pElem>src/math</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>.</pElem>
-          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/ShaderProgram.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/gl/gl_core_3_3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>test</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+      <item path="src/util/vec3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/util/vec4.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>test</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src/ECS</pElem>
-            <pElem>test/ECS</pElem>
-            <pElem>src/util</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>src</pElem>
-            <pElem>src/ECS/pb</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>test</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/cppunit</pElem>
-            <pElem>/usr/include/cppunit/extensions</pElem>
-            <pElem>src/IO</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf/util</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>test/IO</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>test/IO</pElem>
-            <pElem>/usr/include/google/protobuf/io</pElem>
-            <pElem>test</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
           <incDir>
-            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>test</pElem>
-            <pElem>/usr/include/cppunit</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>test/math</pElem>
-            <pElem>test</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-          <incDir>
-            <pElem>src/math</pElem>
-            <pElem>src/util</pElem>
-            <pElem>test/math</pElem>
-            <pElem>/usr/include/cppunit/portability</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="0">
         </ccTool>
       </item>
     </conf>

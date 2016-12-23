@@ -1,0 +1,33 @@
+{
+    "numCellsX": 8,
+    "numCellsY": 8,
+
+    "cellSizeX": 1.5,
+    "cellSizeY": 1.5,
+    "ceilingHeight": 2.5,
+    "wallThickness": 0.2,
+
+    "walls": [
+        "   1       1   ",
+        " x1x x x x x1x ",
+        " 1           1 ",
+        "1x x1x1x1x1x x1",
+        "   1       1   ",
+        " x x x x x x x ",
+        "   1       1   ",
+        " x x1x x x1x x ",
+        "     1   1     ",
+        " x x x x x x x ",
+        "     1   1     ",
+        "1x x x1x1x x x1",
+        " 1            1",
+        " x1x x x x x1x ",
+        "   1       1   "
+    ],
+    "spawnLocations": [
+        {"x": 0, "y": 0},
+        {"x": 7, "y": 7},
+        {"x": 7, "y": 0},
+        {"x": 0, "y": 7}
+    ]
+}

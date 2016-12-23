@@ -54,3 +54,6 @@ explosionBoy
 *.pb.h
 *.pb.cc
 /demoGL/build/
+
+# Blender backups
+*.blend[0-9]

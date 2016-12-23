@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <google/protobuf/message.h>
+#include <iostream>
 
 #include "pb/vec.pb.h"
 
@@ -11,6 +12,11 @@ namespace engine {
         class vec4 : public glm::vec4 {
         public:
             vec4() : glm::vec4() {}
+            vec4(float x, float y, float z, float w) : glm::vec4(x, y, z, w) {}
+            
+            vec4(const glm::vec4& orig) : glm::vec4(orig) {}
+            vec4(const vec4& orig) : glm::vec4(orig) {}
+            vec4(vec4&& orig) : glm::vec4(std::move(orig)) {}
             
             vec4& operator=(const vec4& right) {
                 glm::vec4::operator=(right);
@@ -34,6 +40,13 @@ namespace engine {
                 this->z = msg.z();
                 this->w = msg.w();
             }
+            
+            friend std::ostream& operator<<(std::ostream& os, const vec4& vec) {
+                os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << ")";
+                return os;
+            }
+            
+            operator vec3() const;
         };
     }
 }

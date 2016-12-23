@@ -140,6 +140,12 @@ namespace engine {
         }
             
         EntityManager::ComponentIterator EntityManager::begin(const std::initializer_list<componentId_t>& componentTypes) {
+            for(auto id : componentTypes) {
+                auto it = this->components.find(id);
+                if(it == this->components.end() || it->second.size() == 0) {
+                    return this->end();
+                }
+            }
             return ComponentIterator(this, componentTypes);
         }
         

@@ -35,6 +35,9 @@ namespace engine {
             void loadMesh();
             void releaseMesh();
             
+            void applyTransformation(glm::mat3 transformMatrix);
+            void applyTransformation(glm::mat4 transformMatrix);
+            
         protected:
             GLenum usage;
             

@@ -40,7 +40,7 @@ namespace engine {
             return *this;
         }
         
-        void Mesh::initMesh() {
+        void Mesh::loadMesh() {
             // Generate and bind VBO & VAO
             glGenVertexArrays(1, &this->vao);
             glGenBuffers(1, &this->vbo);

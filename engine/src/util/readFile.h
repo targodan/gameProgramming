@@ -10,7 +10,7 @@ namespace engine {
     namespace util {
         using namespace std;
         string readFile(string inputFile, string ending="") {
-            if(!boost::algorithm::ends_with(inputFile, ending)) {
+            if(ending.length()>0 && !boost::algorithm::ends_with(inputFile, ending)) {
                 string err = "Wrong file extension on " + inputFile + ". Expected " + ending + ".";
                 throw IOException(err.c_str());
             }
@@ -25,7 +25,15 @@ namespace engine {
                 throw IOException(err.c_str());
             }
         }
-    }
+        
+        string getFileNameExtension(string fileName) {
+            std::stringstream buffer;
+            for(auto rit = fileName.rbegin(); rit!=fileName.rend(); ++rit) {
+                buffer << *rit;
+            }
+            return buffer.str();
+        }
+    } 
 }
 
 

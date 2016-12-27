@@ -2,7 +2,6 @@
 #define SHADERTYPE_H
 
 #include "gl/gl_core_3_3.h"
-#include "../util/Map.h"
 
 namespace engine {
     namespace renderer {

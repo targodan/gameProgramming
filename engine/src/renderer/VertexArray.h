@@ -5,7 +5,7 @@
 #include "VertexBuffer.h"
 #include "gl/gl_core_3_3.h"
 #include <memory>
-#include "util/vector.h"
+#include "../util/vector.h"
 #include <list>
 
 namespace engine {

@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <iterator>
+#include <vector>
 
 #include "IndexOutOfBoundsException.h"
 
@@ -111,6 +112,10 @@ namespace engine {
             }
             
             Array(const std::initializer_list<T>& list) : Array(list.size()) {
+                std::copy(list.begin(), list.end(), this->data);
+            }
+            
+            Array(const std::vector<T>& list) : Array(list.size()) {
                 std::copy(list.begin(), list.end(), this->data);
             }
             

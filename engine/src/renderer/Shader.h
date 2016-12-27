@@ -3,8 +3,8 @@
 
 #include "ShaderType.h"
 #include "gl/gl_core_3_3.h"
-#include "util/readFile.h"
-#include "util/Map.h"
+#include "../util/readFile.h"
+#include "../util/Map.h"
 #include <memory>
 
 namespace engine {

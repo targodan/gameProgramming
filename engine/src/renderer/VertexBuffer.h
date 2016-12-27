@@ -4,8 +4,8 @@
 #include "VertexAttribute.h"
 #include "DataUsagePattern.h"
 #include "gl/gl_core_3_3.h"
-#include "WTFException.h"
-#include "util/vector.h"
+#include "../WTFException.h"
+#include "../util/vector.h"
 #include <list>
 
 namespace engine {

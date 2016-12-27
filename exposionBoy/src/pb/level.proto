@@ -27,6 +27,10 @@ message Grid {
 message Level {
     Grid grid = 1;
     
+    string outer_wall_shader = 2;
+    string inner_wall_shader = 3;
+    string pillar_shader = 4;
+    
     repeated string walls = 10;
     repeated CellCoordinates spawn_locations = 11;
 }

@@ -1,7 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "util/Array.h"
+#include "../util/Array.h"
 #include "Vertex.h"
 #include "VertexArray.h"
 #include "DataUsagePattern.h"
@@ -24,6 +24,7 @@ namespace engine {
          */
         class Mesh {
         public:
+            Mesh() : wasLoaded(false) {}
             Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             

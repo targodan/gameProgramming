@@ -11,6 +11,7 @@
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
+          <in>GraphicalComponent.h</in>
           <in>MessageHandler.cpp</in>
           <in>SerializableComponent.h</in>
           <in>SystemManager.cpp</in>
@@ -202,6 +203,8 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -417,6 +420,8 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

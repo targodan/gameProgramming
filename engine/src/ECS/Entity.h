@@ -24,11 +24,16 @@ namespace engine {
             friend class EntityManager;
             Entity(entityId_t id, EntityManager* em, const std::string& name);
         public:
+            Entity() : id(0), em(nullptr), name("") {}
             Entity(const Entity& orig) = default;
             virtual ~Entity() = default;
             
             entityId_t getId() const;
             const std::string& getName() const;
+            
+            EntityManager& getEntityManager() {
+                return *this->em;
+            }
             
             template<class CompT, typename... Args>
             Entity& addComponent(Args... args) {

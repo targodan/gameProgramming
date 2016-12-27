@@ -2,6 +2,10 @@
     "numCellsX": 8,
     "numCellsY": 8,
 
+    "outerWallShader": "resources/shaders/flat",
+    "innerWallShader": "resources/shaders/flat",
+    "pillarShader": "resources/shaders/flat",
+
     "cellSizeX": 1.5,
     "cellSizeY": 1.5,
     "ceilingHeight": 2.5,

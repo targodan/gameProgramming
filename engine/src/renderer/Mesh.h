@@ -1,14 +1,18 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../util/Array.h"
+#include "util/Array.h"
 #include "Vertex.h"
+#include "VertexArray.h"
+#include "DataUsagePattern.h"
 #include "gl/gl_core_3_3.h"
 #include <glm/matrix.hpp>
+#include <vector>
 
 namespace engine {
     namespace renderer {
-        using namespace util;
+        using util::Array;
+        using std::unique_ptr;
         using namespace gl;
         
         /**
@@ -20,12 +24,13 @@ namespace engine {
          */
         class Mesh {
         public:
-            Mesh(Array<Vertex> vertices, Array<GLuint> indices, GLenum usage = GL_STATIC_DRAW);
+            Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, 
+                    DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
-            Mesh(const Mesh& orig);
+            Mesh(const Mesh& orig) = delete;
             Mesh(Mesh&& orig);
 
-            Mesh& operator=(const Mesh& right);
+            // Mesh& operator=(const Mesh& right);
             Mesh& operator=(Mesh&& right);
             
             virtual ~Mesh();
@@ -39,12 +44,12 @@ namespace engine {
             void applyTransformation(glm::mat4 transformMatrix);
             
         protected:
-            GLenum usage;
+            DataUsagePattern usage;
             
-            GLuint vao, vbo;
+            VertexArray vao;
             
-            Array<Vertex> vertices;
-            Array<GLuint> indices;
+            std::vector<Vertex> vertices;
+            std::vector<GLuint> indices;
             
             bool wasLoaded;
             

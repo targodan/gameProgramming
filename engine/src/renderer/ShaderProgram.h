@@ -20,11 +20,12 @@ namespace engine {
                 createShader(fragmentShaderFile, ShaderType::FRAGMENT_SHADER);
             }
             
-            ShaderProgram(const ShaderProgram& orig) = delete;
-            
             ~ShaderProgram() {
                 glDeleteProgram(this->id);
             }
+            
+            ShaderProgram(const ShaderProgram& orig) = delete;
+            ShaderProgram(ShaderProgram&& orig) = delete;
             
             void useProgram() {
                 glUseProgram(this->id);

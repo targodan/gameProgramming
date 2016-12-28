@@ -26,12 +26,13 @@ namespace engine {
                 this->initShader();
                 this->compileShader();
             }
-            
-            Shader(const Shader& orig) = delete;
-            
+           
             ~Shader() {
                 this->releaseShader();
             }
+            
+            Shader(const Shader& orig) = delete;
+            Shader(Shader&& orig) = delete;
             
             GLuint getID() const {
                 return this->id;

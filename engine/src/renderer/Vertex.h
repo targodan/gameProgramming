@@ -34,9 +34,10 @@ namespace engine {
                 return *this;
             }
             
-            static const unsigned int posLoc = 0;
-            static const unsigned int normLoc = 1;
-            static const unsigned int texLoc = 2;
+            static const GLuint posLoc = 0;
+            static const GLuint normLoc = 1;
+            static const GLuint texLoc = 2;
+            static const GLint nElements = 3;
         };
     }
 }

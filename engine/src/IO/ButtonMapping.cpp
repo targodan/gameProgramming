@@ -8,33 +8,52 @@
 #include "ButtonMapping.h"
 namespace engine {
     namespace IO {
-        ButtonMapping::ButtonMapping(MessageHandler handler) : handler(handler) {
-            this->Mapping.set_empty_key(SIZE_MAX);
+        ButtonMapping::ButtonMapping(GLFWwindow* window, shared_ptr<MessageHandler> handler, int dev) : 
+        window(window),
+        handler(handler),
+        device(dev) {
+            this->mapping.set_empty_key(SIZE_MAX);
         }
 
         ButtonMapping::~ButtonMapping() {
         }
         
-        ButtonMapping::insertMapping(int buttonId, Message msg){
-            if(this->Mapping[buttonId] == nullptr) {
-                this->Mapping[buttonId] = msg;
+        void ButtonMapping::insertMapping(int buttonId, shared_ptr<Message> msg){
+            if(this->mapping.find(buttonId) == this->mapping.end()) {
+                this->mapping[buttonId] = msg;
             }
         }
         
-        ButtonMapping::deleteMapping(int buttonId) {
-            this->Mapping.erase(buttonId);
+        void ButtonMapping::deleteMapping(int buttonId) {
+            this->mapping.erase(buttonId);
         }
         
-        ButtonMapping::deleteMapping(Message msg) {
-            for(auto it = this->Mapping.begin(); it != this->Mapping.end(); it++) {
-                if(it.pos->second == msg){
-                    this->Mapping.erase(it);
+        void ButtonMapping::deleteMapping(shared_ptr<Message> msg) {
+            for(auto it = this->mapping.begin(); it != this->mapping.end(); it++) {
+                if(it->second->getId() == msg->getId()) {
+                    this->mapping.erase(it);
                 }
             }
         }
         
-        ButtonMapping::dispatchMessages() {
-            
+         void ButtonMapping::queueMessages() {
+            if(this->device == -1) {
+                for(auto it = this->mapping.begin(); it != this->mapping.end(); it++) {
+                    if(glfwGetKey(this->window, it->first) == GLFW_PRESS) {
+                        this->handler->queueMessage(it->second);
+                    }
+                }
+            }
+            else {
+                int count;
+                const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+                
+                for(auto it = this->mapping.begin(); it != this->mapping.end(); it++) {
+                    if(it->first < count && buttons[it->first] == GLFW_PRESS) {
+                        this->handler->queueMessage(it->second);
+                    }
+                }
+            }
         }
     }
 }

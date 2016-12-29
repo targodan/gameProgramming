@@ -28,7 +28,7 @@ namespace engine {
             void pollEvents();
             
         private:
-            InputManager() {};
+            InputManager();
             vector<int> devices;
             
 

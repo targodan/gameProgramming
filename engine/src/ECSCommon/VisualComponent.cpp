@@ -9,6 +9,8 @@ namespace engine {
         
         componentId_t VisualComponent::typeId = 0;
         
+        VisualComponent::VisualComponent() : mesh({}, {}), material(nullptr) {}
+        
         VisualComponent::VisualComponent(const Mesh& mesh, const Material& material) 
             : mesh(mesh), material(material) {
         }
@@ -46,6 +48,14 @@ namespace engine {
             std::stringstream ss;
             ss << "{" << "VisualComponent" << "}";
             return ss.str();
+        }
+        
+        void VisualComponent::setComponentTypeId(componentId_t id) {
+            VisualComponent::typeId = id;
+        }
+        
+        componentId_t VisualComponent::getComponentTypeId() {
+            return VisualComponent::typeId;
         }
     }
 }

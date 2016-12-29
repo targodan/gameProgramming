@@ -8,11 +8,14 @@ namespace engine {
     namespace renderer {
         class Material {
         public:
-            Material(std::unique_ptr<ShaderProgram> shader);
-            Material(const Material& orig) = delete;
+            Material(std::shared_ptr<ShaderProgram> shader);
+            Material(const Material& orig);
             virtual ~Material();
         private:
-            std::unique_ptr<ShaderProgram> shader;    
+            
+            // NOTE: I made this a shared_ptr because I couldn't see how to work
+            //       with this class otherwise. Why a unique_ptr?
+            std::shared_ptr<ShaderProgram> shader;    
         };
     }
 }

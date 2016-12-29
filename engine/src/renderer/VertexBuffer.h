@@ -40,6 +40,8 @@ namespace engine {
             VertexBuffer(const VertexBuffer& orig) 
                 : id(orig.id), data(orig.data), attributes(orig.attributes), bound(orig.bound) {
                 // Note: the copy points to the exact same buffer on the graphics card
+                // TODO: Is this a good idea? What happens if both the original and the
+                //       copy get deconstructed?
             }
             
             VertexBuffer(VertexBuffer&& orig) 
@@ -48,9 +50,12 @@ namespace engine {
                 // Note: I don't know if this is necessary. When this function returns,
                 //       will orig be deleted? If so, its deletion would release its
                 //       buffer. Therefore, a new buffer has to be generated.
-                
-                orig.releaseBuffer();
-                this->generateBuffer();
+                // Answer: No it is not necessary, yes orig will be deleted or even be
+                //         optimized out completely. Because it is a rvalue, orig will
+                //         go out of scope when this method does.
+                // TODO: Is generating the buffer still necessary? Shouldn't this point
+                //       to the same buffer as orig did?
+//                this->generateBuffer();
             }
             
             ~VertexBuffer() {
@@ -64,10 +69,10 @@ namespace engine {
                 glDeleteBuffers(1, &(this->id));
             }
 
-            void setAttributes(const std::list<VertexAttribute> attribs) {
+            void setAttributes(const vector<VertexAttribute>& attribs) {
                 this->attributes = attribs;
             }
-            const std::list<VertexAttribute>& getAttributes() const {
+            const vector<VertexAttribute>& getAttributes() const {
                 return this->attributes;
             }
             
@@ -118,13 +123,11 @@ namespace engine {
         private:
             GLuint id;
             BufferData data;
-            std::list<VertexAttribute> attributes;
+            vector<VertexAttribute> attributes;
             
             bool bound;
             static bool anyVBOBound;
         };
-        
-        bool VertexBuffer::anyVBOBound = false;
     }
 }
 

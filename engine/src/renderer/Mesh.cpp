@@ -25,7 +25,7 @@ namespace engine {
                     DataType::FLOAT, 0, sizeof(Vertex), 
                     (GLvoid*)offsetof(Vertex, textureCoord)};
 
-            std::list<VertexAttribute> attribs;
+            vector<VertexAttribute> attribs;
             attribs.push_back(positionAttrib);
             attribs.push_back(normalAttrib);
             attribs.push_back(textureCoordAttrib);
@@ -40,35 +40,44 @@ namespace engine {
             this->vao.unbind();
         }
         
-//        Mesh::Mesh(Mesh&& orig)
-//            : usage(std::move(orig.usage)), vao(std::move(orig.vao)), 
-//                vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
-//        
-//        }
+        Mesh::Mesh(const Mesh& orig)
+            : usage(orig.usage), vao(orig.vao), 
+                vertices(orig.vertices), indices(orig.indices), wasLoaded(false) {
+            // NOTE: The copy gets loaded iff the original was loaded.
+            if(orig.wasLoaded) {
+                this->loadMesh();
+            }
+        }
+        
+        Mesh::Mesh(Mesh&& orig)
+            : usage(std::move(orig.usage)), vao(std::move(orig.vao)), 
+                vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
+        
+        }
 
         Mesh::~Mesh() {
             this->releaseMesh();
         }
         
-//        Mesh& Mesh::operator=(const Mesh& right) {
-//            this->releaseMesh();
-//            
-//            this->usage = right.usage;
-//            this->vao = right.vao;
-//            this->vertices = right.vertices;
-//            this->indices = right.indices;
-//            this->wasLoaded = false;
-//            return *this;
-//        }
-//        
-//        Mesh& Mesh::operator=(Mesh&& right) {
-//            std::swap(this->usage, right.usage);
-//            std::swap(this->vao, right.vao);
-//            std::swap(this->vertices, right.vertices);
-//            std::swap(this->indices, right.indices);
-//            std::swap(this->wasLoaded, right.wasLoaded);
-//            return *this;
-//        }
+        Mesh& Mesh::operator=(const Mesh& right) {
+            this->releaseMesh();
+            
+            this->usage = right.usage;
+            this->vao = right.vao;
+            this->vertices = right.vertices;
+            this->indices = right.indices;
+            this->wasLoaded = false;
+            return *this;
+        }
+        
+        Mesh& Mesh::operator=(Mesh&& right) {
+            std::swap(this->usage, right.usage);
+            std::swap(this->vao, right.vao);
+            std::swap(this->vertices, right.vertices);
+            std::swap(this->indices, right.indices);
+            std::swap(this->wasLoaded, right.wasLoaded);
+            return *this;
+        }
         
         void Mesh::loadMesh() {
             this->vao.bind();

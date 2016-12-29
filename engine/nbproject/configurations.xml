@@ -58,6 +58,7 @@
             <in>vec.pb.cc</in>
           </df>
           <in>ostream_helper.cpp</in>
+          <in>readFile.cpp</in>
           <in>stringstream.h</in>
           <in>vec2.h</in>
           <in>vec3.cpp</in>
@@ -305,6 +306,8 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/util/vec3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -497,9 +500,15 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/util/stringstream.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -20,6 +20,7 @@ namespace engine {
             Material material;
             
         public:
+            VisualComponent();
             VisualComponent(const Mesh& mesh, const Material& material);
             VisualComponent(const VisualComponent& orig) = delete;
             virtual ~VisualComponent();
@@ -35,6 +36,9 @@ namespace engine {
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;
             std::string toString() const override;
+
+            static void setComponentTypeId(componentId_t id);
+            static componentId_t getComponentTypeId();
         };
     }
 }

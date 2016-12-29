@@ -27,10 +27,10 @@ namespace engine {
             Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
-            Mesh(const Mesh& orig) = delete;
+            Mesh(const Mesh& orig);
             Mesh(Mesh&& orig);
 
-            // Mesh& operator=(const Mesh& right);
+            Mesh& operator=(const Mesh& right);
             Mesh& operator=(Mesh&& right);
             
             virtual ~Mesh();

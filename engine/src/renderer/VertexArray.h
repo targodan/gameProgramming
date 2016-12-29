@@ -19,14 +19,19 @@ namespace engine {
                 this->generateVertexArray();
             }
             
-            VertexArray(const std::list<std::unique_ptr<VertexBuffer>> vbos) 
-                : vbos(vbos), bound(false) {
-                    this->generateVertexArray();
+            VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos) 
+                : vbos(std::move(vbos)), bound(false) {
+                this->generateVertexArray();
             }
                 
             VertexArray(const VertexArray& orig) 
-                : vbos(orig.vbos), id(orig.id), bound(orig.bound) {
+                : vbos(), id(orig.id), bound(orig.bound) {
                 // Note: the copy points to the exact same vao on the graphics card
+                // TODO: Is this a good idea? What happens if both the original and the
+                //       copy get deconstructed?
+                for(auto& vbo : orig.vbos) {
+                    this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
+                }
             }
                 
             VertexArray(VertexArray&& orig) 
@@ -34,13 +39,21 @@ namespace engine {
                 // Note: I don't know if this is necessary. When this function returns,
                 //       will orig be deleted? If so, its deletion would release its
                 //       buffer. Therefore, a new buffer has to be generated.
+                // Answer: No it is not necessary, yes orig will be deleted or even be
+                //         optimized out completely. Because it is a rvalue, orig will
+                //         go out of scope when this method does.
+                // TODO: Is generating the array still necessary? Shouldn't this point
+                //       to the same array as orig did?
                 
-                orig.releaseVertexArray();
-                this->generateVertexArray();
+//                this->generateVertexArray();
             }
 
             VertexArray& operator=(const VertexArray& right) {
-                this->vbos = right.vbos;
+                this->vbos.clear();
+                for(auto& vbo : right.vbos) {
+                    this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
+                }
+                
                 this->id = right.id;
                 this->bound = right.bound;
                 
@@ -50,8 +63,14 @@ namespace engine {
                 this->vbos = std::move(right.vbos);
                 this->bound = std::move(right.bound);
                 
-                right.releaseVertexArray();
-                this->generateVertexArray();
+                // Note: Releasing is not necessary, orig will be deleted or even be
+                //       optimized out completely. Because it is a rvalue, orig will
+                //       go out of scope when this method does.
+                // TODO: Is generating the array still necessary? Shouldn't this point
+                //       to the same array as orig did?
+                
+//                right.releaseVertexArray();
+//                this->generateVertexArray();
                 
                 return *this;
             }
@@ -83,7 +102,10 @@ namespace engine {
                 }
             }
             
-            void attachVBO(std::unique_ptr<VertexBuffer> vbo) {
+            void attachVBO(std::unique_ptr<VertexBuffer>&& vbo) {
+                // Is an rvalue so that the user of this function is forced to
+                // std::move the unique_ptr in here. Anything will either not work
+                // or is unpredictable behaviour.
                 vbos.push_back(std::move(vbo));
             }
             
@@ -122,7 +144,7 @@ namespace engine {
                 glDisableVertexAttribArray(index);
             }
             
-            void setAttributePointers(const std::list<VertexAttribute>& attributes) {
+            void setAttributePointers(const vector<VertexAttribute>& attributes) {
                 for(auto attribute : attributes) {
                     setAttributePointer(attribute);
                     enableAttribute(attribute.index);
@@ -133,14 +155,12 @@ namespace engine {
                     attribute.normalized, attribute.stride, attribute.offset);
             }
             
-            std::list<std::unique_ptr<VertexBuffer>> vbos;
+            vector<std::unique_ptr<VertexBuffer>> vbos;
             GLuint id;
             
             bool bound;
             static bool anyVAOBound;
         };
-        
-        bool VertexArray::anyVAOBound = false;
     }
 }
 

@@ -14,12 +14,12 @@ namespace engine {
         InputManager::~InputManager() {
         }
 
-        InputManager::getInstance() {
-            static shared_ptr<InputManager> instance;
+        shared_ptr<InputManager> InputManager::getInstance() {
+            static shared_ptr<InputManager> instance ;
             return instance;
         }
 
-        InputManager::registerDevices() {
+        void InputManager::registerDevices() {
             this->devices.clear();
             for(int devNum = GLFW_JOYSTICK_1; devNum <= GLFW_JOYSTICK_LAST; devNum++) {
                 if(glfwJoystickPresent(devNum)) {
@@ -28,11 +28,11 @@ namespace engine {
             }
         }
         
-        InputManager::getDevices() {
+        vector<int> InputManager::getDevices() {
             return this->devices;
         }
 
-        InputManager::pollEvents() {
+        void InputManager::pollEvents() {
             glfwPollEvents();
         }
     }

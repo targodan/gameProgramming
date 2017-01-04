@@ -18,6 +18,8 @@ namespace engine {
 
                 createShader(vertexShaderFile, ShaderType::VERTEX_SHADER);
                 createShader(fragmentShaderFile, ShaderType::FRAGMENT_SHADER);
+                
+                this->linkProgram();
             }
             
             ~ShaderProgram() {

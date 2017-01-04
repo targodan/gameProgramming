@@ -21,13 +21,6 @@ namespace engine {
             virtual ~ElementBuffer() {
             }
             
-            void generateBuffer() {
-                glGenBuffers(1, &(this->id));
-            }
-            void releaseBuffer() {
-                glDeleteBuffers(1, &(this->id));
-            }
-            
             virtual void bind() override {
                 if(this->bound) {
                     return;

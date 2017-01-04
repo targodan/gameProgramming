@@ -8,8 +8,12 @@ namespace engine {
         Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, DataUsagePattern usage) 
             : usage(usage), vertices(vertices), indices(indices), wasLoaded(false) {
             
+            // Get no. of elements
+            auto nVertices = this->vertices.size();
+            auto nIndices = this->indices.size();
+            
             // Create VBO that holds vertex data
-            VertexBuffer vbo {(void*) &this->vertices[0], sizeof(Vertex) * this->vertices.size(), usage};
+            VertexBuffer vbo {(void*) &this->vertices[0], sizeof(Vertex) * nVertices, nVertices, usage};
             auto vboPtr = std::make_unique<VertexBuffer>(vbo);
             
             // State VBO attributes
@@ -87,8 +91,7 @@ namespace engine {
         
         void Mesh::releaseMesh() {
             if(this->wasLoaded) {
-                //glDeleteBuffers(1, &this->vbo);
-                //glDeleteVertexArrays(1, &this->vao);
+                this->wasLoaded = false; // TODO?
             }
         }
         

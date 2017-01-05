@@ -133,7 +133,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile -j4 DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>demo02</executablePath>
           <ccTool>
             <standard>11</standard>
           </ccTool>

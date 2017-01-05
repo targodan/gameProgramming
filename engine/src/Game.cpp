@@ -7,7 +7,7 @@
 #include <easylogging++.h>
 
 namespace engine {
-    Game::Game(int argc, char** argv, double ups) : updatesPerSecond(ups), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, double ups) : updatesPerSecond(ups), window(1024,768), entityManager(), systemManager(entityManager) {
         // Configure logger
         el::Configurations defaultConf;
         defaultConf.setToDefault();

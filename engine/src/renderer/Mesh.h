@@ -1,7 +1,9 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../util/Array.h"
+#include "Material.h"
+#include "util/Array.h"
+#include "util/vector.h"
 #include "Vertex.h"
 #include "VertexArray.h"
 #include "DataUsagePattern.h"
@@ -12,6 +14,7 @@
 namespace engine {
     namespace renderer {
         using util::Array;
+        using util::vector;
         using std::unique_ptr;
         using namespace gl;
         
@@ -25,7 +28,7 @@ namespace engine {
         class Mesh {
         public:
             Mesh() : wasLoaded(false) {}
-            Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, 
+            Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
             Mesh(const Mesh& orig);
@@ -49,8 +52,8 @@ namespace engine {
             
             VertexArray vao;
             
-            std::vector<Vertex> vertices;
-            std::vector<GLuint> indices;
+            vector<Vertex> vertices;
+            vector<GLuint> indices;
             
             bool wasLoaded;
             

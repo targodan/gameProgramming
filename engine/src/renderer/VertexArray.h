@@ -32,17 +32,19 @@ namespace engine {
             }
                 
             VertexArray(const VertexArray& orig) 
-                : vbos(), ebo(std::make_unique<ElementBuffer>(*orig.ebo.get())), id(orig.id), bound(orig.bound) {
+                : Bindable(orig), vbos(), id(orig.id), bound(orig.bound) {
                 // Note: the copy points to the exact same vao on the graphics card
                 // TODO: Is this a good idea? What happens if both the original and the
                 //       copy get deconstructed?
                 for(auto& vbo : orig.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
+                
+                this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
                 
             VertexArray(VertexArray&& orig) 
-                : vbos(std::move(orig.vbos)), ebo(std::move(ebo)), id(0), bound(false) {
+                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(ebo)), id(0), bound(false) {
                 // Note: I don't know if this is necessary. When this function returns,
                 //       will orig be deleted? If so, its deletion would release its
                 //       buffer. Therefore, a new buffer has to be generated.

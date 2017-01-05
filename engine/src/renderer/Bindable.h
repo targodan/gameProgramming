@@ -11,8 +11,8 @@ namespace engine {
         class Bindable {
         public:
             Bindable() {};
-            Bindable(const Bindable& orig) = delete;
-            Bindable(Bindable&& orig) = delete;
+            Bindable(const Bindable& orig) {};
+            Bindable(Bindable&& orig) {};
             virtual ~Bindable() {};
             
             virtual void bind() = 0;

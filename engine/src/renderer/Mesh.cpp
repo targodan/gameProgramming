@@ -5,7 +5,7 @@
 
 namespace engine {
     namespace renderer {
-        Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, DataUsagePattern usage) 
+        Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
             : usage(usage), vertices(vertices), indices(indices), wasLoaded(false) {
             
             // Get no. of elements

@@ -30,12 +30,16 @@ namespace engine {
             return RenderSystem::systemId;
         }
         
+        systemId_t RenderSystem::getSystemTypeId() const {
+            return RenderSystem::systemId;
+        }
+        
         void RenderSystem::setSystemTypeId(systemId_t id) {
             RenderSystem::systemId = id;
         }
         
         void RenderSystem::render(VisualComponent& comp) {
-            
+            comp.getMesh().render(comp.getMaterial());
         }
     }
 }

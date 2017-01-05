@@ -30,6 +30,8 @@ namespace engine {
                 return "RenderSystem";
             }
             
+            systemId_t getSystemTypeId() const override;
+            
             static systemId_t systemTypeId();
             static void setSystemTypeId(systemId_t id);
         };        

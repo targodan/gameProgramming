@@ -39,6 +39,8 @@ namespace engine {
             
             virtual ~Mesh();
             
+            void render(const Material& material);
+            
             std::string getUsage() const;
             
             void loadMesh();

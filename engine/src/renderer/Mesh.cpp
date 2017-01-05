@@ -83,6 +83,14 @@ namespace engine {
             return *this;
         }
         
+        void Mesh::render(const Material& material) {
+            material.makeActive();
+            
+            this->vao.bind();
+            this->vao.drawArrays();
+            this->vao.unbind();
+        }
+        
         void Mesh::loadMesh() {
             this->vao.bind();
             this->vao.loadData();

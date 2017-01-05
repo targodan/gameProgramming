@@ -6,10 +6,16 @@ namespace engine {
             
         }
         
-        Material::Material(const Material& orig) : shader(orig.shader) {}
+        Material::Material(const Material& orig) : shader(std::move(orig.shader)) {
+        
+        }
 
         Material::~Material() {
             
+        }
+        
+        void Material::makeActive() const {
+            this->shader->useProgram();
         }
     }
 }

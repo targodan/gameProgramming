@@ -12,12 +12,6 @@ namespace engine {
         using namespace gl;
         using util::vector;
         
-        /*
-         * VertexBuffer is a simple wrapper for VBOs. It does NOT hold the data
-         * to render, but rather handles it -> it sets up the space on the 
-         * graphics card, saves how the graphics card should interpret the data,
-         * can load the data to it and finally release the space again.
-         */
         class VertexBuffer : public Buffer {
         public:
             VertexBuffer() 
@@ -59,6 +53,8 @@ namespace engine {
             
                 // glBindBuffer(GL_ARRAY_BUFFER, this->id);
                 Buffer::bind();
+                
+                this->bound = true;
                 VertexBuffer::anyVBOBound = true;
             }
             virtual void unbind() override {
@@ -68,6 +64,8 @@ namespace engine {
 
                 // glBindBuffer(GL_ARRAY_BUFFER, 0);
                 Buffer::unbind();
+                
+                this->bound = false;
                 VertexBuffer::anyVBOBound = false;
             }
             

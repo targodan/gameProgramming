@@ -18,22 +18,39 @@ namespace engine {
             DataUsagePattern usage;
         };
         
+        
+        /*
+         * Buffer is a simple wrapper for VBOs and EBOs. It does NOT hold the data, 
+         * but rather handles it -> it sets up the space on the 
+         * graphics card, saves how the graphics card should interpret the data,
+         * can load the data to it and finally release the space again.
+         * 
+         * If a Buffer-Object is copied or moved, ONLY the data-struct will be
+         * copied/moved (its pointer to the actual data therefore points to the
+         * same address as before). A new buffer will be generated on the graphics
+         * card for the copy/moved instance; if necessary, the data will be loaded
+         * into this new buffer.
+         */
         class Buffer : public Bindable {
         public:
             Buffer() 
-                : bound(false), data {nullptr, 0, 0, DataUsagePattern::STATIC_DRAW} {
+                : loadedToGraphicsCard(false), bound(false), data {nullptr, 0, 0, DataUsagePattern::STATIC_DRAW} {
                 this->generateBuffer();
             }
             Buffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
-                : bound(false), data {dataPtr, size, nElements, usage} {
+                : loadedToGraphicsCard(false), bound(false), data {dataPtr, size, nElements, usage} {
                 this->generateBuffer();
             }
-            Buffer(const Buffer& orig) : id(orig.id), bound(orig.bound), data(orig.data) {
-                // Note: the copy points to the exact same buffer on the graphics card
-                // TODO: Is this a good idea? What happens if both the original and the
-                //       copy get deconstructed?
+            Buffer(const Buffer& orig) : loadedToGraphicsCard(false), bound(false), data(orig.data) {
+                this->generateBuffer();
+                
+                if(orig.loadedToGraphicsCard) {
+                    this->bind();
+                    this->loadData();
+                    this->unbind();
+                }
             }
-            Buffer(Buffer&& orig) : id(0), bound(false), data(std::move(orig.data)) {
+            Buffer(Buffer&& orig) : id(0), loadedToGraphicsCard(false), bound(false), data(std::move(orig.data)) {
                 // Note: I don't know if this is necessary. When this function returns,
                 //       will orig be deleted? If so, its deletion would release its
                 //       buffer. Therefore, a new buffer has to be generated.
@@ -45,6 +62,12 @@ namespace engine {
                 // Answer: If orig is deleted, its destructor releases the buffer (see below);
                 //       Hence, new buffer needed. 
                 this->generateBuffer();
+                
+                if(orig.loadedToGraphicsCard) {
+                    this->bind();
+                    this->loadData();
+                    this->unbind();
+                }
             }
             virtual ~Buffer() {
                 this->releaseBuffer();
@@ -60,14 +83,37 @@ namespace engine {
             }
             
             void loadData() {
+#ifdef DEBUG
                 if(!this->data.dataPtr) {
-                    throw WTFException("Could not buffer data: No data specified");
+                    throw BufferException("Could not buffer data: No data specified");
+                } else if(!this->bound) {
+                    throw BufferException("Could not buffer data: Buffer not bound");
                 }
+
+                if(this->loadedToGraphicsCard) {
+                    // TODO: Log warning: currently loaded data will be overwritten
+                }
+#endif /*DEBUG*/
                 
                 glBufferData(this->getType(), data.size, data.dataPtr, data.usage);
+                this->loadedToGraphicsCard = true;
             }
             void loadData(const void* data, size_t size, size_t nElements, DataUsagePattern usage) {
+#ifdef DEBUG
+                if(data == nullptr) {
+                    throw BufferException("Could not buffer data: No data specified");
+                } else if(!this->bound) {
+                    throw BufferException("Could not buffer data: Buffer not bound");
+                }
+
+                if(this->loadedToGraphicsCard) {
+                    // TODO: Log warning: currently loaded data will be overwritten
+                }
+#endif /*DEBUG*/
+                
                 glBufferData(this->getType(), size, data, usage);
+                this->loadedToGraphicsCard = true;
+                
                 this->data = {data, size, nElements, usage};
             }
             
@@ -90,6 +136,7 @@ namespace engine {
         protected:
             GLuint id;
             
+            bool loadedToGraphicsCard; 
             bool bound;
             BufferData data;
         };

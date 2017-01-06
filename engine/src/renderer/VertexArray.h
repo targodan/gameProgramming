@@ -14,37 +14,42 @@ namespace engine {
     namespace renderer {
         using util::vector;
         
+        /*
+         * VertexArray wraps the usage of VAOs which define how a set VBOs needs
+         * to be interpreted to correctly draw the vertices stored in them on the
+         * screen.
+         * 
+         * - The corresponding VAO on the graphics card is generated on creation
+         *   of an VertexArray-object, and released on its deletion
+         * - Copies will be associated with a NEW VAO on the graphics card 
+         */
         class VertexArray : public Bindable {
         public:
             VertexArray() 
-                : bound(false) {
+                : vbos(), ebo(), bound(false) {
                 this->generateVertexArray();
             }
-            
             VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos) 
-                : vbos(std::move(vbos)), bound(false) {
+                : vbos(std::move(vbos)), ebo(), bound(false) {
                 this->generateVertexArray();
             }
-            
             VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos, std::unique_ptr<ElementBuffer>&& ebo) 
                 : vbos(std::move(vbos)), ebo(std::move(ebo)), bound(false) {
                 this->generateVertexArray();
             }
                 
             VertexArray(const VertexArray& orig) 
-                : Bindable(orig), vbos(), id(orig.id), bound(orig.bound) {
-                // Note: the copy points to the exact same vao on the graphics card
-                // TODO: Is this a good idea? What happens if both the original and the
-                //       copy get deconstructed?
+                : Bindable(orig), vbos(), bound(false) {
+                this->generateVertexArray();
+                
                 for(auto& vbo : orig.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 
                 this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
-                
             VertexArray(VertexArray&& orig) 
-                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(ebo)), id(0), bound(false) {
+                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(ebo)), bound(false) {
                 // Note: I don't know if this is necessary. When this function returns,
                 //       will orig be deleted? If so, its deletion would release its
                 //       buffer. Therefore, a new buffer has to be generated.
@@ -64,32 +69,27 @@ namespace engine {
                 for(auto& vbo : right.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
+                this->ebo = right.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(right.ebo));
                 
-                this->id = right.id;
-                this->bound = right.bound;
+                this->bound = false;
+                this->generateVertexArray();
                 
                 return *this;
             }
             VertexArray& operator=(VertexArray&& right) {
                 this->vbos = std::move(right.vbos);
+                this->ebo = std::move(right.ebo);
+                
                 this->bound = false;
-                
-                // Note: Releasing is not necessary, orig will be deleted or even be
-                //       optimized out completely. Because it is a rvalue, orig will
-                //       go out of scope when this method does.
-                // TODO: Is generating the array still necessary? Shouldn't this point
-                //       to the same array as orig did?
-                // Answer: If orig is deleted, its destructor releases the buffer;
-                //       Hence, new buffer needed. 
-                
-                // right.releaseVertexArray();
                 this->generateVertexArray();
                 
                 return *this;
             }
             
             ~VertexArray() {
-                this->releaseVertexArray();
+                if(this->generated) {
+                    this->releaseVertexArray();
+                }
             }
             
             void generateVertexArray() {
@@ -116,10 +116,24 @@ namespace engine {
             }
             
             void attachVBO(std::unique_ptr<VertexBuffer>&& vbo) {
-                // Is an rvalue so that the user of this function is forced to
-                // std::move the unique_ptr in here. Anything will either not work
-                // or is unpredictable behaviour.
                 vbos.push_back(std::move(vbo));
+            }
+            
+            void drawArrays() const {
+#ifdef DEBUG
+                if(!this->bound) {
+                    throw BufferException("Could not draw anything. No buffer bound.");
+                }
+#endif
+                glDrawArrays(GL_TRIANGLES, 0, vbos[0]->numberOfElements());
+            }    
+            void drawElements() const {
+#ifdef DEBUG
+                if(!this->bound) {
+                    throw BufferException("Could not draw anything. No buffer bound.");
+                }
+#endif                
+                glDrawElements(GL_TRIANGLES, ebo->numberOfElements(), DataType::UINT, (const void*) 0);
             }
             
             virtual void bind() override {
@@ -133,6 +147,8 @@ namespace engine {
 
                 // glBindVertexArray(this->id);
                 Bindable::bindVertexArray(this->id);
+                
+                this->bound = true;
                 VertexArray::anyVAOBound = true;
             }
             virtual void unbind() override {
@@ -142,6 +158,8 @@ namespace engine {
 
                 // glBindVertexArray(0);
                 Bindable::unbindVertexArray();
+                
+                this->bound = false;
                 VertexArray::anyVAOBound = false;
             }
             
@@ -150,24 +168,6 @@ namespace engine {
             }
             static bool isAnyVAOBound() {
                 return anyVAOBound;
-            }
-            
-            void drawArrays() const {
-#ifdef DEBUG
-                if(!this->bound) {
-                    throw BufferException("Could not draw anything. No buffer bound.");
-                }
-#endif
-                glDrawArrays(GL_TRIANGLES, 0, vbos[0]->numberOfElements());
-            }
-            
-            void drawElements() const {
-#ifdef DEBUG
-                if(!this->bound) {
-                    throw BufferException("Could not draw anything. No buffer bound.");
-                }
-#endif                
-                glDrawElements(GL_TRIANGLES, ebo->numberOfElements(), DataType::UINT, (const void*) 0);
             }
         private:          
             void enableAttribute(GLuint index) {

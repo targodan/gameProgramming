@@ -31,6 +31,8 @@ namespace engine {
             
                 // glBindBuffer(ELEMENT_ARRAY_BUFFER, this->id);
                 Buffer::bind();
+                
+                this->bound = true;
                 ElementBuffer::anyEBOBound = true;
             }
             virtual void unbind() override {
@@ -40,6 +42,8 @@ namespace engine {
 
                 // glBindBuffer(ELEMENT_ARRAY_BUFFER, 0);
                 Buffer::unbind();
+                
+                this->bound = false;
                 ElementBuffer::anyEBOBound = false;
             }
             

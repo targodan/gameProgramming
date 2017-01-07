@@ -21,7 +21,7 @@ namespace engine {
             /* 
              * Field-of-view given in degrees
              */
-            void setProjectionMatrix(float verticalFieldOfView, float aspectRatio, float near, float far);
+            void setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far);
             void setModelViewMatrix(vec3 direction, vec3 up);
             void setPosition(const vec3 position);
             

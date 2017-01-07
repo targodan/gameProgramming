@@ -39,20 +39,27 @@ namespace engine {
             
             virtual ~Mesh();
             
-            void render(const Material& material);
-            
-            std::string getUsage() const;
+            void render();
             
             void loadMesh();
             void releaseMesh();
             
+            std::string getUsage() const;
+            
+            void setMaterial(const std::shared_ptr<Material>& material);
+            std::shared_ptr<const Material> getMaterial() const;
+            
             void applyTransformation(glm::mat3 transformMatrix);
             void applyTransformation(glm::mat4 transformMatrix);
+        private:
+            void createVBO();
+            void createEBO();
             
-        protected:
+            std::shared_ptr<Material> material;
+            
             DataUsagePattern usage;
             
-            VertexArray vao;
+            std::unique_ptr<VertexArray> vao;
             
             vector<Vertex> vertices;
             vector<GLuint> indices;

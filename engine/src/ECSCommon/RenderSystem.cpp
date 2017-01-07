@@ -39,7 +39,7 @@ namespace engine {
         }
         
         void RenderSystem::render(VisualComponent& comp) {
-            comp.getMesh().render(comp.getMaterial());
+            comp.getMesh().render();
         }
     }
 }

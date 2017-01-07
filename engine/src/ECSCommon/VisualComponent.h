@@ -15,6 +15,8 @@ namespace engine {
         private:
             static componentId_t typeId;
             
+            // TODO: This shouldn't be here, but I didn't come up with a better solution right now :(
+            void _combineMeshAndMaterial(); 
         protected:
             Mesh mesh;
             Material material;

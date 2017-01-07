@@ -39,29 +39,16 @@ namespace engine {
             }
                 
             VertexArray(const VertexArray& orig) 
-                : Bindable(orig), vbos(), bound(false) {
-                this->generateVertexArray();
-                
-                for(auto& vbo : orig.vbos) {
+                : Bindable(orig), vbos(), id(orig.id), bound(orig.bound) {
+                for(auto&& vbo : orig.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 
                 this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
             VertexArray(VertexArray&& orig) 
-                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(ebo)), bound(false) {
-                // Note: I don't know if this is necessary. When this function returns,
-                //       will orig be deleted? If so, its deletion would release its
-                //       buffer. Therefore, a new buffer has to be generated.
-                // Answer: No it is not necessary, yes orig will be deleted or even be
-                //         optimized out completely. Because it is a rvalue, orig will
-                //         go out of scope when this method does.
-                // TODO: Is generating the array still necessary? Shouldn't this point
-                //       to the same array as orig did?
-                // Answer: If orig is deleted, its destructor releases the buffer;
-                //       Hence, new buffer needed. 
-                
-                this->generateVertexArray();
+                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), id(std::move(orig.id)), bound(std::move(orig.bound)) {
+                this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
 
             VertexArray& operator=(const VertexArray& right) {
@@ -70,32 +57,33 @@ namespace engine {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 this->ebo = right.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(right.ebo));
-                
-                this->bound = false;
-                this->generateVertexArray();
+               
+                this->id = right.id;
+                this->bound = right.bound;
                 
                 return *this;
             }
             VertexArray& operator=(VertexArray&& right) {
                 this->vbos = std::move(right.vbos);
                 this->ebo = std::move(right.ebo);
-                
-                this->bound = false;
-                this->generateVertexArray();
+                this->id = std::move(right.id);
+                this->bound = std::move(right.bound);
                 
                 return *this;
             }
             
             ~VertexArray() {
-                if(this->generated) {
-                    this->releaseVertexArray();
-                }
+                // this->releaseVertexArray();
             }
             
             void generateVertexArray() {
                 glGenVertexArrays(1, &(this->id));
             }
             void releaseVertexArray() {
+                for(auto&& vbo : this->vbos) {
+                    vbo->releaseBuffer();
+                }
+                
                 glDeleteVertexArrays(1, &(this->id));
             }
             
@@ -108,21 +96,22 @@ namespace engine {
             }
             
             void setAttributePointers() {
+#ifdef DEBUG
+                if(!this->bound) {
+                    throw WTFException("Cannot set vertex attribute pointers: no VAO bound.");
+                }
+#endif /*DEBUG*/
                 for(auto& vbo : this->vbos) {
                     vbo->bind();
-                    setAttributePointers(vbo->getAttributes());
+                    vbo->setAttributePointers();
                     vbo->unbind();
                 }
-            }
-            
-            void attachVBO(std::unique_ptr<VertexBuffer>&& vbo) {
-                vbos.push_back(std::move(vbo));
             }
             
             void drawArrays() const {
 #ifdef DEBUG
                 if(!this->bound) {
-                    throw BufferException("Could not draw anything. No buffer bound.");
+                    throw WTFException("Could not draw anything. No buffer bound.");
                 }
 #endif
                 glDrawArrays(GL_TRIANGLES, 0, vbos[0]->numberOfElements());
@@ -130,7 +119,7 @@ namespace engine {
             void drawElements() const {
 #ifdef DEBUG
                 if(!this->bound) {
-                    throw BufferException("Could not draw anything. No buffer bound.");
+                    throw WTFException("Could not draw anything. No buffer bound.");
                 }
 #endif                
                 glDrawElements(GL_TRIANGLES, ebo->numberOfElements(), DataType::UINT, (const void*) 0);
@@ -169,25 +158,18 @@ namespace engine {
             static bool isAnyVAOBound() {
                 return anyVAOBound;
             }
+            
+            void attachVBO(std::unique_ptr<VertexBuffer>&& vbo) {
+                vbos.push_back(std::move(vbo));
+            }
+            const vector<std::unique_ptr<VertexBuffer>>& getVBOs() const {
+                return this->vbos;
+            }
+            
+            void setEBO(std::unique_ptr<ElementBuffer> ebo) {
+                this->ebo = std::move(ebo);
+            }
         private:          
-            void enableAttribute(GLuint index) {
-                glEnableVertexAttribArray(index);
-            }
-            void disableAttribute(GLuint index) {
-                glDisableVertexAttribArray(index);
-            }
-            
-            void setAttributePointers(const vector<VertexAttribute>& attributes) {
-                for(auto attribute : attributes) {
-                    setAttributePointer(attribute);
-                    enableAttribute(attribute.index);
-                }
-            }
-            void setAttributePointer(const VertexAttribute& attribute) {
-                glVertexAttribPointer(attribute.index, attribute.size, attribute.type, 
-                    attribute.normalized, attribute.stride, attribute.offset);
-            }
-            
             vector<std::unique_ptr<VertexBuffer>> vbos; // For now, only functionality to draw ONE VertexBuffer will be implemented
             std::unique_ptr<ElementBuffer> ebo;
             

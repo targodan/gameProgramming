@@ -2,6 +2,7 @@
 #define SHADERPROGRAM_H
 
 #include "Shader.h"
+#include "glm/gtc/type_ptr.hpp"
 #include "../WTFException.h"
 
 namespace engine {
@@ -12,7 +13,8 @@ namespace engine {
         
         class ShaderProgram {
         public:
-            ShaderProgram(std::string vertexShaderFile, std::string fragmentShaderFile) : linked(false) {
+            ShaderProgram(std::string vertexShaderFile, std::string fragmentShaderFile) 
+                : linked(false) {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
                 this->id = glCreateProgram();
 
@@ -21,15 +23,26 @@ namespace engine {
                 
                 this->linkProgram();
             }
-            
+            ShaderProgram(const ShaderProgram& orig) 
+                : linked(orig.linked), id(orig.id), registeredShaders(orig.registeredShaders) {}
+            ShaderProgram(ShaderProgram&& orig) 
+                : linked(std::move(orig.linked)), id(std::move(orig.id)), registeredShaders(std::move(orig.registeredShaders)) {}
             ~ShaderProgram() {
+                // glDeleteProgram(this->id);
+            }
+            
+            void releaseProgram() {
                 glDeleteProgram(this->id);
+                
+                for(auto it : this->registeredShaders) {
+                    it.second->releaseShader();
+                }
             }
             
             ShaderProgram(const ShaderProgram& orig) = delete;
             ShaderProgram(ShaderProgram&& orig) = delete;
             
-            void useProgram() {
+            void useProgram() const {
                 glUseProgram(this->id);
             }
             
@@ -56,7 +69,12 @@ namespace engine {
                 }
             
                 glLinkProgram(this->id);
-                // TODO: Check for linker errors
+                
+                GLint linkError;
+                glGetProgramiv(this->id, GL_LINK_STATUS, &linkError);
+                if(linkError != GL_TRUE) {
+                    throw GLException("Shader link error. :(");
+                }
                 
                 for(auto it : this->registeredShaders) {
                     if(it.second->isCompiled()) {

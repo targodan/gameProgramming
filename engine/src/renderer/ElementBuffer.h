@@ -10,21 +10,30 @@ namespace engine {
         
         class ElementBuffer : public Buffer {
         public:
-            ElementBuffer() : type(BufferType::ELEMENT_ARRAY_BUFFER) {
-            }
+            ElementBuffer() 
+                : type(BufferType::ELEMENT_ARRAY_BUFFER) {}
+            ElementBuffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
+                : Buffer(dataPtr, size, nElements, usage), type(BufferType::ELEMENT_ARRAY_BUFFER) {}
             ElementBuffer(const ElementBuffer& orig) 
                 : Buffer(orig), type(orig.type) {
+                if(orig.loadedToGraphicsCard) {
+                    this->bind();
+                    this->loadData();
+                    this->unbind();
+                }
             }
             ElementBuffer(ElementBuffer&& orig) 
                 : Buffer(std::move(orig)), type(std::move(orig.type)) {
+                if(orig.loadedToGraphicsCard) {
+                    this->bind();
+                    this->loadData();
+                    this->unbind();
+                }
             }
-            virtual ~ElementBuffer() {
-            }
+            virtual ~ElementBuffer() {}
             
             virtual void bind() override {
-                if(this->bound) {
-                    return;
-                } else if(ElementBuffer::anyEBOBound) {
+                if(ElementBuffer::anyEBOBound) {
                     // TODO: Log warning; maybe bindBuffer to 0?
                     ElementBuffer::anyEBOBound = false;
                 }
@@ -32,18 +41,12 @@ namespace engine {
                 // glBindBuffer(ELEMENT_ARRAY_BUFFER, this->id);
                 Buffer::bind();
                 
-                this->bound = true;
                 ElementBuffer::anyEBOBound = true;
             }
             virtual void unbind() override {
-                if(!this->bound) {
-                    return;
-                }
-
                 // glBindBuffer(ELEMENT_ARRAY_BUFFER, 0);
                 Buffer::unbind();
                 
-                this->bound = false;
                 ElementBuffer::anyEBOBound = false;
             }
             

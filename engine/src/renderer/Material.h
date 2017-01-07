@@ -10,10 +10,18 @@ namespace engine {
         public:
             Material(std::shared_ptr<ShaderProgram> shader);
             Material(const Material& orig);
+            Material(Material&& orig);
+            
+            Material& operator=(const Material& right);
+            Material& operator=(Material&& right);
+            
             virtual ~Material();
+            void releaseMaterial();
             
             // This needs to be called before drawing the corresponding mesh
             void makeActive() const;
+            
+            std::shared_ptr<const ShaderProgram> getShader() const;
         private:
             
             // NOTE: I made this a shared_ptr because I couldn't see how to work

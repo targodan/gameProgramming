@@ -5,6 +5,7 @@
 #include "Bindable.h"
 #include "DataUsagePattern.h"
 #include "../WTFException.h"
+#include "BufferException.h"
 #include "gl/gl_core_3_3.h"
 
 namespace engine {
@@ -41,36 +42,17 @@ namespace engine {
                 : loadedToGraphicsCard(false), bound(false), data {dataPtr, size, nElements, usage} {
                 this->generateBuffer();
             }
-            Buffer(const Buffer& orig) : loadedToGraphicsCard(false), bound(false), data(orig.data) {
-                this->generateBuffer();
+            Buffer(const Buffer& orig) 
+                : id(orig.id), loadedToGraphicsCard(orig.loadedToGraphicsCard), bound(orig.bound), data(orig.data) {
                 
-                if(orig.loadedToGraphicsCard) {
-                    this->bind();
-                    this->loadData();
-                    this->unbind();
-                }
             }
-            Buffer(Buffer&& orig) : id(0), loadedToGraphicsCard(false), bound(false), data(std::move(orig.data)) {
-                // Note: I don't know if this is necessary. When this function returns,
-                //       will orig be deleted? If so, its deletion would release its
-                //       buffer. Therefore, a new buffer has to be generated.
-                // Answer: No it is not necessary, yes orig will be deleted or even be
-                //         optimized out completely. Because it is a rvalue, orig will
-                //         go out of scope when this method does.
-                // TODO: Is generating the buffer still necessary? Shouldn't this point
-                //       to the same buffer as orig did?
-                // Answer: If orig is deleted, its destructor releases the buffer (see below);
-                //       Hence, new buffer needed. 
-                this->generateBuffer();
+            Buffer(Buffer&& orig) 
+                : id(std::move(orig.id)), loadedToGraphicsCard(std::move(orig.loadedToGraphicsCard)), 
+                  bound(std::move(orig.bound)), data(std::move(orig.data)) {
                 
-                if(orig.loadedToGraphicsCard) {
-                    this->bind();
-                    this->loadData();
-                    this->unbind();
-                }
             }
             virtual ~Buffer() {
-                this->releaseBuffer();
+                // this->releaseBuffer();
             }
             
             virtual const BufferType getType() const = 0;
@@ -118,10 +100,20 @@ namespace engine {
             }
             
             virtual void bind() override {
+                if(this->bound) {
+                    return;
+                }
+                
                 Bindable::bind(this->getType(), this->id);
+                this->bound = true;
             }
             virtual void unbind() override {
+                if(!this->bound) {
+                    return;
+                }
+                
                 Bindable::unbind(this->getType());
+                this->bound = false;
             }
             
             size_t numberOfElements() const {
@@ -132,6 +124,9 @@ namespace engine {
             }
             virtual bool isBound() const override {
                 return this->bound;
+            }
+            bool isLoadedToGraphicsCard() const {
+                return this->loadedToGraphicsCard;
             }
         protected:
             GLuint id;

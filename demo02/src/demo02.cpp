@@ -12,6 +12,10 @@
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/ElementBuffer.h"
 #include <iostream>
+// GLM Mathematics
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace demo {
     using namespace engine::renderer::gl;
@@ -21,41 +25,38 @@ namespace demo {
     using engine::Game;
     
     Demo02::Demo02(int argc, char** argv, double ups) 
-        : Game(argc, argv, ups), camera{vec3{0.f, 0.f, 0.f}} {
+        : Game(argc, argv, ups), camera{vec3{10.f, 0.f, 10.f}} {
         // Set camera
-        this->camera.setModelViewMatrix(vec3{1.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
-        this->camera.setProjectionMatrix(90, this->window.getAspectRatio(),0.1f, 100.f);
+        this->camera.setModelViewMatrix(vec3{0.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
+        this->camera.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
         
         // Create triangle entity
         this->triangle = this->entityManager.createEntity("Triangle");
         
-        vec3 triangleOrigin = {5.f, 0.f, 0.f};
+        vec3 triangleOrigin = {0.f, 0.f, 0.f};
         PlacementComponent pc;
         pc.setPosition(triangleOrigin);
         pc.setDirection(-(pc.getPosition()));
+              
+        auto shaderPtr = std::make_shared<ShaderProgram>("/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.vsh", 
+                                                         "/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.fsh");
+        
+        this->shaderPtr = shaderPtr;
+        Material material = {shaderPtr};
         
         vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}), 
                                    Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}), 
                                    Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f})};
         vector<GLuint> indices = {0, 1, 2};  
-        Mesh mesh{vertices, indices};
+        Mesh mesh = {vertices, indices};
         mesh.loadMesh();
-        
-        auto shaderPtr = std::make_shared<ShaderProgram>("/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.vsh", 
-                                                         "/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.fsh");
-        // TODO: automate
-        shaderPtr->useProgram();
-        shaderPtr->setUniform("projectionMatrix", camera.getProjectionMatrix());
-        shaderPtr->setUniform("modelViewMatrix", camera.getModelViewMatrix());
-        
-        Material material = {shaderPtr};
         
         this->triangle.addComponent<VisualComponent>(mesh, material);
         this->triangle.addComponent<PlacementComponent>(pc);
     }
 
     Demo02::~Demo02() {
-
+        
     }
     
     void Demo02::initialize() {
@@ -74,10 +75,14 @@ namespace demo {
 
     void Demo02::render(double deltaTimeSeconds) {
         glClearColor(0, 0.2, 0.2, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(this->window.getWindow());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        shaderPtr->useProgram();
+        shaderPtr->setUniform("projectionMatrix", this->camera.getProjectionMatrix());
+        shaderPtr->setUniform("modelViewMatrix", this->camera.getModelViewMatrix());
         
         Game::render(deltaTimeSeconds);
+        glfwSwapBuffers(this->window.getWindow());
     }
 
     void Demo02::update(double deltaTimeSeconds) {

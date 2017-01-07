@@ -2,6 +2,7 @@
 #define DEMO02_H
 
 #include "Game.h"
+#include "../../engine/src/renderer/ShaderProgram.h"
 #include "../../engine/src/renderer/Camera.h"
 #include "../../engine/src/ECS/Entity.h"
 
@@ -24,6 +25,8 @@ namespace demo {
     private:
         Camera camera;
         Entity triangle;
+        
+        std::shared_ptr<ShaderProgram> shaderPtr;
     };
 }
 

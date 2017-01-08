@@ -14,6 +14,10 @@ namespace engine {
         const std::string& Entity::getName() const {
             return this->name;
         }
+            
+        Component& Entity::getComponent(componentId_t compId) {
+            return *this->em->getComponentOfEntity(this->id, compId);
+        }
         
         std::string Entity::toString() const {
             std::stringstream ss;

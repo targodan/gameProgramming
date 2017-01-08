@@ -10,6 +10,8 @@
 #include "EntityManager.h"
 #include "EntityId.h"
 
+#include "../ECSCommon/PlacementComponent.h"
+
 namespace engine {
     namespace ECS {
         using engine::util::vector;
@@ -46,6 +48,13 @@ namespace engine {
                 comp->setEntityId(this->id);
                 this->em->addComponent(this->id, comp);
                 return *this;
+            }
+            
+            Component& getComponent(componentId_t compId);
+            
+            template<typename CompT>
+            CompT& getComponent() {
+                return this->getComponent(CompT::getComponentTypeId())->template to<CompT>();
             }
             
             std::string toString() const;

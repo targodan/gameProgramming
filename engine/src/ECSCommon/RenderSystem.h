@@ -20,7 +20,7 @@ namespace engine {
             
             virtual void run(EntityManager& em, float deltaTimeSeconds) override;
             virtual bool isUpdateSystem() const override {
-                return true;
+                return false;
             }
             virtual bool isRenderSystem() const override {
                 return true;

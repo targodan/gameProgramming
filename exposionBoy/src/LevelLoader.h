@@ -42,15 +42,15 @@ namespace explosionBoy {
         LevelLoader(std::istream& stream);
         LevelLoader(const std::string& json);
         
-        Level createLevel(engine::ECS::EntityManager& em);
+        std::unique_ptr<Level> createLevel(engine::ECS::EntityManager& em);
         
     public:
-        static Level loadLevel(std::istream& stream, engine::ECS::EntityManager& em) {
+        static std::unique_ptr<Level> loadLevel(std::istream& stream, engine::ECS::EntityManager& em) {
             LevelLoader ll(stream);
             return ll.createLevel(em);
         }
         
-        static Level loadLevel(const std::string& json, engine::ECS::EntityManager& em) {
+        static std::unique_ptr<Level> loadLevel(const std::string& json, engine::ECS::EntityManager& em) {
             LevelLoader ll(json);
             return ll.createLevel(em);
         }

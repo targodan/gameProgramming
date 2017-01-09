@@ -21,7 +21,5 @@
 #include "./ECS/macros.h"
 #include "./ECS/messageId.h"
 
-#include "./ECS/pb/EntityManager.pb.h"
-
 #endif /* ECS_H */
 

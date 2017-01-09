@@ -3,8 +3,8 @@
 
 #include "./ECSCommon/PlacementSystem.h"
 #include "./ECSCommon/PlacementComponent.h"
+#include "./ECSCommon/RenderSystem.h"
 #include "./ECSCommon/VisualComponent.h"
-#include "./ECSCommon/pb/Placement.pb.h"
 
 #endif /* ECSCOMMON_H */
 

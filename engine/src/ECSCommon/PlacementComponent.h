@@ -7,7 +7,7 @@
 #include "../util/vec3.h"
 
 #include "../IO/Serializable.h"
-#include "pb/Placement.pb.h"
+#include "./pb/Placement.pb.h"
 
 namespace engine {
     namespace ECSCommon {

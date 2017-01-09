@@ -109,7 +109,7 @@ namespace explosionBoy {
         this->pillarShader = std::make_shared<ShaderProgram>(this->level.pillar_shader()+".vsh", this->level.pillar_shader()+".fsh");
     }
 
-    Level LevelLoader::createLevel(engine::ECS::EntityManager& em) {
+    std::unique_ptr<Level> LevelLoader::createLevel(engine::ECS::EntityManager& em) {
         this->createShaderPrograms();
         
         auto outerWallEntity = em.createEntity("OuterWall")
@@ -172,7 +172,7 @@ namespace explosionBoy {
             ss.str("");
         }
         
-        return Level(outerWallEntity, innerWallEntities, pillarEntities);
+        return std::make_unique<Level>(outerWallEntity, innerWallEntities, pillarEntities);
     }
 
     engine::renderer::Mesh LevelLoader::createOuterWallsMesh() const {

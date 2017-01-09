@@ -24,7 +24,8 @@ namespace engine {
         Window(int width, int height, std::string title = {"ExplosionBoy"});
         Window(const Window& orig) = delete;
         ~Window();
-
+        
+        float getAspectRatio() const;
         int getWidth() const;
         int getHeight() const;
         std::string getTitle() const;

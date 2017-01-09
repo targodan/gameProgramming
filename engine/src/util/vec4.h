@@ -9,6 +9,8 @@
 
 namespace engine {
     namespace util {
+        class vec3;
+        
         class vec4 : public glm::vec4 {
         public:
             vec4() : glm::vec4() {}

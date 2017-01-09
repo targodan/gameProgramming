@@ -13,6 +13,7 @@ namespace engine {
         
         VisualComponent::VisualComponent(const Mesh& mesh, const Material& material) 
             : mesh(mesh), material(material) {
+            this->_combineMeshAndMaterial();
         }
 
         VisualComponent::~VisualComponent() {
@@ -56,6 +57,10 @@ namespace engine {
         
         componentId_t VisualComponent::getComponentTypeId() {
             return VisualComponent::typeId;
+        }
+        
+        void VisualComponent::_combineMeshAndMaterial() {
+            this->mesh.setMaterial(std::make_shared<Material>(this->material));
         }
     }
 }

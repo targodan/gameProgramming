@@ -38,8 +38,8 @@ namespace demo {
         pc.setPosition(triangleOrigin);
         pc.setDirection(-(pc.getPosition()));
               
-        auto shaderPtr = std::make_shared<ShaderProgram>("/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.vsh", 
-                                                         "/home/tim/Documents/Code/GameProgramming/demo02/src/triangle_sh.fsh");
+        auto shaderPtr = std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
+                                                         "src/triangle_sh.fsh");
         
         this->shaderPtr = shaderPtr;
         Material material = {shaderPtr};

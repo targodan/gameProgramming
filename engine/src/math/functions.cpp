@@ -48,5 +48,13 @@ namespace engine {
             return ::sqrt(f);
         #endif
         }
+        
+        float deg2rad(float degree) {
+            return degree * (M_PI / 180.f);
+        }
+        
+        float rad2deg(float radiant) {
+            return radiant * (180.f / M_PI);
+        }
     }
 }

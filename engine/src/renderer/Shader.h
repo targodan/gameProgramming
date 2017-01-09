@@ -3,8 +3,10 @@
 
 #include "ShaderType.h"
 #include "gl/gl_core_3_3.h"
-#include "../util/readFile.h"
-#include "../util/Map.h"
+#include "util/readFile.h"
+#include "util/Map.h"
+#include "util/vector.h"
+#include "GLException.h"
 #include <memory>
 
 namespace engine {
@@ -12,6 +14,7 @@ namespace engine {
         using namespace gl;
         using engine::util::Map;
         using engine::util::readFile;
+        using engine::util::vector;
         using std::unique_ptr;
         
         /**
@@ -26,13 +29,19 @@ namespace engine {
                 this->initShader();
                 this->compileShader();
             }
-           
+            Shader(const Shader& orig) 
+                : id(orig.id), type(orig.type), compiled(orig.compiled), 
+                  sourceCode(std::make_unique<std::string>(*(orig.sourceCode))) {}
+            Shader(Shader&& orig) 
+                : id(std::move(orig.id)), type(std::move(orig.type)), 
+                  compiled(std::move(orig.compiled)), sourceCode(std::make_unique<std::string>(*(std::move(orig.sourceCode)))) {}
             ~Shader() {
-                this->releaseShader();
+                // this->releaseShader();
             }
             
-            Shader(const Shader& orig) = delete;
-            Shader(Shader&& orig) = delete;
+            void releaseShader() {
+                glDeleteShader(this->id);
+            }
             
             GLuint getID() const {
                 return this->id;
@@ -52,17 +61,22 @@ namespace engine {
             void compileShader() {
                 glCompileShader(this->id);  
                     
-                // TODO: Check for compile errors
+                GLint shaderError;
+                glGetShaderiv(this->id, GL_COMPILE_STATUS, &shaderError);
+                if(shaderError != GL_TRUE) {
+                    throw GLException("Shader compile error. :(");
+                }
 
                 this->compiled = true;
-            }
-            void releaseShader() {
-                glDeleteShader(this->id);
             }
             
             GLuint id;
             ShaderType type;
             bool compiled;
+            
+            // vector<std::string> uniformVariables;
+            // vector<std::string> inputVariables;
+            
             const std::unique_ptr<std::string> sourceCode;
            
         };

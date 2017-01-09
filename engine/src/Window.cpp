@@ -37,7 +37,11 @@ namespace engine {
     Window::~Window() {
         glfwTerminate();
     }
-
+    
+    float Window::getAspectRatio() const {
+        return ((float) this->width) / ((float) this->height);
+    }
+    
     int Window::getWidth() const {
         return this->width;
     }

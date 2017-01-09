@@ -17,7 +17,7 @@ namespace engine {
         bool shutdownComplete = false;
         
     protected:
-        Window window{1024,768};
+        Window window;
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
         ECS::MessageHandler messageHandler;

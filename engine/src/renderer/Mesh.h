@@ -1,7 +1,9 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../util/Array.h"
+#include "Material.h"
+#include "util/Array.h"
+#include "util/vector.h"
 #include "Vertex.h"
 #include "VertexArray.h"
 #include "DataUsagePattern.h"
@@ -12,6 +14,7 @@
 namespace engine {
     namespace renderer {
         using util::Array;
+        using util::vector;
         using std::unique_ptr;
         using namespace gl;
         
@@ -25,7 +28,7 @@ namespace engine {
         class Mesh {
         public:
             Mesh() : wasLoaded(false) {}
-            Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, 
+            Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
             Mesh(const Mesh& orig);
@@ -36,21 +39,30 @@ namespace engine {
             
             virtual ~Mesh();
             
-            std::string getUsage() const;
+            void render();
             
             void loadMesh();
             void releaseMesh();
             
+            std::string getUsage() const;
+            
+            void setMaterial(const std::shared_ptr<Material>& material);
+            std::shared_ptr<const Material> getMaterial() const;
+            
             void applyTransformation(glm::mat3 transformMatrix);
             void applyTransformation(glm::mat4 transformMatrix);
+        private:
+            void createVBO();
+            void createEBO();
             
-        protected:
+            std::shared_ptr<Material> material;
+            
             DataUsagePattern usage;
             
-            VertexArray vao;
+            std::unique_ptr<VertexArray> vao;
             
-            std::vector<Vertex> vertices;
-            std::vector<GLuint> indices;
+            vector<Vertex> vertices;
+            vector<GLuint> indices;
             
             bool wasLoaded;
             

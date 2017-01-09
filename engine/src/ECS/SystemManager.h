@@ -112,12 +112,14 @@ namespace engine {
             void setup();
             void stop();
             
-            void run(SystemType type, float dT);
+            void runParallel(SystemType type, float dT);
+            void runSequential(SystemType type, float dT);
+            
             inline void update(float dT) {
-                this->run(SystemType::UPDATE, dT);
+                this->runParallel(SystemType::UPDATE, dT);
             }
             inline void render(float dT) {
-                this->run(SystemType::RENDER, dT);
+                this->runSequential(SystemType::RENDER, dT);
             }
         };
     }

@@ -103,7 +103,7 @@ namespace engine {
             this->isRunning = false;
         }
         
-        void SystemManager::run(SystemType type, float dT) {
+        void SystemManager::runParallel(SystemType type, float dT) {
 #ifdef DEBUG
             if(!this->hasBeenSetup) {
                 throw WTFException("The SystemManager has not been setup yet!");
@@ -147,6 +147,17 @@ namespace engine {
                     LOG(FATAL) << "Exception in SystemWorker thread. "
                             << ex.what();
                 }
+            }
+        }
+        
+        void SystemManager::runSequential(SystemType type, float dT) {
+#ifdef DEBUG
+            if(!this->hasBeenSetup) {
+                throw WTFException("The SystemManager has not been setup yet!");
+            }
+#endif
+            for(auto& node : this->dependencyTree) {
+                node->system->run(this->em, dT);
             }
         }
         

@@ -54,7 +54,7 @@ namespace engine {
             
             template<typename CompT>
             CompT& getComponent() {
-                return this->getComponent(CompT::getComponentTypeId())->template to<CompT>();
+                return this->getComponent(CompT::getComponentTypeId()).template to<CompT>();
             }
             
             std::string toString() const;

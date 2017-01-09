@@ -162,7 +162,7 @@ private:
         vector<std::string> executionOrder;
         executionOrder.reserve(this->enabledSystems.size());
         for(size_t i = 0; i < NUM_RUNS; ++i) {
-            this->run(SystemType::UPDATE, 0);
+            this->runParallel(SystemType::UPDATE, 0);
             
             executionOrder.clear();
             while(!__executionQueue.empty()) {
@@ -795,7 +795,7 @@ private:
         bool hadFlag = el::Loggers::hasFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
         el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
         
-        this->run(SystemType::UPDATE, 0);
+        this->runParallel(SystemType::UPDATE, 0);
         logger->flush();
         
         std::ifstream log(temp.c_str());

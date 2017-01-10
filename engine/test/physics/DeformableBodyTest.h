@@ -22,7 +22,7 @@ private:
         Eigen::Matrix<float, 12, 1> force = Eigen::Matrix<float, 12, 1>::Zero();
         force[2] = -100;
         this->step(1/60., force);
-        std::cout << this->lastVelocities;
+        std::cout << std::endl << this->lastVelocities;
     }
 };
 

@@ -133,7 +133,7 @@ namespace engine {
             return this->currentPosition - this->restPosition;
         }
         
-        Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, Matrix<float, 12, 1> forces) const {
+        Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const {
             return this->lastVelocities +
                     (
                         h * this->stepMatrix.solve(
@@ -152,7 +152,11 @@ namespace engine {
             this->updateStepMatrixIfNecessary(targetStepSize);
         }
         
-        void DeformableBody::step(float h, Matrix<float, 12, 1> forces) {
+        void DeformableBody::step(float h, const Force& force) {
+            this->step(h, force.getForceOnVertices(this->currentPosition));
+        }
+        
+        void DeformableBody::step(float h, const Matrix<float, 12, 1>& forces) {
             this->updateStepMatrixIfNecessary(h);
             this->lastVelocities = this->calculateVelocities(h, forces);
             this->currentPosition += h * this->lastVelocities;

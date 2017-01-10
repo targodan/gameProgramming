@@ -5,6 +5,8 @@
 
 #include "../renderer/Mesh.h"
 
+#include "Force.h"
+
 namespace engine {
     namespace physics {
         using namespace Eigen;
@@ -43,7 +45,7 @@ namespace engine {
             HouseholderQR<Matrix<float, 12, 12>> calculateStepMatrix(float h) const; // inv(M + h² * K + h * C)
             
             Matrix<float, 12, 1> calculateCurrentDifferenceFromRestPosition() const;
-            Matrix<float, 12, 1> calculateVelocities(float h, Matrix<float, 12, 1> forces) const;
+            Matrix<float, 12, 1> calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const;
             
             void updateStepMatrixIfNecessary(float h);
             void calculateAndSetInitialState(float targetStepSize);
@@ -56,7 +58,8 @@ namespace engine {
                 this->calculateAndSetInitialState(targetStepSize);
             }
             
-            void step(float h, Matrix<float, 12, 1> forces);
+            void step(float h, const Matrix<float, 12, 1>& forces);
+            void step(float h, const Force& force);
         };
     }
 }

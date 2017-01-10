@@ -15,7 +15,7 @@ namespace engine {
             : usage(orig.usage), 
                 vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
             this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
-            this->vao = std::make_unique<VertexArray>(*(orig.vao));
+            this->vao = orig.vao==nullptr ? nullptr : std::make_unique<VertexArray>(*(orig.vao));
             
 //            if(orig.wasLoaded) {
 //                this->loadMesh();

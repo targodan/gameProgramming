@@ -6,8 +6,8 @@
 
 namespace engine {
     namespace physics {
-        Vector<12> DeformableBody::calculatePlanarVectorsFromMesh() const {
-            Vector<12> planarVectors;
+        Matrix<float, 12, 1> DeformableBody::calculatePlanarVectorsFromMesh() const {
+            Matrix<float, 12, 1> planarVectors;
             size_t i = 0;
             for(const auto& v : this->mesh.getVertices()) {
                 planarVectors[i*3 + 0] = v.position.x;
@@ -17,59 +17,107 @@ namespace engine {
             return planarVectors;
         }
         
-        void DeformableBody::setMeshFromPlanarVectors(const Vector<12>& v) {
-            for(size_t i = 0; i < v.getDimension(); i += 3) {
+        void DeformableBody::setMeshFromPlanarVectors(const Matrix<float, 12, 1>& v) {
+            for(size_t i = 0; i < 12; i += 3) {
                 this->mesh.getVertices()[i / 3].position.x = v[i+0];
                 this->mesh.getVertices()[i / 3].position.y = v[i+1];
                 this->mesh.getVertices()[i / 3].position.z = v[i+2];
             }
         }
 
-        MatrixSq<6> DeformableBody::calculateMaterialMatrix() const {
+        SparseMatrix<float> DeformableBody::calculateMaterialMatrix() const {
+            SparseMatrix<float> materialMat(6, 6);
+            materialMat.reserve(12);
+            materialMat.insert(0, 0) = 1 - this->poissonsRatio;
+            materialMat.insert(0, 1) = this->poissonsRatio;
+            materialMat.insert(0, 2) = this->poissonsRatio;
+            materialMat.insert(1, 0) = this->poissonsRatio;
+            materialMat.insert(1, 1) = 1 - this->poissonsRatio;
+            materialMat.insert(1, 2) = this->poissonsRatio;
+            materialMat.insert(2, 0) = this->poissonsRatio;
+            materialMat.insert(2, 1) = this->poissonsRatio;
+            materialMat.insert(2, 2) = 1 - this->poissonsRatio;
+            materialMat.insert(3, 3) = 1 - 2*this->poissonsRatio;
+            materialMat.insert(4, 4) = 1 - 2*this->poissonsRatio;
+            materialMat.insert(5, 5) = 1 - 2*this->poissonsRatio;
             return (this->youngsModulus / (1+this->poissonsRatio)*(1-2*this->poissonsRatio))
-                    * MatrixSq<6>({1 - this->poissonsRatio, this->poissonsRatio, this->poissonsRatio, 0, 0, 0, 
-                    this->poissonsRatio, 1-this->poissonsRatio, this->poissonsRatio, 0, 0, 0,
-                    this->poissonsRatio, this->poissonsRatio, 1-this->poissonsRatio, 0, 0, 0,
-                    0, 0, 0, 1-2*this->poissonsRatio, 0, 0,
-                    0, 0, 0, 0, 1-2*this->poissonsRatio, 0,
-                    0, 0, 0, 0, 0, 1-2*this->poissonsRatio});
+                    * materialMat;
         }
         
-        MatrixSq<12> DeformableBody::calculateStiffnessMatrix() const {
+        SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
             // TODO: Check if A is made up of the rest position or the current one.
             auto& v = this->mesh.getVertices();
-            auto A = MatrixSq<4>({
+            float buffer[16] = {
                 v[0].position.x, v[1].position.x, v[2].position.x, v[3].position.x,
                 v[0].position.y, v[1].position.y, v[2].position.y, v[3].position.y,
                 v[0].position.z, v[1].position.z, v[2].position.z, v[3].position.z,
                 1, 1, 1, 1
-            });
+            };
+            auto A = Matrix<float, 4, 4>(buffer).inverse();
             
-            auto B = Matrix<12, 6>({
-                A[0][0], 0, 0, A[1][0], 0, 0, A[2][0], 0, 0, A[3][0], 0, 0,
-                0, A[0][1], 0, 0, A[1][1], 0, 0, A[2][1], 0, 0, A[3][1], 0,
-                0, 0, 0, A[0][2], 0, 0, A[1][2], 0, 0, A[2][2], 0, 0, A[3][2],
-                A[0][1], A[0][0], 0, A[1][1], A[1][0], 0, A[2][1], A[2][0], 0, A[3][1], A[3][0], 0,
-                0, A[0][2], A[0][1], 0, A[1][2], A[1][1], 0, A[2][2], A[2][1], 0, A[3][2], A[3][1],
-                A[0][2], 0, A[0][0], A[1][2], 0, A[1][0], A[2][2], 0, A[2][0], A[3][2], 0, A[3][0]
-            });
-            auto BT = B.transpose();
+            auto B = SparseMatrix<float>(6, 12);
+            B.reserve(0);
+            B.insert(0, 0)  = A(0, 0);
+            B.insert(0, 3)  = A(1, 0);
+            B.insert(0, 6)  = A(2, 0);
+            B.insert(0, 9)  = A(3, 0);
+            
+            B.insert(1, 1)  = A(0, 1);
+            B.insert(1, 4)  = A(1, 1);
+            B.insert(1, 7)  = A(2, 1);
+            B.insert(1, 10) = A(3, 1);
+            
+            B.insert(2, 2)  = A(0, 2);
+            B.insert(2, 5)  = A(1, 2);
+            B.insert(2, 8)  = A(2, 2);
+            B.insert(2, 11) = A(3, 2);
+            
+            B.insert(3, 0)  = A(0, 1);
+            B.insert(3, 1)  = A(0, 0);
+            B.insert(3, 3)  = A(1, 1);
+            B.insert(3, 4)  = A(1, 0);
+            B.insert(3, 6)  = A(2, 1);
+            B.insert(3, 7)  = A(2, 0);
+            B.insert(3, 9)  = A(3, 1);
+            B.insert(3, 10) = A(3, 0);
+            
+            B.insert(4, 1)  = A(0, 2);
+            B.insert(4, 2)  = A(0, 1);
+            B.insert(4, 4)  = A(1, 2);
+            B.insert(4, 5)  = A(1, 1);
+            B.insert(4, 7)  = A(2, 2);
+            B.insert(4, 8)  = A(2, 1);
+            B.insert(4, 10) = A(3, 2);
+            B.insert(4, 11) = A(3, 1);
+            
+            B.insert(4, 0)  = A(0, 2);
+            B.insert(4, 2)  = A(0, 0);
+            B.insert(4, 3)  = A(1, 2);
+            B.insert(4, 5)  = A(1, 0);
+            B.insert(4, 6)  = A(2, 2);
+            B.insert(4, 8)  = A(2, 0);
+            B.insert(4, 9)  = A(3, 2);
+            B.insert(4, 11) = A(3, 0);
             
             // TODO: Check if multiply by volume!
-            return BT * this->calculateMaterialMatrix() * B;
+            return B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
-        MatrixSq<12> DeformableBody::calculateDampeningMatrix() const {
-            return this->dampening * MatrixSq<12>::identity();
+        SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
+            SparseMatrix<float> dampening(12, 12);
+            dampening.setIdentity();
+            return this->dampening * dampening;
         }
         
-        MatrixSq<12> DeformableBody::calculateMassMatrix() const {
-            return this->mass * MatrixSq<12>::identity();
+        SparseMatrix<float> DeformableBody::calculateMassMatrix() const {
+            SparseMatrix<float> mass(12, 12);
+            mass.setIdentity();
+            return this->mass * mass;
         }
         
-        MatrixSq<12> DeformableBody::calculateStepMatrix(float h) const {
-            MatrixSq<12> mat = this->calculateMassMatrix() + h * (h * this->stiffnessMatrix + this->dampeningMatrix);
-            return mat.inverse();
+        HouseholderQR<Matrix<float, 12, 12>> DeformableBody::calculateStepMatrix(float h) const {
+            Matrix<float, 12, 12> mat = this->calculateMassMatrix() + h * (h * this->stiffnessMatrix + this->dampeningMatrix);
+            return mat.householderQr();
         }
             
         void DeformableBody::updateStepMatrixIfNecessary(float h) {
@@ -80,15 +128,14 @@ namespace engine {
             }
         }
         
-        Vector<12> DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
+        Matrix<float, 12, 1> DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
             return this->currentPosition - this->restPosition;
         }
         
-        Vector<12> DeformableBody::calculateVelocities(float h, Vector<12> forces) const {
+        Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, Matrix<float, 12, 1> forces) const {
             return this->lastVelocities +
                     (
-                        h * this->stepMatrix *
-                        (
+                        h * this->stepMatrix.solve(
                             forces
                             - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
                             - this->dampeningMatrix * this->lastVelocities
@@ -96,7 +143,7 @@ namespace engine {
                     );
         }
         
-        void DeformableBody::step(float h, Vector<12> forces) {
+        void DeformableBody::step(float h, Matrix<float, 12, 1> forces) {
             this->updateStepMatrixIfNecessary(h);
             this->lastVelocities = this->calculateVelocities(h, forces);
             this->currentPosition += h * this->lastVelocities;

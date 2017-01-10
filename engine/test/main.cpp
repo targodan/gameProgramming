@@ -10,12 +10,19 @@
 #include <iostream>
 
 #include "brief.h"
+#include "renderer/gl/gl_core_3_3.h"
 
 bool BRIEF_TESTS = false;
 
 INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char** argv) {
+    if(engine::renderer::gl::ogl_LoadFunctions() != engine::renderer::gl::ogl_LOAD_SUCCEEDED) {
+        std::cerr << "Could not load OpenGL functions." << std::endl;
+        return -1;
+    }
+  
+    
     // Deactivate logging
     el::Configurations defaultConf;
     defaultConf.setToDefault();

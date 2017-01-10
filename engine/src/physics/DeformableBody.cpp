@@ -13,6 +13,7 @@ namespace engine {
                 planarVectors[i*3 + 0] = v.position.x;
                 planarVectors[i*3 + 1] = v.position.y;
                 planarVectors[i*3 + 2] = v.position.z;
+                ++i;
             }
             return planarVectors;
         }
@@ -90,14 +91,14 @@ namespace engine {
             B.insert(4, 10) = A(3, 2);
             B.insert(4, 11) = A(3, 1);
             
-            B.insert(4, 0)  = A(0, 2);
-            B.insert(4, 2)  = A(0, 0);
-            B.insert(4, 3)  = A(1, 2);
-            B.insert(4, 5)  = A(1, 0);
-            B.insert(4, 6)  = A(2, 2);
-            B.insert(4, 8)  = A(2, 0);
-            B.insert(4, 9)  = A(3, 2);
-            B.insert(4, 11) = A(3, 0);
+            B.insert(5, 0)  = A(0, 2);
+            B.insert(5, 2)  = A(0, 0);
+            B.insert(5, 3)  = A(1, 2);
+            B.insert(5, 5)  = A(1, 0);
+            B.insert(5, 6)  = A(2, 2);
+            B.insert(5, 8)  = A(2, 0);
+            B.insert(5, 9)  = A(3, 2);
+            B.insert(5, 11) = A(3, 0);
             
             // TODO: Check if multiply by volume!
             return B.transpose() * this->calculateMaterialMatrix() * B;
@@ -141,6 +142,14 @@ namespace engine {
                             - this->dampeningMatrix * this->lastVelocities
                         )
                     );
+        }
+        
+        void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
+            this->restPosition = this->calculatePlanarVectorsFromMesh();
+            this->currentPosition = this->restPosition;
+            this->dampeningMatrix = this->calculateDampeningMatrix();
+            this->stiffnessMatrix = this->calculateStiffnessMatrix();
+            this->updateStepMatrixIfNecessary(targetStepSize);
         }
         
         void DeformableBody::step(float h, Matrix<float, 12, 1> forces) {

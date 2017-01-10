@@ -18,7 +18,7 @@ namespace engine {
             
             float mass; // in kg
             float dampening; // in kg/s
-            float youngsModulus; // in N/m²
+            float youngsModulus; // in N/m² = Pa (Pascal)
             float poissonsRatio;
             
             SparseMatrix<float> stiffnessMatrix; // Called K in lecture
@@ -46,16 +46,14 @@ namespace engine {
             Matrix<float, 12, 1> calculateVelocities(float h, Matrix<float, 12, 1> forces) const;
             
             void updateStepMatrixIfNecessary(float h);
+            void calculateAndSetInitialState(float targetStepSize);
             
         public:
             DeformableBody(const Mesh& mesh, float mass, float dampening,
                     float youngsModulus, float poissonsRatio, float targetStepSize)
                     : mesh(mesh), mass(mass), dampening(dampening),
                         youngsModulus(youngsModulus), poissonsRatio(poissonsRatio) {
-                this->restPosition = this->calculatePlanarVectorsFromMesh();
-                this->currentPosition = this->restPosition;
-                this->dampeningMatrix = this->calculateDampeningMatrix();
-                this->stiffnessMatrix = this->calculateStiffnessMatrix();
+                this->calculateAndSetInitialState(targetStepSize);
             }
             
             void step(float h, Matrix<float, 12, 1> forces);

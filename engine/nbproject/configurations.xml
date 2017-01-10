@@ -25,13 +25,17 @@
           </df>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
+          <in>RenderSystem.cpp</in>
+          <in>VisualComponent.cpp</in>
         </df>
         <df name="IO">
+          <in>ButtonMapping.cpp</in>
           <in>Command.h</in>
           <in>Console.cpp</in>
           <in>Console.h</in>
           <in>EntityCommand.cpp</in>
           <in>EntityCommand.h</in>
+          <in>InputManager.cpp</in>
           <in>Keys.h</in>
           <in>Serializable.h</in>
           <in>Serializer.h</in>
@@ -48,6 +52,8 @@
           <df name="gl">
             <in>gl_core_3_3.cpp</in>
           </df>
+          <in>Camera.cpp</in>
+          <in>ElementBuffer.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
           <in>ShaderProgram.cpp</in>
@@ -137,6 +143,7 @@
         <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
+        <includeAdditional>true</includeAdditional>
       </codeAssistance>
       <makefileType>
         <makeTool>
@@ -197,8 +204,6 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -210,8 +215,6 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -229,8 +232,6 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
@@ -239,6 +240,14 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/RenderSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -254,13 +263,19 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/IO.h" ex="false" tool="3" flavor2="0">
+      <item path="src/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -271,8 +286,6 @@
       <item path="src/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/engine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -287,6 +300,25 @@
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/physics/DeformableBody.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/ElementBuffer.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -314,8 +346,6 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/util.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -324,7 +354,9 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/util/vec3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -527,6 +559,10 @@
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/physics/DeformableBody.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/DeformableBody.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

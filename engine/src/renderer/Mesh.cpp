@@ -169,6 +169,13 @@ namespace engine {
             this->vao->setEBO(std::move(ebo));
         }
         
+        Mesh::VertexProxy Mesh::getVertices() {
+            return VertexProxy(*this);
+        }
+        const Mesh::ConstVertexProxy Mesh::getVertices() const {
+            return ConstVertexProxy(*this);
+        }
+        
         void Mesh::applyTransformation(glm::mat4 transformMatrix) {
             if(this->vertices.size() > 16) {
                 this->applyTransformation_Parallel(transformMatrix);

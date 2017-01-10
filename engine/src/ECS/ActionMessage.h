@@ -16,7 +16,7 @@
 
 namespace engine {
     namespace ECS {
-        class ActionMessage : Message {
+        class ActionMessage : public Message {
         protected:
             int deviceID, buttonID;
             double xAxis, yAxis;

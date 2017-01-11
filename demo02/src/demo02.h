@@ -25,8 +25,6 @@ namespace demo {
     private:
         Camera camera;
         Entity triangle;
-        
-        std::shared_ptr<ShaderProgram> shaderPtr;
     };
 }
 

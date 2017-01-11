@@ -51,6 +51,24 @@ namespace engine {
                   bound(std::move(orig.bound)), data(std::move(orig.data)) {
                 
             }
+            
+            Buffer& operator=(const Buffer& right) {
+                this->id = right.id;
+                this->loadedToGraphicsCard = right.loadedToGraphicsCard;
+                this->bound = right.bound;
+                this->data = right.data;
+                
+                return *this;
+            }
+            Buffer& operator=(Buffer&& right){
+                this->id = std::move(right.id);
+                this->loadedToGraphicsCard = std::move(right.loadedToGraphicsCard);
+                this->bound = std::move(right.bound);
+                this->data = std::move(right.data);
+                
+                return *this;
+            }
+            
             virtual ~Buffer() {
                 // this->releaseBuffer();
             }

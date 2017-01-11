@@ -64,9 +64,17 @@ namespace engine {
                 GLint shaderError;
                 glGetShaderiv(this->id, GL_COMPILE_STATUS, &shaderError);
                 if(shaderError != GL_TRUE) {
+                    GLsizei length = 0;
+                    glGetShaderiv(this->id, GL_INFO_LOG_LENGTH, &length);
+                    if(length>1) {
+                        GLchar* pInfo = new char[length+1];
+                        glGetShaderInfoLog(this->id, length, &length, pInfo);
+                        std::cout << "Compile log: " << std::string(pInfo) << std::endl;
+
+                    }
                     throw GLException("Shader compile error. :(");
                 }
-
+                
                 this->compiled = true;
             }
             

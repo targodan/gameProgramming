@@ -20,21 +20,37 @@ namespace engine {
                 : Buffer(dataPtr, size, nElements, usage), type(BufferType::ARRAY_BUFFER) {}
             VertexBuffer(const VertexBuffer& orig) 
                 : Buffer(orig), type(orig.type), attributes(orig.attributes) {
-                if(orig.loadedToGraphicsCard) {
-                    this->bind();
-                    this->loadData();
-                    this->unbind();
-                }
+//                if(orig.loadedToGraphicsCard) {
+//                    this->bind();
+//                    this->loadData();
+//                    this->unbind();
+//                }
             }
             VertexBuffer(VertexBuffer&& orig) 
                 : Buffer(std::move(orig)), type(std::move(orig.type)), attributes(std::move(orig.attributes)) {
-                if(orig.loadedToGraphicsCard) {
-                    this->bind();
-                    this->loadData();
-                    this->unbind();
-                }
+//                if(orig.loadedToGraphicsCard) {
+//                    this->bind();
+//                    this->loadData();
+//                    this->unbind();
+//                }
             }
-            ~VertexBuffer() {}
+            
+            VertexBuffer& operator=(const VertexBuffer& right) {
+                Buffer::operator=(right);
+                
+                this->attributes = right.attributes;
+                
+                return *this;
+            }
+            VertexBuffer& operator=(VertexBuffer&& right){
+                Buffer::operator=(std::move(right));
+                
+                this->attributes = std::move(right.attributes);
+                
+                return *this;
+            }
+            
+            virtual ~VertexBuffer() {}
 
             void setAttributes(const vector<VertexAttribute>& attribs) {
                 this->attributes = attribs;

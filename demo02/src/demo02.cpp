@@ -38,11 +38,8 @@ namespace demo {
         pc.setPosition(triangleOrigin);
         pc.setDirection(-(pc.getPosition()));
               
-        auto shaderPtr = std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh");
-        
-        this->shaderPtr = shaderPtr;
-        Material material = {shaderPtr};
+        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
+                                                         "src/triangle_sh.fsh")};
         
         vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}), 
                                    Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}), 
@@ -77,9 +74,11 @@ namespace demo {
         glClearColor(0, 0.2, 0.2, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        auto shaderPtr = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMaterial().getShader();
         shaderPtr->useProgram();
         shaderPtr->setUniform("projectionMatrix", this->camera.getProjectionMatrix());
         shaderPtr->setUniform("modelViewMatrix", this->camera.getModelViewMatrix());
+        
         
         Game::render(deltaTimeSeconds);
         glfwSwapBuffers(this->window.getWindow());

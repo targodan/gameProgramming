@@ -8,6 +8,7 @@
 #include "util/vector.h"
 #include "GLException.h"
 #include <memory>
+#include <iostream>
 
 namespace engine {
     namespace renderer {

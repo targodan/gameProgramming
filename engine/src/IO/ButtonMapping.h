@@ -14,6 +14,8 @@
 #include "../ECS/Message.h"
 #include "../ECS/MessageHandler.h"
 
+#define KEYBOARD -1
+#define MOUSE -2
 #define GLFW_JOYSTICK_A 0
 #define GLFW_JOYSTICK_B 1
 #define GLFW_JOYSTICK_X 2
@@ -38,19 +40,22 @@ namespace engine {
         
         class ButtonMapping {
         public:
-            ButtonMapping(GLFWwindow* window, shared_ptr<MessageHandler> handler, int dev );
+            ButtonMapping(GLFWwindow* window, MessageHandler& handler);
             ButtonMapping( const ButtonMapping& orig ) = delete;
             virtual ~ButtonMapping();
-            void insertMapping(int buttonId, shared_ptr<Message> msg);
-            void deleteMapping(int buttonId);
+            void insertMapping(int deviceID, int buttonID, shared_ptr<Message> msg);
+            void deleteMapping(int deviceID, int buttonID);
             void deleteMapping(shared_ptr<Message> msg);
             void queueMessages();
+            
+            
+            typedef struct DevButton {
+                int deviceID, buttonID;
+            } devButton;
         private:
+            MessageHandler& handler;
             GLFWwindow* window;
-            shared_ptr<MessageHandler> handler;
-            int device;
-            Map<int, shared_ptr<Message>> mapping;
-
+            Map<devButton, shared_ptr<Message>> mapping;
         };
     }
 }

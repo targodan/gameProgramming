@@ -8,11 +8,26 @@ namespace engine {
     namespace renderer {
         class Material {
         public:
-            Material(std::unique_ptr<ShaderProgram> shader);
-            Material(const Material& orig) = delete;
+            Material(std::shared_ptr<ShaderProgram> shader);
+            Material(const Material& orig);
+            Material(Material&& orig);
+            
+            Material& operator=(const Material& right);
+            Material& operator=(Material&& right);
+            
             virtual ~Material();
+            void releaseMaterial();
+            
+            // This needs to be called before drawing the corresponding mesh
+            void makeActive() const;
+            
+            std::shared_ptr<const ShaderProgram> getShader() const;
         private:
-            std::unique_ptr<ShaderProgram> shader;    
+            
+            // NOTE: I made this a shared_ptr because I couldn't see how to work
+            //       with this class otherwise. Why a unique_ptr?
+            // Why not?
+            std::shared_ptr<ShaderProgram> shader;    
         };
     }
 }

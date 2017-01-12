@@ -1,14 +1,21 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../util/Array.h"
+#include "Material.h"
+#include "util/Array.h"
+#include "util/vector.h"
 #include "Vertex.h"
+#include "VertexArray.h"
+#include "DataUsagePattern.h"
 #include "gl/gl_core_3_3.h"
 #include <glm/matrix.hpp>
+#include <vector>
 
 namespace engine {
     namespace renderer {
-        using namespace util;
+        using util::Array;
+        using util::vector;
+        using std::unique_ptr;
         using namespace gl;
         
         /**
@@ -20,7 +27,9 @@ namespace engine {
          */
         class Mesh {
         public:
-            Mesh(Array<Vertex> vertices, Array<GLuint> indices, GLenum usage = GL_STATIC_DRAW);
+            Mesh() : wasLoaded(false) {}
+            Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
+                    DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
             Mesh(const Mesh& orig);
             Mesh(Mesh&& orig);
@@ -30,21 +39,30 @@ namespace engine {
             
             virtual ~Mesh();
             
-            std::string getUsage() const;
+            void render();
             
             void loadMesh();
             void releaseMesh();
             
+            std::string getUsage() const;
+            
+            void setMaterial(const std::shared_ptr<Material>& material);
+            std::shared_ptr<const Material> getMaterial() const;
+            
             void applyTransformation(glm::mat3 transformMatrix);
             void applyTransformation(glm::mat4 transformMatrix);
+        private:
+            void createVBO();
+            void createEBO();
             
-        protected:
-            GLenum usage;
+            std::shared_ptr<Material> material;
             
-            GLuint vao, vbo;
+            DataUsagePattern usage;
             
-            Array<Vertex> vertices;
-            Array<GLuint> indices;
+            std::unique_ptr<VertexArray> vao;
+            
+            vector<Vertex> vertices;
+            vector<GLuint> indices;
             
             bool wasLoaded;
             

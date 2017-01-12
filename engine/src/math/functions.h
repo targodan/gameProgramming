@@ -9,6 +9,9 @@ namespace engine {
         float fastInverseSqrt_SingleIt(float number);
         float fastInverseSqrt_DoubleIt(float number);
         float sqrt(float f);
+        
+        float deg2rad(float degree);
+        float rad2deg(float radiant);
     }
 }
 

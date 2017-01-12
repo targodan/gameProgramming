@@ -11,6 +11,7 @@
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
+          <in>GraphicalComponent.h</in>
           <in>MessageHandler.cpp</in>
           <in>SerializableComponent.h</in>
           <in>SystemManager.cpp</in>
@@ -58,6 +59,7 @@
             <in>vec.pb.cc</in>
           </df>
           <in>ostream_helper.cpp</in>
+          <in>readFile.cpp</in>
           <in>stringstream.h</in>
           <in>vec2.h</in>
           <in>vec3.cpp</in>
@@ -66,11 +68,16 @@
           <in>vec4.h</in>
         </df>
         <in>CastException.h</in>
+        <in>ECS.h</in>
+        <in>ECSCommon.h</in>
         <in>Exception.cpp</in>
         <in>GLException.h</in>
         <in>Game.cpp</in>
+        <in>IO.h</in>
         <in>InvalidConversionException.h</in>
         <in>Window.cpp</in>
+        <in>engine.h</in>
+        <in>util.h</in>
       </df>
       <df name="test">
         <df name="ECS">
@@ -190,6 +197,8 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -201,6 +210,8 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -217,6 +228,8 @@
       <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -241,6 +254,8 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -256,6 +271,8 @@
       <item path="src/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/engine.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -297,6 +314,8 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/util.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -304,6 +323,8 @@
       <item path="src/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/util/vec3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -403,6 +424,8 @@
       </folder>
       <item path="src/CastException.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -414,6 +437,8 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -435,6 +460,8 @@
             flavor2="0">
       </item>
       <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -459,6 +486,8 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/IO/Command.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="0">
@@ -481,6 +510,8 @@
       </item>
       <item path="src/InvalidConversionException.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/engine.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -497,9 +528,17 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/util.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/util/stringstream.h" ex="false" tool="3" flavor2="0">
       </item>

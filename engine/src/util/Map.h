@@ -6,8 +6,8 @@
 
 namespace engine {
     namespace util {
-        template<class Key, class T>
-        using Map = google::dense_hash_map<Key, T, std::hash<Key>>;
+        template<class Key, class T, typename Hash = std::hash<Key>>
+        using Map = google::dense_hash_map<Key, T, Hash>;
     }
 }
 

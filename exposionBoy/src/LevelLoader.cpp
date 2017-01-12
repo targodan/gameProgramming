@@ -2,6 +2,8 @@
 
 #include "engine/IO/SerializerFactory.h"
 #include "engine/util/vec3.h"
+#include "engine/ECS/Entity.h"
+#include "engine/ECSCommon/VisualComponent.h"
 
 #include "Grid.h"
 #include "FormatException.h"
@@ -9,10 +11,11 @@
 using namespace engine::util;
 using namespace engine::IO;
 using namespace engine::renderer;
+using namespace engine::ECSCommon;
 
 namespace explosionBoy {
-    LevelLoader::LevelLoader(std::ifstream& file) {
-        SerializerFactory::humanReadableSerializer().deserialize(this->level, file);
+    LevelLoader::LevelLoader(std::istream& stream) {
+        SerializerFactory::humanReadableSerializer().deserialize(this->level, stream);
         this->grid = Grid(this->level.grid());
     }
     
@@ -80,36 +83,96 @@ namespace explosionBoy {
     
     pb::WallType LevelLoader::getWallTypeEastOfCell(size_t x, size_t y) const {
         int type;
-        if(this->level.walls(y*2).at(x*2+1) == ' ') {
+        char wallTypeChar = this->level.walls(y*2).at(x*2+1);
+        if(wallTypeChar == ' ') {
             type = 0;
         } else {
-            type = static_cast<int>(this->level.walls(y*2).at(x*2+1)) + '0';
+            type = static_cast<int>(wallTypeChar) - '0';
         }
         return static_cast<pb::WallType>(type);
     }
     
     pb::WallType LevelLoader::getWallTypeSouthOfCell(size_t x, size_t y) const {
         int type;
-        if(this->level.walls(y*2+1).at(x*2) == ' ') {
+        char wallTypeChar = this->level.walls(y*2+1).at(x*2);
+        if(wallTypeChar == ' ') {
             type = 0;
         } else {
-            type = static_cast<int>(this->level.walls(y*2+1).at(x*2)) + '0';
+            type = static_cast<int>(wallTypeChar) - '0';
         }
         return static_cast<pb::WallType>(type);
     }
+    
+    void LevelLoader::createShaderPrograms() {
+        this->innerWallShader = std::make_shared<ShaderProgram>(this->level.inner_wall_shader()+".vsh", this->level.inner_wall_shader()+".fsh");
+        this->outerWallShader = std::make_shared<ShaderProgram>(this->level.outer_wall_shader()+".vsh", this->level.outer_wall_shader()+".fsh");
+        this->pillarShader = std::make_shared<ShaderProgram>(this->level.pillar_shader()+".vsh", this->level.pillar_shader()+".fsh");
+    }
 
-    void LevelLoader::createLevelEntities(engine::ECS::EntityManager& em) {
-        this->createOuterWallsMesh();
+    std::unique_ptr<Level> LevelLoader::createLevel(engine::ECS::EntityManager& em) {
+        this->createShaderPrograms();
+        
+        auto outerWallEntity = em.createEntity("OuterWall")
+                .addComponent<VisualComponent>(this->createOuterWallsMesh(), Material(this->outerWallShader));
+        
+        engine::util::vector<Entity> innerWallEntities;
+        engine::util::vector<Entity> pillarEntities;
+        
+        std::stringstream ss;
         for(uint64_t y = 0; y < this->grid.getNumCellsY(); ++y) {
             for(uint64_t x = 0; x < this->grid.getNumCellsX(); ++x) {
-                if(this->getWallTypeEastOfCell(x, y) != pb::NONE) {
-                    this->createWallMeshEastOfCell(x, y);
+                auto wallType = this->getWallTypeEastOfCell(x, y);
+                if(x+1 < this->grid.getNumCellsX() && wallType != pb::NONE) {
+                    auto mesh = this->createWallMeshEastOfCell(x, y);
+                    ss << "InnerWall_EastOf_" << x << "_" << y;
+                    innerWallEntities.push_back(
+                            em.createEntity(ss.str())
+                            .addComponent<VisualComponent>(mesh, Material(this->innerWallShader))
+                            );
+                    ss.str("");
                 }
-                if(this->getWallTypeSouthOfCell(x, y) != pb::NONE) {
-                    this->createWallMeshSouthOfCell(x, y);
+                if(y+1 < this->grid.getNumCellsY() && wallType != pb::NONE) {
+                    auto mesh = this->createWallMeshSouthOfCell(x, y);
+                    ss << "InnerWall_SouthOf_" << x << "_" << y;
+                    innerWallEntities.push_back(
+                            em.createEntity(ss.str())
+                            .addComponent<VisualComponent>(mesh, Material(this->innerWallShader))
+                            );
+                    ss.str("");
+                }
+                if(x != 0 || y != 0) {
+                    auto mesh = this->createPillarMeshNorthWest(x, y);
+                    ss << "Pillar_NorthWestOf_" << x << "_" << y;
+                    pillarEntities.push_back(
+                            em.createEntity(ss.str())
+                                    .addComponent<VisualComponent>(mesh, Material(this->pillarShader))
+                            );
+                    ss.str("");
                 }
             }
         }
+        for(uint64_t y = 1; y < this->grid.getNumCellsY(); ++y) {
+            uint64_t x = this->grid.getNumCellsX()-1;
+            auto mesh = this->createPillarMeshNorthEast(x, y);
+            ss << "Pillar_NorthEastOf_" << x << "_" << y;
+            pillarEntities.push_back(
+                    em.createEntity(ss.str())
+                            .addComponent<VisualComponent>(mesh, Material(this->pillarShader))
+                    );
+            ss.str("");
+        }
+        for(uint64_t x = 1; x < this->grid.getNumCellsX(); ++x) {
+            uint64_t y = this->grid.getNumCellsY()-1;
+            auto mesh = this->createPillarMeshSouthWest(x, y);
+            ss << "Pillar_SouthWestOf_" << x << "_" << y;
+            pillarEntities.push_back(
+                    em.createEntity(ss.str())
+                            .addComponent<VisualComponent>(mesh, Material(this->pillarShader))
+                    );
+            ss.str("");
+        }
+        
+        return std::make_unique<Level>(outerWallEntity, innerWallEntities, pillarEntities);
     }
 
     engine::renderer::Mesh LevelLoader::createOuterWallsMesh() const {
@@ -155,22 +218,26 @@ namespace explosionBoy {
     
     engine::renderer::Mesh LevelLoader::createPillarMeshNorthWest(size_t x, size_t y) const {
         const auto pos = this->grid.cellToWorldCoords(x, y).northWestCorner();
-        return this->createPillarMesh(pos.x, pos.z);
+        float wallHalf = this->grid.getWallThickness() / 2.;
+        return this->createPillarMesh(pos.x - wallHalf, pos.z - wallHalf);
     }
     
     engine::renderer::Mesh LevelLoader::createPillarMeshNorthEast(size_t x, size_t y) const {
         const auto pos = this->grid.cellToWorldCoords(x, y).northEastCorner();
-        return this->createPillarMesh(pos.x, pos.z);
+        float wallHalf = this->grid.getWallThickness() / 2.;
+        return this->createPillarMesh(pos.x + wallHalf, pos.z - wallHalf);
     }
     
     engine::renderer::Mesh LevelLoader::createPillarMeshSouthWest(size_t x, size_t y) const {
         const auto pos = this->grid.cellToWorldCoords(x, y).southWestCorner();
-        return this->createPillarMesh(pos.x, pos.z);
+        float wallHalf = this->grid.getWallThickness() / 2.;
+        return this->createPillarMesh(pos.x - wallHalf, pos.z + wallHalf);
     }
     
     engine::renderer::Mesh LevelLoader::createPillarMeshSouthEast(size_t x, size_t y) const {
         const auto pos = this->grid.cellToWorldCoords(x, y).southEastCorner();
-        return this->createPillarMesh(pos.x, pos.z);
+        float wallHalf = this->grid.getWallThickness() / 2.;
+        return this->createPillarMesh(pos.x + wallHalf, pos.z + wallHalf);
     }
     
     engine::renderer::Mesh LevelLoader::createPillarMesh(float centerX, float centerZ) const {

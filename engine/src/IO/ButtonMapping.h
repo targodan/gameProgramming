@@ -12,6 +12,8 @@
 #include <memory>
 #include "../util/Map.h"
 #include "../ECS/Message.h"
+#include "../ECS/ActionMessage.h"
+#include "../ECS/messageId.h"
 #include "../ECS/MessageHandler.h"
 
 #define KEYBOARD -1
@@ -35,6 +37,8 @@ namespace engine {
     namespace IO {
         using engine::util::Map;
         using engine::ECS::Message;
+        using engine::ECS::messageId_t;
+        using engine::ECS::ActionMessage;
         using engine::ECS::MessageHandler;
         using std::shared_ptr;
         
@@ -51,11 +55,22 @@ namespace engine {
             
             typedef struct DevButton {
                 int deviceID, buttonID;
+                bool operator==(const DevButton& btn) const {
+                    return (deviceID == btn.deviceID && buttonID == btn.buttonID);
+                }
             } devButton;
+            
+            class MyHasher {
+            public:
+                size_t operator()(const DevButton& btn) const {
+                    auto h = std::hash<size_t>();
+                    return h(h(btn.deviceID) + h(btn.buttonID));
+                }
+            };
         private:
             MessageHandler& handler;
             GLFWwindow* window;
-            Map<devButton, shared_ptr<Message>> mapping;
+            Map<devButton, shared_ptr<Message>, MyHasher> mapping;
         };
     }
 }

@@ -52,19 +52,28 @@ namespace engine {
             for(auto it = this->mapping.begin(); it != this->mapping.end(); it++) {
                 
                 if(it->first.deviceID == KEYBOARD) {
-                    if(glfwGetKey(this->window, it->first) == GLFW_PRESS) {
+                    if(glfwGetKey(this->window, it->first.buttonID) == GLFW_PRESS) {
                         this->handler.queueMessage(it->second);
                     }
                 }
                 
-                else if(it->first.deviceID == MOUSE){
-                    
+                else if(it->first.deviceID == MOUSE) {
+                    if(it->first.buttonID == -1) {
+                        double xpos, ypos;
+                        glfwGetCursorPos(this->window, &xpos, &ypos);
+                        messageId_t id = this->handler.lookupMessageId("ActionMessage");
+                        shared_ptr<ActionMessage> msg(new ActionMessage(id, -1, -1, xpos, ypos));
+                        this->handler.queueMessage(msg);
+                    }
+                    if(glfwGetMouseButton(this->window, it->first.buttonID) == GLFW_PRESS) {
+                        this->handler.queueMessage(it->second);
+                    }
                 }
                 
                 else if(it->first.deviceID >= 0)
                 {
                     if(it->first.buttonID < count && buttons[it->first.buttonID] == GLFW_PRESS) {
-                    this->handler.queueMessage(it->second);
+                        this->handler.queueMessage(it->second);
                     }
                 }
             }

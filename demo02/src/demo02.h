@@ -3,7 +3,6 @@
 
 #include "Game.h"
 #include "../../engine/src/renderer/ShaderProgram.h"
-#include "../../engine/src/renderer/Camera.h"
 #include "../../engine/src/ECS/Entity.h"
 
 namespace demo {
@@ -23,8 +22,8 @@ namespace demo {
         virtual void render(double deltaTimeSeconds) override;
         virtual void update(double deltaTimeSeconds) override;
     private:
-        Camera camera;
         Entity triangle;
+        Entity player;
     };
 }
 

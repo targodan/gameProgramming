@@ -1,8 +1,5 @@
 #include "demo02.h"
-#include "../../engine/src/ECSCommon/PlacementComponent.h"
-#include "../../engine/src/ECSCommon/VisualComponent.h"
-#include "../../engine/src/ECSCommon/PlacementSystem.h"
-#include "../../engine/src/ECSCommon/RenderSystem.h"
+#include "../../engine/src/ECSCommon.h"
 #include "../../engine/src/renderer/Mesh.h"
 #include "../../engine/src/renderer/Material.h"
 #include "../../engine/src/renderer/ShaderProgram.h"
@@ -16,6 +13,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "glm/gtx/string_cast.hpp"
+#include "../../engine/src/Camera.h"
 
 namespace demo {
     using namespace engine::renderer::gl;
@@ -25,10 +24,8 @@ namespace demo {
     using engine::Game;
     
     Demo02::Demo02(int argc, char** argv, double ups) 
-        : Game(argc, argv, ups), camera{vec3{10.f, 0.f, 10.f}} {
-        // Set camera
-        this->camera.setModelViewMatrix(vec3{0.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
-        this->camera.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
+        : Game(argc, argv, ups) {
+        this->window.setClearColor(0.f, 0.2f, 0.2f);
         
         // Create triangle entity
         this->triangle = this->entityManager.createEntity("Triangle");
@@ -47,9 +44,46 @@ namespace demo {
         vector<GLuint> indices = {0, 1, 2};  
         Mesh mesh = {vertices, indices};
         mesh.loadMesh();
-        
+       
         this->triangle.addComponent<VisualComponent>(mesh, material);
         this->triangle.addComponent<PlacementComponent>(pc);
+        
+        // Create player entity
+        this->player = this->entityManager.createEntity("Player");
+        
+        PlacementComponent pcPlayer;
+        pcPlayer.setPosition(vec3{10.f, 0.f, 10.f});
+        pcPlayer.setDirection(vec3{0.f, 0.f, 0.f});
+        
+        CameraComponent cc(vec3{0.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
+        cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
+        cc.setViewMatrix(pcPlayer.getPosition());
+        
+        this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
+        
+        
+        // DEBUGGING
+        auto place = dynamic_cast<PlacementComponent&>(this->player.getComponent(PlacementComponent::getComponentTypeId()));
+        std::cout << "player position initially: " << glm::to_string(place.getPosition()) << std::endl;
+        
+//        while(this->window.isOpened()) {
+//            glfwPollEvents();
+//            glClearColor(0, 0.2f, 0.2f, 1.f);
+//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//            
+//            auto cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
+//            auto mesh = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMesh();
+//            auto shaderPtr = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMaterial().getShader();
+//
+//            shaderPtr->useProgram();
+//            shaderPtr->setUniform("projectionMatrix", cam.getProjectionMatrix());
+//            shaderPtr->setUniform("viewMatrix", cam.getViewMatrix());
+//            std::cout << "projection: " << glm::to_string(cc.getProjectionMatrix()) << std::endl;
+//            std::cout << "view: " << glm::to_string(cc.getViewMatrix()) << std::endl;
+//            
+//            mesh.render();
+//            glfwSwapBuffers(this->window.getWindow());
+//        }
     }
 
     Demo02::~Demo02() {
@@ -57,8 +91,9 @@ namespace demo {
     }
     
     void Demo02::initialize() {
-        this->systemManager.enableSystem<engine::ECSCommon::PlacementSystem>();
-        this->systemManager.enableSystem<engine::ECSCommon::RenderSystem>();
+        this->systemManager.enableSystem<PlacementSystem>();
+        this->systemManager.enableSystem<RenderSystem>();
+        this->systemManager.enableSystem<CameraRenderSystem>();
         Game::initialize();
     }
     
@@ -71,17 +106,7 @@ namespace demo {
     }
 
     void Demo02::render(double deltaTimeSeconds) {
-        glClearColor(0, 0.2, 0.2, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        auto shaderPtr = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMaterial().getShader();
-        shaderPtr->useProgram();
-        shaderPtr->setUniform("projectionMatrix", this->camera.getProjectionMatrix());
-        shaderPtr->setUniform("modelViewMatrix", this->camera.getModelViewMatrix());
-        
-        
         Game::render(deltaTimeSeconds);
-        glfwSwapBuffers(this->window.getWindow());
     }
 
     void Demo02::update(double deltaTimeSeconds) {

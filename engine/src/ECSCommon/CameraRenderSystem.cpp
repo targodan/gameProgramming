@@ -2,8 +2,7 @@
 #include "CameraComponent.h"
 #include "PlacementComponent.h"
 #include "VisualComponent.h"
-#include "glm/gtx/string_cast.hpp"
-#include <iostream>
+
 #include "../ECS/SystemRegisterer.h"
 
 namespace engine {
@@ -27,8 +26,6 @@ namespace engine {
                 auto& camera = it[0]->to<CameraComponent>();
                 camera.setViewMatrix(placement.getPosition());
                 
-                // DEBUGGING OUTPUT
-                std::cout << "player position in CameraRenderSystem::run: " << glm::to_string(placement.getPosition())  << std::endl;
                 
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) { // Each and every visual component has to be rendered from the camera's perspective
                     auto& visual = (*itVisual)->to<VisualComponent>();

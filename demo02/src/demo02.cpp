@@ -14,7 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/string_cast.hpp"
-#include "../../engine/src/Camera.h"
 
 namespace demo {
     using namespace engine::renderer::gl;
@@ -33,7 +32,7 @@ namespace demo {
         vec3 triangleOrigin = {0.f, 0.f, 0.f};
         PlacementComponent pc;
         pc.setPosition(triangleOrigin);
-        pc.setDirection(-(pc.getPosition()));
+        pc.setDirection(vec3{0.f, 0.f, 0.f});
               
         Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh")};
@@ -61,10 +60,6 @@ namespace demo {
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
         
-        
-        // DEBUGGING
-        auto place = dynamic_cast<PlacementComponent&>(this->player.getComponent(PlacementComponent::getComponentTypeId()));
-        std::cout << "player position initially: " << glm::to_string(place.getPosition()) << std::endl;
         
 //        while(this->window.isOpened()) {
 //            glfwPollEvents();

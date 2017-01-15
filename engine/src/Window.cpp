@@ -31,8 +31,9 @@ namespace engine {
             throw GLException("Failed to initialize OpenGL");
         }
         
-        this->setClearColor(0.f, 0.f, 0.f);
-        glViewport(0,0, this->width, this->height);
+        this->setClearColor(0.f, 0.f, 0.f); // Standard color a window is cleared with on Window::clear()
+        glViewport(0,0, this->width, this->height); // Set viewport
+        glEnable(GL_DEPTH_TEST); // Enable z-buffer
     }
     
     Window::~Window() {

@@ -12,7 +12,7 @@ namespace engine {
         void PlacementSystem::run(EntityManager& em, float deltaTimeSeconds) {
             for(auto it = em.begin({PlacementComponent::getComponentTypeId()}); it != em.end(); ++it) {
                 auto& comp = (*it)->to<PlacementComponent>();
-                comp.getPosition() += comp.getDirection() * deltaTimeSeconds;
+                // comp.getPosition() += comp.getDirection() * deltaTimeSeconds;
             }
         }
         

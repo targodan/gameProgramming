@@ -31,6 +31,14 @@ namespace engine {
         std::string getTitle() const;
         GLFWwindow* getWindow() const;
         
+        void setClearColor(float red, float green, float blue, float alpha=1.f);
+        
+        // This has to be done before rendering
+        void clear();
+        
+        // This has to be done after rendering
+        void swapBuffers();
+        
         bool isOpened() const;
     };
 }

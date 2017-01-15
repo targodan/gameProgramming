@@ -30,7 +30,8 @@ namespace engine {
         if(glInit != ogl_LOAD_SUCCEEDED) {
             throw GLException("Failed to initialize OpenGL");
         }
-        glClearColor(0.f, 0.f, 0.f, 1.f);
+        
+        this->setClearColor(0.f, 0.f, 0.f);
         glViewport(0,0, this->width, this->height);
     }
     
@@ -60,6 +61,18 @@ namespace engine {
     
     GLFWwindow* Window::getWindow() const {
         return this->glfwWindow;
+    }
+    
+    void Window::setClearColor(float red, float green, float blue, float alpha) {
+        glClearColor(red, green, blue, alpha);
+    }
+    
+    void Window::clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    
+    void Window::swapBuffers() {
+        glfwSwapBuffers(this->glfwWindow);
     }
     
     void Window::glfwErrorCallback(int error, const char* description) {

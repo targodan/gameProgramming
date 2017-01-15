@@ -46,8 +46,11 @@ namespace engine {
         }
         
          void ButtonMapping::queueMessages() {
-             int count;
-             const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+             
+            int prevDevice = -1000;
+            int bCount, aCount;
+            const unsigned char* buttons;
+            const float* axis;
             
             for(auto it = this->mapping.begin(); it != this->mapping.end(); it++) {
                 
@@ -61,9 +64,8 @@ namespace engine {
                     if(it->first.buttonID == -1) {
                         double xpos, ypos;
                         glfwGetCursorPos(this->window, &xpos, &ypos);
-                        messageId_t id = this->handler.lookupMessageId("ActionMessage");
-                        shared_ptr<ActionMessage> msg(new ActionMessage(id, -1, -1, xpos, ypos));
-                        this->handler.queueMessage(msg);
+                        it->second->setAxes(xpos, ypos);
+                        this->handler.queueMessage(it->second);
                     }
                     if(glfwGetMouseButton(this->window, it->first.buttonID) == GLFW_PRESS) {
                         this->handler.queueMessage(it->second);
@@ -72,10 +74,21 @@ namespace engine {
                 
                 else if(it->first.deviceID >= 0)
                 {
-                    if(it->first.buttonID < count && buttons[it->first.buttonID] == GLFW_PRESS) {
+                    if(prevDevice != it->first.deviceID) {
+                        buttons = glfwGetJoystickButtons(it->first.deviceID, &bCount);
+                        axis = glfwGetJoystickAxes(it->first.deviceID, &aCount);
+                    }
+                    if(it->first.buttonID < 0 && (it->first.buttonID*2) > -aCount) {
+                        double xpos = axis[-(it->first.buttonID)*2-1];
+                        double ypos = axis[-(it->first.buttonID)*2];
+                        it->second->setAxes(xpos, ypos);
+                        this->handler.queueMessage(it->second);
+                    }
+                    if(it->first.buttonID < bCount && buttons[it->first.buttonID] == GLFW_PRESS) {
                         this->handler.queueMessage(it->second);
                     }
                 }
+                prevDevice = it->first.deviceID;
             }
         }
     }

@@ -18,20 +18,22 @@ namespace engine {
     namespace ECS {
         class ActionMessage : public Message {
         protected:
-            int deviceID, buttonID;
+            int actionID, deviceID, buttonID;
             double xAxis, yAxis;
             
         public:
-            ActionMessage(messageId_t id, int device, int button, double xAxis = 0, double yAxis = 0) : 
+            ActionMessage(messageId_t id, int action, int device, int button, double xAxis = 0, double yAxis = 0) : 
             Message(id),
+            actionID(action),
             deviceID(device),
             buttonID(button),
             xAxis(xAxis),
             yAxis(yAxis)
             {}
             
-            ActionMessage(const Message& message, int device, int button, double xAxis, double yAxis) :
+            ActionMessage(const Message& message, int action, int device, int button, double xAxis = 0, double yAxis = 0) :
             Message(message),
+            actionID(action),
             deviceID(device),
             buttonID(button),
             xAxis(xAxis),
@@ -43,6 +45,10 @@ namespace engine {
             int getXAxis() { return xAxis; }
             int getYAxis() { return yAxis; }
             bool isAnalog() { return !(xAxis == 0 && yAxis == 0); }
+            void setAxes(double xAxis, double yAxis) {
+                this->xAxis = xAxis;
+                this->yAxis = yAxis;
+            }
             
         };
     }

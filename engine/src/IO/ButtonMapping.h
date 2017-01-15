@@ -70,7 +70,7 @@ namespace engine {
         private:
             MessageHandler& handler;
             GLFWwindow* window;
-            Map<devButton, shared_ptr<Message>, MyHasher> mapping;
+            Map<devButton, shared_ptr<ActionMessage>, MyHasher> mapping;
         };
     }
 }

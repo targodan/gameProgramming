@@ -3,6 +3,7 @@
 #include "../ECS/ComponentRegisterer.h"
 #include "../math/functions.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "../WTFException.h"
 #include <sstream>
 
 namespace engine {
@@ -14,6 +15,10 @@ namespace engine {
         CameraComponent::CameraComponent() {
             
         }
+        CameraComponent::CameraComponent(vec3 direction, vec3 up) 
+            : direction(direction), up(up) {
+            
+        }
         
         CameraComponent::~CameraComponent() {
             
@@ -22,17 +27,32 @@ namespace engine {
         void CameraComponent::setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far) {
             this->projectionMatrix = glm::perspective(horizontalFieldOfView, aspectRatio, near, far);
         }
-        
-        void CameraComponent::setViewMatrix(vec3 position, vec3 direction, vec3 up) {
-            this->viewMatrix = glm::lookAt(position, direction, up);
+        void CameraComponent::setViewMatrix(const vec3& position, const vec3& direction, const vec3& up) {
+            this->direction = direction;
+            this->up = up;
+            this->setViewMatrix(position);
+        }
+        void CameraComponent::setViewMatrix(const vec3& position) {
+            this->viewMatrix = glm::lookAt(position, this->direction, this->up);
+        }
+        void CameraComponent::setDirection(const vec3& direction) {
+            this->direction = direction;
+        }
+        void CameraComponent::setUp(const vec3& up) {
+            this->up = up;
         }
         
-        glm::mat4 CameraComponent::getProjectionMatrix() const {
+        const mat4& CameraComponent::getProjectionMatrix() const {
             return this->projectionMatrix;
         }
-        
-        glm::mat4 CameraComponent::getViewMatrix() const {
+        const mat4& CameraComponent::getViewMatrix() const {
             return this->viewMatrix;
+        }
+        const vec3& CameraComponent::getDirection() const {
+            return this->direction;
+        }
+        const vec3& CameraComponent::getUp() const {
+            return this->up;
         }
         
         std::string CameraComponent::getComponentName() const {

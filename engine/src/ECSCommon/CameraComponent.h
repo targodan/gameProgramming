@@ -17,18 +17,26 @@ namespace engine {
         class CameraComponent : public engine::ECS::Component {
         public:
             CameraComponent();
-            CameraComponent(const CameraComponent& orig) = delete;
-            CameraComponent(CameraComponent&& orig) = delete;
+            CameraComponent(vec3 direction, vec3 up);
+            CameraComponent(const CameraComponent& orig) 
+                : viewMatrix(orig.viewMatrix), projectionMatrix(orig.projectionMatrix), direction(orig.direction), up(orig.up) {};
+            CameraComponent(CameraComponent&& orig) 
+                : viewMatrix(std::move(orig.viewMatrix)), projectionMatrix(std::move(orig.projectionMatrix)), direction(std::move(orig.direction)), up(std::move(orig.up)) {};
             virtual ~CameraComponent();
             
             /* 
              * Field-of-view given in degrees
              */
             void setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far);
-            void setViewMatrix(vec3 position, vec3 direction, vec3 up);
+            void setViewMatrix(const vec3& position, const vec3& direction, const vec3& up);
+            void setViewMatrix(const vec3& position);
+            void setDirection(const vec3& direction);
+            void setUp(const vec3& up);
             
-            glm::mat4 getProjectionMatrix() const;
-            glm::mat4 getViewMatrix() const;
+            const mat4& getProjectionMatrix() const;
+            const mat4& getViewMatrix() const;
+            const vec3& getDirection() const;
+            const vec3& getUp() const;
             
             void setTarget(vec3 targetPosition);
             void pan(float verticalDegrees, float horizontalDegrees);

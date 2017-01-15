@@ -3,6 +3,7 @@
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
+#include "PlacementSystem.h"
 
 namespace engine {
     namespace ECSCommon {
@@ -22,6 +23,10 @@ namespace engine {
                 return true;
             }
             
+            virtual Array<systemId_t> getDependencies() const {
+                return {PlacementSystem::systemTypeId()};
+            }
+            
             std::string getSystemName() const override {
                 return "CameraRenderSystem";
             }
@@ -32,6 +37,8 @@ namespace engine {
             static void setSystemTypeId(systemId_t id);
         private:
             static systemId_t systemId;
+            
+            
         };        
     }
 }

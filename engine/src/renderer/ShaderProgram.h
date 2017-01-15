@@ -28,7 +28,7 @@ namespace engine {
             ShaderProgram(ShaderProgram&& orig) 
                 : linked(std::move(orig.linked)), id(std::move(orig.id)), registeredShaders(std::move(orig.registeredShaders)) {}
             ~ShaderProgram() {
-                // glDeleteProgram(this->id);
+                
             }
             
             void releaseProgram() {

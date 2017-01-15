@@ -70,7 +70,7 @@ namespace engine {
             }
             
             virtual ~Buffer() {
-                // this->releaseBuffer();
+            
             }
             
             virtual const BufferType getType() const = 0;

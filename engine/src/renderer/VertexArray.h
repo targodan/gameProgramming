@@ -73,7 +73,7 @@ namespace engine {
             }
             
             ~VertexArray() {
-                // this->releaseVertexArray();
+                
             }
             
             void generateVertexArray() {

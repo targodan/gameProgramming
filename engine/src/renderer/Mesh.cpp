@@ -11,9 +11,10 @@ namespace engine {
             this->createVBO();
         }
         Mesh::Mesh(const Mesh& orig)
-            : material(orig.material), usage(orig.usage), vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
-            //this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
-            this->vao = std::make_unique<VertexArray>(*(orig.vao));
+            : usage(orig.usage), 
+                vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
+            this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            this->vao = orig.vao==nullptr ? nullptr : std::make_unique<VertexArray>(*(orig.vao));
         }
         Mesh::Mesh(Mesh&& orig)
             : material(std::move(orig.material)), usage(std::move(orig.usage)), vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {

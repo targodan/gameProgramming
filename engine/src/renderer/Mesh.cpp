@@ -6,56 +6,44 @@
 namespace engine {
     namespace renderer {
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
-            : usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), indices(indices), wasLoaded(false) {
-            this->createVBO();
+            : material(nullptr), usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), indices(indices), wasLoaded(false) {
             this->createEBO();
+            this->createVBO();
         }
-        
         Mesh::Mesh(const Mesh& orig)
-            : usage(orig.usage), 
-                vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
-            this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            : material(orig.material), usage(orig.usage), vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
+            //this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
             this->vao = std::make_unique<VertexArray>(*(orig.vao));
-            
-//            if(orig.wasLoaded) {
-//                this->loadMesh();
-//            }
-//            
-//            if(orig.material != nullptr) {
-//                this->material
-//            }
         }
-        
         Mesh::Mesh(Mesh&& orig)
-            : usage(std::move(orig.usage)), 
-                vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
-            this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            : material(std::move(orig.material)), usage(std::move(orig.usage)), vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
+            //this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
             this->vao = std::make_unique<VertexArray>(*(orig.vao));
-        }
-
-        Mesh::~Mesh() {
-            // this->releaseMesh();
         }
         
         Mesh& Mesh::operator=(const Mesh& right) {
-            this->releaseMesh();
-            
             this->usage = right.usage;
             this->vao = std::make_unique<VertexArray>(*(right.vao));
-            this->material = std::make_shared<Material>(*(right.material));
+            this->material = right.material;
             this->vertices = right.vertices;
             this->indices = right.indices;
-            this->wasLoaded = false;
+            this->wasLoaded = right.wasLoaded;
+            
             return *this;
         }
         Mesh& Mesh::operator=(Mesh&& right) {
-            std::swap(this->usage, right.usage);
+            this->usage = std::move(right.usage);
             this->vao = std::make_unique<VertexArray>(*(right.vao));
-            this->material = std::make_shared<Material>(*(right.material));
-            std::swap(this->vertices, right.vertices);
-            std::swap(this->indices, right.indices);
-            std::swap(this->wasLoaded, right.wasLoaded);
+            this->material = std::move(right.material);
+            this->vertices = std::move(right.vertices);
+            this->indices = std::move(right.indices);
+            this->wasLoaded = std::move(right.wasLoaded);
+            
             return *this;
+        }
+
+        Mesh::~Mesh() {
+            
         }
         
         void Mesh::render() {
@@ -68,7 +56,6 @@ namespace engine {
             this->material->makeActive();
             
             this->vao->bind();
-            //glDrawArrays(GL_TRIANGLES, 0, 3);
             this->vao->drawArrays();
             this->vao->unbind();
         }
@@ -77,6 +64,8 @@ namespace engine {
             this->vao->bind();
             this->vao->loadData();
             this->vao->unbind();
+            
+            this->wasLoaded = true;
         }
         
         void Mesh::releaseMesh() {

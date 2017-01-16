@@ -4,6 +4,8 @@
 #include "engine/ECSCommon.h"
 #include "OneShotForce.h"
 
+#include "engine/renderer/FontRenderer.h"
+
 using namespace engine;
 using namespace engine::renderer;
 using namespace engine::ECSCommon;
@@ -11,6 +13,8 @@ using namespace engine::ECSCommon;
 namespace demoSimulation {
     void Game::initialize() {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
+        
+        engine::renderer::FontRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
@@ -72,5 +76,9 @@ namespace demoSimulation {
         this->systemManager.enableSystem<TimerSystem>();
         
         engine::Game::initialize();
+    }
+    
+    void Game::render(float deltaTimeSeconds) {
+        engine::Game::render(deltaTimeSeconds);
     }
 }

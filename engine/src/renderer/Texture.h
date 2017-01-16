@@ -25,7 +25,7 @@ namespace engine {
                 this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, SOIL_LOAD_RGB);
                 
                 if(!imageData) {
-                    throw util::IOException("Failed to create texture: Could not load image.");
+                    throw engine::IOException("Failed to create texture: Could not load image.");
                 }
                 
                 this->generateTexture();

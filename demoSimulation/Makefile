@@ -18,11 +18,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -DELPP_THREAD_SAFE -I$(SRCDIR) -I$(SRCDIR)/engine
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp `freetype-config --cflags` -DELPP_THREAD_SAFE -I$(SRCDIR) -I$(SRCDIR)/engine
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine -Wl,-rpath=.,--as-needed
+LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine `freetype-config --libs` -Wl,-rpath=.,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -103,9 +103,9 @@ $(TESTDIR)/%.pb.cc: $(TESTDIR)/%.proto
 	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
 
-build: libengine flags mkdir generate $(SOURCES) $(TARGET)
+build: libengine.so flags mkdir generate $(SOURCES) $(TARGET)
 
-build_test: libengine flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
+build_test: libengine.so flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
@@ -119,11 +119,11 @@ flags_test:
 	@$(ECHO) "C_FLAGS_TEST = $(C_FLAGS_TEST)"
 	@$(ECHO) "LD_FLAGS_TEST = $(LD_FLAGS_TEST)"
 
-$(TARGET): $(OBJECTS)
+$(TARGET): libengine.so $(OBJECTS)
 	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS)
 
-$(TARGET_TEST): $(OBJECTS_TEST)
+$(TARGET_TEST): libengine.so $(OBJECTS_TEST)
 	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS_TEST)
 
@@ -161,7 +161,7 @@ clean:
 	@$(RM) $(PROTO_GENERATED_TEST_H)
 	@$(RM) $(PROTO_GENERATED_TEST_CPP)
 
-libengine:
+libengine.so:
 	@$(ECHO) "BUILDING ENGINE"
 	@cd ../engine && $(MAKE) build
 	@cp ../engine/libengine.so .

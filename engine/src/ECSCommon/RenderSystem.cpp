@@ -3,6 +3,9 @@
 
 #include "../ECS/SystemRegisterer.h"
 
+#include "../renderer/FontRenderer.h"
+#include "renderer/Font.h"
+
 namespace engine {
     namespace ECSCommon {
         ECS_REGISTER_SYSTEM(RenderSystem);
@@ -24,6 +27,9 @@ namespace engine {
                 auto comp = dynamic_cast<VisualComponent*>(ptr.get());
                 this->render(*comp);
             }
+            engine::renderer::Font font("/usr/share/fonts/TTF/DejaVuSans.ttf");
+            font.setSizeInPixels(50);
+            engine::renderer::FontRenderer::getInstance().renderText(L"Dies ist ein Test.", font, 800, 600);
         }
         
         systemId_t RenderSystem::systemTypeId() {

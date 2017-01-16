@@ -43,6 +43,8 @@
           <df name="renderer">
             <in>Camera.cpp</in>
             <in>ElementBuffer.cpp</in>
+            <in>Font.cpp</in>
+            <in>FontRenderer.cpp</in>
             <in>Material.cpp</in>
             <in>Mesh.cpp</in>
             <in>VertexArray.cpp</in>
@@ -92,7 +94,7 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile DEBUG=true</buildCommand>
+          <buildCommand>${MAKE} -f Makefile DEBUG=true -j4</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>../engine/libengine.so</executablePath>
         </makeTool>
@@ -101,7 +103,19 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/engine">
+      <folder path="0/src/engine/ECS">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/ECSCommon">
         <ccTool>
           <incDir>
             <pElem>../engine/src</pElem>
@@ -109,16 +123,12 @@
           </incDir>
         </ccTool>
       </folder>
-      <folder path="0/src/engine/ECS">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
       <folder path="0/src/engine/IO">
         <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -127,6 +137,10 @@
       </folder>
       <folder path="0/src/engine/math">
         <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -135,14 +149,10 @@
       </folder>
       <folder path="0/src/engine/physics">
         <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/renderer">
-        <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -151,6 +161,10 @@
       </folder>
       <folder path="0/src/engine/util">
         <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -160,6 +174,7 @@
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
             <pElem>src/engine</pElem>
             <pElem>.</pElem>
@@ -297,6 +312,10 @@
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -321,6 +340,10 @@
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -363,6 +386,14 @@
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/ElementBuffer.cpp"
@@ -370,14 +401,67 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/Font.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/FontRenderer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexArray.cpp"
@@ -385,6 +469,14 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexBuffer.cpp"
@@ -392,6 +484,14 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/util/ostream_helper.cpp"
@@ -416,6 +516,7 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
             <pElem>src/engine</pElem>
             <pElem>.</pElem>

@@ -51,14 +51,23 @@
         </logicalFolder>
         <itemPath>../engine/src/ECSCommon/CameraComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/CameraRenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/DeformableBodyComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/DeformableBodySystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/ForceComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/InputSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/RenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/TimerComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/TimerSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/VisualComponent.h</itemPath>
       </logicalFolder>
       <logicalFolder name="IO" displayName="IO" projectFiles="true">
+        <itemPath>../engine/src/IO/Action.h</itemPath>
+        <itemPath>../engine/src/IO/ButtonInfo.h</itemPath>
+        <itemPath>../engine/src/IO/ButtonMapping.h</itemPath>
         <itemPath>../engine/src/IO/Serializable.h</itemPath>
         <itemPath>../engine/src/IO/Serializer.h</itemPath>
         <itemPath>../engine/src/IO/SerializerFactory.cpp</itemPath>
@@ -75,6 +84,11 @@
         <itemPath>../engine/src/math/Vector3.h</itemPath>
         <itemPath>../engine/src/math/functions.cpp</itemPath>
         <itemPath>../engine/src/math/functions.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="physics" displayName="physics" projectFiles="true">
+        <itemPath>../engine/src/physics/DeformableBody.h</itemPath>
+        <itemPath>../engine/src/physics/Force.h</itemPath>
+        <itemPath>../engine/src/physics/ObjectProperties.h</itemPath>
       </logicalFolder>
       <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
         <logicalFolder name="gl" displayName="gl" projectFiles="true">
@@ -583,6 +597,7 @@
           </incDir>
           <preprocessorList>
             <Elem>DEBUG</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
       </folder>

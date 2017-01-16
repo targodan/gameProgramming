@@ -95,12 +95,6 @@
           <buildCommand>${MAKE} -f Makefile DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>../engine/libengine.so</executablePath>
-          <ccTool>
-            <preprocessorList>
-              <Elem>BOOST_UBLAS_NDEBUG</Elem>
-              <Elem>NDEBUG</Elem>
-            </preprocessorList>
-          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
@@ -113,50 +107,6 @@
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
           </incDir>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/ECS">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/IO">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/math">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/physics">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/renderer">
-        <ccTool>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/util">
-        <ccTool>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
@@ -208,10 +158,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/DeformableBodyComponent.cpp"
@@ -229,10 +175,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/ForceComponent.cpp"
@@ -240,10 +182,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementComponent.cpp"
@@ -251,10 +189,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementSystem.cpp"
@@ -262,10 +196,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/RenderSystem.cpp"
@@ -273,10 +203,6 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/TimerSystem.cpp"
@@ -295,18 +221,10 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
@@ -327,10 +245,6 @@
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">

@@ -13,6 +13,7 @@ namespace engine {
         using namespace engine::renderer;
         
         class DeformableBody {
+            using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
         protected:
             // The first 3 vertices must build the base plane.
             // The 4th vertex mustn't be in that same plane.
@@ -34,7 +35,8 @@ namespace engine {
             // stepSizeDeviationPercentage % from the stepSizeOnMatrixCalculation
             // the stepMatrix is recalculated. Always updates if 0.
             float stepSizeDeviationPercentage = 0.5;
-            HouseholderQR<Matrix<float, 12, 12>> stepMatrix; // inv(M + h² * K + h * C)
+            SparseMatrix<float, ColMajor> stepMatrix; // M + h² * K + h * C
+            SparseSolver stepMatrixSolver;
             
             Matrix<float, 12, 1> lastVelocities;
             
@@ -46,7 +48,8 @@ namespace engine {
             SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
             SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture
             SparseMatrix<float> calculateMassMatrix() const; // Called M in lecture
-            HouseholderQR<Matrix<float, 12, 12>> calculateStepMatrix(float h) const; // inv(M + h² * K + h * C)
+            SparseMatrix<float, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
+            void prepareStepMatrixSolver();
             
             Matrix<float, 12, 1> calculateCurrentDifferenceFromRestPosition() const;
             Matrix<float, 12, 1> calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const;

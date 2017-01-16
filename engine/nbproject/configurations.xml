@@ -283,7 +283,10 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/DeformableBodySystem.cpp"
@@ -291,6 +294,9 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
@@ -313,22 +319,18 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
-      </item>
-      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
@@ -516,8 +518,6 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">

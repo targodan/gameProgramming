@@ -29,7 +29,7 @@ namespace engine {
             }
             engine::renderer::Font font("/usr/share/fonts/TTF/DejaVuSans.ttf");
             font.setSizeInPixels(50);
-            engine::renderer::FontRenderer::getInstance().renderText(L"Dies ist ein Test.", font, 800, 600);
+            engine::renderer::FontRenderer::getInstance().renderText(u8"Dies ist ein Test.", font, engine::renderer::Color::GREEN, 800, 600);
         }
         
         systemId_t RenderSystem::systemTypeId() {

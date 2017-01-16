@@ -1,10 +1,13 @@
 #include <freetype2/freetype/ftimage.h>
+#include <codecvt>
 
 #include "FontRenderer.h"
 
 #include "../WTFException.h"
 #include "gl/gl_core_3_3.h"
 #include "Font.h"
+
+#include "../util/unicode.h"
 
 std::string vertexShader = 
         "#version 120\n"
@@ -42,9 +45,52 @@ namespace engine {
             this->windowHeight = height;
         }
         
-        void FontRenderer::renderText(const std::wstring& text, const Font& font, int xPixel, int yPixel) const {
+        void FontRenderer::renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) const {
+            auto& glyph = font.renderChar(c);
+            
+            this->shader.setUniform("color", color.getGLColor());
+                
+            glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_ALPHA,
+                    glyph->bitmap.width,
+                    glyph->bitmap.rows,
+                    0,
+                    GL_ALPHA,
+                    GL_UNSIGNED_BYTE,
+                    glyph->bitmap.buffer
+                );
+
+            float x2 = x + glyph->bitmap_left * scaleX;
+            float y2 = -y - glyph->bitmap_top * scaleY;
+            float w = glyph->bitmap.width * scaleX;
+            float h = glyph->bitmap.rows * scaleY;
+
+            GLfloat box[4][4] = {
+                {x2,     -y2    , 0, 0},
+                {x2 + w, -y2    , 1, 0},
+                {x2,     -y2 - h, 0, 1},
+                {x2 + w, -y2 - h, 1, 1},
+            };
+
+            glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            x += (glyph->advance.x/64) * scaleX;
+            y += (glyph->advance.y/64) * scaleY;
+        }
+        
+        void FontRenderer::renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) const {
+            this->renderText(unicode(text), font, color, xPixel, yPixel);
+        }
+        
+        void FontRenderer::renderRichText(const RichText& text, int xPixel, int yPixel) const {
+            // TODO: implement
+        }
+        
+        void FontRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) const {
             this->shader.useProgram();
-            this->shader.setUniform("color", glm::vec4(1, 0, 0, 1));
             
             GLuint vbo;
             GLuint attribute_coord = this->shader.getAttributeLocation("coord");
@@ -84,37 +130,7 @@ namespace engine {
             float y = 1 - yPixel * scaleY;
             
             for(auto& c : text) {
-                auto& glyph = font.renderChar(c);
-                
-                glTexImage2D(
-                        GL_TEXTURE_2D,
-                        0,
-                        GL_ALPHA,
-                        glyph->bitmap.width,
-                        glyph->bitmap.rows,
-                        0,
-                        GL_ALPHA,
-                        GL_UNSIGNED_BYTE,
-                        glyph->bitmap.buffer
-                    );
-                
-                float x2 = x + glyph->bitmap_left * scaleX;
-                float y2 = -y - glyph->bitmap_top * scaleY;
-                float w = glyph->bitmap.width * scaleX;
-                float h = glyph->bitmap.rows * scaleY;
-                
-                GLfloat box[4][4] = {
-                    {x2,     -y2    , 0, 0},
-                    {x2 + w, -y2    , 1, 0},
-                    {x2,     -y2 - h, 0, 1},
-                    {x2 + w, -y2 - h, 1, 1},
-                };
-                
-                glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-                
-                x += (glyph->advance.x/64) * scaleX;
-                y += (glyph->advance.y/64) * scaleY;
+                this->renderChar(c, font, color, x, y, scaleX, scaleY);
             }
             
             glDisableVertexAttribArray(attribute_coord);

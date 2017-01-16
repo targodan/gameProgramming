@@ -6,10 +6,29 @@
 
 namespace engine {
     namespace renderer {
+        Font::Font(const std::string& filename) : Font(filename.c_str()) {}
         Font::Font(const char* filename) {
             if(FT_New_Face(FontRenderer::getInstance().getFT(), filename, 0, &this->face)) {
                 throw engine::IOException("Could not load font in file \"%s\".", filename);
             }
+        }
+        
+        Font::Font(const Font& orig) : face(orig.face) {}
+        Font::Font(Font&& orig) : face(std::move(orig.face)) {}
+        Font& Font::operator=(const Font& orig) {
+            this->face = orig.face;
+            return *this;
+        }
+        Font& Font::operator=(Font&& orig) {
+            std::swap(this->face, orig.face);
+            return *this;
+        }
+            
+        bool Font::operator==(const Font& other) const {
+            return this->face == other.face;
+        }
+        bool Font::operator!=(const Font& other) const {
+            return !(this->operator==(other));
         }
         
         void Font::setSizeInPixels(int pixel) {

@@ -65,19 +65,17 @@ namespace engine {
             }
             return forceVectors;
         }
-
-        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const Surface& surface) const {
-            auto distanceVectors = this->calculateDistancesVectorsFromCenter(surface);
-            auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
+        
+        MatrixXf Explosion::calculateAffectedParameters(const Surface& surface, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const {
+            MatrixXf affectedForceVectors(distanceVectors.cols(), 3);
+            MatrixXf affectedDistances(distanceVectors.cols(), 1);
+            MatrixXf affectedSurfaceAreas(distanceVectors.cols(), 1);
             
             float lastExpansionRadiusSq = this->calculateExpansionRadius(this->lastSecondsFromExplosion);
             lastExpansionRadiusSq *= lastExpansionRadiusSq;
             float expansionRadiusSq = this->calculateExpansionRadius(this->secondsFromExplosion);
             expansionRadiusSq *= expansionRadiusSq;
             
-            MatrixXf affectedForceVectors(distanceVectors.cols(), 3);
-            MatrixXf affectedDistances(distanceVectors.cols(), 1);
-            MatrixXf affectedSurfaceAreas(distanceVectors.cols(), 1);
             // set all outside to zero
             int numAffectedVectors = 0;
             for(int i = 0; i < sqDistances.rows(); ++i) {
@@ -93,18 +91,30 @@ namespace engine {
                 }
             }
             if(numAffectedVectors == 0) {
-                return MatrixXf(0, 1);
+                return MatrixXf(0, 0);
             }
             
             affectedForceVectors.resize(numAffectedVectors, 3);
             affectedDistances.resize(numAffectedVectors, 1);
-            
             affectedDistances.cwiseSqrt();
+            
             for(int i = 0; i < numAffectedVectors; ++i) {
                 // normalize and multiply by force
                 affectedForceVectors.row(i) *= (
                             this->calculatePressureAtDistance(affectedDistances(i)) * affectedSurfaceAreas(i)
                         ) / affectedDistances(i);
+            }
+            
+            return affectedForceVectors;
+        }
+
+        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const Surface& surface) const {
+            auto distanceVectors = this->calculateDistancesVectorsFromCenter(surface);
+            auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
+            
+            MatrixXf affectedForceVectors = this->calculateAffectedParameters(surface, sqDistances, distanceVectors);
+            if(affectedForceVectors.rows() == 0) {
+                return MatrixXf(0, 1);
             }
             
             return this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, surface);

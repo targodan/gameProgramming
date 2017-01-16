@@ -9,6 +9,12 @@ namespace engine {
         using namespace Eigen;
         
         class Explosion : public Force {
+            struct AffectedParameters {
+                MatrixXf affectedForceVectors;
+                MatrixXf affectedDistances;
+                MatrixXf affectedSurfaceAreas;
+            };
+            
         private:
             Matrix<float, 3, 1> center;
             float tntEquivalence; // in kg
@@ -21,6 +27,7 @@ namespace engine {
             
             MatrixXf calculateDistancesVectorsFromCenter(const Surface& surface) const;
             MatrixXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
+            MatrixXf calculateAffectedParameters(const Surface& surface, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const;
             
             Matrix<float, Dynamic, 1> mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const Surface& surface) const;
             

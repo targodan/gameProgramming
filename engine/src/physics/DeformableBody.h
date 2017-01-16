@@ -14,6 +14,8 @@ namespace engine {
         
         class DeformableBody {
         protected:
+            // The first 3 vertices must build the base plane.
+            // The 4th vertex mustn't be in that same plane.
             Mesh mesh;
             Matrix<float, 12, 1> restPosition;
             Matrix<float, 12, 1> currentPosition;
@@ -38,6 +40,7 @@ namespace engine {
             Matrix<float, 12, 1> calculatePlanarVectorsFromMesh() const;
             void setMeshFromPlanarVectors(const Matrix<float, 12, 1>& v);
             
+            float calculateVolume() const;
             SparseMatrix<float> calculateMaterialMatrix() const; // Called D in lecture
             SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
             SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture

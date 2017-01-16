@@ -45,6 +45,17 @@ namespace engine {
                     * materialMat;
         }
         
+        float DeformableBody::calculateVolume() const {
+            const Eigen::Map<MatrixXf> vertices(const_cast<float*>(this->currentPosition.data()), 3, this->currentPosition.rows() / 3);
+            
+            Vector3f normal = ((Vector3f)vertices.col(0)).cross((Vector3f)vertices.col(1));
+            float baseArea = normal.norm();
+            normal /= baseArea;
+            
+            Hyperplane<float, 3> basePlane(normal, vertices.row(0));
+            return baseArea * basePlane.absDistance(vertices.row(3)) / 3.;
+        }
+        
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
             // TODO: Check if A is made up of the rest position or the current one.
             auto& v = this->mesh.getVertices();
@@ -100,8 +111,7 @@ namespace engine {
             B.insert(5, 9)  = A(3, 2);
             B.insert(5, 11) = A(3, 0);
             
-            // TODO: Check if multiply by volume!
-            return B.transpose() * this->calculateMaterialMatrix() * B;
+            return this->calculateVolume() * B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
         SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
@@ -136,10 +146,15 @@ namespace engine {
         Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const {
             return this->lastVelocities +
                     (
-                        h * this->stepMatrix.solve(
-                            forces
-                            - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
-                            - this->dampeningMatrix * this->lastVelocities
+                        this->stepMatrix.solve(
+                            h * (
+                                forces
+                                - this->dampeningMatrix * this->lastVelocities
+                                - this->stiffnessMatrix * (
+                                    this->calculateCurrentDifferenceFromRestPosition()
+                                    - h * this->lastVelocities
+                                )
+                            )
                         )
                     );
         }

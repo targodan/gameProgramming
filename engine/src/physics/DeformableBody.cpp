@@ -52,12 +52,11 @@ namespace engine {
             float baseArea = normal.norm();
             normal /= baseArea;
             
-            Hyperplane<float, 3> basePlane(normal, vertices.row(0));
-            return baseArea * basePlane.absDistance(vertices.row(3)) / 3.;
+            Hyperplane<float, 3> basePlane(normal, vertices.col(0));
+            return baseArea * basePlane.absDistance(vertices.col(3)) / 3.;
         }
         
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
-            // TODO: Check if A is made up of the rest position or the current one.
             auto& v = this->mesh.getVertices();
             float buffer[16] = {
                 v[0].position.x, v[1].position.x, v[2].position.x, v[3].position.x,

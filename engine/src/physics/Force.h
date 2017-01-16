@@ -2,7 +2,7 @@
 #define FORCE_H
 
 #include <eigen3/Eigen/Eigen>
-#include "Surface.h"
+#include "ObjectProperties.h"
 
 namespace engine {
     namespace physics {
@@ -16,7 +16,7 @@ namespace engine {
             Force() {}
             virtual ~Force() {}
             
-            virtual Matrix<float, Dynamic, 1> getForceOnVertices(const Surface& surface) const = 0;
+            virtual Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& surface) const = 0;
             
             virtual void addSecondsSinceStart(float secondsSinceStart) {
                 this->secondsSinceStart += secondsSinceStart;

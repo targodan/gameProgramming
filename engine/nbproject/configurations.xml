@@ -53,7 +53,8 @@
           <in>Explosion.cpp</in>
           <in>Explosion.h</in>
           <in>Force.h</in>
-          <in>Surface.h</in>
+          <in>ObjectProperties.cpp</in>
+          <in>ObjectProperties.h</in>
         </df>
         <df name="renderer">
           <df name="gl">
@@ -330,7 +331,9 @@
       </item>
       <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/physics/Surface.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -589,7 +592,9 @@
       </item>
       <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/physics/Surface.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

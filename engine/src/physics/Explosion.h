@@ -25,18 +25,18 @@ namespace engine {
             float calculatePressureAtDistance(float d) const; // in Pa
             float calculateExpansionRadius(float secondsFromExplosion) const; // in m
             
-            MatrixXf calculateDistancesVectorsFromCenter(const Surface& surface) const;
+            MatrixXf calculateDistancesVectorsFromCenter(const ObjectProperties& object) const;
             MatrixXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
-            MatrixXf calculateAffectedParameters(const Surface& surface, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const;
+            MatrixXf calculateAffectedParameters(const ObjectProperties& object, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const;
             
-            Matrix<float, Dynamic, 1> mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const Surface& surface) const;
+            Matrix<float, Dynamic, 1> mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const;
             
         public:
             Explosion(Matrix<float, 3, 1> center, float tntEquivalence, float expansionSpeed = SPEED_OF_SOUND_IN_AIR)
                 : center(center), tntEquivalence(tntEquivalence), expansionSpeed(expansionSpeed) {}
             
             void setTime(float secondsFromExplosion);
-            Matrix<float, Dynamic, 1> getForceOnVertices(const Surface& surface) const override;
+            Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& object) const override;
         };
     }
 }

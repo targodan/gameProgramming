@@ -167,15 +167,15 @@ namespace engine {
             this->updateStepMatrixIfNecessary(targetStepSize);
         }
         
-        void DeformableBody::step(float h, const Force& force) {
-            // TODO: Use engine::physics::Surface here
+        void DeformableBody::step(float deltaT, const Force& force) {
+            // TODO: Use engine::physics::ObjectProperties here
 //            this->step(h, force.getForceOnVertices(this->currentPosition));
         }
         
-        void DeformableBody::step(float h, const Matrix<float, 12, 1>& forces) {
-            this->updateStepMatrixIfNecessary(h);
-            this->lastVelocities = this->calculateVelocities(h, forces);
-            this->currentPosition += h * this->lastVelocities;
+        void DeformableBody::step(float deltaT, const Matrix<float, 12, 1>& forces) {
+            this->updateStepMatrixIfNecessary(deltaT);
+            this->lastVelocities = this->calculateVelocities(deltaT, forces);
+            this->currentPosition += deltaT * this->lastVelocities;
             this->setMeshFromPlanarVectors(this->currentPosition);
             this->mesh.loadMesh();
         }

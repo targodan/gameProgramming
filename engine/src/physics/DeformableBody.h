@@ -61,8 +61,8 @@ namespace engine {
                 this->calculateAndSetInitialState(targetStepSize);
             }
             
-            void step(float h, const Matrix<float, 12, 1>& forces);
-            void step(float h, const Force& force);
+            void step(float deltaT, const Matrix<float, 12, 1>& forces);
+            void step(float deltaT, const Force& force);
         };
     }
 }

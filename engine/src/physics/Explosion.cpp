@@ -28,8 +28,8 @@ namespace engine {
             this->secondsFromExplosion = secondsFromExplosion;
         }
         
-        MatrixXf Explosion::calculateDistancesVectorsFromCenter(const Surface& surface) const {
-            Index numVertices = surface.vertices.rows() / 3;
+        MatrixXf Explosion::calculateDistancesVectorsFromCenter(const ObjectProperties& object) const {
+            Index numVertices = object.surfaceVertexIndices.size();
             MatrixXf centers(3, numVertices);
             for(int i = 0; i < numVertices; i += 3) {
                 centers.col(i) = this->center;
@@ -38,7 +38,7 @@ namespace engine {
             // In the general case this is not a const operation,
             // as the Map only maps data, but does not copy it.
             // But in our case it is fine, as we never change the Map.
-            const Map<MatrixXf> surfaceVerticesInColumns(const_cast<float*>(surface.vertices.data()), 3, numVertices);
+            const Map<MatrixXf> surfaceVerticesInColumns(const_cast<float*>(object.surfaceVertices.data()), 3, numVertices);
             
             return surfaceVerticesInColumns - centers;
         }
@@ -47,10 +47,10 @@ namespace engine {
             return distanceVectors.colwise().squaredNorm();
         }
         
-        Matrix<float, Dynamic, 1> Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const Surface& surface) const {
-            Matrix<float, Dynamic, 1> forceVectors(surface.vertices.rows(), 1);
+        Matrix<float, Dynamic, 1> Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
+            Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertices.rows(), 1);
             int indexOfAffected = 0;
-            for(int i = 0; i < surface.vertices.rows(); i += 3) {
+            for(int i = 0; i < object.surfaceVertices.rows(); i += 3) {
                 int indexVector = i * 3;
                 if(sqDistances(indexVector) == 0) {
                     forceVectors(i+0) = 0;
@@ -66,7 +66,7 @@ namespace engine {
             return forceVectors;
         }
         
-        MatrixXf Explosion::calculateAffectedParameters(const Surface& surface, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const {
+        MatrixXf Explosion::calculateAffectedParameters(const ObjectProperties& object, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const {
             MatrixXf affectedForceVectors(3, distanceVectors.cols());
             MatrixXf affectedDistances(distanceVectors.cols(), 1);
             MatrixXf affectedSurfaceAreas(distanceVectors.cols(), 1);
@@ -85,7 +85,7 @@ namespace engine {
                     sqDistances(i) = 0;
                 } else {
                     affectedDistances(numAffectedVectors) = sqDistances(i);
-                    affectedSurfaceAreas(numAffectedVectors) = surface.surfaceAreaPerVertex(i);
+                    affectedSurfaceAreas(numAffectedVectors) = object.surfaceAreaPerVertex(i);
                     affectedForceVectors.col(numAffectedVectors) = distanceVectors.col(i);
                     ++numAffectedVectors;
                 }
@@ -108,16 +108,16 @@ namespace engine {
             return affectedForceVectors;
         }
 
-        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const Surface& surface) const {
-            auto distanceVectors = this->calculateDistancesVectorsFromCenter(surface);
+        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) const {
+            auto distanceVectors = this->calculateDistancesVectorsFromCenter(object);
             auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
             
-            MatrixXf affectedForceVectors = this->calculateAffectedParameters(surface, sqDistances, distanceVectors);
+            MatrixXf affectedForceVectors = this->calculateAffectedParameters(object, sqDistances, distanceVectors);
             if(affectedForceVectors.cols() == 0) {
                 return MatrixXf(0, 0);
             }
             
-            return this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, surface);
+            return object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));
         }
     }
 }

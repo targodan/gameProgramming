@@ -194,7 +194,7 @@ namespace engine {
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;
-            LOG(DEBUG) << "Positions(" << deltaT << ")" << std::endl << this->currentPosition;
+//            LOG(DEBUG) << "Positions(" << deltaT << ")" << std::endl << this->currentPosition;
             this->setMeshFromPlanarVectors(this->currentPosition);
             this->mesh.loadMesh();
         }

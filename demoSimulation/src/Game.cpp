@@ -1,12 +1,16 @@
 #include "Game.h"
 
+#include <memory>
+
 #include "engine/renderer/Mesh.h"
 #include "engine/ECSCommon.h"
 #include "OneShotForce.h"
+#include "Actions.h"
 
 using namespace engine;
 using namespace engine::renderer;
 using namespace engine::ECSCommon;
+using namespace demo::IO;
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -27,6 +31,9 @@ namespace demoSimulation {
                 .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
         auto& cc = this->camera.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1, 10);
+        
+        LOG(DEBUG) << "CameraDirection: " << cc.getDirection();
+        LOG(DEBUG) << "CameraUp: " << cc.getUp();
         
         
         this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
@@ -65,11 +72,22 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(5)
                 .addComponent<ForceComponent>(force);
         
+        auto action1 = std::make_shared<PanCameraAction>(-2, -1, std::make_shared<Entity>(this->camera));
+        ButtonMapping bm(this->window.getWindow());
+        bm.insertMapping(-2, -1, action1);
+        auto action2 = std::make_shared<MoveFwdBwdAction>(-1, GLFW_KEY_W, std::make_shared<Entity>(this->camera));
+        bm.insertMapping(-1, GLFW_KEY_W, action2);
+        bm.insertMapping(-1, GLFW_KEY_S, action2, true);
+        auto action3 = std::make_shared<MoveLRAction>(-1, GLFW_KEY_A, std::make_shared<Entity>(this->camera));
+        bm.insertMapping(-1, GLFW_KEY_A, action3, true);
+        bm.insertMapping(-1, GLFW_KEY_D, action3);
+        
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<InputSystem>(bm);
         
         engine::Game::initialize();
     }

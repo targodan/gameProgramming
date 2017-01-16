@@ -90,14 +90,15 @@ namespace engine {
             return *this;
         }
 
-        std::u32string RichText::getPlainText() const {
+        std::u32string RichText::getPlainText() {
+            this->flushCurrentText();
             std::u32string text;
             for(auto& fragment : this->textFragments) {
                 text += fragment.getText();
             }
             return text;
         }
-        std::string RichText::getPlainText_utf8() const {
+        std::string RichText::getPlainText_utf8() {
             return utf8(this->getPlainText());
         }
         
@@ -137,16 +138,16 @@ namespace engine {
             return *this;
         }
         
-        const RichTextFragment& RichText::getFragment(size_t i) const {
-            return this->textFragments[i];
-        }
         RichTextFragment& RichText::getFragment(size_t i) {
+            this->flushCurrentText();
             return this->textFragments[i];
         }
-        size_t RichText::numberOfFragments() const {
+        size_t RichText::numberOfFragments() {
+            this->flushCurrentText();
             return this->textFragments.size();
         }
-        size_t RichText::length() const {
+        size_t RichText::length() {
+            this->flushCurrentText();
             size_t len = 0;
             for(auto& frag : this->textFragments) {
                 len += frag.getText().length();
@@ -199,30 +200,6 @@ namespace engine {
             return RichTextSize(size);
         }
         
-        RichText::ConstIterator& RichText::ConstIterator::operator++() {
-            if(this->index < this->text->numberOfFragments()) {
-                ++this->index;
-            }
-            return *this;
-        }
-        RichText::ConstIterator RichText::ConstIterator::operator++(int) {
-            ConstIterator copy(*this);
-            this->operator++();
-            return copy;
-        }
-        bool RichText::ConstIterator::operator==(RichText::ConstIterator& other) const {
-            return this->text == other.text && this->index == other.index;
-        }
-        bool RichText::ConstIterator::operator!=(RichText::ConstIterator& other) const {
-            return !(this->operator==(other));
-        }
-        const RichTextFragment& RichText::ConstIterator::operator*() const {
-            return this->text->getFragment(this->index);
-        }
-        const RichTextFragment* RichText::ConstIterator::operator->() const {
-            return &this->text->getFragment(this->index);
-        }
-
         RichText::Iterator& RichText::Iterator::operator++() {
             if(this->index < this->text->numberOfFragments()) {
                 ++this->index;
@@ -247,16 +224,12 @@ namespace engine {
             return &this->text->getFragment(this->index);
         }
         
-        RichText::ConstIterator RichText::begin() const {
-            return ConstIterator(this, 0);
-        }
-        RichText::ConstIterator RichText::end() const {
-            return ConstIterator(this, this->textFragments.size());
-        }
         RichText::Iterator RichText::begin() {
+            this->flushCurrentText();
             return Iterator(this, 0);
         }
         RichText::Iterator RichText::end() {
+            this->flushCurrentText();
             return Iterator(this, this->textFragments.size());
         }
     }

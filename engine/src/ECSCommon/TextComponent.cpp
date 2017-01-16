@@ -17,7 +17,8 @@ namespace engine {
         }
         
         std::string TextComponent::toString() const {
-            return this->text.getPlainText_utf8();
+            // Sorry for the hack, but there is no easy way around this.
+            return const_cast<TextComponent*>(this)->text.getPlainText_utf8();
         }
 
         void TextComponent::setComponentTypeId(componentId_t id) {

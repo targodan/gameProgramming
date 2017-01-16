@@ -75,28 +75,14 @@ namespace engine {
             RichText& operator=(const RichText& orig);
             RichText& operator=(RichText&& orig);
             
-            std::u32string getPlainText() const;
-            std::string getPlainText_utf8() const;
+            std::u32string getPlainText();
+            std::string getPlainText_utf8();
             
             RichText& addText(const std::u32string& text);
             RichText& addText(const std::string& text);
             RichText& addText(FontFamily& fontFamily, FontType fontType, int size, Color color, const std::u32string& text);
             RichText& addText(FontFamily& fontFamily, FontType fontType, int size, Color color, const std::string& text);
             
-            class ConstIterator {
-                const RichText* text;
-                size_t index;
-                
-            public:
-                ConstIterator(const RichText* text, size_t index) : text(text), index(index) {}
-                
-                ConstIterator& operator++();
-                ConstIterator operator++(int);
-                bool operator==(ConstIterator& other) const;
-                bool operator!=(ConstIterator& other) const;
-                const RichTextFragment& operator*() const;
-                const RichTextFragment* operator->() const;
-            };
             class Iterator {
                 RichText* text;
                 size_t index;
@@ -112,13 +98,10 @@ namespace engine {
                 RichTextFragment* operator->();
             };
             
-            const RichTextFragment& getFragment(size_t i) const;
             RichTextFragment& getFragment(size_t i);
-            size_t numberOfFragments() const;
-            size_t length() const;
+            size_t numberOfFragments();
+            size_t length();
             
-            ConstIterator begin() const;
-            ConstIterator end() const;
             Iterator begin();
             Iterator end();
             

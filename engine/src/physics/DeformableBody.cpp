@@ -153,7 +153,8 @@ namespace engine {
         }
         
         void DeformableBody::step(float h, const Force& force) {
-            this->step(h, force.getForceOnVertices(this->currentPosition));
+            // TODO: Use engine::physics::Surface here
+//            this->step(h, force.getForceOnVertices(this->currentPosition));
         }
         
         void DeformableBody::step(float h, const Matrix<float, 12, 1>& forces) {

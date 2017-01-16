@@ -2,6 +2,7 @@
 #define EXPLOSION_H
 
 #include "Force.h"
+#include "constants.h"
 
 namespace engine {
     namespace physics {
@@ -10,14 +11,25 @@ namespace engine {
         class Explosion : public Force {
         private:
             Matrix<float, 3, 1> center;
-            float initialSpeed; // in m/s
-            float dampening;    // in m/s²
+            float tntEquivalence; // in kg
+            float expansionSpeed; // in m/s
+            float secondsFromExplosion = 0; // in s
+            float lastSecondsFromExplosion = 0; // in s
+            
+            float calculatePressureAtDistance(float d) const; // in Pa
+            float calculateExpansionRadius(float secondsFromExplosion) const; // in m
+            
+            MatrixXf calculateDistancesVectorsFromCenter(const Surface& surface) const;
+            MatrixXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
+            
+            Matrix<float, Dynamic, 1> mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const Surface& surface) const;
             
         public:
-            Explosion(Matrix<float, 3, 1> center, float initialSpeed, float dampening)
-                : center(center), initialSpeed(initialSpeed) {}
+            Explosion(Matrix<float, 3, 1> center, float tntEquivalence, float expansionSpeed = SPEED_OF_SOUND_IN_AIR)
+                : center(center), tntEquivalence(tntEquivalence), expansionSpeed(expansionSpeed) {}
             
-            Matrix<float, Dynamic, 1> getForceOnVertices(const Matrix<float, Dynamic, 1>& verticies) const override;
+            void setTime(float secondsFromExplosion);
+            Matrix<float, Dynamic, 1> getForceOnVertices(const Surface& surface) const override;
         };
     }
 }

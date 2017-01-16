@@ -24,6 +24,10 @@ namespace demo {
     private:
         Entity triangle;
         Entity player;
+        
+        float lastX;
+        float lastY;
+        float firstMouseMovement;
     };
 }
 

@@ -24,8 +24,8 @@ namespace engine {
             for(auto it = em.begin({CameraComponent::getComponentTypeId(), PlacementComponent::getComponentTypeId()}); it != em.end(); ++it) {
                 auto& placement = it[1]->to<PlacementComponent>();
                 auto& camera = it[0]->to<CameraComponent>();
-                camera.setViewMatrix(placement.getPosition());
                 
+                camera.setViewMatrix(placement.getPosition());
                 
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) { // Each and every visual component has to be rendered from the camera's perspective
                     auto& visual = (*itVisual)->to<VisualComponent>();

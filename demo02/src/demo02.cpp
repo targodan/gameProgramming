@@ -23,7 +23,7 @@ namespace demo {
     using engine::Game;
     
     Demo02::Demo02(int argc, char** argv, double ups) 
-        : Game(argc, argv, ups) {
+        : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
         
         // Create triangle entity
@@ -51,10 +51,10 @@ namespace demo {
         this->player = this->entityManager.createEntity("Player");
         
         PlacementComponent pcPlayer;
-        pcPlayer.setPosition(vec3{10.f, 0.f, 10.f});
+        pcPlayer.setPosition(vec3{10.f, 0.f, 0.f});
         pcPlayer.setDirection(vec3{0.f, 0.f, 0.f});
         
-        CameraComponent cc(vec3{0.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
+        CameraComponent cc(vec3{-10.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
         cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
         cc.setViewMatrix(pcPlayer.getPosition());
         
@@ -90,6 +90,8 @@ namespace demo {
         this->systemManager.enableSystem<RenderSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         Game::initialize();
+        
+        glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
     
     void Demo02::shutdown() {
@@ -98,6 +100,23 @@ namespace demo {
     
     void Demo02::processEvents() {
         glfwPollEvents();
+        
+        double newX, newY;
+        glfwGetCursorPos(this->window.getWindow(), &newX, &newY);
+        
+        if(this->firstMouseMovement) {
+            this->lastX = newX;
+            this->lastY = newY;
+            this->firstMouseMovement = false;
+        }
+        
+        if(this->window.isCursorInWindowArea()) {
+            auto& cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
+            cam.pan(newX-lastX, -(newY-lastY), 0.05f);
+        }
+        
+        this->lastX = newX;
+        this->lastY = newY;
     }
 
     void Demo02::render(double deltaTimeSeconds) {

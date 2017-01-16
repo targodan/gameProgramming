@@ -4,6 +4,8 @@
 
 namespace engine {
     using namespace renderer::gl;
+    
+    bool Window::cursorInAnyWindowArea = false;
     Window::Window(int width, int height, std::string title) 
         : width(width), height(height), title(title.c_str()) {
 
@@ -25,6 +27,7 @@ namespace engine {
         
         glfwSetErrorCallback(Window::glfwErrorCallback);
         glfwSetWindowSizeCallback(this->glfwWindow, Window::glfwResizeCallback);
+        glfwSetCursorEnterCallback(this->glfwWindow, Window::glfwCursorEnterCallback);
         
         int glInit = ogl_LoadFunctions();
         if(glInit != ogl_LOAD_SUCCEEDED) {
@@ -64,6 +67,10 @@ namespace engine {
         return this->glfwWindow;
     }
     
+    bool Window::isCursorInWindowArea() const {
+        return Window::cursorInAnyWindowArea;
+    }
+    
     void Window::setClearColor(float red, float green, float blue, float alpha) {
         glClearColor(red, green, blue, alpha);
     }
@@ -83,5 +90,15 @@ namespace engine {
     
     void Window::glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
         glViewport(0, 0, newWidth, newHeight);
+    }
+    
+    void Window::glfwCursorEnterCallback(GLFWwindow* window, int entered) {
+        // TODO: Substitute by sending messages
+        
+        if(entered) { // Cursor entered window
+            Window::cursorInAnyWindowArea = true;
+        } else { // Cursor left window
+            Window::cursorInAnyWindowArea = false;
+        }
     }
 }

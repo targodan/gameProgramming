@@ -60,10 +60,10 @@ namespace engine {
             vec3 position; // Completely private - only used internally (should always equal player position, which is stored in its PlacementComponent)
             vec3 direction;
             vec3 up;
-            const vec3 worldUp;
+            const vec3 worldUp; // = {0, 1, 0}
             
-            float yaw;
-            float pitch;
+            float yaw; // Rotation around y-axis (~ vertical movement))
+            float pitch; // Rotation around x-axis (~ horizontal movement)
         };
     }
 }

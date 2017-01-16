@@ -12,7 +12,7 @@ namespace engine {
     class Window {
     private:
         GLFWwindow* glfwWindow;
-
+        
         int width;
         int height;
 
@@ -20,6 +20,8 @@ namespace engine {
 
         static void glfwErrorCallback(int error, const char* description);
         static void glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
+        static void glfwCursorEnterCallback(GLFWwindow* window, int entered);
+        static bool cursorInAnyWindowArea; // Temporary cheat
     public:
         Window(int width, int height, std::string title = {"ExplosionBoy"});
         Window(const Window& orig) = delete;
@@ -30,6 +32,8 @@ namespace engine {
         int getHeight() const;
         std::string getTitle() const;
         GLFWwindow* getWindow() const;
+        
+        bool isCursorInWindowArea() const;
         
         void setClearColor(float red, float green, float blue, float alpha=1.f);
         

@@ -78,6 +78,45 @@ namespace engine {
             RichText& addText(FontFamily& fontFamily, FontType fontType, int size, Color color, const std::u32string& text);
             RichText& addText(FontFamily& fontFamily, FontType fontType, int size, Color color, const std::string& text);
             
+            class ConstIterator {
+                const RichText* text;
+                size_t index;
+                
+            public:
+                ConstIterator(const RichText* text, size_t index) : text(text), index(index) {}
+                
+                ConstIterator& operator++();
+                ConstIterator operator++(int);
+                bool operator==(ConstIterator& other) const;
+                bool operator!=(ConstIterator& other) const;
+                const RichTextFragment& operator*() const;
+                const RichTextFragment* operator->() const;
+            };
+            class Iterator {
+                RichText* text;
+                size_t index;
+                
+            public:
+                Iterator(RichText* text, size_t index) : text(text), index(index) {}
+                
+                Iterator& operator++();
+                Iterator operator++(int);
+                bool operator==(Iterator& other);
+                bool operator!=(Iterator& other);
+                RichTextFragment& operator*();
+                RichTextFragment* operator->();
+            };
+            
+            const RichTextFragment& getFragment(size_t i) const;
+            RichTextFragment& getFragment(size_t i);
+            size_t numberOfFragments() const;
+            size_t length() const;
+            
+            ConstIterator begin() const;
+            ConstIterator end() const;
+            Iterator begin();
+            Iterator end();
+            
             template<typename T>
             RichText& operator<<(T element) {
                 this->currentText << element;

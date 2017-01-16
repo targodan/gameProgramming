@@ -38,6 +38,9 @@ namespace engine {
             if(FT_Init_FreeType(&this->ft)) {
                 throw engine::WTFException("Could not initialize freetype library.");
             }
+            
+            this->attribute_coord = this->shader.getAttributeLocation("coord");
+            glGenBuffers(1, &this->vbo);
         }
         
         void FontRenderer::setWindowDimensions(int width, int height) {
@@ -45,7 +48,7 @@ namespace engine {
             this->windowHeight = height;
         }
         
-        void FontRenderer::renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) const {
+        void FontRenderer::renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) {
             auto& glyph = font.renderChar(c);
             
             this->shader.setUniform("color", color.getGLColor());
@@ -81,30 +84,18 @@ namespace engine {
             y += (glyph->advance.y/64) * scaleY;
         }
         
-        void FontRenderer::renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) const {
+        void FontRenderer::renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
             this->renderText(unicode(text), font, color, xPixel, yPixel);
         }
         
-        void FontRenderer::renderRichText(const RichText& text, int xPixel, int yPixel) const {
-            // TODO: implement
-        }
-        
-        void FontRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) const {
-            this->shader.useProgram();
-            
-            GLuint vbo;
-            GLuint attribute_coord = this->shader.getAttributeLocation("coord");
-            glGenBuffers(1, &vbo);
-            
+        void FontRenderer::preTextRender() {
             // TODO: @Tim is this necessary? Is this on anyway? Do I have to reset this afterwards?
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             
-            GLuint tex;
-            
             glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1, &tex);
-            glBindTexture(GL_TEXTURE_2D, tex);
+            glGenTextures(1, &this->tex);
+            glBindTexture(GL_TEXTURE_2D, this->tex);
             this->shader.setUniform("tex", 0);
             
             // Necessary because of the way FreeType renders glyphs
@@ -117,24 +108,51 @@ namespace engine {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             
-            glEnableVertexAttribArray(attribute_coord);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glVertexAttribPointer(attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
+            glEnableVertexAttribArray(this->attribute_coord);
+            glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+            glVertexAttribPointer(this->attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
             
+            this->shader.useProgram();
+        }
+        
+        void FontRenderer::postTextRender() {
+            glDisableVertexAttribArray(this->attribute_coord);
+            glDeleteTextures(1, &this->tex);
+        }
+        
+        FontRenderer::textPosition FontRenderer::calculateTextPosition(int xPixel, int yPixel) const {
+            textPosition pos;
+            pos.scaleX = 2.0 / this->windowWidth;
+            pos.scaleY = 2.0 / this->windowWidth;
+            pos.x = -1 + xPixel * pos.scaleX;
+            pos.y = 1 - yPixel * pos.scaleY;
+            return pos;
+        }
+        
+        void FontRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
+            this->preTextRender();
             
-            // ----- setup complete
-            
-            float scaleX = 2.0 / this->windowWidth;
-            float scaleY = 2.0 / this->windowHeight;
-            float x = -1 + xPixel * scaleX;
-            float y = 1 - yPixel * scaleY;
+            auto pos = this->calculateTextPosition(xPixel, yPixel);
             
             for(auto& c : text) {
-                this->renderChar(c, font, color, x, y, scaleX, scaleY);
+                this->renderChar(c, font, color, pos.x, pos.y, pos.scaleX, pos.scaleY);
             }
             
-            glDisableVertexAttribArray(attribute_coord);
-            glDeleteTextures(1, &tex);
+            this->postTextRender();
+        }
+        
+        void FontRenderer::renderRichText(RichText& text, int xPixel, int yPixel) {
+            this->preTextRender();
+            
+            auto pos = this->calculateTextPosition(xPixel, yPixel);
+            
+            for(auto& fragment : text) {
+                for(auto& c : fragment.getText()) {
+                    this->renderChar(c, fragment.getSizedFont(), fragment.getColor(), pos.x, pos.y, pos.scaleX, pos.scaleY);
+                }
+            }
+            
+            this->postTextRender();
         }
         
         FT_Library& FontRenderer::getFT() {

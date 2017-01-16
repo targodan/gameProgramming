@@ -19,19 +19,35 @@ namespace engine {
         class FontRenderer {
         protected:
             FT_Library ft;
+            
             ShaderProgram shader;
+            GLuint vbo;
+            GLuint attribute_coord;
+            GLuint tex;
+            
             int windowWidth;
             int windowHeight;
             
+            struct textPosition {
+                float x;
+                float y;
+                float scaleX;
+                float scaleY;
+            };
+            
             FontRenderer();
             
-            void renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) const;
+            void preTextRender();
+            void postTextRender();
+            textPosition calculateTextPosition(int xPixel, int yPixel) const;
+            
+            void renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY);
             
         public:
             void setWindowDimensions(int width, int height);
-            void renderRichText(const RichText& text, int xPixel, int yPixel) const;
-            void renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) const;
-            void renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) const;
+            void renderRichText(RichText& text, int xPixel, int yPixel);
+            void renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel);
+            void renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel);
             FT_Library& getFT();
             
         protected:

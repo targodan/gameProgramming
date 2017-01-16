@@ -52,8 +52,6 @@ namespace engine {
         class RichText {
             using stringstream = std::basic_stringstream<char32_t>;
         protected:
-            engine::util::vector<RichTextFragment> textFragments;
-            
             FontFamily& defaultFontFamily;
             FontType defaultFontType;
             int defaultSize;
@@ -65,10 +63,17 @@ namespace engine {
             Color currentColor;
             stringstream currentText;
             
+            engine::util::vector<RichTextFragment> textFragments;
+            
             void flushCurrentText();
             
         public:
             RichText(FontFamily& defaultFontFamily, FontType defaultFontType, int defaultSize, Color defaultColor);
+            RichText(const RichText& orig);
+            RichText(RichText&& orig);
+            
+            RichText& operator=(const RichText& orig);
+            RichText& operator=(RichText&& orig);
             
             std::u32string getPlainText() const;
             std::string getPlainText_utf8() const;

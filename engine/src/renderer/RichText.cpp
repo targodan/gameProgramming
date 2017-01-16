@@ -43,6 +43,52 @@ namespace engine {
         RichText::RichText(FontFamily& defaultFontFamily, FontType defaultFontType, int defaultSize, Color defaultColor)
                 : defaultFontFamily(defaultFontFamily), defaultFontType(defaultFontType), defaultSize(defaultSize), defaultColor(defaultColor),
                     currentFontFamily(defaultFontFamily), currentFontType(defaultFontType), currentSize(defaultSize), currentColor(defaultColor) {}
+        
+        RichText::RichText(const RichText& orig)
+                : defaultFontFamily(orig.defaultFontFamily), defaultFontType(orig.defaultFontType), defaultSize(orig.defaultSize), defaultColor(orig.defaultColor),
+                    currentFontFamily(orig.defaultFontFamily), currentFontType(orig.defaultFontType), currentSize(orig.defaultSize), currentColor(orig.defaultColor),
+                    textFragments(orig.textFragments) {
+            this->currentText.str(orig.currentText.str());
+        }
+        RichText::RichText(RichText&& orig)
+                : defaultFontFamily(orig.defaultFontFamily), defaultFontType(std::move(orig.defaultFontType)), defaultSize(std::move(orig.defaultSize)), defaultColor(std::move(orig.defaultColor)),
+                    currentFontFamily(orig.defaultFontFamily), currentFontType(std::move(orig.defaultFontType)), currentSize(std::move(orig.defaultSize)), currentColor(std::move(orig.defaultColor)),
+                    currentText(std::move(orig.currentText)), textFragments(std::move(orig.textFragments)) {}
+
+        RichText& RichText::operator=(const RichText& orig) {
+            this->defaultColor = orig.defaultColor;
+            this->defaultFontFamily = orig.defaultFontFamily;
+            this->defaultFontType = orig.defaultFontType;
+            this->defaultSize = orig.defaultSize;
+            
+            this->currentColor = orig.currentColor;
+            this->currentFontFamily = orig.currentFontFamily;
+            this->currentFontType = orig.currentFontType;
+            this->currentSize = orig.currentSize;
+            
+            this->currentText.str(orig.currentText.str());
+            
+            this->textFragments = orig.textFragments;
+            
+            return *this;
+        }
+        RichText& RichText::operator=(RichText&& orig) {
+            std::swap(this->defaultColor, orig.defaultColor);
+            std::swap(this->defaultFontFamily, orig.defaultFontFamily);
+            std::swap(this->defaultFontType, orig.defaultFontType);
+            std::swap(this->defaultSize, orig.defaultSize);
+            
+            std::swap(this->currentColor, orig.currentColor);
+            std::swap(this->currentFontFamily, orig.currentFontFamily);
+            std::swap(this->currentFontType, orig.currentFontType);
+            std::swap(this->currentSize, orig.currentSize);
+            
+            std::swap(this->currentText, orig.currentText);
+            
+            std::swap(this->textFragments, orig.textFragments);
+            
+            return *this;
+        }
 
         std::u32string RichText::getPlainText() const {
             std::u32string text;

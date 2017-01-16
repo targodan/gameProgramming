@@ -4,12 +4,14 @@ PROTOC = protoc
 ECHO = echo
 MV = mv
 FIND = find
+LN = ln
 
 TAB = $(shell echo -e "\t")
 
 BUILDDIR = build
 SRCDIR = src
 TESTDIR = test
+ENGINEDIR = ../engine
 
 # Set to true for debug info.
 # Can also be manipulated from terminal via `make DEBUG=true`
@@ -84,7 +86,7 @@ TARGET = demoSimulation
 TARGET_TEST = runTests
 
 # All is same as build test
-all: test
+all: build build_test test
 
 generate: $(PROTO_GENERATED_H) $(PROTO_GENERATED_CC)
 generate_test: $(PROTO_GENERATED_TEST_H) $(PROTO_GENERATED_TEST_CC)
@@ -103,9 +105,9 @@ $(TESTDIR)/%.pb.cc: $(TESTDIR)/%.proto
 	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
 
-build: libengine.so flags mkdir generate $(SOURCES) $(TARGET)
+build: flags mkdir generate $(SOURCES) | lnengine  $(TARGET)
 
-build_test: libengine.so flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
+build_test: lnengine flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
@@ -119,11 +121,11 @@ flags_test:
 	@$(ECHO) "C_FLAGS_TEST = $(C_FLAGS_TEST)"
 	@$(ECHO) "LD_FLAGS_TEST = $(LD_FLAGS_TEST)"
 
-$(TARGET): libengine.so $(OBJECTS)
+$(TARGET): $(OBJECTS)
 	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS)
 
-$(TARGET_TEST): libengine.so $(OBJECTS_TEST)
+$(TARGET_TEST): $(OBJECTS_TEST)
 	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS_TEST)
 
@@ -164,8 +166,11 @@ clean:
 libengine.so:
 	@$(ECHO) "BUILDING ENGINE"
 	@cd ../engine && $(MAKE) build
-	@cp ../engine/libengine.so .
 	@$(ECHO) "ENGINE BUILT"
+
+lnengine: libengine.so
+	@$(ECHO) "LN$(TAB)$@"
+	@$(LN) -sf $(ENGINEDIR)/libengine.so libengine.so
 
 $(DEPDIR)/$(SRCDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/$(SRCDIR)/%.d

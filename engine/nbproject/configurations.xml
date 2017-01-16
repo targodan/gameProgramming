@@ -35,6 +35,8 @@
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
+          <in>TextComponent.cpp</in>
+          <in>TextComponent.h</in>
           <in>TimerComponent.cpp</in>
           <in>TimerComponent.h</in>
           <in>TimerSystem.cpp</in>
@@ -116,6 +118,7 @@
         <in>Game.cpp</in>
         <in>IO.h</in>
         <in>InvalidConversionException.h</in>
+        <in>InvalidStateException.h</in>
         <in>Window.cpp</in>
         <in>engine.h</in>
         <in>util.h</in>
@@ -415,6 +418,12 @@
         <ccTool flags="2">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/TextComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TextComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
         </ccTool>
@@ -474,6 +483,8 @@
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
         </ccTool>
+      </item>
+      <item path="src/InvalidStateException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
@@ -888,6 +899,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/TextComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TextComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
@@ -933,6 +948,8 @@
       <item path="src/IO/SerializerFactory.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/InvalidConversionException.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/InvalidStateException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/engine.h" ex="false" tool="3" flavor2="0">
       </item>

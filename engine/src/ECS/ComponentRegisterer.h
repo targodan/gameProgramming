@@ -8,8 +8,8 @@
 #include "macros.h"
 #include "ComponentRegistry.h"
 
-#define ECS_REGISTER_COMPONENT(comp) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(#comp)
-#define ECS_REGISTER_COMPONENT_EXPLICITLY_NAMED(comp, name) static engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(name)
+#define ECS_REGISTER_COMPONENT(comp) engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(#comp)
+#define ECS_REGISTER_COMPONENT_EXPLICITLY_NAMED(comp, name) engine::ECS::ComponentRegisterer<comp> ECS_MAKE_UNIQUE_NAME(comp)(name)
 
 namespace engine {
     namespace ECS {

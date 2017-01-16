@@ -23,6 +23,9 @@ namespace engine {
         }
         
         bool FontFamily::operator==(const FontFamily& other) const {
+            if(this->fonts.size() != other.fonts.size()) {
+                return false;
+            }
             for(auto& pair : this->fonts) {
                 auto otherIt = other.fonts.find(pair.first);
                 if(otherIt == other.fonts.end()) {
@@ -33,6 +36,7 @@ namespace engine {
                     }
                 }
             }
+            return true;
         }
         bool FontFamily::operator!=(const FontFamily& other) const {
             return !(this->operator==(other));

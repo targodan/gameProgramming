@@ -1,10 +1,12 @@
 #include "RenderSystem.h"
 #include "VisualComponent.h"
+#include "TextComponent.h"
 
 #include "../ECS/SystemRegisterer.h"
 
 #include "../renderer/FontRenderer.h"
-#include "renderer/Font.h"
+
+using engine::renderer::FontRenderer;
 
 namespace engine {
     namespace ECSCommon {
@@ -27,9 +29,13 @@ namespace engine {
                 auto comp = dynamic_cast<VisualComponent*>(ptr.get());
                 this->render(*comp);
             }
-            engine::renderer::Font font("/usr/share/fonts/TTF/DejaVuSans.ttf");
-            font.setSizeInPixels(50);
-            engine::renderer::FontRenderer::getInstance().renderText(u8"Dies ist ein Test.", font, engine::renderer::Color::GREEN, 800, 600);
+            auto& fontRenderer = FontRenderer::getInstance();
+            fontRenderer.enableBatchMode();
+            for(auto it = em.begin({TextComponent::getComponentTypeId()}); it != em.end(); ++it) {
+                auto& comp = it->to<TextComponent>();
+                fontRenderer.renderRichText(comp.getText(), comp.getXPixel(), comp.getYPixel());
+            }
+            fontRenderer.endBatchMode();
         }
         
         systemId_t RenderSystem::systemTypeId() {

@@ -13,6 +13,7 @@
 #include "./ECSCommon/ForceComponent.h"
 #include "./ECSCommon/TimerComponent.h"
 #include "./ECSCommon/TimerSystem.h"
+#include "./ECSCommon/TextComponent.h"
 
 #endif /* ECSCOMMON_H */
 

@@ -2,7 +2,6 @@
 #define TIMERCOMPONENT_H
 
 #include "../ECS/Component.h"
-#include "../physics/DeformableBody.h"
 
 namespace engine {
     namespace ECSCommon {

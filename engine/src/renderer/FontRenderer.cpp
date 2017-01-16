@@ -8,6 +8,7 @@
 #include "Font.h"
 
 #include "../util/unicode.h"
+#include "../InvalidStateException.h"
 
 std::string vertexShader = 
         "#version 120\n"
@@ -119,6 +120,22 @@ namespace engine {
             glDisableVertexAttribArray(this->attribute_coord);
             glDeleteTextures(1, &this->tex);
         }
+            
+        void FontRenderer::enableBatchMode() {
+            if(this->batchMode) {
+                throw InvalidStateException("Tried to enable batch mode while already in batch mode.");
+            }
+            this->preTextRender();
+            this->batchMode = true;
+        }
+        
+        void FontRenderer::endBatchMode() {
+            if(!this->batchMode) {
+                throw InvalidStateException("Tried to end batch mode while not yet in batch mode.");
+            }
+            this->postTextRender();
+            this->batchMode = false;
+        }
         
         FontRenderer::textPosition FontRenderer::calculateTextPosition(int xPixel, int yPixel) const {
             textPosition pos;
@@ -130,7 +147,9 @@ namespace engine {
         }
         
         void FontRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
-            this->preTextRender();
+            if(!this->batchMode) {
+                this->preTextRender();
+            }
             
             auto pos = this->calculateTextPosition(xPixel, yPixel);
             
@@ -138,11 +157,15 @@ namespace engine {
                 this->renderChar(c, font, color, pos.x, pos.y, pos.scaleX, pos.scaleY);
             }
             
-            this->postTextRender();
+            if(!this->batchMode) {
+                this->postTextRender();
+            }
         }
         
         void FontRenderer::renderRichText(RichText& text, int xPixel, int yPixel) {
-            this->preTextRender();
+            if(!this->batchMode) {
+                this->preTextRender();
+            }
             
             auto pos = this->calculateTextPosition(xPixel, yPixel);
             
@@ -152,7 +175,9 @@ namespace engine {
                 }
             }
             
-            this->postTextRender();
+            if(!this->batchMode) {
+                this->postTextRender();
+            }
         }
         
         FT_Library& FontRenderer::getFT() {

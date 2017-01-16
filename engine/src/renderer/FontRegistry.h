@@ -12,12 +12,21 @@ namespace engine {
         class FontRegistry {
         protected:
             static std::unique_ptr<FontRegistry> instance;
+            static FontRegistry& getInstance();
             
             engine::util::Map<std::string, std::shared_ptr<FontFamily>> families;
-            static FontRegistry& getInstance();
+            std::shared_ptr<FontFamily> defaultFamily;
+            
+            std::shared_ptr<FontFamily>& getFontFamilyPointer(const std::string& name);
+            
+            FontRegistry() {
+                this->families.set_empty_key("");
+            }
             
         public:
             static FontFamily& getFontFamily(const std::string& name);
+            static void setDefaultFontFamily(const std::string& name);
+            static FontFamily& getDefaultFontFamily();
             
             template<typename... Args>
             static FontFamily& registerFontFamily(const std::string& name, Args... args) {

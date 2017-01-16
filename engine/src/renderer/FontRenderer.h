@@ -25,6 +25,8 @@ namespace engine {
             GLuint attribute_coord;
             GLuint tex;
             
+            bool batchMode = false;
+            
             int windowWidth;
             int windowHeight;
             
@@ -45,9 +47,14 @@ namespace engine {
             
         public:
             void setWindowDimensions(int width, int height);
+            
+            void enableBatchMode();
+            void endBatchMode();
+            
             void renderRichText(RichText& text, int xPixel, int yPixel);
             void renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel);
             void renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel);
+            
             FT_Library& getFT();
             
         protected:

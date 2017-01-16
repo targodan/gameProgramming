@@ -8,6 +8,8 @@
 
 namespace engine {
     namespace ECSCommon {
+        using engine::math::deg2rad;
+        
         ECS_REGISTER_COMPONENT(CameraComponent);
         
         componentId_t CameraComponent::typeId = 0;
@@ -15,8 +17,12 @@ namespace engine {
         CameraComponent::CameraComponent() {
             
         }
+        CameraComponent::CameraComponent(vec3 direction) 
+            : direction(direction), worldUp(vec3{0.f, 1.f, 0.f}) {
+                this->up = this->worldUp;
+        }
         CameraComponent::CameraComponent(vec3 direction, vec3 up) 
-            : direction(direction), up(up) {
+            : direction(direction), up(up), worldUp(vec3{0.f, 1.f, 0.f}) {
             
         }
         
@@ -33,7 +39,11 @@ namespace engine {
             this->setViewMatrix(position);
         }
         void CameraComponent::setViewMatrix(const vec3& position) {
+            this->position = position;
             this->viewMatrix = glm::lookAt(position, this->direction, this->up);
+        }
+        void CameraComponent::updateViewMatrix() {
+            this->viewMatrix = glm::lookAt(this->position, this->direction, this->up);
         }
         void CameraComponent::setDirection(const vec3& direction) {
             this->direction = direction;
@@ -53,6 +63,29 @@ namespace engine {
         }
         const vec3& CameraComponent::getUp() const {
             return this->up;
+        }
+        
+        void CameraComponent::pan(float xOffset, float yOffset, float sensitivity) {
+            // Idea: learnopengl.com
+            
+            xOffset *= sensitivity;
+            yOffset *= sensitivity;
+            
+            this->yaw += xOffset;
+            this->pitch += yOffset;
+            
+            this->yaw = this->yaw > 90.f ? 90.f : this->yaw;
+            this->pitch = this->pitch > 90.f ? 90.f : this->pitch;
+            
+            this->direction.x = cos(deg2rad(this->yaw)) * cos(deg2rad(this->pitch));
+            this->direction.y = sin(deg2rad(this->pitch));
+            this->direction.z = sin(deg2rad(this->yaw)) * cos(deg2rad(this->pitch));
+            this->direction = glm::normalize(this->direction);
+            
+            auto right = glm::normalize(glm::cross(this->direction, this->worldUp));
+            this->up = glm::normalize(glm::cross(right, this->direction));
+            
+            this->updateViewMatrix();
         }
         
         std::string CameraComponent::getComponentName() const {

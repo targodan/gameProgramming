@@ -11,17 +11,19 @@
 namespace engine {
     namespace ECSCommon {
         using engine::ECS::componentId_t;
-        using util::vec3;
+        using glm::vec3;
         using glm::mat4;
         
         class CameraComponent : public engine::ECS::Component {
         public:
             CameraComponent();
+            CameraComponent(vec3 direction); 
             CameraComponent(vec3 direction, vec3 up);
             CameraComponent(const CameraComponent& orig) 
-                : viewMatrix(orig.viewMatrix), projectionMatrix(orig.projectionMatrix), direction(orig.direction), up(orig.up) {};
+                : viewMatrix(orig.viewMatrix), projectionMatrix(orig.projectionMatrix), direction(orig.direction), up(orig.up), worldUp(orig.worldUp), yaw(orig.yaw), pitch(orig.pitch) {};
             CameraComponent(CameraComponent&& orig) 
-                : viewMatrix(std::move(orig.viewMatrix)), projectionMatrix(std::move(orig.projectionMatrix)), direction(std::move(orig.direction)), up(std::move(orig.up)) {};
+                : viewMatrix(std::move(orig.viewMatrix)), projectionMatrix(std::move(orig.projectionMatrix)), 
+                  direction(std::move(orig.direction)), up(std::move(orig.up)), worldUp(std::move(orig.worldUp)), yaw(std::move(orig.yaw)), pitch(std::move(orig.pitch)) {};
             virtual ~CameraComponent();
             
             /* 
@@ -38,8 +40,8 @@ namespace engine {
             const vec3& getDirection() const;
             const vec3& getUp() const;
             
-            void setTarget(vec3 targetPosition);
-            void pan(float verticalDegrees, float horizontalDegrees);
+            // void setTarget(vec3 targetPosition);
+            void pan(float xOffset, float yOffset, float sensitivity = 0.1f);
             
             virtual componentId_t getComponentId() const override;
             virtual std::string getComponentName() const override;
@@ -48,13 +50,20 @@ namespace engine {
             static void setComponentTypeId(componentId_t id);
             static componentId_t getComponentTypeId();
         private:
+            void updateViewMatrix();
+            
             static componentId_t typeId;
             
             mat4 viewMatrix;  // Look-at transformation
             mat4 projectionMatrix; // Frustum transformation
             
+            vec3 position; // Completely private - only used internally (should always equal player position, which is stored in its PlacementComponent)
             vec3 direction;
             vec3 up;
+            const vec3 worldUp;
+            
+            float yaw;
+            float pitch;
         };
     }
 }

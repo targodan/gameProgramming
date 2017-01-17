@@ -2,9 +2,12 @@
 
 #include "engine/renderer/Mesh.h"
 #include "engine/ECSCommon.h"
+#include "engine/ECSCommon/CustomUpdateSystem.h"
 #include "OneShotForce.h"
 
 #include "engine/renderer/FontRenderer.h"
+
+#include <easylogging++.h>
 
 using namespace engine;
 using namespace engine::renderer;

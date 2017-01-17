@@ -14,6 +14,8 @@
 #include "./ECSCommon/TimerComponent.h"
 #include "./ECSCommon/TimerSystem.h"
 #include "./ECSCommon/TextComponent.h"
+#include "./ECSCommon/CustomUpdateSystem.h"
+#include "./ECSCommon/CustomRenderSystem.h"
 
 #endif /* ECSCOMMON_H */
 

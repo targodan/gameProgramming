@@ -15,21 +15,9 @@ namespace engine {
             ElementBuffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
                 : Buffer(dataPtr, size, nElements, usage), type(BufferType::ELEMENT_ARRAY_BUFFER) {}
             ElementBuffer(const ElementBuffer& orig) 
-                : Buffer(orig), type(orig.type) {
-//                if(orig.loadedToGraphicsCard) {
-//                    this->bind();
-//                    this->loadData();
-//                    this->unbind();
-//                }
-            }
+                : Buffer(orig), type(orig.type) {}
             ElementBuffer(ElementBuffer&& orig) 
-                : Buffer(std::move(orig)), type(std::move(orig.type)) {
-//                if(orig.loadedToGraphicsCard) {
-//                    this->bind();
-//                    this->loadData();
-//                    this->unbind();
-//                }
-            }
+                : Buffer(std::move(orig)), type(std::move(orig.type)) {}
             
             ElementBuffer& operator=(const ElementBuffer& right) {
                 Buffer::operator=(right);

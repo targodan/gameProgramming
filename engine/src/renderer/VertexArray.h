@@ -84,6 +84,10 @@ namespace engine {
                     vbo->releaseBuffer();
                 }
                 
+                if(ebo != nullptr) {
+                    ebo->releaseBuffer();
+                }
+                
                 glDeleteVertexArrays(1, &(this->id));
             }
             
@@ -93,6 +97,9 @@ namespace engine {
                     vbo->loadData();
                     vbo->bind();
                 }
+            }
+            void loadIndices() {
+                ebo->loadData();
             }
             
             void setAttributePointers() {
@@ -168,8 +175,15 @@ namespace engine {
             
             void setEBO(std::unique_ptr<ElementBuffer> ebo) {
                 this->ebo = std::move(ebo);
+                
+                // This neat little trick seems to store the ebo in the vao,
+                // relieving the user of the necessity to ever bind this ebo again 
+                this->bind();
+                this->ebo->bind();
+                this->unbind();
+                this->ebo->unbind();
             }
-        private:          
+        private:
             vector<std::unique_ptr<VertexBuffer>> vbos; // For now, only functionality to draw ONE VertexBuffer will be implemented
             std::unique_ptr<ElementBuffer> ebo;
             

@@ -14,10 +14,10 @@ namespace engine {
         
         PlacementComponent::PlacementComponent() {
         }
-
-        PlacementComponent::PlacementComponent(const PlacementComponent& orig) {
+        PlacementComponent::PlacementComponent(const PlacementComponent& orig) : position(orig.position), direction(orig.direction) {
         }
-
+        PlacementComponent::PlacementComponent(PlacementComponent&& orig) : position(std::move(orig.position)), direction(std::move(orig.direction)) {
+        }
         PlacementComponent::~PlacementComponent() {
         }
 

@@ -27,6 +27,7 @@ namespace engine {
         public:
             PlacementComponent();
             PlacementComponent(const PlacementComponent& orig);
+            PlacementComponent(PlacementComponent&& orig);
             virtual ~PlacementComponent();
             
             const glm::vec3& getPosition() const;

@@ -1,24 +1,19 @@
-#ifndef RENDERSYSTEM_H
-#define RENDERSYSTEM_H
+#ifndef CAMERARENDERSYSTEM_H
+#define CAMERARENDERSYSTEM_H
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
-#include "VisualComponent.h"
-#include "CameraRenderSystem.h"
+#include "PlacementSystem.h"
 
 namespace engine {
     namespace ECSCommon {
         using namespace engine::ECS;
         
-        class RenderSystem : public System {
-        private:
-            static systemId_t systemId;
-            
-            void render(VisualComponent& comp);
+        class CameraRenderSystem : public System {
         public:
-            RenderSystem();
-            RenderSystem(const RenderSystem& orig);
-            virtual ~RenderSystem();
+            CameraRenderSystem();
+            CameraRenderSystem(const CameraRenderSystem& orig);
+            virtual ~CameraRenderSystem();
             
             virtual void run(EntityManager& em, float deltaTimeSeconds) override;
             virtual bool isUpdateSystem() const override {
@@ -29,22 +24,24 @@ namespace engine {
             }
             
             virtual Array<systemId_t> getDependencies() const {
-                return {CameraRenderSystem::systemTypeId()};
+                return {PlacementSystem::systemTypeId()};
             }
             
             std::string getSystemName() const override {
-                return "RenderSystem";
+                return "CameraRenderSystem";
             }
             
             systemId_t getSystemTypeId() const override;
             
             static systemId_t systemTypeId();
             static void setSystemTypeId(systemId_t id);
+        private:
+            static systemId_t systemId;
+            
+            
         };        
     }
 }
 
-
-
-#endif /* RENDERSYSTEM_H */
+#endif /* CAMERARENDERSYSTEM_H */
 

@@ -158,6 +158,7 @@ namespace engine {
         EntityManager::ComponentIterator::ComponentIterator(EntityManager* em,
                 const std::initializer_list<componentId_t>& componentTypes)
                 : em(em), componentTypes(componentTypes), componentIndexes(componentTypes.size()), isEnd(false) {
+            this->findMatchingEntity();
         }
         
         EntityManager::ComponentIterator::ComponentIterator(EntityManager* em)
@@ -190,8 +191,13 @@ namespace engine {
                 // Already at end.
                 return *this;
             }
+            ++this->componentIndexes[0];
+            this->findMatchingEntity();
+            return *this;
+        }
+        
+        void EntityManager::ComponentIterator::findMatchingEntity() {
             while(true) {
-                ++this->componentIndexes[0];
                 if(this->componentIndexes[0] >= this->em->components[this->componentTypes[0]].size()) {
                     this->setToEnd();
                     break;
@@ -212,8 +218,8 @@ namespace engine {
                 if(allGood) {
                     break;
                 }
+                ++this->componentIndexes[0];
             }
-            return *this;
         }
 
         EntityManager::ComponentIterator EntityManager::ComponentIterator::operator++(int) {

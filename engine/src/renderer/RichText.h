@@ -57,11 +57,11 @@ namespace engine {
             int defaultSize;
             Color defaultColor;
             
-            FontFamily& currentFontFamily;
+            FontFamily currentFontFamily;
             FontType currentFontType;
             int currentSize;
             Color currentColor;
-            stringstream currentText;
+            std::stringstream currentText;
             
             engine::util::vector<RichTextFragment> textFragments;
             
@@ -106,12 +106,11 @@ namespace engine {
             Iterator end();
             
             template<typename T>
-            RichText& operator<<(T element) {
+            RichText& operator<<(const T& element) {
                 this->currentText << element;
                 return *this;
             }
-            RichText& operator<<(const std::string& text);
-            RichText& operator<<(const char* text);
+            RichText& operator<<(const std::u32string& text);
             
             RichText& operator<<(const RichTextFontFamily& style);
             RichText& operator<<(const RichTextFontType& style);

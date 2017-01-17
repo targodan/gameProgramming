@@ -18,6 +18,7 @@ namespace demoSimulation {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
         
         engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
+        LOG(INFO) << "Window dimensions: " << this->window.getWidth() << "x" << this->window.getHeight();
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
@@ -29,11 +30,11 @@ namespace demoSimulation {
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh"), true);
         
-//        this->camera = this->entityManager.createEntity("Camera")
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
-//                .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
-//        auto& cc = this->camera.getComponent<CameraComponent>();
-//        cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1, 10);
+        this->camera = this->entityManager.createEntity("Camera")
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
+                .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
+        auto& cc = this->camera.getComponent<CameraComponent>();
+        cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1, 10);
         
         
 //        this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
@@ -72,13 +73,24 @@ namespace demoSimulation {
 //                .addComponent<TimerComponent>(5)
 //                .addComponent<ForceComponent>(force);
         
-        auto& fontfamiliy = FontRegistry::registerFontFamily("DejaVuSans", "/usr/share/fonts/TTF/DejaVuSans.ttf");
+        auto& fontfamiliy = FontRegistry::registerFontFamily(
+            "DejaVuSans",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-Oblique.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
+        );
         
-        RichText testText(fontfamiliy, FontType::Regular, 50, Color::GREEN);
-        testText << u8"Dies ist ein einfacher Test.";
+        RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
+        testText << u8"Test öä§∑. "
+                << RichText::fontType(FontType::Bold) << RichText::color(Color(1, 1, 0, 1)) << u8"Bold"
+                << RichText::fontType(FontType::Italic) << RichText::color(Color::BLUE) << u8"Italic "
+                << RichText::fontType(FontType::Italic) << RichText::color(Color::GREEN) << u8"Italic ";
+        
+        LOG(INFO) << testText.getPlainText_utf8();
         
         this->entityManager.createEntity("testtext")
-                .addComponent<TextComponent>(testText, 0, 0);
+                .addComponent<TextComponent>(testText, 50, 100);
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();

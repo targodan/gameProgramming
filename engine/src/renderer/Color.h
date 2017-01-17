@@ -15,10 +15,13 @@ namespace engine {
             Color(float red, float green, float blue, float alpha = 1.0f) : color(red, green, blue, alpha) {}
             
             bool operator==(const Color& other) const {
-                return this->color == other.color;
+                return this->color[0] == other.color[0]
+                        && this->color[1] == other.color[1]
+                        && this->color[2] == other.color[2]
+                        && this->color[3] == other.color[3];
             }
             bool operator!=(const Color& other) const {
-                return this->color != other.color;
+                return !(this->operator==(other));
             }
             
             float getRed() const {

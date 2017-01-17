@@ -29,6 +29,7 @@ namespace engine {
                 auto comp = dynamic_cast<VisualComponent*>(ptr.get());
                 this->render(*comp);
             }
+            
             auto& fontRenderer = TextRenderer::getInstance();
             fontRenderer.enableBatchMode();
             for(auto it = em.begin({TextComponent::getComponentTypeId()}); it != em.end(); ++it) {

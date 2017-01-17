@@ -9,6 +9,9 @@
 
 #include "../util/unicode.h"
 #include "../InvalidStateException.h"
+#include "WindowResizeMessage.h"
+
+#include <easylogging++.h>
 
 std::string vertexShader = 
         "#version 120\n"
@@ -53,29 +56,31 @@ namespace engine {
             auto& glyph = font.renderChar(c);
             
             this->shader.setUniform("color", color.getGLColor());
+            
+            // TODO: Overlapping glyphs don't alpha-blend but are cut off.
                 
             glTexImage2D(
                     GL_TEXTURE_2D,
                     0,
-                    GL_ALPHA,
+                    GL_RED,
                     glyph->bitmap.width,
                     glyph->bitmap.rows,
                     0,
-                    GL_ALPHA,
+                    GL_RED,
                     GL_UNSIGNED_BYTE,
                     glyph->bitmap.buffer
                 );
 
-            float x2 = x + glyph->bitmap_left * scaleX;
-            float y2 = -y - glyph->bitmap_top * scaleY;
+            float x2 = x - glyph->bitmap_left * scaleX;
+            float y2 = y + glyph->bitmap_top * scaleY;
             float w = glyph->bitmap.width * scaleX;
             float h = glyph->bitmap.rows * scaleY;
 
             GLfloat box[4][4] = {
-                {x2,     -y2    , 0, 0},
-                {x2 + w, -y2    , 1, 0},
-                {x2,     -y2 - h, 0, 1},
-                {x2 + w, -y2 - h, 1, 1},
+                {x2,     y2    , 0, 0},
+                {x2,     y2 - h, 0, 1},
+                {x2 + w, y2    , 1, 0},
+                {x2 + w, y2 - h, 1, 1},
             };
 
             glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
@@ -90,14 +95,17 @@ namespace engine {
         }
         
         void TextRenderer::preTextRender() {
+            this->shader.useProgram();
+            
             // TODO: @Tim is this necessary? Is this on anyway? Do I have to reset this afterwards?
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             
+            this->tex = 0;
             glActiveTexture(GL_TEXTURE0);
             glGenTextures(1, &this->tex);
             glBindTexture(GL_TEXTURE_2D, this->tex);
-            this->shader.setUniform("tex", 0);
+            glUniform1i(this->shader.getUniformLocation("tex"), 0);
             
             // Necessary because of the way FreeType renders glyphs
             // TODO: Do I need to reset this after?
@@ -109,11 +117,13 @@ namespace engine {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             
+            GLuint vao;
+            glGenVertexArrays(1, &vao);
+            glBindVertexArray(vao);
+            
             glEnableVertexAttribArray(this->attribute_coord);
             glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
             glVertexAttribPointer(this->attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
-            
-            this->shader.useProgram();
         }
         
         void TextRenderer::postTextRender() {
@@ -183,14 +193,28 @@ namespace engine {
         FT_Library& TextRenderer::getFT() {
             return this->ft;
         }
+
+        void TextRenderer::receive(shared_ptr<engine::ECS::Message> msg) {
+            auto& resize = msg->to<WindowResizeMessage>();
+            this->windowWidth = resize.getNewWidth();
+            this->windowHeight = resize.getNewHeight();
+            LOG(INFO) << "Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        }
         
         std::unique_ptr<TextRenderer> TextRenderer::instance = nullptr;
         
-        TextRenderer& TextRenderer::getInstance() {
+        TextRenderer* TextRenderer::getInstancePointer() {
             if(TextRenderer::instance == nullptr) {
                 TextRenderer::instance = std::unique_ptr<TextRenderer>(new TextRenderer());
             }
-            return *TextRenderer::instance;
+            return TextRenderer::instance.get();
+        }
+        TextRenderer& TextRenderer::getInstance() {
+            return *TextRenderer::getInstancePointer();
+        }
+        
+        void TextRenderer::registerForResizeMessages(engine::ECS::MessageHandler& mh) {
+            mh.registerReceiver(mh.lookupMessageId(WINDOW_RESIZE_MESSAGE_NAME), TextRenderer::getInstancePointer());
         }
     }
 }

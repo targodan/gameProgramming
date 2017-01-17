@@ -11,6 +11,9 @@ namespace engine {
             if(FT_New_Face(TextRenderer::getInstance().getFT(), filename, 0, &this->face)) {
                 throw engine::IOException("Could not load font in file \"%s\".", filename);
             }
+            if(FT_Select_Charmap(face , ft_encoding_unicode)) {
+                throw engine::IOException("Could not load font in file \"%s\". Charmap not supported.", filename);
+            }
         }
         
         Font::Font(const Font& orig) : face(orig.face) {}

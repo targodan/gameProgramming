@@ -21,6 +21,8 @@
             </df>
             <in>CameraComponent.cpp</in>
             <in>CameraRenderSystem.cpp</in>
+            <in>CustomRenderSystem.cpp</in>
+            <in>CustomUpdateSystem.cpp</in>
             <in>DeformableBodyComponent.cpp</in>
             <in>DeformableBodySystem.cpp</in>
             <in>ForceComponent.cpp</in>
@@ -81,6 +83,7 @@
           <in>Exception.cpp</in>
           <in>Game.cpp</in>
           <in>Window.cpp</in>
+          <in>WindowResizeMessage.cpp</in>
         </df>
         <in>Game.cpp</in>
         <in>main.cpp</in>
@@ -346,6 +349,46 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/CustomRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/CustomUpdateSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/DeformableBodyComponent.cpp"
@@ -647,6 +690,21 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/WindowResizeMessage.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">

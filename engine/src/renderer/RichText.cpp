@@ -105,16 +105,14 @@ namespace engine {
         void RichText::flushCurrentText() {
             auto text = this->currentText.str();
             if(text.length() > 0) {
-                this->textFragments.push_back(RichTextFragment(this->currentFontFamily.getFont(this->currentFontType), this->currentColor, this->currentSize, text));
-                this->currentText.str(std::u32string());
+                this->textFragments.push_back(RichTextFragment(this->currentFontFamily.getFont(this->currentFontType), this->currentColor, this->currentSize, unicode(text)));
+                this->currentText.str("");
+                this->currentText.clear();
             }
         }
         
-        RichText& RichText::operator<<(const std::string& text) {
-            return this->operator<<(unicode(text));
-        }
-        RichText& RichText::operator<<(const char* text) {
-            return this->operator<<(std::string(text));
+        RichText& RichText::operator<<(const std::u32string& text) {
+            return this->operator<<(utf8(text));
         }
 
         RichText& RichText::addText(const std::u32string& text) {

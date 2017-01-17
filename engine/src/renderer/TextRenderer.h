@@ -10,13 +10,16 @@
 #include "ShaderProgram.h"
 #include "RichText.h"
 
+#include "../ECS/MessageHandler.h"
+#include "../ECS/MessageReceiver.h"
+
 // This implementation is based on https://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Text_Rendering_01
 
 namespace engine {
     namespace renderer {
         class Font;
         
-        class TextRenderer {
+        class TextRenderer : public engine::ECS::MessageReceiver {
         protected:
             FT_Library ft;
             
@@ -57,11 +60,15 @@ namespace engine {
             
             FT_Library& getFT();
             
+            virtual void receive(shared_ptr<engine::ECS::Message> msg);
+            
         protected:
             static std::unique_ptr<TextRenderer> instance;
+            static TextRenderer* getInstancePointer();
             
         public:
             static TextRenderer& getInstance();
+            static void registerForResizeMessages(engine::ECS::MessageHandler& mh);
         };
     }
 }

@@ -6,8 +6,14 @@
 
 #include <easylogging++.h>
 
+#include "WindowResizeMessage.h"
+#include "renderer/TextRenderer.h"
+
 namespace engine {
-    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(1024,768), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(this->messageHandler, 1024,768), entityManager(), systemManager(entityManager) {
+        WindowResizeMessage::registerMessageType(this->messageHandler);
+        renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
+        
         // Configure logger
         el::Configurations defaultConf;
         defaultConf.setToDefault();

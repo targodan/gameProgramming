@@ -1,13 +1,18 @@
 #include "Window.h"
 #include "WTFException.h"
 #include "GLException.h"
+#include "WindowResizeMessage.h"
+
+#include <easylogging++.h>
 
 namespace engine {
     using namespace renderer::gl;
     
+    Window* Window::instance = nullptr;
+    
     bool Window::cursorInAnyWindowArea = false;
-    Window::Window(int width, int height, std::string title) 
-        : width(width), height(height), title(title.c_str()) {
+    Window::Window(ECS::MessageHandler& messageHandler, int width, int height, const std::string& title) 
+        : messageHandler(messageHandler), width(width), height(height), title(title.c_str()) {
 
         if(!glfwInit()) {
             throw WTFException("Failed to initialize GLFW");
@@ -37,6 +42,8 @@ namespace engine {
         this->setClearColor(0.f, 0.f, 0.f); // Standard color a window is cleared with on Window::clear()
         glViewport(0,0, this->width, this->height); // Set viewport
         glEnable(GL_DEPTH_TEST); // Enable z-buffer
+        
+        Window::instance = this;
     }
     
     Window::~Window() {
@@ -90,6 +97,10 @@ namespace engine {
     
     void Window::glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
         glViewport(0, 0, newWidth, newHeight);
+        LOG(INFO) << "resize";
+        if(Window::instance != nullptr) {
+            Window::instance->messageHandler.queueMessage(std::shared_ptr<ECS::Message>(new WindowResizeMessage(newWidth, newHeight)));
+        }
     }
     
     void Window::glfwCursorEnterCallback(GLFWwindow* window, int entered) {

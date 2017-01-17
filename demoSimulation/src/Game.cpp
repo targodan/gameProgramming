@@ -5,7 +5,7 @@
 #include "engine/ECSCommon/CustomUpdateSystem.h"
 #include "OneShotForce.h"
 
-#include "engine/renderer/FontRenderer.h"
+#include "engine/renderer/TextRenderer.h"
 
 #include <easylogging++.h>
 
@@ -17,7 +17,7 @@ namespace demoSimulation {
     void Game::initialize() {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
         
-        engine::renderer::FontRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
+        engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});

@@ -1,5 +1,5 @@
-#ifndef FONTRENDERER_H
-#define FONTRENDERER_H
+#ifndef TEXTRENDERER_H
+#define TEXTRENDERER_H
 
 #include <memory>
 #include <string>
@@ -16,7 +16,7 @@ namespace engine {
     namespace renderer {
         class Font;
         
-        class FontRenderer {
+        class TextRenderer {
         protected:
             FT_Library ft;
             
@@ -37,7 +37,7 @@ namespace engine {
                 float scaleY;
             };
             
-            FontRenderer();
+            TextRenderer();
             
             void preTextRender();
             void postTextRender();
@@ -58,13 +58,13 @@ namespace engine {
             FT_Library& getFT();
             
         protected:
-            static std::unique_ptr<FontRenderer> instance;
+            static std::unique_ptr<TextRenderer> instance;
             
         public:
-            static FontRenderer& getInstance();
+            static TextRenderer& getInstance();
         };
     }
 }
 
-#endif /* FONTRENDERER_H */
+#endif /* TEXTRENDERER_H */
 

@@ -1,7 +1,7 @@
 #include <freetype2/freetype/ftimage.h>
 #include <codecvt>
 
-#include "FontRenderer.h"
+#include "TextRenderer.h"
 
 #include "../WTFException.h"
 #include "gl/gl_core_3_3.h"
@@ -35,7 +35,7 @@ using namespace engine::renderer::gl;
 
 namespace engine {
     namespace renderer {
-        FontRenderer::FontRenderer() : shader(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)) {
+        TextRenderer::TextRenderer() : shader(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)) {
             if(FT_Init_FreeType(&this->ft)) {
                 throw engine::WTFException("Could not initialize freetype library.");
             }
@@ -44,12 +44,12 @@ namespace engine {
             glGenBuffers(1, &this->vbo);
         }
         
-        void FontRenderer::setWindowDimensions(int width, int height) {
+        void TextRenderer::setWindowDimensions(int width, int height) {
             this->windowWidth = width;
             this->windowHeight = height;
         }
         
-        void FontRenderer::renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) {
+        void TextRenderer::renderChar(char32_t c, const Font& font, const Color& color, float& x, float& y, float scaleX, float scaleY) {
             auto& glyph = font.renderChar(c);
             
             this->shader.setUniform("color", color.getGLColor());
@@ -85,11 +85,11 @@ namespace engine {
             y += (glyph->advance.y/64) * scaleY;
         }
         
-        void FontRenderer::renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
+        void TextRenderer::renderText(const std::string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
             this->renderText(unicode(text), font, color, xPixel, yPixel);
         }
         
-        void FontRenderer::preTextRender() {
+        void TextRenderer::preTextRender() {
             // TODO: @Tim is this necessary? Is this on anyway? Do I have to reset this afterwards?
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -116,12 +116,12 @@ namespace engine {
             this->shader.useProgram();
         }
         
-        void FontRenderer::postTextRender() {
+        void TextRenderer::postTextRender() {
             glDisableVertexAttribArray(this->attribute_coord);
             glDeleteTextures(1, &this->tex);
         }
             
-        void FontRenderer::enableBatchMode() {
+        void TextRenderer::enableBatchMode() {
             if(this->batchMode) {
                 throw InvalidStateException("Tried to enable batch mode while already in batch mode.");
             }
@@ -129,7 +129,7 @@ namespace engine {
             this->batchMode = true;
         }
         
-        void FontRenderer::endBatchMode() {
+        void TextRenderer::endBatchMode() {
             if(!this->batchMode) {
                 throw InvalidStateException("Tried to end batch mode while not yet in batch mode.");
             }
@@ -137,7 +137,7 @@ namespace engine {
             this->batchMode = false;
         }
         
-        FontRenderer::textPosition FontRenderer::calculateTextPosition(int xPixel, int yPixel) const {
+        TextRenderer::textPosition TextRenderer::calculateTextPosition(int xPixel, int yPixel) const {
             textPosition pos;
             pos.scaleX = 2.0 / this->windowWidth;
             pos.scaleY = 2.0 / this->windowWidth;
@@ -146,7 +146,7 @@ namespace engine {
             return pos;
         }
         
-        void FontRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
+        void TextRenderer::renderText(const std::u32string& text, const Font& font, const Color& color, int xPixel, int yPixel) {
             if(!this->batchMode) {
                 this->preTextRender();
             }
@@ -162,7 +162,7 @@ namespace engine {
             }
         }
         
-        void FontRenderer::renderRichText(RichText& text, int xPixel, int yPixel) {
+        void TextRenderer::renderRichText(RichText& text, int xPixel, int yPixel) {
             if(!this->batchMode) {
                 this->preTextRender();
             }
@@ -180,17 +180,17 @@ namespace engine {
             }
         }
         
-        FT_Library& FontRenderer::getFT() {
+        FT_Library& TextRenderer::getFT() {
             return this->ft;
         }
         
-        std::unique_ptr<FontRenderer> FontRenderer::instance = nullptr;
+        std::unique_ptr<TextRenderer> TextRenderer::instance = nullptr;
         
-        FontRenderer& FontRenderer::getInstance() {
-            if(FontRenderer::instance == nullptr) {
-                FontRenderer::instance = std::unique_ptr<FontRenderer>(new FontRenderer());
+        TextRenderer& TextRenderer::getInstance() {
+            if(TextRenderer::instance == nullptr) {
+                TextRenderer::instance = std::unique_ptr<TextRenderer>(new TextRenderer());
             }
-            return *FontRenderer::instance;
+            return *TextRenderer::instance;
         }
     }
 }

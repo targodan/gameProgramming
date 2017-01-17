@@ -4,9 +4,9 @@
 
 #include "../ECS/SystemRegisterer.h"
 
-#include "../renderer/FontRenderer.h"
+#include "../renderer/TextRenderer.h"
 
-using engine::renderer::FontRenderer;
+using engine::renderer::TextRenderer;
 
 namespace engine {
     namespace ECSCommon {
@@ -29,7 +29,7 @@ namespace engine {
                 auto comp = dynamic_cast<VisualComponent*>(ptr.get());
                 this->render(*comp);
             }
-            auto& fontRenderer = FontRenderer::getInstance();
+            auto& fontRenderer = TextRenderer::getInstance();
             fontRenderer.enableBatchMode();
             for(auto it = em.begin({TextComponent::getComponentTypeId()}); it != em.end(); ++it) {
                 auto& comp = it->to<TextComponent>();

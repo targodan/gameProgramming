@@ -89,12 +89,12 @@
           <in>FontFamily.h</in>
           <in>FontRegistry.cpp</in>
           <in>FontRegistry.h</in>
-          <in>FontRenderer.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
           <in>RichText.cpp</in>
           <in>RichText.h</in>
           <in>ShaderProgram.cpp</in>
+          <in>TextRenderer.cpp</in>
           <in>VertexArray.cpp</in>
           <in>VertexBuffer.cpp</in>
         </df>
@@ -612,18 +612,6 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/renderer/FontRenderer.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
       <item path="src/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
           <incDir>
@@ -666,6 +654,18 @@
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="src/renderer/TextRenderer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="11">

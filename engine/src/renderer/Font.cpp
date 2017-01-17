@@ -2,13 +2,13 @@
 
 #include "../IOException.h"
 
-#include "FontRenderer.h"
+#include "TextRenderer.h"
 
 namespace engine {
     namespace renderer {
         Font::Font(const std::string& filename) : Font(filename.c_str()) {}
         Font::Font(const char* filename) {
-            if(FT_New_Face(FontRenderer::getInstance().getFT(), filename, 0, &this->face)) {
+            if(FT_New_Face(TextRenderer::getInstance().getFT(), filename, 0, &this->face)) {
                 throw engine::IOException("Could not load font in file \"%s\".", filename);
             }
         }

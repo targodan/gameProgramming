@@ -12,7 +12,6 @@ namespace engine {
                 throw IOException(err.c_str());
             }
             
-            // TODO: Cool kids refactor this into an own method. I don't.
             char currentDirectory[MAX_PATH_LENGTH];
             if(getcwd(currentDirectory, sizeof(currentDirectory)) == NULL) {
                 string err = "Error while opening " + inputFile + ": Could not read current directory.";
@@ -42,6 +41,16 @@ namespace engine {
                 buffer << *rit;
             }
             return buffer.str();
+        }
+        
+        string getAbsoluteFromRelativePath(string relativePath) {
+            char currentDirectory[MAX_PATH_LENGTH];
+            if(getcwd(currentDirectory, sizeof(currentDirectory)) == NULL) {
+                string err = "Error while getting absolute from relative path: could not read current directory.";
+                throw IOException(err.c_str());
+            }
+            
+            return string(currentDirectory) + "/" + relativePath;
         }
     } 
 }

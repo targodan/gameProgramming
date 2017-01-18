@@ -67,6 +67,10 @@ namespace engine {
             
             static Map<ShaderType, std::string> type2FileExtension;
         private:
+            void setUniform(GLint location, GLint data) {
+                glUniform1i(location, data);
+            }
+            
             // 1-4D floats
             void setUniform(GLint location, GLfloat data) const {
                 glUniform1f(location, data);

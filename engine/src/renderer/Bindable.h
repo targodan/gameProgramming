@@ -3,6 +3,7 @@
 
 #include "gl/gl_core_3_3.h"
 #include "BufferType.h"
+#include "TextureType.h"
 
 namespace engine {
     namespace renderer {
@@ -32,6 +33,13 @@ namespace engine {
             }
             static void unbindVertexArray() {
                 glBindVertexArray(0);
+            }
+            
+            static void bindTexture(TextureType type, GLuint id) {
+                glBindTexture(type, id);
+            }
+            static void unbindTexture(TextureType type) {
+                glBindTexture(type, 0);
             }
         };
     }

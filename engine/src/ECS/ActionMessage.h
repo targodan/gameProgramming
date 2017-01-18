@@ -41,7 +41,8 @@ namespace engine {
             {}
             
             int getDevice() { return deviceID; }
-            int getButton() { return deviceID; }
+            int getButton() { return buttonID; }
+            int getAction() { return actionID; }
             int getXAxis() { return xAxis; }
             int getYAxis() { return yAxis; }
             bool isAnalog() { return !(xAxis == 0 && yAxis == 0); }

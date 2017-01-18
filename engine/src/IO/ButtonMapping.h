@@ -12,9 +12,11 @@
 #include <memory>
 #include "../util/Map.h"
 #include "../ECS/Message.h"
-#include "../ECS/ActionMessage.h"
+#include "Action.h"
+#include "ButtonInfo.h"
 #include "../ECS/messageId.h"
-#include "../ECS/MessageHandler.h"
+#include "../ECS/EntityManager.h"
+#include "../util/vector.h"
 
 #define KEYBOARD -1
 #define MOUSE -2
@@ -38,19 +40,19 @@ namespace engine {
         using engine::util::Map;
         using engine::ECS::Message;
         using engine::ECS::messageId_t;
-        using engine::ECS::ActionMessage;
-        using engine::ECS::MessageHandler;
+        using engine::IO::Action;
         using std::shared_ptr;
+        using util::vector;
+        using engine::ECS::EntityManager;
         
         class ButtonMapping {
         public:
-            ButtonMapping(GLFWwindow* window, MessageHandler& handler);
-            ButtonMapping( const ButtonMapping& orig ) = delete;
+            ButtonMapping(GLFWwindow* window);
+            ButtonMapping( const ButtonMapping& orig );
             virtual ~ButtonMapping();
-            void insertMapping(int deviceID, int buttonID, shared_ptr<Message> msg);
+            void insertMapping(int deviceID, int buttonID, shared_ptr<Action> msg);
             void deleteMapping(int deviceID, int buttonID);
-            void deleteMapping(shared_ptr<Message> msg);
-            void queueMessages();
+            vector<shared_ptr<Action>> getActions();
             
             
             typedef struct DevButton {
@@ -68,9 +70,9 @@ namespace engine {
                 }
             };
         private:
-            MessageHandler& handler;
             GLFWwindow* window;
-            Map<devButton, shared_ptr<ActionMessage>, MyHasher> mapping;
+            Map<devButton, shared_ptr<Action>, MyHasher> mapping;
+            double lastx, lasty;
         };
     }
 }

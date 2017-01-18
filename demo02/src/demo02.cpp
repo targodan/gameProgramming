@@ -1,5 +1,6 @@
 #include "demo02.h"
 #include "../../engine/src/ECSCommon.h"
+#include "Actions.h"
 #include "../../engine/src/renderer/Mesh.h"
 #include "../../engine/src/renderer/Material.h"
 #include "../../engine/src/renderer/ShaderProgram.h"
@@ -14,10 +15,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtx/string_cast.hpp"
+#include "IO/ButtonMapping.h"
 
 namespace demo {
     using namespace engine::renderer::gl;
     using namespace engine::ECSCommon;
+    using namespace IO;
     using glm::vec3;
     using engine::util::vector;
     using engine::Game;
@@ -59,6 +62,7 @@ namespace demo {
         cc.setViewMatrix(pcPlayer.getPosition());
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
+       
         
         
 //        while(this->window.isOpened()) {
@@ -86,9 +90,19 @@ namespace demo {
     }
     
     void Demo02::initialize() {
+        auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player)));
+        ButtonMapping bm(this->window.getWindow());
+        bm.insertMapping(-2, -1, action1);
+        auto action2 = std::make_shared<MovePlayerAction>(MovePlayerAction(-1, GLFW_KEY_W, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_W, action2);
+        bm.insertMapping(-1, GLFW_KEY_S, action2);
+        bm.insertMapping(-1, GLFW_KEY_A, action2);
+        bm.insertMapping(-1, GLFW_KEY_D, action2);
+        
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
+        this->systemManager.enableSystem<InputSystem>(bm);
         Game::initialize();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -100,7 +114,7 @@ namespace demo {
     
     void Demo02::processEvents() {
         glfwPollEvents();
-        
+       /* 
         double newX, newY;
         glfwGetCursorPos(this->window.getWindow(), &newX, &newY);
         
@@ -116,7 +130,7 @@ namespace demo {
         }
         
         this->lastX = newX;
-        this->lastY = newY;
+        this->lastY = newY; */
     }
 
     void Demo02::render(double deltaTimeSeconds) {

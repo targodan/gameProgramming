@@ -2,7 +2,7 @@
 #define MESSAGE_H
 
 #include "messageId.h"
-
+#include <typeinfo>
 #include "../CastException.h"
 
 namespace engine {

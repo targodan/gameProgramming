@@ -2,9 +2,11 @@
 #include "PlacementComponent.h"
 
 #include "../ECS/SystemRegisterer.h"
+#include "InputSystem.h"
 
 namespace engine {
     namespace ECSCommon {
+        using engine::ECSCommon::InputSystem;
         ECS_REGISTER_SYSTEM(PlacementSystem);
         
         systemId_t PlacementSystem::systemId = 0;
@@ -17,7 +19,7 @@ namespace engine {
         }
         
         Array<systemId_t> PlacementSystem::getOptionalDependencies() const {
-            return {/* GravitySystem (?) */};
+            return {InputSystem::systemTypeId()};
         }
         
         systemId_t PlacementSystem::getSystemTypeId() const {

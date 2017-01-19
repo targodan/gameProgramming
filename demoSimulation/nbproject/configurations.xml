@@ -95,6 +95,12 @@
           <buildCommand>${MAKE} -f Makefile DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>../engine/libengine.so</executablePath>
+          <ccTool>
+            <preprocessorList>
+              <Elem>BOOST_UBLAS_NDEBUG</Elem>
+              <Elem>NDEBUG</Elem>
+            </preprocessorList>
+          </ccTool>
         </makeTool>
         <preBuild>
           <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>

@@ -320,6 +320,16 @@
         <ccTool flags="2">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
         </ccTool>

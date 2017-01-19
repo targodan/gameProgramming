@@ -33,9 +33,8 @@ namespace engine {
                 throw CameraException("Given direction and up vectors are not orthogonal.");
             }
             
-           
-            this->setDirection(direction);
-            this->setUp(up);
+            this->direction = direction;
+            this->up = glm::normalize(up);
         }
         
         CameraComponent::~CameraComponent() {
@@ -50,8 +49,8 @@ namespace engine {
                 throw CameraException("Given direction and up vectors are not orthogonal.");
             }
             
-            this->setDirection(direction);
-            this->setUp(up);
+            this->direction = direction;
+            this->up = glm::normalize(up);
             this->setViewMatrix(position);
         }
         void CameraComponent::setViewMatrix(const vec3& position) {
@@ -59,7 +58,7 @@ namespace engine {
             this->updateViewMatrix();
         }
         void CameraComponent::updateViewMatrix() {
-            this->viewMatrix = glm::lookAt(this->position, this->position+this->direction, this->up);
+            this->viewMatrix = glm::lookAt(this->position, this->position + this->direction, this->up);
         }
         void CameraComponent::setDirection(const vec3& direction) {
             this->direction = direction;
@@ -99,7 +98,7 @@ namespace engine {
             auto right = glm::normalize(glm::cross(this->direction, this->worldUp));
             this->up = glm::normalize(glm::cross(right, this->direction));
             
-            this->updateViewMatrix();
+            // this->updateViewMatrix();
         }
         
         std::string CameraComponent::getComponentName() const {

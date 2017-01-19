@@ -26,11 +26,9 @@ namespace engine {
          * graphics card, saves how the graphics card should interpret the data,
          * can load the data to it and finally release the space again.
          * 
-         * If a Buffer-Object is copied or moved, ONLY the data-struct will be
-         * copied/moved (its pointer to the actual data therefore points to the
-         * same address as before). A new buffer will be generated on the graphics
-         * card for the copy/moved instance; if necessary, the data will be loaded
-         * into this new buffer.
+         * A buffer-object behaves similar to C-pointers aka it doesn't delete 
+         * the data/buffer it's pointing to. You have to manually call releaseBuffer().
+         * Copies etc. will all point to the same buffer on the graphics card.
          */
         class Buffer : public Bindable {
         public:
@@ -87,7 +85,8 @@ namespace engine {
                 if(!this->data.dataPtr) {
                     throw BufferException("Could not buffer data: No data specified");
                 } else if(!this->bound) {
-                    throw BufferException("Could not buffer data: Buffer not bound");
+                    // TODO: Log warning
+                    // throw BufferException("Could not buffer data: Buffer not bound");
                 }
 
                 if(this->loadedToGraphicsCard) {
@@ -103,7 +102,8 @@ namespace engine {
                 if(data == nullptr) {
                     throw BufferException("Could not buffer data: No data specified");
                 } else if(!this->bound) {
-                    throw BufferException("Could not buffer data: Buffer not bound");
+                    // TODO: Log warning
+                    // throw BufferException("Could not buffer data: Buffer not bound");
                 }
 
                 if(this->loadedToGraphicsCard) {

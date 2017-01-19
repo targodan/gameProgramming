@@ -29,6 +29,10 @@ namespace engine {
             return this->position;
         }
         
+        void PlacementComponent::move(const glm::vec3& v) {
+            this->position += v;
+        }
+        
         void PlacementComponent::setPosition(const glm::vec3& v) {
             this->position = v;
         }

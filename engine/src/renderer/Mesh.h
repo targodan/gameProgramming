@@ -28,6 +28,8 @@ namespace engine {
         class Mesh {
         public:
             Mesh() : wasLoaded(false) {}
+            Mesh(vector<Vertex> vertices, 
+                    DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             

@@ -42,11 +42,11 @@ namespace demo {
         Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh")};
         
-        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}),
-                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f})};
-        vector<GLuint> indices = {0, 1, 2};  
+        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}),
+                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{0, 1, 0}), 
+                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}, vec3{0, 0, 1}),
+                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f}, vec3{0, 0, 0})};
+        vector<GLuint> indices = {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2};  
         Mesh mesh = {vertices, indices};
         mesh.loadMesh();
        

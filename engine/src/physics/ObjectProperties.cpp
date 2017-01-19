@@ -36,5 +36,29 @@ namespace engine {
         ObjectProperties::UniformTetrahedronDistribution ObjectProperties::uniformTetrahedronDistribution(const Matrix<float, Dynamic, 1>& allVertices, const vector<size_t>& surfaceVertexIndices) {
             return UniformTetrahedronDistribution(allVertices, surfaceVertexIndices);
         }
+        
+        Matrix<float, Dynamic, 1> ObjectProperties::verticesToFlatVector(const engine::renderer::Mesh::ConstVertexProxy& vertices) {
+            Matrix<float, Dynamic, 1> vectors(vertices.size()*3, 1);
+            size_t i = 0;
+            for(auto& vertex : vertices) {
+                vectors(i+0) = vertex.position.x;
+                vectors(i+1) = vertex.position.y;
+                vectors(i+2) = vertex.position.z;
+                i += 3;
+            }
+            return vectors;
+        }
+        
+        Matrix<float, Dynamic, 1> ObjectProperties::verticesToFlatVector(const vector<engine::renderer::Vertex>& vertices) {
+            Matrix<float, Dynamic, 1> vectors(vertices.size()*3, 1);
+            size_t i = 0;
+            for(auto& vertex : vertices) {
+                vectors(i+0) = vertex.position.x;
+                vectors(i+1) = vertex.position.y;
+                vectors(i+2) = vertex.position.z;
+                i += 3;
+            }
+            return vectors;
+        }
     }
 }

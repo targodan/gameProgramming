@@ -108,7 +108,9 @@ namespace engine {
             return affectedForceVectors;
         }
 
-        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) const {
+        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) {
+            this->setTime(this->secondsSinceStart);
+            
             auto distanceVectors = this->calculateDistancesVectorsFromCenter(object);
             auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
             

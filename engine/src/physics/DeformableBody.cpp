@@ -57,7 +57,7 @@ namespace engine {
         }
         
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
-            auto& v = this->mesh.getVertices();
+            auto v = this->mesh.getVertices();
             float buffer[16] = {
                 v[0].position.x, v[1].position.x, v[2].position.x, v[3].position.x,
                 v[0].position.y, v[1].position.y, v[2].position.y, v[3].position.y,
@@ -166,9 +166,8 @@ namespace engine {
             this->updateStepMatrixIfNecessary(targetStepSize);
         }
         
-        void DeformableBody::step(float deltaT, const Force& force) {
-            // TODO: Use engine::physics::ObjectProperties here
-//            this->step(h, force.getForceOnVertices(this->currentPosition));
+        void DeformableBody::step(float deltaT, Force& force) {
+            this->step(deltaT, force.getForceOnVertices(this->properties));
         }
         
         void DeformableBody::step(float deltaT, const Matrix<float, 12, 1>& forces) {

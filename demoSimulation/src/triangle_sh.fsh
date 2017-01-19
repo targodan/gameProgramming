@@ -2,10 +2,14 @@
 #extension GL_ARB_explicit_attrib_location : require
 #extension GL_ARB_separate_shader_objects : require
 
-in vec4 vertexColor;
+in vec3 vertexColor;
+//in vec2 texCoord;
+
+//uniform sampler2D diffuseTexture1;
 
 out vec4 color;
 
 void main() {
-    color = vertexColor;
+    //color = texture(diffuseTexture1, texCoord);
+    color = vec4(vertexColor, 1.0f);
 }

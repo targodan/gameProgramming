@@ -10,13 +10,12 @@
 
 namespace engine {
     class Game {
-    private:
+    protected:
         bool running = false;
         const double updatesPerSecond;
         bool aboutToClose = false; // Note: Probably temporary, used for testing
         bool shutdownComplete = false;
         
-    protected:
         Window window;
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;

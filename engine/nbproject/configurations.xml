@@ -25,6 +25,12 @@
           </df>
           <in>CameraComponent.cpp</in>
           <in>CameraRenderSystem.cpp</in>
+          <in>DeformableBodyComponent.cpp</in>
+          <in>DeformableBodyComponent.h</in>
+          <in>DeformableBodySystem.cpp</in>
+          <in>DeformableBodySystem.h</in>
+          <in>ForceComponent.cpp</in>
+          <in>ForceComponent.h</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
@@ -267,6 +273,32 @@
             flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -536,6 +568,32 @@
       <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

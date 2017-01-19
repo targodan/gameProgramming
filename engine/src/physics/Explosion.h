@@ -36,7 +36,7 @@ namespace engine {
                 : center(center), tntEquivalence(tntEquivalence), expansionSpeed(expansionSpeed) {}
             
             void setTime(float secondsFromExplosion);
-            Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& object) const override;
+            Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& object) override;
         };
     }
 }

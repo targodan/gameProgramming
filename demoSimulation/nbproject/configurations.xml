@@ -14,6 +14,7 @@
           </df>
           <df name="ECSCommon">
             <in>CameraRenderSystem.cpp</in>
+            <in>DeformableBodySystem.cpp</in>
             <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
             <in>RenderSystem.cpp</in>
@@ -148,6 +149,13 @@
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/CameraRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/DeformableBodySystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">

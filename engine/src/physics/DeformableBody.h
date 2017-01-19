@@ -16,7 +16,8 @@ namespace engine {
         protected:
             // The first 3 vertices must build the base plane.
             // The 4th vertex mustn't be in that same plane.
-            Mesh mesh;
+            Mesh& mesh;
+            ObjectProperties properties;
             Matrix<float, 12, 1> restPosition;
             Matrix<float, 12, 1> currentPosition;
             
@@ -54,15 +55,15 @@ namespace engine {
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(const Mesh& mesh, float mass, float dampening,
+            DeformableBody(Mesh& mesh, const ObjectProperties& properties, float mass, float dampening,
                     float youngsModulus, float poissonsRatio, float targetStepSize)
-                    : mesh(mesh), mass(mass), dampening(dampening),
+                    : mesh(mesh), properties(properties), mass(mass), dampening(dampening),
                         youngsModulus(youngsModulus), poissonsRatio(poissonsRatio) {
                 this->calculateAndSetInitialState(targetStepSize);
             }
             
             void step(float deltaT, const Matrix<float, 12, 1>& forces);
-            void step(float deltaT, const Force& force);
+            void step(float deltaT, Force& force);
         };
     }
 }

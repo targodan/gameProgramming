@@ -7,6 +7,9 @@
 #include "./ECSCommon/VisualComponent.h"
 #include "./ECSCommon/CameraRenderSystem.h"
 #include "./ECSCommon/CameraComponent.h"
+#include "./ECSCommon/DeformableBodyComponent.h"
+#include "./ECSCommon/DeformableBodySystem.h"
+#include "./ECSCommon/ForceComponent.h"
 
 #endif /* ECSCOMMON_H */
 

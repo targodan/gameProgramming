@@ -4,6 +4,8 @@
 #include <eigen3/Eigen/Eigen>
 
 #include "../util/vector.h"
+#include "../renderer/Vertex.h"
+#include "../renderer/Mesh.h"
 
 namespace engine {
     namespace physics {
@@ -67,6 +69,8 @@ namespace engine {
             };
             
             static UniformTetrahedronDistribution uniformTetrahedronDistribution(const Matrix<float, Dynamic, 1>& allVertices, const vector<size_t>& surfaceVertexIndices);
+            static Matrix<float, Dynamic, 1> verticesToFlatVector(const engine::renderer::Mesh::ConstVertexProxy& vertices);
+            static Matrix<float, Dynamic, 1> verticesToFlatVector(const vector<engine::renderer::Vertex>& vertices);
         };
     }
 }

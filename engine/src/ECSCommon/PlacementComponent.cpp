@@ -14,9 +14,9 @@ namespace engine {
         
         PlacementComponent::PlacementComponent() {
         }
-        PlacementComponent::PlacementComponent(const PlacementComponent& orig) : position(orig.position), direction(orig.direction) {
+        PlacementComponent::PlacementComponent(const PlacementComponent& orig) : position(orig.position), velocity(orig.velocity), lastVelocity(orig.lastVelocity) {
         }
-        PlacementComponent::PlacementComponent(PlacementComponent&& orig) : position(std::move(orig.position)), direction(std::move(orig.direction)) {
+        PlacementComponent::PlacementComponent(PlacementComponent&& orig) : position(std::move(orig.position)), velocity(std::move(orig.velocity)), lastVelocity(std::move(orig.lastVelocity)) {
         }
         PlacementComponent::~PlacementComponent() {
         }
@@ -33,16 +33,32 @@ namespace engine {
             this->position = v;
         }
 
-        const glm::vec3& PlacementComponent::getDirection() const {
-            return this->direction;
+        const glm::vec3& PlacementComponent::getVelocity() const {
+            return this->velocity;
         }
         
-        glm::vec3& PlacementComponent::getDirection() {
-            return this->direction;
+        glm::vec3& PlacementComponent::getVelocity() {
+            return this->velocity;
         }
             
-        void PlacementComponent::setDirection(const glm::vec3& v) {
-            this->direction = v;
+        void PlacementComponent::setVelocity(const glm::vec3& v) {
+            this->velocity = v;
+        }
+        
+        void PlacementComponent::setVelocityAcc(const glm::vec3 v) { 
+            this->velocity += v;
+        }
+        
+        const glm::vec3& PlacementComponent::getLastVelocity() const {
+            return this->lastVelocity;
+        }
+        
+        glm::vec3& PlacementComponent::getLastVelocity() {
+            return this->velocity;
+        }
+        
+        void PlacementComponent::setLastVelocity(const glm::vec3& v) {
+            this->lastVelocity = v;
         }
         
         google::protobuf::Message& PlacementComponent::fromProtobufMessage() {
@@ -51,13 +67,13 @@ namespace engine {
         
         const google::protobuf::Message& PlacementComponent::toProtobufMessage() {
             this->msg.set_allocated_position(this->position.toProtobufMessage());
-            this->msg.set_allocated_direction(this->direction.toProtobufMessage());
+            this->msg.set_allocated_direction(this->velocity.toProtobufMessage());
             return this->msg;
         }
         
         void PlacementComponent::afterProtobufMessageUpdate() {
             this->position.fromProtobufMessage(this->msg.position());
-            this->direction.fromProtobufMessage(this->msg.direction());
+            this->velocity.fromProtobufMessage(this->msg.direction());
         }
             
         std::string PlacementComponent::getComponentName() const {
@@ -67,7 +83,7 @@ namespace engine {
         std::string PlacementComponent::toString() const {
             std::stringstream ss;
             ss << "{" << "Position: " << this->position
-                    << ", Direction: " << this->direction
+                    << ", Direction: " << this->velocity
                     << "}";
             return ss.str();
         }

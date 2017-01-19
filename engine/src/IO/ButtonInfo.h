@@ -17,7 +17,7 @@ namespace engine {
     namespace IO {
         struct ButtonInfo{
             int buttonID, deviceID;
-            double xAxis, yAxis;
+            float xAxis, yAxis;
         };
     }
 }

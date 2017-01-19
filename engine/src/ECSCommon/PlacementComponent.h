@@ -20,7 +20,8 @@ namespace engine {
 
         protected:
             vec3 position;
-            vec3 direction;
+            vec3 velocity;
+            vec3 lastVelocity;
             
             pb::Placement msg;
 
@@ -35,10 +36,16 @@ namespace engine {
             
             void setPosition(const glm::vec3& v);
             
-            const glm::vec3& getDirection() const;
-            glm::vec3& getDirection();
+            const glm::vec3& getVelocity() const;
+            glm::vec3& getVelocity();
             
-            void setDirection(const glm::vec3& v);
+            void setVelocity(const glm::vec3& v);
+            void setVelocityAcc(const glm::vec3 v);
+            
+            const glm::vec3& getLastVelocity() const;
+            glm::vec3& getLastVelocity();
+            
+            void setLastVelocity(const glm::vec3& v);
             
             google::protobuf::Message& fromProtobufMessage() override;
             void afterProtobufMessageUpdate() override;

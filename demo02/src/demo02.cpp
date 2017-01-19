@@ -35,14 +35,15 @@ namespace demo {
         vec3 triangleOrigin = {0.f, 0.f, 0.f};
         PlacementComponent pc;
         pc.setPosition(triangleOrigin);
-        pc.setDirection(vec3{0.f, 0.f, 0.f});
+        pc.setVelocity(vec3{0.f, 0.f, 0.f});
               
         Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh")};
         
         vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}), 
                                    Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f})};
+                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}),
+                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f})};
         vector<GLuint> indices = {0, 1, 2};  
         Mesh mesh = {vertices, indices};
         mesh.loadMesh();
@@ -55,7 +56,7 @@ namespace demo {
         
         PlacementComponent pcPlayer;
         pcPlayer.setPosition(vec3{10.f, 0.f, 0.f});
-        pcPlayer.setDirection(vec3{0.f, 0.f, 0.f});
+        pcPlayer.setVelocity(vec3{0.f, 0.f, 0.f});
         
         CameraComponent cc(vec3{-10.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
         cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
@@ -93,11 +94,12 @@ namespace demo {
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player)));
         ButtonMapping bm(this->window.getWindow());
         bm.insertMapping(-2, -1, action1);
-        auto action2 = std::make_shared<MovePlayerAction>(MovePlayerAction(-1, GLFW_KEY_W, std::make_shared<Entity>(this->player)));
+        auto action2 = std::make_shared<MoveFwdBwdAction>(MoveFwdBwdAction(-1, GLFW_KEY_W, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_W, action2);
-        bm.insertMapping(-1, GLFW_KEY_S, action2);
-        bm.insertMapping(-1, GLFW_KEY_A, action2);
-        bm.insertMapping(-1, GLFW_KEY_D, action2);
+        bm.insertMapping(-1, GLFW_KEY_S, action2, true);
+        auto action3 = std::make_shared<MoveLRAction>(MoveLRAction(-1, GLFW_KEY_A, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_A, action3, true);
+        bm.insertMapping(-1, GLFW_KEY_D, action3);
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>();
@@ -105,7 +107,7 @@ namespace demo {
         this->systemManager.enableSystem<InputSystem>(bm);
         Game::initialize();
         
-        glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
     void Demo02::shutdown() {

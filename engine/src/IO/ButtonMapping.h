@@ -50,13 +50,14 @@ namespace engine {
             ButtonMapping(GLFWwindow* window);
             ButtonMapping( const ButtonMapping& orig );
             virtual ~ButtonMapping();
-            void insertMapping(int deviceID, int buttonID, shared_ptr<Action> msg);
+            void insertMapping(int deviceID, int buttonID, shared_ptr<Action> msg, bool negate = false);
             void deleteMapping(int deviceID, int buttonID);
             vector<shared_ptr<Action>> getActions();
             
             
             typedef struct DevButton {
                 int deviceID, buttonID;
+                bool negate;
                 bool operator==(const DevButton& btn) const {
                     return (deviceID == btn.deviceID && buttonID == btn.buttonID);
                 }

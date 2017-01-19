@@ -47,13 +47,13 @@ namespace engine {
                 this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
             VertexArray(VertexArray&& orig) 
-                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), id(std::move(orig.id)), bound(std::move(orig.bound)) {
-                this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
+                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(orig.ebo)), id(std::move(orig.id)), bound(std::move(orig.bound)) {
+                // this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
 
             VertexArray& operator=(const VertexArray& right) {
                 this->vbos.clear();
-                for(auto& vbo : right.vbos) {
+                for(auto&& vbo : right.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 this->ebo = right.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(right.ebo));
@@ -73,7 +73,7 @@ namespace engine {
             }
             
             ~VertexArray() {
-                // this->releaseVertexArray();
+                
             }
             
             void generateVertexArray() {
@@ -88,7 +88,7 @@ namespace engine {
             }
             
             void loadData() {
-                for(auto& vbo : this->vbos) {
+                for(auto&& vbo : this->vbos) {
                     vbo->bind();
                     vbo->loadData();
                     vbo->bind();

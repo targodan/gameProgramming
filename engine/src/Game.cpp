@@ -60,7 +60,9 @@ namespace engine {
     }
     
     void Game::render(double deltaTimeSeconds) {
+        this->window.clear();
         this->systemManager.render(deltaTimeSeconds);
+        this->window.swapBuffers();
     }
     
     void Game::update(double deltaTimeSeconds) {

@@ -7,7 +7,7 @@
 namespace engine {
     namespace renderer {
         struct VertexAttribute {
-            GLuint index;
+            GLint index;
             GLint size;
             DataType type;
             GLboolean normalized;

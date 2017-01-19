@@ -4,6 +4,8 @@
 
 namespace engine {
     using namespace renderer::gl;
+    
+    bool Window::cursorInAnyWindowArea = false;
     Window::Window(int width, int height, std::string title) 
         : width(width), height(height), title(title.c_str()) {
 
@@ -25,13 +27,16 @@ namespace engine {
         
         glfwSetErrorCallback(Window::glfwErrorCallback);
         glfwSetWindowSizeCallback(this->glfwWindow, Window::glfwResizeCallback);
+        glfwSetCursorEnterCallback(this->glfwWindow, Window::glfwCursorEnterCallback);
         
         int glInit = ogl_LoadFunctions();
         if(glInit != ogl_LOAD_SUCCEEDED) {
             throw GLException("Failed to initialize OpenGL");
         }
-        glClearColor(0.f, 0.f, 0.f, 1.f);
-        glViewport(0,0, this->width, this->height);
+        
+        this->setClearColor(0.f, 0.f, 0.f); // Standard color a window is cleared with on Window::clear()
+        glViewport(0,0, this->width, this->height); // Set viewport
+        glEnable(GL_DEPTH_TEST); // Enable z-buffer
     }
     
     Window::~Window() {
@@ -62,6 +67,22 @@ namespace engine {
         return this->glfwWindow;
     }
     
+    bool Window::isCursorInWindowArea() const {
+        return Window::cursorInAnyWindowArea;
+    }
+    
+    void Window::setClearColor(float red, float green, float blue, float alpha) {
+        glClearColor(red, green, blue, alpha);
+    }
+    
+    void Window::clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    
+    void Window::swapBuffers() {
+        glfwSwapBuffers(this->glfwWindow);
+    }
+    
     void Window::glfwErrorCallback(int error, const char* description) {
         std::string msg = "Caught GLFW error: " + std::string(description) + std::to_string(error);
         throw WTFException(msg.c_str());
@@ -69,5 +90,15 @@ namespace engine {
     
     void Window::glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
         glViewport(0, 0, newWidth, newHeight);
+    }
+    
+    void Window::glfwCursorEnterCallback(GLFWwindow* window, int entered) {
+        // TODO: Substitute by sending messages
+        
+        if(entered) { // Cursor entered window
+            Window::cursorInAnyWindowArea = true;
+        } else { // Cursor left window
+            Window::cursorInAnyWindowArea = false;
+        }
     }
 }

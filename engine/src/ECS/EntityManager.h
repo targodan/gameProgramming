@@ -64,6 +64,8 @@ namespace engine {
                         const std::initializer_list<componentId_t>& componentTypes);
                 ComponentIterator(EntityManager* em);
                 
+                void findMatchingEntity();
+                
                 void setToEnd();
                 friend class EntityManager;
             public:

@@ -23,6 +23,8 @@
             <in>Placement.pb.cc</in>
             <in>Placement.proto</in>
           </df>
+          <in>CameraComponent.cpp</in>
+          <in>CameraRenderSystem.cpp</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
@@ -81,6 +83,7 @@
           <in>vec4.cpp</in>
           <in>vec4.h</in>
         </df>
+        <in>Camera.cpp</in>
         <in>CastException.h</in>
         <in>ECS.h</in>
         <in>ECSCommon.h</in>
@@ -222,6 +225,10 @@
           </incDir>
         </ccTool>
       </folder>
+      <item path="src/Camera.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -247,6 +254,17 @@
         </ccTool>
       </item>
       <item path="src/ECS/pb/EntityManager.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/CameraComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/CameraRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -325,15 +343,13 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/physics/Explosion.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">

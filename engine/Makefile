@@ -30,7 +30,7 @@ C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -pthread -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -fopenmp -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -pthread -lpthread -Wl,--as-needed
+LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread -Wl,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments

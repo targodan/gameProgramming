@@ -19,21 +19,9 @@ namespace engine {
             VertexBuffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
                 : Buffer(dataPtr, size, nElements, usage), type(BufferType::ARRAY_BUFFER) {}
             VertexBuffer(const VertexBuffer& orig) 
-                : Buffer(orig), type(orig.type), attributes(orig.attributes) {
-//                if(orig.loadedToGraphicsCard) {
-//                    this->bind();
-//                    this->loadData();
-//                    this->unbind();
-//                }
-            }
+                : Buffer(orig), type(orig.type), attributes(orig.attributes) {}
             VertexBuffer(VertexBuffer&& orig) 
-                : Buffer(std::move(orig)), type(std::move(orig.type)), attributes(std::move(orig.attributes)) {
-//                if(orig.loadedToGraphicsCard) {
-//                    this->bind();
-//                    this->loadData();
-//                    this->unbind();
-//                }
-            }
+                : Buffer(std::move(orig)), type(std::move(orig.type)), attributes(std::move(orig.attributes)) {}
             
             VertexBuffer& operator=(const VertexBuffer& right) {
                 Buffer::operator=(right);
@@ -76,13 +64,11 @@ namespace engine {
                     VertexBuffer::anyVBOBound = false;
                 }
             
-                // glBindBuffer(GL_ARRAY_BUFFER, this->id);
                 Buffer::bind();
                 
                 VertexBuffer::anyVBOBound = true;
             }
             virtual void unbind() override {
-                // glBindBuffer(GL_ARRAY_BUFFER, 0);
                 Buffer::unbind();
                 
                 VertexBuffer::anyVBOBound = false;

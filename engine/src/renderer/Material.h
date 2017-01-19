@@ -2,6 +2,8 @@
 #define MATERIAL_H
 
 #include "ShaderProgram.h"
+#include "Texture.h"
+#include <vector>
 #include <memory>
 
 namespace engine {
@@ -9,6 +11,7 @@ namespace engine {
         class Material {
         public:
             Material(std::shared_ptr<ShaderProgram> shader);
+            Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures);
             Material(const Material& orig);
             Material(Material&& orig);
             
@@ -19,15 +22,13 @@ namespace engine {
             void releaseMaterial();
             
             // This needs to be called before drawing the corresponding mesh
-            void makeActive() const;
+            void makeActive();
+            void loadTextures();
             
             std::shared_ptr<const ShaderProgram> getShader() const;
         private:
-            
-            // NOTE: I made this a shared_ptr because I couldn't see how to work
-            //       with this class otherwise. Why a unique_ptr?
-            // Why not?
             std::shared_ptr<ShaderProgram> shader;    
+            vector<Texture> textures;
         };
     }
 }

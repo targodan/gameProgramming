@@ -11,6 +11,7 @@ namespace engine {
         using namespace std;
         string readFile(string inputFile, string ending = "");
         string getFileNameExtension(string fileName);
+        string getAbsoluteFromRelativePath(string relativePath);
     } 
 }
 

@@ -9,6 +9,8 @@
 #include "../../engine/src/util/vector.h"
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/ElementBuffer.h"
+#include "../../engine/src/renderer/Texture.h"
+#include "../../engine/src/renderer/TextureParameter.h"
 #include <iostream>
 // GLM Mathematics
 #include <glm/glm.hpp>

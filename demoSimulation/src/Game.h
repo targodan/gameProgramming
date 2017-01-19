@@ -7,7 +7,7 @@
 namespace demoSimulation {
     class Game : public engine::Game {
     public:
-        void void initialize() override;
+        virtual void initialize() override;
     };
 }
 

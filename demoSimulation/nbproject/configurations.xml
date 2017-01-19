@@ -5,8 +5,10 @@
       <df name="src">
         <df name="engine">
           <df name="ECS">
+            <in>ComponentRegistry.cpp</in>
             <in>Entity.cpp</in>
             <in>EntityManager.cpp</in>
+            <in>MessageHandler.cpp</in>
             <in>SystemManager.cpp</in>
             <in>SystemRegistry.cpp</in>
           </df>
@@ -16,6 +18,23 @@
             <in>RenderSystem.cpp</in>
             <in>VisualComponent.cpp</in>
           </df>
+          <df name="IO">
+            <in>ButtonMapping.cpp</in>
+            <in>Console.cpp</in>
+            <in>EntityCommand.cpp</in>
+            <in>InputManager.cpp</in>
+          </df>
+          <df name="math">
+            <in>Matrix.cpp</in>
+            <in>MatrixSq.cpp</in>
+            <in>Vector3.cpp</in>
+            <in>functions.cpp</in>
+          </df>
+          <df name="physics">
+            <in>DeformableBody.cpp</in>
+            <in>Explosion.cpp</in>
+            <in>ObjectProperties.cpp</in>
+          </df>
           <df name="renderer">
             <in>Camera.cpp</in>
             <in>ElementBuffer.cpp</in>
@@ -23,6 +42,12 @@
             <in>Mesh.cpp</in>
             <in>VertexArray.cpp</in>
             <in>VertexBuffer.cpp</in>
+          </df>
+          <df name="util">
+            <in>ostream_helper.cpp</in>
+            <in>readFile.cpp</in>
+            <in>vec3.cpp</in>
+            <in>vec4.cpp</in>
           </df>
           <in>Game.cpp</in>
           <in>Window.cpp</in>
@@ -85,13 +110,31 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/Game.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/engine</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECS/ComponentRegistry.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -135,7 +178,57 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/math/functions.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/DeformableBody.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/ObjectProperties.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -169,6 +262,25 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/util/ostream_helper.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/util/readFile.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/util/vec3.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/util/vec4.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>

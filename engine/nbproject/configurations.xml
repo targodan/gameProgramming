@@ -34,6 +34,10 @@
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
+          <in>TimerComponent.cpp</in>
+          <in>TimerComponent.h</in>
+          <in>TimerSystem.cpp</in>
+          <in>TimerSystem.h</in>
           <in>VisualComponent.cpp</in>
         </df>
         <df name="IO">
@@ -314,6 +318,16 @@
       <item path="src/ECSCommon/RenderSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -605,6 +619,16 @@
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/pb/Placement.proto" ex="false" tool="3" flavor2="0">
       </item>

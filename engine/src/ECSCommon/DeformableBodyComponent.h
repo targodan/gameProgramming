@@ -13,11 +13,11 @@ namespace engine {
             static componentId_t typeId;
             
         protected:
-            std::unique_ptr<engine::physics::DeformableBody> deformableBody;
+            std::shared_ptr<engine::physics::DeformableBody> deformableBody;
             
         public:
             DeformableBodyComponent() {}
-            DeformableBodyComponent(std::unique_ptr<engine::physics::DeformableBody> deformableBody) : deformableBody(std::move(deformableBody)) {}
+            DeformableBodyComponent(const std::shared_ptr<engine::physics::DeformableBody>& deformableBody) : deformableBody(deformableBody) {}
             DeformableBodyComponent(const DeformableBodyComponent& orig) = delete;
             virtual ~DeformableBodyComponent() {}
             

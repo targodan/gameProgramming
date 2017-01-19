@@ -4,6 +4,7 @@
 
 #include "DeformableBodyComponent.h"
 #include "ForceComponent.h"
+#include "TimerComponent.h"
 
 namespace engine {
     namespace ECSCommon {
@@ -15,10 +16,13 @@ namespace engine {
             for(auto itBodies = em.begin({DeformableBodyComponent::getComponentTypeId()}); itBodies != em.end(); ++itBodies) {
                 auto& body = itBodies->to<DeformableBodyComponent>();
                 
-                for(auto itForces = em.begin({ForceComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
-                    auto& force = itForces->to<ForceComponent>();
+                for(auto itForces = em.begin({ForceComponent::getComponentTypeId(), TimerComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
+                    auto& force = itForces[0]->to<ForceComponent>();
+                    auto& timer = itForces[1]->to<TimerComponent>();
+                    
                     // TODO: The following line is just a workaround
-                    force.getForce().addSecondsSinceStart(deltaTimeSeconds);
+                    force.getForce().setSecondsSinceStart(timer.getTime());
+                    
                     body.getDeformableBody().step(deltaTimeSeconds, force.getForce());
                 }
             }

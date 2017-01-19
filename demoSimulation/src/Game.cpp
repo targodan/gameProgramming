@@ -10,12 +10,7 @@ using namespace engine::ECSCommon;
 
 namespace demoSimulation {
     void Game::initialize() {
-        this->window.setClearColor(0.f, 0.2f, 0.2f);
-        
-        this->systemManager.enableSystem<PlacementSystem>();
-        this->systemManager.enableSystem<CameraRenderSystem>();
-        this->systemManager.enableSystem<RenderSystem>();
-        this->systemManager.enableSystem<DeformableBodySystem>();
+        this->window.setClearColor(0.1f, 0.f, 0.1f);
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
@@ -44,23 +39,37 @@ namespace demoSimulation {
         float area = 5;
         float density = 920; // kg / m³
         float mass = volume * density;
-        auto defBody = std::make_unique<engine::physics::DeformableBody>(
-                vc.getMesh(),
+        
+        auto properties = 
                 engine::physics::ObjectProperties::uniformTetrahedronDistribution(
                             engine::physics::ObjectProperties::verticesToFlatVector(vc.getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
-                            ).uniformDensity(volume, density).uniformAreaDistribution(area),
-                        mass,
-                        0.1,
-                        0.05e9,
-                        0.4999,
-                        this->updatesPerSecond
+                        )
+                        .uniformDensity(volume, density)
+                        .uniformAreaDistribution(area);
+        
+        auto defBody = std::make_shared<engine::physics::DeformableBody>(
+                vc.getMesh(),
+                properties,
+                mass,
+                0.1,
+                0.05e9,
+                0.4999,
+                this->updatesPerSecond
             );
         
         auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
-                .addComponent<DeformableBodyComponent>();
+                .addComponent<DeformableBodyComponent>(defBody);
         
+        auto force = std::make_shared<OneShotForce>();
         this->entityManager.createEntity("Force")
-                .addComponent<ForceComponent>(std::make_unique<OneShotForce>(1));
+                .addComponent<TimerComponent>(5)
+                .addComponent<ForceComponent>(force);
+        
+        this->systemManager.enableSystem<PlacementSystem>();
+        this->systemManager.enableSystem<CameraRenderSystem>();
+        this->systemManager.enableSystem<RenderSystem>();
+        this->systemManager.enableSystem<DeformableBodySystem>();
+        this->systemManager.enableSystem<TimerSystem>();
         
         engine::Game::initialize();
     }

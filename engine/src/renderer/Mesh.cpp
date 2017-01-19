@@ -69,6 +69,8 @@ namespace engine {
                 this->vao->drawArrays();
             }
             this->vao->unbind();
+            
+            this->material->makeInactive();
         }
         
         void Mesh::loadMesh() {

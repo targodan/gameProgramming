@@ -10,8 +10,8 @@ namespace engine {
     namespace renderer {
         class Material {
         public:
-            Material(std::shared_ptr<ShaderProgram> shader);
-            Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures);
+            Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe = false);
+            Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures, bool renderAsWireframe = false);
             Material(const Material& orig);
             Material(Material&& orig);
             
@@ -23,12 +23,14 @@ namespace engine {
             
             // This needs to be called before drawing the corresponding mesh
             void makeActive();
+            void makeInactive();
             void loadTextures();
             
             std::shared_ptr<const ShaderProgram> getShader() const;
         private:
             std::shared_ptr<ShaderProgram> shader;    
             vector<Texture> textures;
+            bool renderAsWireframe;
         };
     }
 }

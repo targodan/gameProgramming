@@ -1,13 +1,5 @@
 # the compiler: gcc for C program, define as g++ for C++
-G++VERSION = $(shell g++ -dumpversion | cut -f1 -d.)
-G++_GT_6 = $(shell echo $(G++VERSION)\>=6 | bc)
-
-ifeq ($(G++_GT_6),1) 
-	CC := g++
-else
-	CC := g++-6
-endif
-
+CC = g++
 PROTOC = protoc
 ECHO = echo
 MV = mv
@@ -26,11 +18,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -DELPP_THREAD_SAFE -pthread -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -DELPP_THREAD_SAFE -I$(SRCDIR) -I$(SRCDIR)/engine
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread -Wl,--as-needed
+LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine -Wl,-rpath=.,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -59,8 +51,8 @@ else
 	LD_FLAGS  = $(LD_FLAGS_COMMON) $(LD_FLAGS_RELEASE)
 endif
 
-C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I$(SRCDIR) -I$(TESTDIR)
-LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lprotobuf -pthread -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
+C_FLAGS_TEST = $(C_FLAGS_COMMON) $(C_FLAGS_DEBUG) -I$(SRCDIR) -I$(TESTDIR)
+LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lpthread -lprotobuf -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
 
 PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')
 PROTO_GENERATED_H = $(PROTO_FILES:.proto=.pb.h)
@@ -88,7 +80,7 @@ POSTCOMPILE = $(MV) -f $(DEPDIR)/$(SRCDIR)/$*.Td $(DEPDIR)/$(SRCDIR)/$*.d
 POSTCOMPILE_TEST = $(MV) -f $(DEPDIR)/$(TESTDIR)/$*.Td $(DEPDIR)/$(TESTDIR)/$*.d
 
 # the build target executable:
-TARGET = libengine.so
+TARGET = demoSimulation
 TARGET_TEST = runTests
 
 # All is same as build test
@@ -111,9 +103,9 @@ $(TESTDIR)/%.pb.cc: $(TESTDIR)/%.proto
 	@$(ECHO) "GEN$(TAB)$@"
 	@$(PROTOC) -I$(abspath $(TESTDIR)) --cpp_out=$(TESTDIR) $(abspath $<)
 
-build: flags mkdir generate $(SOURCES) $(TARGET)
+build: libengine flags mkdir generate $(SOURCES) $(TARGET)
 
-build_test: flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
+build_test: libengine flags_test build generate_test $(SOURCES_TEST) $(TARGET_TEST)
 
 mkdir:
 	@$(FIND) . -type d -not -path "*$(BUILDDIR)*" -exec mkdir -p $(BUILDDIR)/{} \;
@@ -131,9 +123,9 @@ $(TARGET): $(OBJECTS)
 	@$(ECHO) "LD$(TAB)$@"
 	@$(CC) -o $@ $^ $(LD_FLAGS)
 
-$(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
+$(TARGET_TEST): $(OBJECTS_TEST)
 	@$(ECHO) "LD$(TAB)$@"
-	@$(CC) -o $@ $^ $(LD_FLAGS_TEST) 
+	@$(CC) -o $@ $^ $(LD_FLAGS_TEST)
 
 $(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cc $(DEPDIR)/$(SRCDIR)/%.d
 	@$(ECHO) "CC$(TAB)$@"
@@ -168,6 +160,12 @@ clean:
 	@$(RM) $(PROTO_GENERATED_CPP)
 	@$(RM) $(PROTO_GENERATED_TEST_H)
 	@$(RM) $(PROTO_GENERATED_TEST_CPP)
+
+libengine:
+	@$(ECHO) "BUILDING ENGINE"
+	@cd ../engine && $(MAKE) build
+	@cp ../engine/libengine.so .
+	@$(ECHO) "ENGINE BUILT"
 
 $(DEPDIR)/$(SRCDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/$(SRCDIR)/%.d

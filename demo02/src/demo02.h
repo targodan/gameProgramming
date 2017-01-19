@@ -19,8 +19,6 @@ namespace demo {
         virtual void shutdown() override;
 
         virtual void processEvents() override;
-        virtual void render(double deltaTimeSeconds) override;
-        virtual void update(double deltaTimeSeconds) override;
     private:
         Entity triangle;
         Entity player;

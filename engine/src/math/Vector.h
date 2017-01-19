@@ -49,11 +49,16 @@ namespace engine {
                 std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
             }
 
-            Vector(Vector<dimension>&& orig) {
+            Vector(Vector<dimension>&& orig) : elements(0) {
                 Vector<dimension>::swap(*this, orig);
             }
 
             ~Vector() {}
+            
+            Vector<dimension>& operator=(const Vector<dimension>& orig) {
+                std::copy(orig.elements.begin(), orig.elements.end(), this->elements.begin());
+                return *this;
+            }
             
             Vector<dimension>& operator=(Vector<dimension>&& v) {
                 Vector<dimension>::swap(*this, v);

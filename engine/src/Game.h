@@ -10,24 +10,23 @@
 
 namespace engine {
     class Game {
-    private:
+    protected:
         bool running = false;
-        const double updatesPerSecond;
+        const float updatesPerSecond;
         bool aboutToClose = false; // Note: Probably temporary, used for testing
         bool shutdownComplete = false;
         
-    protected:
         Window window;
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
         ECS::MessageHandler messageHandler;
 
-        virtual void render(double deltaTimeSeconds);
-        virtual void update(double deltaTimeSeconds);
+        virtual void render(float deltaTimeSeconds);
+        virtual void update(float deltaTimeSeconds);
         virtual void processEvents();
     
     public:
-        Game(int argc, char** argv, double ups=60);
+        Game(int argc, char** argv, float ups=60);
         Game(const Game& orig) = delete;
         virtual ~Game();
         

@@ -32,7 +32,7 @@ namespace engine {
             void setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far);
             void setViewMatrix(const vec3& position, const vec3& direction, const vec3& up);
             void setViewMatrix(const vec3& position);
-            void setDirection(const vec3& direction);
+            void setDirection(const vec3& direction, bool init = false);
             void setUp(const vec3& up);
             
             const mat4& getProjectionMatrix() const;

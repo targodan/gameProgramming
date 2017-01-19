@@ -94,6 +94,8 @@ namespace engine {
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData);
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData);
             
+            Entity getEntity(entityId_t id) const;
+            
             void clear() {
                 this->components.clear();
                 this->entityComponentIndexes.clear();

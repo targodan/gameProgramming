@@ -8,6 +8,8 @@
 #include "../../engine/src/util/vector.h"
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/ElementBuffer.h"
+#include "../../engine/src/renderer/Texture.h"
+#include "../../engine/src/renderer/TextureParameter.h"
 #include <iostream>
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -18,6 +20,8 @@
 namespace demo {
     using namespace engine::renderer::gl;
     using namespace engine::ECSCommon;
+    using namespace engine::renderer;
+    using glm::vec2;
     using glm::vec3;
     using engine::util::vector;
     using engine::Game;
@@ -33,14 +37,20 @@ namespace demo {
         PlacementComponent pc;
         pc.setPosition(triangleOrigin);
         pc.setDirection(vec3{0.f, 0.f, 0.f});
-              
-        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh")};
         
-        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f})};
-        vector<GLuint> indices = {0, 1, 2};  
+        Texture texture = {"src/media/container.jpg"};
+        vector<Texture> textures = {texture};
+        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
+                                                         "src/triangle_sh.fsh"), textures};
+        material.loadTextures();
+        
+        // TODO: Camera wrong way around?!
+        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{0.f, -1.f, -1.f}, vec3{1.f, 0.f, 0.f}, vec2{1.f, 1.f}), // bottom right ?!
+                                   Vertex(pc.getPosition()+vec3{0.f, -1.f, 1.f}, vec3{0.f, 1.f, 0.f}, vec2{0.f, 1.f}),  // bottom left ?!
+                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, -1.f}, vec3{0.f, 0.f, 1.f}, vec2{1.f, 0.f}),  // top right ?!
+                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 1.f}, vec3{1.f, 0.f, 0.f}, vec2{0.f, 0.f})};  // top left ?!
+        vector<GLuint> indices = {2, 0, 3,
+                                  0, 1, 3};
         Mesh mesh = {vertices, indices};
         mesh.loadMesh();
        
@@ -59,26 +69,6 @@ namespace demo {
         cc.setViewMatrix(pcPlayer.getPosition());
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
-        
-        
-//        while(this->window.isOpened()) {
-//            glfwPollEvents();
-//            glClearColor(0, 0.2f, 0.2f, 1.f);
-//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//            
-//            auto cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
-//            auto mesh = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMesh();
-//            auto shaderPtr = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMaterial().getShader();
-//
-//            shaderPtr->useProgram();
-//            shaderPtr->setUniform("projectionMatrix", cam.getProjectionMatrix());
-//            shaderPtr->setUniform("viewMatrix", cam.getViewMatrix());
-//            std::cout << "projection: " << glm::to_string(cc.getProjectionMatrix()) << std::endl;
-//            std::cout << "view: " << glm::to_string(cc.getViewMatrix()) << std::endl;
-//            
-//            mesh.render();
-//            glfwSwapBuffers(this->window.getWindow());
-//        }
     }
 
     Demo02::~Demo02() {
@@ -111,7 +101,7 @@ namespace demo {
         }
         
         if(this->window.isCursorInWindowArea()) {
-            auto& cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
+            auto& cam = this->player.getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
             cam.pan(newX-lastX, -(newY-lastY), 0.05f);
         }
         

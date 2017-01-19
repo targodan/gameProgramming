@@ -34,6 +34,7 @@ namespace engine {
             const glm::vec3& getPosition() const;
             glm::vec3& getPosition();
             
+            void move(const glm::vec3& v); 
             void setPosition(const glm::vec3& v);
             
             const glm::vec3& getDirection() const;

@@ -5,6 +5,10 @@
 
 namespace engine {
     namespace renderer {
+        Mesh::Mesh(vector<Vertex> vertices, DataUsagePattern usage) 
+            : material(nullptr), usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), wasLoaded(false) {
+            this->createVBO();
+        }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
             : material(nullptr), usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), indices(indices), wasLoaded(false) {
             this->createEBO();
@@ -59,13 +63,20 @@ namespace engine {
             this->material->makeActive();
             
             this->vao->bind();
-            this->vao->drawArrays();
+            if(this->indices.size() > 0) {
+                this->vao->drawElements();
+            } else {
+                this->vao->drawArrays();
+            }
             this->vao->unbind();
         }
         
         void Mesh::loadMesh() {
             this->vao->bind();
             this->vao->loadData();
+            if(this->indices.size() > 0) {
+                this->vao->loadIndices();
+            }
             this->vao->unbind();
             
             this->wasLoaded = true;

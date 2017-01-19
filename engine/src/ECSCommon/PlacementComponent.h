@@ -26,6 +26,7 @@ namespace engine {
 
         public:
             PlacementComponent();
+            PlacementComponent(const vec3& position, const vec3& direction = vec3());
             PlacementComponent(const PlacementComponent& orig);
             PlacementComponent(PlacementComponent&& orig);
             virtual ~PlacementComponent();

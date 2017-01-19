@@ -14,6 +14,7 @@ namespace engine {
         
         PlacementComponent::PlacementComponent() {
         }
+        PlacementComponent::PlacementComponent(const vec3& position, const vec3& direction) : position(position), direction(direction) {}
         PlacementComponent::PlacementComponent(const PlacementComponent& orig) : position(orig.position), direction(orig.direction) {
         }
         PlacementComponent::PlacementComponent(PlacementComponent&& orig) : position(std::move(orig.position)), direction(std::move(orig.direction)) {

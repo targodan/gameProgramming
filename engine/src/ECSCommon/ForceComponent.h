@@ -13,11 +13,11 @@ namespace engine {
             static componentId_t typeId;
             
         protected:
-            std::unique_ptr<engine::physics::Force> force;
+            std::shared_ptr<engine::physics::Force> force;
             
         public:
             ForceComponent() {}
-            ForceComponent(std::unique_ptr<engine::physics::Force> force) : force(std::move(force)) {}
+            ForceComponent(const std::shared_ptr<engine::physics::Force>& force) : force(force) {}
             ForceComponent(const ForceComponent& orig) = delete;
             virtual ~ForceComponent() {}
             

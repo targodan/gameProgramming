@@ -17,7 +17,8 @@ namespace engine {
                     const vector<size_t>& surfaceVertexIndices,
                     const Matrix<float, Dynamic, 1>& surfaceAreaPerVertex,
                     const Matrix<float, Dynamic, 1>& massPerVertex)
-                    : allVertices(allVertices), surfaceVertexIndices(surfaceVertexIndices),
+                    : allVertices(allVertices),
+                    surfaceVertexIndices(surfaceVertexIndices),
                     surfaceVertices(surfaceVertexIndices.size() * 3, 1),
                     surfaceAreaPerVertex(surfaceAreaPerVertex),
                     massPerVertex(massPerVertex) {
@@ -28,6 +29,13 @@ namespace engine {
                     this->surfaceVertices(i++) = this->allVertices(index * 3 + 2);
                 }
             }
+            
+            ObjectProperties(const ObjectProperties& orig)
+                    : allVertices(orig.allVertices),
+                    surfaceVertexIndices(orig.surfaceVertexIndices),
+                    surfaceVertices(orig.surfaceVertices),
+                    surfaceAreaPerVertex(orig.surfaceAreaPerVertex),
+                    massPerVertex(orig.massPerVertex) {}
             
             Matrix<float, Dynamic, 1> allVertices;
             vector<size_t> surfaceVertexIndices;

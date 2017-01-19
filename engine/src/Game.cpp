@@ -7,7 +7,7 @@
 #include <easylogging++.h>
 
 namespace engine {
-    Game::Game(int argc, char** argv, double ups) : updatesPerSecond(ups), window(1024,768), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(1024,768), entityManager(), systemManager(entityManager) {
         // Configure logger
         el::Configurations defaultConf;
         defaultConf.setToDefault();
@@ -59,13 +59,13 @@ namespace engine {
         this->systemManager.setup();
     }
     
-    void Game::render(double deltaTimeSeconds) {
+    void Game::render(float deltaTimeSeconds) {
         this->window.clear();
         this->systemManager.render(deltaTimeSeconds);
         this->window.swapBuffers();
     }
     
-    void Game::update(double deltaTimeSeconds) {
+    void Game::update(float deltaTimeSeconds) {
         this->systemManager.update(deltaTimeSeconds);
     }
     
@@ -76,28 +76,30 @@ namespace engine {
     }
 
     void Game::run() {
-        double currentTime = glfwGetTime();
-        double newTime = 0;
-        double updateTimeDelta = 0;
-        double frameTimeDelta = 0;
-        const double updateFrameTime = 1.f / this->updatesPerSecond;
-        double accumulator = updateFrameTime;
+        float gameTime = 0;
+        float currentTime = glfwGetTime();
+        float updateTimeDelta = 0;
+        const float updateFrameTime = 1.f / this->updatesPerSecond;
+        float accumulator = updateFrameTime;
         
         this->running = true;
         while(window.isOpened() && !this->aboutToClose) {
-            newTime = glfwGetTime();
+            float newTime = glfwGetTime();
+            float lagTime = newTime - currentTime;
             
-            frameTimeDelta = newTime - currentTime;
-            updateTimeDelta = frameTimeDelta > 0.25 ? frameTimeDelta : 0.25;
-            accumulator += updateTimeDelta;
-            currentTime = newTime;
-            while(accumulator >= updateFrameTime) { // Keep physics up-to-date with visuals
-                accumulator -= updateFrameTime;
-                
-                this->processEvents(); 
-                this->update(updateTimeDelta);
+            if(lagTime > 0.25) {
+                lagTime = 0.25;
             }
-            this->render(frameTimeDelta);
+            currentTime = newTime;
+            accumulator += lagTime;
+            while(accumulator >= updateFrameTime) { // Keep physics up-to-date with visuals
+                this->processEvents();
+                this->update(updateTimeDelta);
+                
+                gameTime += updateFrameTime;
+                accumulator -= updateFrameTime;
+            }
+            this->render(lagTime);
         }
         this->running = false;
     }

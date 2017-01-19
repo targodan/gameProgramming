@@ -10,6 +10,8 @@
 #include "./ECSCommon/DeformableBodyComponent.h"
 #include "./ECSCommon/DeformableBodySystem.h"
 #include "./ECSCommon/ForceComponent.h"
+#include "./ECSCommon/TimerComponent.h"
+#include "./ECSCommon/TimerSystem.h"
 
 #endif /* ECSCOMMON_H */
 

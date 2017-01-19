@@ -3,19 +3,23 @@
 
 #include "engine/physics/Force.h"
 
+#include <easylogging++.h>
+
 namespace demoSimulation {
     class OneShotForce : public engine::physics::Force {
     protected:
-        float startTime;
         bool shotFired = false;
         
     public:
-        OneShotForce(float startTime) : startTime(startTime) {}
+        OneShotForce() {}
         
-        Eigen::Matrix<float, Eigen::Dynamic, 1> getForceOnVertices(const engine::physics::ObjectProperties& object) const override {
-            Eigen::Matrix<float, Eigen::Dynamic, 1> forces = Eigen::Matrix<float, Eigen::Dynamic, 1>::Zero(object.allVertices.rows(), 1);
-            if(!shotFired && this->secondsSinceStart >= this->startTime) {
+        Eigen::Matrix<float, Eigen::Dynamic, 1> getForceOnVertices(const engine::physics::ObjectProperties& object) override {
+            auto size = object.allVertices.rows();
+            Eigen::Matrix<float, Eigen::Dynamic, 1> forces = Eigen::Matrix<float, Eigen::Dynamic, 1>::Zero(size, 1);
+            if(!this->shotFired && this->secondsSinceStart > 0) {
+                LOG(INFO) << "Boom.";
                 forces(2) = -5;
+                this->shotFired = true;
             }
             return forces;
         }

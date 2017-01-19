@@ -300,3 +300,6 @@ In order to not spend 90% of your time getting the engine to compile, check this
 * Easylogging++
 * cppunit
 * boost
+* SOIL
+* assimp (tested with v3.3.1)
+* Eigen (v3.*)

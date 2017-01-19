@@ -12,8 +12,14 @@
 #include <memory>
 #include "../util/Map.h"
 #include "../ECS/Message.h"
-#include "../ECS/MessageHandler.h"
+#include "Action.h"
+#include "ButtonInfo.h"
+#include "../ECS/messageId.h"
+#include "../ECS/EntityManager.h"
+#include "../util/vector.h"
 
+#define KEYBOARD -1
+#define MOUSE -2
 #define GLFW_JOYSTICK_A 0
 #define GLFW_JOYSTICK_B 1
 #define GLFW_JOYSTICK_X 2
@@ -33,24 +39,41 @@ namespace engine {
     namespace IO {
         using engine::util::Map;
         using engine::ECS::Message;
-        using engine::ECS::MessageHandler;
+        using engine::ECS::messageId_t;
+        using engine::IO::Action;
         using std::shared_ptr;
+        using util::vector;
+        using engine::ECS::EntityManager;
         
         class ButtonMapping {
         public:
-            ButtonMapping(GLFWwindow* window, shared_ptr<MessageHandler> handler, int dev );
-            ButtonMapping( const ButtonMapping& orig ) = delete;
+            ButtonMapping(GLFWwindow* window);
+            ButtonMapping( const ButtonMapping& orig );
             virtual ~ButtonMapping();
-            void insertMapping(int buttonId, shared_ptr<Message> msg);
-            void deleteMapping(int buttonId);
-            void deleteMapping(shared_ptr<Message> msg);
-            void queueMessages();
+            void insertMapping(int deviceID, int buttonID, shared_ptr<Action> msg, bool negate = false);
+            void deleteMapping(int deviceID, int buttonID);
+            vector<shared_ptr<Action>> getActions();
+            
+            
+            typedef struct DevButton {
+                int deviceID, buttonID;
+                bool negate;
+                bool operator==(const DevButton& btn) const {
+                    return (deviceID == btn.deviceID && buttonID == btn.buttonID);
+                }
+            } devButton;
+            
+            class MyHasher {
+            public:
+                size_t operator()(const DevButton& btn) const {
+                    auto h = std::hash<size_t>();
+                    return h(h(btn.deviceID) + h(btn.buttonID));
+                }
+            };
         private:
             GLFWwindow* window;
-            shared_ptr<MessageHandler> handler;
-            int device;
-            Map<int, shared_ptr<Message>> mapping;
-
+            Map<devButton, shared_ptr<Action>, MyHasher> mapping;
+            double lastx, lasty;
         };
     }
 }

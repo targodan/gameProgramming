@@ -23,13 +23,28 @@ namespace engine {
             this->devices.clear();
             for(int devNum = GLFW_JOYSTICK_1; devNum <= GLFW_JOYSTICK_LAST; devNum++) {
                 if(glfwJoystickPresent(devNum)) {
-                    this->devices.push_back(devNum);
+                    device dev;
+                    dev.deviceID = devNum;
+                    dev.name = glfwGetJoystickName(devNum);
+                    this->devices.push_back(dev);
                 }
             }
         }
         
-        vector<int> InputManager::getDevices() {
+        vector<device> InputManager::getDevices() {
             return this->devices;
+        }
+        
+        std::string InputManager::getDevicesString() {
+            std::string devs = "";
+            std::string curr = "";
+            
+            for(auto it = this->devices.begin(); it != this->devices.end(); it++) {
+                curr = ("Nr.: " + it->deviceID) + ("\tName: " + it->name) + "\n";
+                devs += curr;
+            }
+            
+            return devs;
         }
 
         void InputManager::pollEvents() {

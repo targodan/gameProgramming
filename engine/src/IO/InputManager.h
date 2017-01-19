@@ -9,8 +9,10 @@
 #define INPUTMANAGER_H
 
 #include <GLFW/glfw3.h>
+#include <string>
 #include <memory>
 #include "../util/vector.h"
+#include "Device.h"
 
 namespace engine {
     namespace IO {
@@ -24,12 +26,13 @@ namespace engine {
             virtual ~InputManager();
             static shared_ptr<InputManager> getInstance();
             void registerDevices();
-            vector<int> getDevices();
+            vector<device> getDevices();
             void pollEvents();
+            std::string getDevicesString();
             
         private:
             InputManager();
-            vector<int> devices;
+            vector<device> devices;
             
 
         };

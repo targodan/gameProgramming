@@ -23,11 +23,11 @@ namespace engine {
             return ret;
         }
         
-        Entity EntityManager::getEntity(entityId_t id) const {
+        Entity EntityManager::getEntity(entityId_t id) {
             if(this->entityComponentIndexes.find(id) == this->entityComponentIndexes.end()) {
                 throw WTFException("There is no entity with id %ul.", id);
             }
-            return Entity(id, *this, "ENTITY_NAMES_ARE_NOT_SAVED_YET");
+            return Entity(id, this, "ENTITY_NAMES_ARE_NOT_SAVED_YET");
         }
         
         Entity EntityManager::createEntityFromPrefab(const pb::Prefab& prefab) {

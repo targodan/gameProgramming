@@ -1,5 +1,6 @@
 #ifndef MESSAGEID_H
 #define MESSAGEID_H
+#include <cstddef>
 
 namespace engine {
     namespace ECS {

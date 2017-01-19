@@ -3,12 +3,13 @@
 #extension GL_ARB_separate_shader_objects : require
 
 in vec3 vertexColor;
-in vec2 texCoord;
+//in vec2 texCoord;
 
-uniform sampler2D diffuseTexture1;
+//uniform sampler2D diffuseTexture1;
 
 out vec4 color;
 
 void main() {
-    color = texture(diffuseTexture1, texCoord);
+    //color = texture(diffuseTexture1, texCoord)
+    color = vec4(vertexColor, 1.0f);
 }

@@ -11,7 +11,7 @@
 #include "../IOException.h"
 #include "../WTFException.h"
 #include <string>
-#include "SOIL.h"
+#include "SOIL/SOIL.h"
 #include <memory>
 
 namespace engine {

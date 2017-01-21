@@ -1,17 +1,16 @@
 #include "Game.h"
 
+#include <memory>
+
 #include "engine/renderer/Mesh.h"
 #include "engine/ECSCommon.h"
-#include "engine/ECSCommon/CustomUpdateSystem.h"
 #include "OneShotForce.h"
-
-#include "engine/renderer/TextRenderer.h"
-
-#include <easylogging++.h>
+#include "Actions.h"
 
 using namespace engine;
 using namespace engine::renderer;
 using namespace engine::ECSCommon;
+using namespace demo::IO;
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -99,9 +98,5 @@ namespace demoSimulation {
         this->systemManager.enableSystem<TimerSystem>();
         
         engine::Game::initialize();
-    }
-    
-    void Game::render(float deltaTimeSeconds) {
-        engine::Game::render(deltaTimeSeconds);
     }
 }

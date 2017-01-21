@@ -1,5 +1,7 @@
 #include "DeformableBody.h"
 
+#include <easylogging++.h>
+
 #ifndef ABS
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 #endif
@@ -48,9 +50,10 @@ namespace engine {
         float DeformableBody::calculateVolume() const {
             const Eigen::Map<MatrixXf> vertices(const_cast<float*>(this->currentPosition.data()), 3, this->currentPosition.rows() / 3);
             
-            Vector3f normal = ((Vector3f)vertices.col(0)).cross((Vector3f)vertices.col(1));
-            float baseArea = normal.norm();
-            normal /= baseArea;
+            Vector3f normal = ((Vector3f)(vertices.col(1) - vertices.col(0))).cross((Vector3f)(vertices.col(2) - vertices.col(0)));
+            float normalLength = normal.norm();
+            float baseArea = normalLength / 2;
+            normal *= 1 / normalLength;
             
             Hyperplane<float, 3> basePlane(normal, vertices.col(0));
             return baseArea * basePlane.absDistance(vertices.col(3)) / 3.;
@@ -67,7 +70,7 @@ namespace engine {
             auto A = Matrix<float, 4, 4>(buffer).inverse();
             
             auto B = SparseMatrix<float>(6, 12);
-            B.reserve(0);
+            B.reserve(36);
             B.insert(0, 0)  = A(0, 0);
             B.insert(0, 3)  = A(1, 0);
             B.insert(0, 6)  = A(2, 0);
@@ -125,15 +128,22 @@ namespace engine {
             return this->mass * mass;
         }
         
-        HouseholderQR<Matrix<float, 12, 12>> DeformableBody::calculateStepMatrix(float h) const {
-            Matrix<float, 12, 12> mat = this->calculateMassMatrix() + h * (h * this->stiffnessMatrix + this->dampeningMatrix);
-            return mat.householderQr();
+        SparseMatrix<float, ColMajor> DeformableBody::calculateStepMatrix(float h) const {
+            SparseMatrix<float, ColMajor> mat = this->calculateMassMatrix() + h * (h * this->stiffnessMatrix + this->dampeningMatrix);
+            mat.makeCompressed();
+            return mat;
+        }
+        
+        void DeformableBody::prepareStepMatrixSolver() {
+            this->stepMatrixSolver.analyzePattern(this->stepMatrix);
+            this->stepMatrixSolver.factorize(this->stepMatrix);
         }
             
         void DeformableBody::updateStepMatrixIfNecessary(float h) {
             if(this->stepSizeOnMatrixCalculation == 0
                     || ABS(this->stepSizeOnMatrixCalculation - h) / (float)this->stepSizeOnMatrixCalculation >= this->stepSizeDeviationPercentage) {
                 this->stepMatrix = this->calculateStepMatrix(h);
+                this->prepareStepMatrixSolver();
                 this->stepSizeOnMatrixCalculation = h;
             }
         }
@@ -145,7 +155,7 @@ namespace engine {
         Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const {
             return this->lastVelocities +
                     (
-                        this->stepMatrix.solve(
+                        this->stepMatrixSolver.solve(
                             h * (
                                 forces
                                 - this->dampeningMatrix * this->lastVelocities
@@ -159,11 +169,21 @@ namespace engine {
         }
         
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
+            this->lastVelocities = Matrix<float, 12, 1>::Zero();
             this->restPosition = this->calculatePlanarVectorsFromMesh();
             this->currentPosition = this->restPosition;
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
             this->updateStepMatrixIfNecessary(targetStepSize);
+            LOG(DEBUG) << "--------- DefomableBody ---------" << "\n"
+                    << "restPosition/currentPosition" << "\n"
+                    << this->restPosition << "\n"
+                    << "dampeningMatrix" << "\n"
+                    << this->dampeningMatrix << "\n"
+                    << "stiffnessMatrix" << "\n"
+                    << this->stiffnessMatrix << "\n"
+                    << "stepMatrix" << "\n"
+                    << this->stepMatrix << "\n";
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
@@ -174,6 +194,7 @@ namespace engine {
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;
+//            LOG(DEBUG) << "Positions(" << deltaT << ")" << std::endl << this->currentPosition;
             this->setMeshFromPlanarVectors(this->currentPosition);
             this->mesh.loadMesh();
         }

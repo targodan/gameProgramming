@@ -147,6 +147,7 @@
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
           </incDir>
+<<<<<<< HEAD
         </ccTool>
       </folder>
       <folder path="0/src/engine/ECSCommon/pb">
@@ -215,6 +216,8 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+=======
+>>>>>>> simulation
           <preprocessorList>
             <Elem>DEBUG</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
@@ -343,6 +346,7 @@
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -352,6 +356,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/CustomRenderSystem.cpp"
@@ -412,6 +419,7 @@
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -421,12 +429,16 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/ForceComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -436,6 +448,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/InputSystem.cpp"
@@ -462,6 +477,7 @@
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -471,12 +487,16 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -486,12 +506,16 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/RenderSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -501,6 +525,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/TextComponent.cpp"
@@ -584,6 +611,7 @@
             ex="false"
             tool="1"
             flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -593,6 +621,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/pb/Placement.pb.cc"
@@ -611,6 +642,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -620,6 +652,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
@@ -684,6 +719,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
+<<<<<<< HEAD
         <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
@@ -693,6 +729,9 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+=======
+        <ccTool flags="2">
+>>>>>>> simulation
         </ccTool>
       </item>
       <item path="src/engine/WindowResizeMessage.cpp"

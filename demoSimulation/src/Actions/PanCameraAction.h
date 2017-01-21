@@ -14,6 +14,8 @@
 #ifndef PANCAMERAACTION_H
 #define PANCAMERAACTION_H
 
+#include <memory>
+
 #include "../../../engine/src/IO/Action.h"
 #include "../../../engine/src/ECS/EntityManager.h"
 #include "../../../engine/src/ECSCommon/CameraComponent.h"
@@ -22,8 +24,10 @@ namespace demo {
     namespace IO {
         
         using engine::IO::Action;
+        using engine::ECS::Entity;
         using engine::ECS::EntityManager;
         using engine::ECSCommon::CameraComponent;
+        using std::shared_ptr;
         
         class PanCameraAction : public Action {
         public:

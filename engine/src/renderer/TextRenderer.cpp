@@ -150,7 +150,7 @@ namespace engine {
         TextRenderer::textPosition TextRenderer::calculateTextPosition(int xPixel, int yPixel) const {
             textPosition pos;
             pos.scaleX = 2.0 / this->windowWidth;
-            pos.scaleY = 2.0 / this->windowWidth;
+            pos.scaleY = 2.0 / this->windowHeight;
             pos.x = -1 + xPixel * pos.scaleX;
             pos.y = 1 - yPixel * pos.scaleY;
             return pos;
@@ -198,7 +198,6 @@ namespace engine {
             auto& resize = msg->to<WindowResizeMessage>();
             this->windowWidth = resize.getNewWidth();
             this->windowHeight = resize.getNewHeight();
-            LOG(INFO) << "Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
         }
         
         std::unique_ptr<TextRenderer> TextRenderer::instance = nullptr;

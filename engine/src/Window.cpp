@@ -31,7 +31,7 @@ namespace engine {
         glfwMakeContextCurrent(this->glfwWindow);
         
         glfwSetErrorCallback(Window::glfwErrorCallback);
-        glfwSetWindowSizeCallback(this->glfwWindow, Window::glfwResizeCallback);
+        glfwSetFramebufferSizeCallback(this->glfwWindow, Window::glfwFramebufferResizeCallback);
         glfwSetCursorEnterCallback(this->glfwWindow, Window::glfwCursorEnterCallback);
         
         int glInit = ogl_LoadFunctions();
@@ -40,7 +40,21 @@ namespace engine {
         }
         
         this->setClearColor(0.f, 0.f, 0.f); // Standard color a window is cleared with on Window::clear()
-        glViewport(0,0, this->width, this->height); // Set viewport
+        
+        /*
+         * Reason for changes:
+         * > While the size of a window is measured in screen coordinates,
+         * > OpenGL works with pixels. The size you pass into glViewport,
+         * > for example, should be in pixels. On some machines screen
+         * > coordinates and pixels are the same, but on others they will not be.
+         * > There is a second set of functions to retrieve the size, in pixels,
+         * > of the framebuffer of a window.
+         * 
+         * Source: http://www.glfw.org/docs/latest/window_guide.html
+         */
+        glfwGetFramebufferSize(this->glfwWindow, &this->width, &this->height);
+        glViewport(0, 0, this->width, this->height);
+        
         glEnable(GL_DEPTH_TEST); // Enable z-buffer
         
         Window::instance = this;
@@ -95,9 +109,8 @@ namespace engine {
         throw WTFException(msg.c_str());
     }
     
-    void Window::glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
+    void Window::glfwFramebufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
         glViewport(0, 0, newWidth, newHeight);
-        LOG(INFO) << "resize";
         if(Window::instance != nullptr) {
             Window::instance->messageHandler.queueMessage(std::shared_ptr<ECS::Message>(new WindowResizeMessage(newWidth, newHeight)));
         }

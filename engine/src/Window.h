@@ -26,7 +26,7 @@ namespace engine {
         static Window* instance;
 
         static void glfwErrorCallback(int error, const char* description);
-        static void glfwResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
+        static void glfwFramebufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight);
         static void glfwCursorEnterCallback(GLFWwindow* window, int entered);
         static bool cursorInAnyWindowArea; // Temporary cheat
     public:

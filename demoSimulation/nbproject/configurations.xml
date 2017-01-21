@@ -67,6 +67,7 @@
             <in>Material.cpp</in>
             <in>Mesh.cpp</in>
             <in>RichText.cpp</in>
+            <in>TextRenderer.cpp</in>
             <in>VertexArray.cpp</in>
             <in>VertexBuffer.cpp</in>
           </df>
@@ -115,9 +116,11 @@
       <flagsDictionary>
         <element flagsID="0"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC"/>
-        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp"/>
-        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
-        <element flagsID="3"
+        <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fstack-protector-strong -fopenmp -fPIC"/>
+        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp"/>
+        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="4"
                  commonFlags="-std=c++14 -pedantic -fopenmp -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
@@ -219,7 +222,7 @@
         </ccTool>
       </folder>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -236,7 +239,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -248,7 +251,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -260,7 +263,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -272,7 +275,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -284,7 +287,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -296,7 +299,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -340,7 +343,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -395,7 +398,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -409,7 +412,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -424,7 +427,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -459,7 +462,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -474,7 +477,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -489,7 +492,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -566,7 +569,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -581,7 +584,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -608,7 +611,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -620,7 +623,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -632,7 +635,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -644,7 +647,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -656,7 +659,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -681,7 +684,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -708,41 +711,41 @@
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/DeformableBody.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/ObjectProperties.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -771,7 +774,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -783,7 +786,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Font.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>../engine/src</pElem>
@@ -831,7 +834,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>../engine/src</pElem>
@@ -844,7 +847,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -856,7 +859,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -884,11 +887,35 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/engine/renderer/TextRenderer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/engine/renderer/VertexArray.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -903,7 +930,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -925,7 +952,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -941,7 +968,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/readFile.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -961,7 +988,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -973,7 +1000,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec4.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -985,7 +1012,7 @@
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -999,7 +1026,7 @@
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
     </conf>

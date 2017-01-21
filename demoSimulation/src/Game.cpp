@@ -37,41 +37,41 @@ namespace demoSimulation {
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1, 10);
         
         
-//        this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
-//                .addComponent<VisualComponent>(tetrahedronMesh, *material)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
+                .addComponent<VisualComponent>(tetrahedronMesh, *material)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
-//        auto& vc = this->tetrahedron.getComponent<VisualComponent>();
+        auto& vc = this->tetrahedron.getComponent<VisualComponent>();
         
-//        float volume = 0.1;
-//        float area = 5;
-//        float density = 920; // kg / m³
-//        float mass = volume * density;
-//        
-//        auto properties = 
-//                engine::physics::ObjectProperties::uniformTetrahedronDistribution(
-//                            engine::physics::ObjectProperties::verticesToFlatVector(vc.getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
-//                        )
-//                        .uniformDensity(volume, density)
-//                        .uniformAreaDistribution(area);
-//        
-//        auto defBody = std::make_shared<engine::physics::DeformableBody>(
-//                vc.getMesh(),
-//                properties,
-//                mass,
-//                0.1,
-//                0.05e9,
-//                0.4999,
-//                this->updatesPerSecond
-//            );
-//        
-//        auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
-//                .addComponent<DeformableBodyComponent>(defBody);
+        float volume = 0.1;
+        float area = 5;
+        float density = 920; // kg / m³
+        float mass = volume * density;
         
-//        auto force = std::make_shared<OneShotForce>();
-//        this->entityManager.createEntity("Force")
-//                .addComponent<TimerComponent>(5)
-//                .addComponent<ForceComponent>(force);
+        auto properties = 
+                engine::physics::ObjectProperties::uniformTetrahedronDistribution(
+                            engine::physics::ObjectProperties::verticesToFlatVector(vc.getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
+                        )
+                        .uniformDensity(volume, density)
+                        .uniformAreaDistribution(area);
+        
+        auto defBody = std::make_shared<engine::physics::DeformableBody>(
+                vc.getMesh(),
+                properties,
+                mass,
+                0.1,
+                0.05e9,
+                0.4999,
+                this->updatesPerSecond
+            );
+        
+        auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
+                .addComponent<DeformableBodyComponent>(defBody);
+        
+        auto force = std::make_shared<OneShotForce>();
+        this->entityManager.createEntity("Force")
+                .addComponent<TimerComponent>(5)
+                .addComponent<ForceComponent>(force);
         
         auto& fontfamiliy = FontRegistry::registerFontFamily(
             "DejaVuSans",
@@ -95,8 +95,8 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
-//        this->systemManager.enableSystem<DeformableBodySystem>();
-//        this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<DeformableBodySystem>();
+        this->systemManager.enableSystem<TimerSystem>();
         
         engine::Game::initialize();
     }

@@ -76,6 +76,7 @@ namespace engine {
     }
     
     void Game::processEvents() {
+        glfwPollEvents();
         while(this->messageHandler.hasQueuedMessages()) {
             this->messageHandler.dispatch(this->messageHandler.popMessageFromQueue());
         }

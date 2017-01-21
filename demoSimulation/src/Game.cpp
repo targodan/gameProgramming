@@ -82,9 +82,9 @@ namespace demoSimulation {
         
         RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
         testText << u8"Test öä§∑. "
-                << RichText::fontType(FontType::Bold) << RichText::color(Color(1, 1, 0, 1)) << u8"Bold"
+                << RichText::fontType(FontType::Bold) << RichText::color(Color(1, 1, 0, 1)) << u8"Bold "
                 << RichText::fontType(FontType::Italic) << RichText::color(Color::BLUE) << u8"Italic "
-                << RichText::fontType(FontType::Italic) << RichText::color(Color::GREEN) << u8"Italic ";
+                << RichText::fontType(FontType::BoldItalic) << RichText::color(Color::GREEN) << u8"BoldItalic ";
         
         LOG(INFO) << testText.getPlainText_utf8();
         

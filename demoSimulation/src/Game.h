@@ -13,10 +13,8 @@ namespace demoSimulation {
         engine::ECS::Entity camera;
         engine::ECS::Entity tetrahedron;
         
-        engine::renderer::Font font;
-        
     public:
-        Game(int argc, char** argv, double ups=60) : engine::Game(argc, argv, ups), font("/usr/share/fonts/TTF/DejaVuSans.ttf") {}
+        Game(int argc, char** argv, double ups=60) : engine::Game(argc, argv, ups) {}
         
         virtual void initialize() override;
     };

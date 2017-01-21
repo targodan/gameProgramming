@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "engine/renderer/Mesh.h"
+#include "engine/renderer/TextRenderer.h"
 #include "engine/ECSCommon.h"
 #include "OneShotForce.h"
 #include "Actions.h"
@@ -16,7 +17,6 @@ namespace demoSimulation {
     void Game::initialize() {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
         
-        engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
         LOG(INFO) << "Window dimensions: " << this->window.getWidth() << "x" << this->window.getHeight();
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});

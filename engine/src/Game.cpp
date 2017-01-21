@@ -12,7 +12,9 @@
 namespace engine {
     Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(this->messageHandler, 1024,768), entityManager(), systemManager(entityManager) {
         WindowResizeMessage::registerMessageType(this->messageHandler);
-        renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
+        engine::renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
+        
+        engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
         
         // Configure logger
         el::Configurations defaultConf;

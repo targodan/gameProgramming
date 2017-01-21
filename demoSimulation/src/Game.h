@@ -19,7 +19,6 @@ namespace demoSimulation {
         Game(int argc, char** argv, double ups=60) : engine::Game(argc, argv, ups), font("/usr/share/fonts/TTF/DejaVuSans.ttf") {}
         
         virtual void initialize() override;
-        virtual void render(float deltaTimeSeconds) override;
     };
 }
 

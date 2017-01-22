@@ -18,7 +18,7 @@ namespace demoSimulation {
             Eigen::Matrix<float, Eigen::Dynamic, 1> forces = Eigen::Matrix<float, Eigen::Dynamic, 1>::Zero(size, 1);
             if(!this->shotFired && this->secondsSinceStart > 0) {
                 LOG(INFO) << "Boom.";
-                forces(2) = -5;
+//                forces(2) = -5;
                 this->shotFired = true;
             }
             return forces;

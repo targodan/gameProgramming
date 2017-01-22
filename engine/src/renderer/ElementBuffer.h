@@ -34,7 +34,7 @@ namespace engine {
             
             virtual void bind() override {
                 if(ElementBuffer::anyEBOBound) {
-                    // TODO: Log warning; maybe bindBuffer to 0?
+                    LOG(WARNING) << "Trying to bind a EBO, but there is one bound already.";
                     ElementBuffer::anyEBOBound = false;
                 }
             

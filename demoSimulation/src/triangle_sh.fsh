@@ -3,7 +3,7 @@
 #extension GL_ARB_separate_shader_objects : require
 
 in vec3 vertexColor;
-//in vec2 texCoord;
+in vec2 texCoord;
 
 //uniform sampler2D diffuseTexture1;
 

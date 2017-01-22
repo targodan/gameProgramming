@@ -29,7 +29,7 @@ namespace engine {
             void setSizeInPixels(int pixel);
             void setSizeInPoint(float pt, int screenDPIHorizontal, int screenDPIVertical = -1);
             
-            const FT_GlyphSlot& renderChar(wchar_t c) const;
+            const FT_GlyphSlot& renderChar(char32_t c) const;
         };
     }
 }

@@ -21,7 +21,9 @@ namespace engine {
         // TODO: Understand and use window hints
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+#ifdef DEBUG
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // Request debug context
+#endif
 
         // TODO: Use GLFWmonitor for full screen mode, etc
         this->glfwWindow = glfwCreateWindow(width, this->height, this->title, nullptr, nullptr);

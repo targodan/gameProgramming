@@ -7,6 +7,8 @@
 #include "../util/vector.h"
 #include <list>
 
+#include <easylogging++.h>
+
 namespace engine {
     namespace renderer {
         using namespace gl;
@@ -48,7 +50,7 @@ namespace engine {
             }
             
             void setAttributePointers() {
-                for(auto attribute : this->attributes) {
+                for(auto& attribute : this->attributes) {
                     setAttributePointer(attribute);
                     enableAttribute(attribute.index);
                 }
@@ -60,8 +62,8 @@ namespace engine {
             
             virtual void bind() override {
                 if(VertexBuffer::anyVBOBound) {
-                    // TODO: Log warning; maybe bindBuffer to 0?
                     VertexBuffer::anyVBOBound = false;
+                    LOG(WARNING) << "Trying to bind a VBO, but there is one bound already.";
                 }
             
                 Buffer::bind();

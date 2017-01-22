@@ -5,6 +5,9 @@
       <df name="src">
         <df name="engine">
           <df name="ECS">
+            <df name="pb">
+              <in>EntityManager.pb.cc</in>
+            </df>
             <in>ComponentRegistry.cpp</in>
             <in>Entity.cpp</in>
             <in>EntityManager.cpp</in>
@@ -13,13 +16,22 @@
             <in>SystemRegistry.cpp</in>
           </df>
           <df name="ECSCommon">
+            <df name="pb">
+              <in>Placement.pb.cc</in>
+            </df>
+            <in>CameraComponent.cpp</in>
             <in>CameraRenderSystem.cpp</in>
+            <in>CustomRenderSystem.cpp</in>
+            <in>CustomUpdateSystem.cpp</in>
             <in>DeformableBodyComponent.cpp</in>
             <in>DeformableBodySystem.cpp</in>
             <in>ForceComponent.cpp</in>
+            <in>InputSystem.cpp</in>
             <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
             <in>RenderSystem.cpp</in>
+            <in>TextComponent.cpp</in>
+            <in>TimerComponent.cpp</in>
             <in>TimerSystem.cpp</in>
             <in>VisualComponent.cpp</in>
           </df>
@@ -28,6 +40,7 @@
             <in>Console.cpp</in>
             <in>EntityCommand.cpp</in>
             <in>InputManager.cpp</in>
+            <in>SerializerFactory.cpp</in>
           </df>
           <df name="math">
             <in>Matrix.cpp</in>
@@ -41,21 +54,36 @@
             <in>ObjectProperties.cpp</in>
           </df>
           <df name="renderer">
+            <df name="gl">
+              <in>gl_core_3_3.cpp</in>
+            </df>
             <in>Camera.cpp</in>
+            <in>Color.cpp</in>
             <in>ElementBuffer.cpp</in>
+            <in>Font.cpp</in>
+            <in>FontFamily.cpp</in>
+            <in>FontRegistry.cpp</in>
             <in>Material.cpp</in>
             <in>Mesh.cpp</in>
+            <in>RichText.cpp</in>
+            <in>TextRenderer.cpp</in>
             <in>VertexArray.cpp</in>
             <in>VertexBuffer.cpp</in>
           </df>
           <df name="util">
+            <df name="pb">
+              <in>vec.pb.cc</in>
+            </df>
             <in>ostream_helper.cpp</in>
             <in>readFile.cpp</in>
+            <in>unicode.cpp</in>
             <in>vec3.cpp</in>
             <in>vec4.cpp</in>
           </df>
+          <in>Exception.cpp</in>
           <in>Game.cpp</in>
           <in>Window.cpp</in>
+          <in>WindowResizeMessage.cpp</in>
         </df>
         <in>Game.cpp</in>
         <in>main.cpp</in>
@@ -85,9 +113,13 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fopenmp"/>
-        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
-        <element flagsID="2"
+        <element flagsID="0"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC"/>
+        <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fstack-protector-strong -fopenmp -fPIC"/>
+        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp"/>
+        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="4"
                  commonFlags="-std=c++14 -pedantic -fopenmp -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
@@ -104,7 +136,32 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src/engine">
+      <folder path="0/src/engine/ECS/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>/usr/include/google/protobuf/io</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/ECSCommon/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/ECSCommon/pb</pElem>
+            <pElem>/usr/include/google/protobuf/io</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/math">
         <ccTool>
           <incDir>
             <pElem>../engine/src</pElem>
@@ -114,6 +171,38 @@
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/physics">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/renderer/gl">
+        <ccTool>
+          <incDir>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/engine/util/pb">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/google/protobuf/io</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </folder>
       <folder path="0/test">
@@ -132,7 +221,7 @@
         </ccTool>
       </folder>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -149,43 +238,174 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECS/pb/EntityManager.pb.cc"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/CameraComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/glm/gtx</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/math</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/CameraRenderSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/CustomRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/CustomUpdateSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/DeformableBodyComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>DEBUG</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -193,45 +413,149 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/ForceComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/InputSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PlacementSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/RenderSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/TextComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/TimerComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/TimerSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
           <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>DEBUG</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
+            <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
       </item>
@@ -239,121 +563,426 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/pb/Placement.pb.cc"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/engine/Exception.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/IO/SerializerFactory.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf/util</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/WindowResizeMessage.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/DeformableBody.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/physics/ObjectProperties.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
         </ccTool>
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/Color.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/renderer/ElementBuffer.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/Font.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/FontFamily.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/FontRegistry.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/RichText.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/TextRenderer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/glm/gtc</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexArray.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/renderer/VertexBuffer.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/renderer/gl/gl_core_3_3.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/engine/util/ostream_helper.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/engine/util/readFile.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/util/unicode.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/util/vec3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/util/vec4.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -367,7 +996,7 @@
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
         </ccTool>
       </item>
     </conf>

@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include <memory>
+#include <thread>
 
 #include "engine/renderer/Mesh.h"
 #include "engine/renderer/TextRenderer.h"
@@ -23,11 +24,11 @@ namespace demoSimulation {
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
         Vertex backRight({0.5, 0, -0.5}, {1, 0, 0});
         Vertex up({0, 1, 0}, {1, 1, 0});
-        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up}, {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2});
+        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up}, {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2}, DataUsagePattern::DYNAMIC_DRAW);
         tetrahedronMesh.loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh"), true);
+                                                         "src/triangle_sh.fsh"), false);
         
         this->camera = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
@@ -88,8 +89,8 @@ namespace demoSimulation {
         
         LOG(INFO) << testText.getPlainText_utf8();
         
-        this->entityManager.createEntity("testtext")
-                .addComponent<TextComponent>(testText, 50, 100);
+//        this->entityManager.createEntity("testtext")
+//                .addComponent<TextComponent>(testText, 50, 100);
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
@@ -98,5 +99,9 @@ namespace demoSimulation {
         this->systemManager.enableSystem<TimerSystem>();
         
         engine::Game::initialize();
+    }
+    
+    void Game::render(float deltaTimeSeconds) {
+        engine::Game::render(deltaTimeSeconds);
     }
 }

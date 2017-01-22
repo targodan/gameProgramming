@@ -87,7 +87,6 @@ namespace engine {
     void Game::run() {
         float gameTime = 0;
         float currentTime = glfwGetTime();
-        float updateTimeDelta = 0;
         const float updateFrameTime = 1.f / this->updatesPerSecond;
         float accumulator = updateFrameTime;
         
@@ -103,7 +102,7 @@ namespace engine {
             accumulator += lagTime;
             while(accumulator >= updateFrameTime) { // Keep physics up-to-date with visuals
                 this->processEvents();
-                this->update(updateTimeDelta);
+                this->update(updateFrameTime);
                 
                 gameTime += updateFrameTime;
                 accumulator -= updateFrameTime;

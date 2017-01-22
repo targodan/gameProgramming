@@ -24,9 +24,9 @@ namespace engine {
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); // Request debug context
 
         // TODO: Use GLFWmonitor for full screen mode, etc
-        this->glfwWindow = glfwCreateWindow(width, height, this->title, nullptr, nullptr);
-        if(!glfwWindow) {
-            throw WTFException("Failed to create window");
+        this->glfwWindow = glfwCreateWindow(width, this->height, this->title, nullptr, nullptr);
+        if(!this->glfwWindow) {
+            throw WTFException("Failed to create window. Errorcode: 0x%08zX", reinterpret_cast<size_t>(this->glfwWindow));
         }
         glfwMakeContextCurrent(this->glfwWindow);
         

@@ -31,7 +31,7 @@ namespace demo {
             PanCameraAction(const PanCameraAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player){}
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
-                camera.pan(this->bi.xAxis, this->bi.yAxis);
+                camera.pan(this->bi.xAxis, this->bi.yAxis, 1e-3);
             }
         private:
             shared_ptr<Entity> player;

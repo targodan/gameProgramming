@@ -25,7 +25,7 @@ DEBUG = false
 # compiler flags:
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
-C_FLAGS_COMMON = -std=c++14 -Wall -fPIC -I$(ENGINEDIR)/src -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -DELPP_THREAD_SAFE -fPIC -I$(ENGINEDIR)/src -I$(SRCDIR)
 LD_FLAGS_COMMON = -L. -lengine -lSOIL -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm  -pthread -Wl,-rpath=.,--as-needed 
 
 ifeq ($(CC),g++)

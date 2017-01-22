@@ -2,26 +2,28 @@
 #include "TextureUnit.h"
 #include "../WTFException.h"
 
+#include "gl/gl_core_3_3.h"
+
 namespace engine {
     namespace renderer {
-        Material::Material(std::shared_ptr<ShaderProgram> shader) : shader(shader) {
+        Material::Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe) : shader(shader), renderAsWireframe(renderAsWireframe) {
 #ifdef DEBUG
             if(!this->shader) {
                 throw WTFException("Could not create material: shader pointer invalid.");
             }
 #endif 
         }
-        Material::Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures) : shader(shader), textures(textures) {
+        Material::Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures, bool renderAsWireframe) : shader(shader), textures(textures), renderAsWireframe(renderAsWireframe) {
 #ifdef DEBUG
             if(!this->shader) {
                 throw WTFException("Could not create material: shader pointer invalid.");
             }
 #endif
         }
-        Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures) {
+        Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures), renderAsWireframe(orig.renderAsWireframe) {
             
         }
-        Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)) {
+        Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)), renderAsWireframe(orig.renderAsWireframe) {
             
         } 
         
@@ -50,6 +52,10 @@ namespace engine {
         }
         
         void Material::makeActive() {
+            if(this->renderAsWireframe) {
+                gl::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            }
+            
             this->shader->useProgram();
             
             int specularCnt = 0;
@@ -68,6 +74,12 @@ namespace engine {
                 textures[i].bind();
             }
             // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
+        }
+        
+        void Material::makeInactive() {
+            if(this->renderAsWireframe) {
+                gl::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
         }
         
         void Material::loadTextures() {

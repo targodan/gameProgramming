@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "../WTFException.h"
+#include "../IllegalArgumentException.h"
 #include "../util/Array.h"
 #include "../util/Map.h"
 #include "../util/vector.h"
@@ -43,9 +44,7 @@ namespace engine {
             Entity createEntity(size_t id, const std::string& name);
             Entity createEntityFromPrefab(const pb::Prefab& msg);
             void addComponent(entityId_t eId, shared_ptr<Component> component);
-            inline size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
-                return this->entityComponentIndexes[eId][compId];
-            }
+            size_t getComponentIndexOfEntity(entityId_t eId, componentId_t compId);
             shared_ptr<Component> getComponentOfEntity(entityId_t eId, componentId_t compId);
             bool doesEntityContainComponentOfType(entityId_t eId, componentId_t compId);
             

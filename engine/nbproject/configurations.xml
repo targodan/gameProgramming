@@ -23,15 +23,35 @@
             <in>Placement.pb.cc</in>
             <in>Placement.proto</in>
           </df>
+          <in>CameraComponent.cpp</in>
+          <in>CameraRenderSystem.cpp</in>
+          <in>CustomRenderSystem.cpp</in>
+          <in>CustomUpdateSystem.cpp</in>
+          <in>DeformableBodyComponent.cpp</in>
+          <in>DeformableBodyComponent.h</in>
+          <in>DeformableBodySystem.cpp</in>
+          <in>DeformableBodySystem.h</in>
+          <in>ForceComponent.cpp</in>
+          <in>ForceComponent.h</in>
+          <in>InputSystem.cpp</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
+          <in>RenderSystem.cpp</in>
+          <in>TextComponent.cpp</in>
+          <in>TimerComponent.cpp</in>
+          <in>TimerComponent.h</in>
+          <in>TimerSystem.cpp</in>
+          <in>TimerSystem.h</in>
+          <in>VisualComponent.cpp</in>
         </df>
         <df name="IO">
+          <in>ButtonMapping.cpp</in>
           <in>Command.h</in>
           <in>Console.cpp</in>
           <in>Console.h</in>
           <in>EntityCommand.cpp</in>
           <in>EntityCommand.h</in>
+          <in>InputManager.cpp</in>
           <in>Keys.h</in>
           <in>Serializable.h</in>
           <in>Serializer.h</in>
@@ -44,13 +64,29 @@
           <in>Vector3.cpp</in>
           <in>functions.cpp</in>
         </df>
+        <df name="physics">
+          <in>DeformableBody.cpp</in>
+          <in>Explosion.cpp</in>
+          <in>Explosion.h</in>
+          <in>Force.h</in>
+          <in>ObjectProperties.cpp</in>
+          <in>ObjectProperties.h</in>
+        </df>
         <df name="renderer">
           <df name="gl">
             <in>gl_core_3_3.cpp</in>
           </df>
+          <in>Camera.cpp</in>
+          <in>Color.cpp</in>
+          <in>ElementBuffer.cpp</in>
+          <in>Font.cpp</in>
+          <in>FontFamily.cpp</in>
+          <in>FontRegistry.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
+          <in>RichText.cpp</in>
           <in>ShaderProgram.cpp</in>
+          <in>TextRenderer.cpp</in>
           <in>VertexArray.cpp</in>
           <in>VertexBuffer.cpp</in>
         </df>
@@ -61,12 +97,14 @@
           <in>ostream_helper.cpp</in>
           <in>readFile.cpp</in>
           <in>stringstream.h</in>
+          <in>unicode.cpp</in>
           <in>vec2.h</in>
           <in>vec3.cpp</in>
           <in>vec3.h</in>
           <in>vec4.cpp</in>
           <in>vec4.h</in>
         </df>
+        <in>Camera.cpp</in>
         <in>CastException.h</in>
         <in>ECS.h</in>
         <in>ECSCommon.h</in>
@@ -76,6 +114,7 @@
         <in>IO.h</in>
         <in>InvalidConversionException.h</in>
         <in>Window.cpp</in>
+        <in>WindowResizeMessage.cpp</in>
         <in>engine.h</in>
         <in>util.h</in>
       </df>
@@ -104,6 +143,9 @@
           <in>MatrixTest.cpp</in>
           <in>SqrtTest.cpp</in>
           <in>VectorTest.cpp</in>
+        </df>
+        <df name="physics">
+          <in>DeformableBodyTest.cpp</in>
         </df>
         <df name="util">
           <in>MapTest.cpp</in>
@@ -146,9 +188,6 @@
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-std=c++14 -pedantic -fPIC">
             <standard>11</standard>
-            <incDir>
-              <pElem>src</pElem>
-            </incDir>
             <preprocessorList>
               <Elem>DEBUG</Elem>
             </preprocessorList>
@@ -159,10 +198,94 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <folder path="0/src">
+      <folder path="0/src/ECS">
         <ccTool>
           <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
             <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/ECSCommon">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/IO">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/math">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/physics">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/renderer/gl">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/util">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/test">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
           </incDir>
         </ccTool>
       </folder>
@@ -190,6 +313,14 @@
           </incDir>
         </ccTool>
       </folder>
+      <folder path="0/test/physics">
+        <ccTool>
+          <incDir>
+            <pElem>test</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <folder path="0/test/util">
         <ccTool>
           <incDir>
@@ -197,7 +328,13 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
+      <item path="src/Camera.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -210,8 +347,6 @@
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -229,7 +364,52 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECSCommon/CameraComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/CameraRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/CustomRenderSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/CustomUpdateSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
@@ -242,19 +422,57 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/RenderSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TextComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/IO.h" ex="false" tool="3" flavor2="0">
+      <item path="src/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -264,15 +482,37 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/Window.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/engine.h" ex="false" tool="3" flavor2="0">
+      <item path="src/WindowResizeMessage.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -290,31 +530,169 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/physics/DeformableBody.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/renderer/Color.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/ElementBuffer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/Font.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/FontFamily.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/FontRegistry.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/RichText.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/ShaderProgram.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/renderer/TextRenderer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/gl/gl_core_3_3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/util.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -324,7 +702,13 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/util/unicode.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
       <item path="src/util/vec3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -368,6 +752,11 @@
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
+      </item>
+      <item path="test/physics/DeformableBodyTest.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -463,6 +852,32 @@
       </item>
       <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodyComponent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/DeformableBodySystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
@@ -473,6 +888,16 @@
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/pb/Placement.proto" ex="false" tool="3" flavor2="0">
       </item>
@@ -527,6 +952,16 @@
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/Explosion.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

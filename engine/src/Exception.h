@@ -28,5 +28,21 @@ namespace engine {
     };
 }
 
+#define DECLARE_EXCEPTION(name) \
+    class name : public Exception { \
+    public: \
+        name(const char* what, ...) { \
+            va_list list; \
+            va_start(list, what); \
+            this->initFromList(what, list); \
+            va_end(list); \
+        } \
+        name(const char* what, va_list list) { \
+            this->initFromList(what, list); \
+        } \
+        name(const name& orig) : Exception(orig) {} \
+        virtual ~name() {} \
+    }; \
+
 #endif /* EXCEPTION_H */
 

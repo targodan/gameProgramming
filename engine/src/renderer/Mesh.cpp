@@ -14,12 +14,14 @@ namespace engine {
             this->createEBO();
             this->createVBO();
         }
+        
         Mesh::Mesh(const Mesh& orig)
             : usage(orig.usage), 
                 vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
             this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
             this->vao = orig.vao==nullptr ? nullptr : std::make_unique<VertexArray>(*(orig.vao));
         }
+        
         Mesh::Mesh(Mesh&& orig)
             : material(std::move(orig.material)), usage(std::move(orig.usage)), vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
             //this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
@@ -67,6 +69,8 @@ namespace engine {
                 this->vao->drawArrays();
             }
             this->vao->unbind();
+            
+            this->material->makeInactive();
         }
         
         void Mesh::loadMesh() {
@@ -184,6 +188,14 @@ namespace engine {
             } else {
                 this->applyTransformation_Sequential(transformMatrix);
             }
+        }
+        
+        Mesh::VertexProxy Mesh::getVertices() {
+            return VertexProxy(*this);
+        }
+        
+        const Mesh::ConstVertexProxy Mesh::getVertices() const {
+            return ConstVertexProxy(*this);
         }
     }
 }

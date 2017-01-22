@@ -136,11 +136,4 @@ namespace demo {
         this->lastX = newX;
         this->lastY = newY; */
     }
-
-    void Demo02::render(double deltaTimeSeconds) {
-        Game::render(deltaTimeSeconds);
-    }
-
-    void Demo02::update(double deltaTimeSeconds) {
-    }
 }

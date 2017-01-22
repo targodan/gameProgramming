@@ -4,6 +4,7 @@
     <df root="." name="0">
       <df name="src">
         <in>demo02.cpp</in>
+        <in>main.cpp</in>
         <in>notmain.cpp</in>
       </df>
     </df>
@@ -48,14 +49,25 @@
           <itemPath>../engine/src/ECSCommon/pb/Placement.pb.cc</itemPath>
           <itemPath>../engine/src/ECSCommon/pb/Placement.pb.h</itemPath>
         </logicalFolder>
+        <itemPath>../engine/src/ECSCommon/CameraComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/CameraRenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/DeformableBodyComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/DeformableBodySystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/ForceComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/InputSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/RenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/TimerComponent.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/TimerSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/VisualComponent.h</itemPath>
       </logicalFolder>
       <logicalFolder name="IO" displayName="IO" projectFiles="true">
+        <itemPath>../engine/src/IO/Action.h</itemPath>
+        <itemPath>../engine/src/IO/ButtonInfo.h</itemPath>
+        <itemPath>../engine/src/IO/ButtonMapping.h</itemPath>
         <itemPath>../engine/src/IO/Serializable.h</itemPath>
         <itemPath>../engine/src/IO/Serializer.h</itemPath>
         <itemPath>../engine/src/IO/SerializerFactory.cpp</itemPath>
@@ -73,6 +85,11 @@
         <itemPath>../engine/src/math/functions.cpp</itemPath>
         <itemPath>../engine/src/math/functions.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="physics" displayName="physics" projectFiles="true">
+        <itemPath>../engine/src/physics/DeformableBody.h</itemPath>
+        <itemPath>../engine/src/physics/Force.h</itemPath>
+        <itemPath>../engine/src/physics/ObjectProperties.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
         <logicalFolder name="gl" displayName="gl" projectFiles="true">
           <itemPath>../engine/src/renderer/gl/gl_core_3_3.h</itemPath>
@@ -89,11 +106,15 @@
         <itemPath>../engine/src/renderer/DataType.h</itemPath>
         <itemPath>../engine/src/renderer/DataUsagePattern.h</itemPath>
         <itemPath>../engine/src/renderer/ElementBuffer.h</itemPath>
+        <itemPath>../engine/src/renderer/ImageFormat.h</itemPath>
         <itemPath>../engine/src/renderer/Material.h</itemPath>
         <itemPath>../engine/src/renderer/Mesh.h</itemPath>
         <itemPath>../engine/src/renderer/Shader.h</itemPath>
         <itemPath>../engine/src/renderer/ShaderProgram.h</itemPath>
         <itemPath>../engine/src/renderer/ShaderType.h</itemPath>
+        <itemPath>../engine/src/renderer/Texture.h</itemPath>
+        <itemPath>../engine/src/renderer/TextureParameter.h</itemPath>
+        <itemPath>../engine/src/renderer/TextureType.h</itemPath>
         <itemPath>../engine/src/renderer/Vertex.h</itemPath>
         <itemPath>../engine/src/renderer/VertexArray.h</itemPath>
         <itemPath>../engine/src/renderer/VertexAttribute.h</itemPath>
@@ -113,6 +134,7 @@
         <itemPath>../engine/src/util/ostream_helper.cpp</itemPath>
         <itemPath>../engine/src/util/ostream_helper.h</itemPath>
         <itemPath>../engine/src/util/readFile.h</itemPath>
+        <itemPath>../engine/src/util/stringstream.h</itemPath>
         <itemPath>../engine/src/util/thread_helper.h</itemPath>
         <itemPath>../engine/src/util/vec2.h</itemPath>
         <itemPath>../engine/src/util/vec3.h</itemPath>
@@ -121,6 +143,7 @@
       </logicalFolder>
       <itemPath>../engine/src/CastException.h</itemPath>
       <itemPath>../engine/src/CollisionException.h</itemPath>
+      <itemPath>../engine/src/ECSCommon.h</itemPath>
       <itemPath>../engine/src/EmptyQueueException.h</itemPath>
       <itemPath>../engine/src/Exception.cpp</itemPath>
       <itemPath>../engine/src/Exception.h</itemPath>
@@ -132,6 +155,7 @@
       <itemPath>../engine/src/WTFException.h</itemPath>
       <itemPath>../engine/src/Window.cpp</itemPath>
       <itemPath>../engine/src/Window.h</itemPath>
+      <itemPath>../engine/src/util.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -156,8 +180,7 @@
       <flagsDictionary>
         <element flagsID="0"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fPIC -fstack-protector-strong"/>
-        <element flagsID="1" commonFlags="-std=c++14"/>
-        <element flagsID="2" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++14 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -569,7 +592,13 @@
         <ccTool>
           <incDir>
             <pElem>../engine/src</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="src/ECS/pb">
@@ -661,14 +690,11 @@
         </ccTool>
       </folder>
       <item path="src/demo02.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-          </preprocessorList>
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/notmain.cpp" ex="false" tool="1" flavor2="11">

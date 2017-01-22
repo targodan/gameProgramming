@@ -13,13 +13,13 @@ namespace engine {
         
         class ShaderProgram {
         public:
-            ShaderProgram(std::string vertexShaderFile, std::string fragmentShaderFile) 
+            ShaderProgram(const std::string& vertexShaderFile, const std::string& fragmentShaderFile) 
                 : linked(false) {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
                 this->id = glCreateProgram();
 
-                createShader(vertexShaderFile, ShaderType::VERTEX_SHADER);
-                createShader(fragmentShaderFile, ShaderType::FRAGMENT_SHADER);
+                createShaderFromFile(vertexShaderFile, ShaderType::VERTEX_SHADER);
+                createShaderFromFile(fragmentShaderFile, ShaderType::FRAGMENT_SHADER);
                 
                 this->linkProgram();
             }
@@ -66,7 +66,23 @@ namespace engine {
             }
             
             static Map<ShaderType, std::string> type2FileExtension;
+            
+            static ShaderProgram createShaderProgramFromSource(const std::string& vertexShader, const std::string& fragmentShader) {
+                ShaderProgram sp;
+                
+                sp.createShader(vertexShader, ShaderType::VERTEX_SHADER);
+                sp.createShader(fragmentShader, ShaderType::FRAGMENT_SHADER);
+                
+                sp.linkProgram();
+                
+                return sp;
+            }
         private:
+            ShaderProgram() : linked(false) {
+                this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
+                this->id = glCreateProgram();
+            }
+            
             void setUniform(GLint location, GLint data) {
                 glUniform1i(location, data);
             }
@@ -96,8 +112,12 @@ namespace engine {
                 glUniformMatrix4fv(location, 1, transpose, glm::value_ptr(data));
             }
             
-            void createShader(std::string fileName, ShaderType type) {
+            void createShaderFromFile(std::string fileName, ShaderType type) {
                 std::string sourceCode = readFile(fileName, _getShaderFileExtensionForType(type));
+                this->createShader(sourceCode, type);
+            }
+            
+            void createShader(std::string sourceCode, ShaderType type) {
                 auto sourceCodePtr = std::make_unique<std::string>(sourceCode);
                 Shader* shader = new Shader{std::move(sourceCodePtr), type};
                 

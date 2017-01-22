@@ -38,6 +38,7 @@ demo05/demo05
 demo06/demo06
 demo07/demo07
 demoGL/demoGL
+demoSimulation/demoSimulation
 runTests
 vgcore.*
 explosionBoy
@@ -46,6 +47,8 @@ explosionBoy
 **/nbproject/private/*
 /engine/build/
 /exposionBoy/build/
+/demoSimulation/build/
+/demoGL/build/
 
 # Logs
 *.log
@@ -53,7 +56,6 @@ explosionBoy
 # protobuf generated
 *.pb.h
 *.pb.cc
-/demoGL/build/
 
 # Blender backups
 *.blend[0-9]

@@ -117,9 +117,9 @@ namespace engine {
             Vector<dimRows> mul(const Vector<dimCols>& v) const {
                 Vector<dimRows> ret;
                 
-                for(int y = 0; y < dimRows; ++y) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
                     ret.elements[y] = 0;
-                    for(int x = 0; x < dimCols; ++x) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
                         ret.elements[y] += this->elements[this->coordToIndex(x, y)] * v.elements[x];
                     }
                 }
@@ -128,8 +128,8 @@ namespace engine {
             }
             
             Matrix<dimCols, dimRows>& mul(const float& v) {
-                for(int y = 0; y < dimRows; ++y) {
-                    for(int x = 0; x < dimCols; ++x) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
                         this->elements[this->coordToIndex(x, y)] *= v;
                     }
                 }
@@ -137,19 +137,20 @@ namespace engine {
             }
             
             Matrix<dimCols, dimRows>& div(const float& v) {
-                for(int y = 0; y < dimRows; ++y) {
-                    for(int x = 0; x < dimCols; ++x) {
+                for(unsigned int y = 0; y < dimRows; ++y) {
+                    for(unsigned int x = 0; x < dimCols; ++x) {
                         this->elements[this->coordToIndex(x, y)] /= v;
                     }
                 }
                 return *this;
             }
             
-            Matrix<dimRows, dimRows> mul(const Matrix<dimRows, dimCols>& m) const {
-                Matrix<dimRows, dimRows> ret;
+            template<unsigned int dimColsRight>
+            Matrix<dimColsRight, dimRows> mul(const Matrix<dimColsRight, dimCols>& m) const {
+                Matrix<dimColsRight, dimRows> ret;
                 
                 for(unsigned int y = 0; y < dimRows; ++y) {
-                    for(unsigned int x = 0; x < dimRows; ++x) {
+                    for(unsigned int x = 0; x < dimColsRight; ++x) {
                         ret.elements[ret.coordToIndex(x, y)] = 0;
                         
                         for(unsigned int i = 0; i < dimCols; ++i) {
@@ -242,7 +243,7 @@ namespace engine {
                 
                 Matrix<dimCols-1, dimRows-1> ret;
                 int yDest = 0;
-                for(int ySrc = 0; ySrc < dimRows; ++ySrc) {
+                for(unsigned int ySrc = 0; ySrc < dimRows; ++ySrc) {
                     if(ySrc == y) {
                         continue;
                     }
@@ -318,11 +319,12 @@ namespace engine {
                 }
                 return ConstProxy(this, x);
             }
-            
-            friend Matrix<dimRows, dimRows> operator*(
+        
+            template<unsigned int dimColsRight>
+            friend Matrix<dimColsRight, dimRows> operator*(
                     const Matrix<dimCols, dimRows>& m1,
-                    const Matrix<dimRows, dimCols>& m2) {
-                return m1.mul(m2);
+                    const Matrix<dimColsRight, dimCols>& m2) {
+                return m1.template mul(m2);
             }
             
             friend Vector<dimRows> operator*(

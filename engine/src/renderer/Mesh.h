@@ -27,6 +27,57 @@ namespace engine {
          */
         class Mesh {
         public:
+            class ConstVertexProxy {
+                const Mesh& m;
+                ConstVertexProxy(const Mesh& m) : m(m) {}
+                ConstVertexProxy(const Mesh&& m) : m(m) {}
+                
+                friend class Mesh;
+            public:
+                const Vertex& operator[](size_t i) const {
+                    return m.vertices[i];
+                }
+                
+                size_t size() const {
+                    return m.vertices.size();
+                }
+                
+                vector<Vertex>::const_iterator begin() const {
+                    return m.vertices.begin();
+                }
+                
+                vector<Vertex>::const_iterator end() const {
+                    return m.vertices.end();
+                }
+            };
+            class VertexProxy {
+                Mesh& m;
+                VertexProxy(Mesh& m) : m(m) {}
+                VertexProxy(Mesh&& m) : m(m) {}
+                
+                friend class Mesh;
+            public:
+                Vertex& operator[](size_t i) {
+                    return m.vertices[i];
+                }
+                
+                size_t size() const {
+                    return m.vertices.size();
+                }
+                
+                vector<Vertex>::iterator begin() {
+                    return m.vertices.begin();
+                }
+                
+                vector<Vertex>::iterator end() {
+                    return m.vertices.end();
+                }
+                
+                operator ConstVertexProxy() const {
+                    return ConstVertexProxy(this->m);
+                }
+            };
+            
             Mesh() : wasLoaded(false) {}
             Mesh(vector<Vertex> vertices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
@@ -53,6 +104,9 @@ namespace engine {
             
             void applyTransformation(glm::mat3 transformMatrix);
             void applyTransformation(glm::mat4 transformMatrix);
+            
+            VertexProxy getVertices();
+            const ConstVertexProxy getVertices() const;
         private:
             void createVBO();
             void createEBO();

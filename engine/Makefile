@@ -26,11 +26,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -pthread -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -DELPP_THREAD_SAFE `freetype-config --cflags` -pthread -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread -Wl,--as-needed
+LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread `freetype-config --libs` -Wl,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -42,7 +42,7 @@ endif
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
-C_FLAGS_RELEASE = -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
+C_FLAGS_RELEASE = -DNDEBUG -DBOOST_UBLAS_NDEBUG -DEIGEN_NO_DEBUG -O3 -march=native -msse2
 # -g    adds debugging information to the executable file
 # -gdwarf4: use the newer v4 format for debugging information
 C_FLAGS_DEBUG = -O0 -g -DDEBUG -gdwarf-4

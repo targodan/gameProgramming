@@ -6,8 +6,16 @@
 
 #include <easylogging++.h>
 
+#include "WindowResizeMessage.h"
+#include "renderer/TextRenderer.h"
+
 namespace engine {
-    Game::Game(int argc, char** argv, double ups) : updatesPerSecond(ups), window(1024,768), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(this->messageHandler, 1024,768), entityManager(), systemManager(entityManager) {
+        WindowResizeMessage::registerMessageType(this->messageHandler);
+        engine::renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
+        
+        engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
+        
         // Configure logger
         el::Configurations defaultConf;
         defaultConf.setToDefault();
@@ -59,45 +67,47 @@ namespace engine {
         this->systemManager.setup();
     }
     
-    void Game::render(double deltaTimeSeconds) {
+    void Game::render(float deltaTimeSeconds) {
         this->window.clear();
         this->systemManager.render(deltaTimeSeconds);
         this->window.swapBuffers();
     }
     
-    void Game::update(double deltaTimeSeconds) {
+    void Game::update(float deltaTimeSeconds) {
         this->systemManager.update(deltaTimeSeconds);
     }
     
     void Game::processEvents() {
+        glfwPollEvents();
         while(this->messageHandler.hasQueuedMessages()) {
             this->messageHandler.dispatch(this->messageHandler.popMessageFromQueue());
         }
     }
 
     void Game::run() {
-        double currentTime = glfwGetTime();
-        double newTime = 0;
-        double updateTimeDelta = 0;
-        double frameTimeDelta = 0;
-        const double updateFrameTime = 1.f / this->updatesPerSecond;
-        double accumulator = updateFrameTime;
+        float gameTime = 0;
+        float currentTime = glfwGetTime();
+        const float updateFrameTime = 1.f / this->updatesPerSecond;
+        float accumulator = updateFrameTime;
         
         this->running = true;
         while(window.isOpened() && !this->aboutToClose) {
-            newTime = glfwGetTime();
+            float newTime = glfwGetTime();
+            float lagTime = newTime - currentTime;
             
-            frameTimeDelta = newTime - currentTime;
-            updateTimeDelta = frameTimeDelta > 0.25 ? frameTimeDelta : 0.25;
-            accumulator += updateTimeDelta;
-            currentTime = newTime;
-            while(accumulator >= updateFrameTime) { // Keep physics up-to-date with visuals
-                accumulator -= updateFrameTime;
-                
-                this->processEvents(); 
-                this->update(updateTimeDelta);
+            if(lagTime > 0.25) {
+                lagTime = 0.25;
             }
-            this->render(frameTimeDelta);
+            currentTime = newTime;
+            accumulator += lagTime;
+            while(accumulator >= updateFrameTime) { // Keep physics up-to-date with visuals
+                this->processEvents();
+                this->update(updateFrameTime);
+                
+                gameTime += updateFrameTime;
+                accumulator -= updateFrameTime;
+            }
+            this->render(lagTime);
         }
         this->running = false;
     }

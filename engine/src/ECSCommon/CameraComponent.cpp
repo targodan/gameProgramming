@@ -19,13 +19,15 @@ namespace engine {
         componentId_t CameraComponent::typeId = 0;
         
         CameraComponent::CameraComponent() 
-            : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
+            : position(vec3{0.f, 0.f, 0.f}), direction(vec3{-1.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
             this->up = this->worldUp;
-            this->setDirection(vec3{-1.f, 0.f, 0.f}, true); 
+            this->setYawAndPitchFromDirection();
         }
         CameraComponent::CameraComponent(vec3 direction) 
             : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
-            this->setDirection(direction, true);
+            this->direction = glm::normalize(direction);
+            this->setYawAndPitchFromDirection();
+            
             auto right = glm::normalize(glm::cross(this->direction, this->worldUp));
             this->up = glm::normalize(glm::cross(right, this->direction));
         }
@@ -35,7 +37,8 @@ namespace engine {
                 throw CameraException("Given direction and up vectors are not orthogonal.");
             }
             
-            this->setDirection(direction, true);
+            this->direction = glm::normalize(direction);
+            this->setYawAndPitchFromDirection();
             this->up = glm::normalize(up);
         }
         
@@ -51,7 +54,8 @@ namespace engine {
                 throw CameraException("Given direction and up vectors are not orthogonal.");
             }
             
-            this->direction = direction;
+            this->direction = glm::normalize(direction);
+            this->setYawAndPitchFromDirection();
             this->up = glm::normalize(up);
             this->setViewMatrix(position);
         }
@@ -62,23 +66,16 @@ namespace engine {
         void CameraComponent::updateViewMatrix() {
             this->viewMatrix = glm::lookAt(this->position, this->position + this->direction, this->up);
         }
-        void CameraComponent::setDirection(const vec3& direction, bool init) {
-            this->direction = direction;
-            
-            if(init) {
-                this->pitch = glm::degrees(asin(this->direction.y));
-                this->yaw = -glm::degrees(acos(this->direction.x / cos(glm::radians(this->pitch))));
-                init = false;
-            }
-            
-            std::cout << "pitch = " << this->pitch << std::endl;
-            std::cout << "yaw = " << this->yaw << std::endl;
-            std::cout << "yawRad = " << acos(this->direction.x / cos(glm::radians(this->pitch))) << std::endl;
-            std::cout << "cos(...) = " << cos(glm::radians(this->pitch)) << std::endl;
-            std::cout << "test = " << this->direction.x / cos(glm::radians(this->pitch)) << std::endl;
+        void CameraComponent::setDirection(const vec3& direction) {
+            this->direction = glm::normalize(direction);
         }
         void CameraComponent::setUp(const vec3& up) {
             this->up = glm::normalize(up);
+        }
+        void CameraComponent::setYawAndPitchFromDirection() {
+            this->pitch = glm::degrees(asin(this->direction.y));
+            this->yaw = glm::degrees(atan2(this->direction.x, this->direction.z));  // Use atan2 to get result for correct quadrants
+            // this->yaw = glm::degrees(acos(this->direction.x / cos(glm::radians(this->pitch))));
         }
         
         const mat4& CameraComponent::getProjectionMatrix() const {
@@ -102,17 +99,15 @@ namespace engine {
             this->yaw += xOffset;
             this->pitch += yOffset;
             
-            this->pitch = this->pitch > 90.f ? 90.f : this->pitch;
-            this->pitch = this->pitch < -90.f ? -90.f : this->pitch;
+            this->pitch = glm::clamp(this->pitch, -89.f, 89.f);
             
             this->direction.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
             this->direction.y = sin(glm::radians(this->pitch));
             this->direction.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+            this->direction = glm::normalize(this->direction);
             
             auto right = glm::normalize(glm::cross(this->direction, this->worldUp));
             this->up = glm::normalize(glm::cross(right, glm::normalize(this->direction)));
-            
-            // this->updateViewMatrix();
         }
         
         std::string CameraComponent::getComponentName() const {

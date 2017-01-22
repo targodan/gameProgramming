@@ -199,9 +199,9 @@ namespace engine {
             for(auto& v : this->mesh.getVertices()) {
                 LOG(INFO) << v.position;
             }
-//            if(this->lastVelocities.cwiseAbs().sum() != 0) {
+            if(this->lastVelocities != Matrix<float, 12, 1>::Zero()) {
                 this->mesh.setVerticesChanged(true);
-//            }
+            }
         }
     }
 }

@@ -17,10 +17,8 @@ namespace demo {
         
         virtual void initialize() override;
         virtual void shutdown() override;
-
-        virtual void processEvents() override;
     private:
-        Entity triangle;
+        Entity cube;
         Entity player;
         
         float lastX;

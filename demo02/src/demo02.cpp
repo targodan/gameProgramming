@@ -32,60 +32,51 @@ namespace demo {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
         
         // Create triangle entity
-        this->triangle = this->entityManager.createEntity("Triangle");
+        this->cube = this->entityManager.createEntity("Cube");
         
-        vec3 triangleOrigin = {0.f, 0.f, 0.f};
+        vec3 cubeOrig = {0.f, 0.f, 0.f};
         PlacementComponent pc;
-        pc.setPosition(triangleOrigin);
+        pc.setPosition(cubeOrig);
         pc.setVelocity(vec3{0.f, 0.f, 0.f});
-              
-        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh")};
         
-        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}),
-                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{0, 1, 0}), 
-                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}, vec3{0, 0, 1}),
-                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f}, vec3{0, 0, 0})};
-        vector<GLuint> indices = {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2};  
+        Texture texture = {"src/media/container.jpg"};
+        vector<Texture> textures = {texture};
+        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
+                                                         "src/triangle_sh.fsh"), textures};
+        material.loadTextures();
+//        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}),
+//                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{0, 1, 0}), 
+//                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}, vec3{0, 0, 1}),
+//                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f}, vec3{0, 0, 0})};
+//        vector<GLuint> indices = {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2};  
+        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
+                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
+                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
+                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
+                                   Vertex(pc.getPosition()+vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
+                                   Vertex(pc.getPosition()+vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
+                                   Vertex(pc.getPosition()+vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
+                                   Vertex(pc.getPosition()+vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
+        vector<GLuint> indices = {0,1,3, 1,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 2,3,7, 2,7,6, 3,0,4, 3,4,7, 4,6,7, 4,5,6};
         Mesh mesh = {vertices, indices};
+
         mesh.loadMesh();
        
-        this->triangle.addComponent<VisualComponent>(mesh, material);
-        this->triangle.addComponent<PlacementComponent>(pc);
+        this->cube.addComponent<VisualComponent>(mesh, material);
+        this->cube.addComponent<PlacementComponent>(pc);
         
         // Create player entity
         this->player = this->entityManager.createEntity("Player");
         
         PlacementComponent pcPlayer;
-        pcPlayer.setPosition(vec3{10.f, 0.f, 0.f});
+        pcPlayer.setPosition(vec3{-10.f, 0.f, -10.f});
         pcPlayer.setVelocity(vec3{0.f, 0.f, 0.f});
         
-        CameraComponent cc(vec3{-10.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
+        CameraComponent cc(vec3{1.f, 0.f, 1.f}, vec3{0.f, 1.f, 0.f});
         cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
         cc.setViewMatrix(pcPlayer.getPosition());
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
-       
-        
-        
-//        while(this->window.isOpened()) {
-//            glfwPollEvents();
-//            glClearColor(0, 0.2f, 0.2f, 1.f);
-//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//            
-//            auto cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
-//            auto mesh = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMesh();
-//            auto shaderPtr = dynamic_cast<VisualComponent&>(this->triangle.getComponent(VisualComponent::getComponentTypeId())).getMaterial().getShader();
-//
-//            shaderPtr->useProgram();
-//            shaderPtr->setUniform("projectionMatrix", cam.getProjectionMatrix());
-//            shaderPtr->setUniform("viewMatrix", cam.getViewMatrix());
-//            std::cout << "projection: " << glm::to_string(cc.getProjectionMatrix()) << std::endl;
-//            std::cout << "view: " << glm::to_string(cc.getViewMatrix()) << std::endl;
-//            
-//            mesh.render();
-//            glfwSwapBuffers(this->window.getWindow());
-//        }
     }
 
     Demo02::~Demo02() {
@@ -114,26 +105,5 @@ namespace demo {
     
     void Demo02::shutdown() {
         Game::shutdown();
-    }
-    
-    void Demo02::processEvents() {
-        glfwPollEvents();
-       /* 
-        double newX, newY;
-        glfwGetCursorPos(this->window.getWindow(), &newX, &newY);
-        
-        if(this->firstMouseMovement) {
-            this->lastX = newX;
-            this->lastY = newY;
-            this->firstMouseMovement = false;
-        }
-        
-        if(this->window.isCursorInWindowArea()) {
-            auto& cam = dynamic_cast<CameraComponent&>(this->player.getComponent(CameraComponent::getComponentTypeId()));
-            cam.pan(newX-lastX, -(newY-lastY), 0.05f);
-        }
-        
-        this->lastX = newX;
-        this->lastY = newY; */
     }
 }

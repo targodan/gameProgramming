@@ -7,6 +7,7 @@
 #include "../renderer/FontRegistry.h"
 
 #include <iomanip>
+#include <GLFW/glfw3.h>
 
 namespace engine {
     namespace ECSCommon {
@@ -15,14 +16,22 @@ namespace engine {
         systemId_t PerformanceMetricsSystem::systemId = 0;
             
         void PerformanceMetricsSystem::run(EntityManager& em, float deltaTimeSeconds) {
+            // Don't use deltaTimeSeconds as that does not always represent the real time.
+            float newTime = glfwGetTime();
             if(this->getCurrentRunType() == SystemType::UPDATE) {
+                float dT = newTime - this->lastUpdateTime;
+                this->lastUpdateTime = newTime;
+                
                 ++this->numUpdates;
-                this->timeInUpdates += deltaTimeSeconds;
+                this->timeInUpdates += dT;
                 
                 this->resetUpdateTimers();
             } else {
+                float dT = newTime - this->lastRenderTime;
+                this->lastRenderTime = newTime;
+                
                 ++this->numRenders;
-                this->timeInRenders += deltaTimeSeconds;
+                this->timeInRenders += dT;
                 
                 this->resetRenderTimers();
                 
@@ -31,16 +40,16 @@ namespace engine {
         }
         
         void PerformanceMetricsSystem::resetUpdateTimers() {
-            if(this->numUpdates > 120) {
+            if(this->numUpdates > 60) {
                 float timePerUpdate = this->timeInUpdates / this->numUpdates;
-                this->numUpdates = 60;
+                this->numUpdates = 10;
                 this->timeInUpdates = timePerUpdate * this->numUpdates;
             }
         }
         void PerformanceMetricsSystem::resetRenderTimers() {
-            if(this->numRenders > 120) {
+            if(this->numRenders > 60) {
                 float timePerRender = this->timeInRenders / this->numRenders;
-                this->numRenders = 60;
+                this->numRenders = 10;
                 this->timeInRenders = timePerRender * this->numRenders;
             }
         }

@@ -18,6 +18,9 @@ namespace engine {
         protected:
             Entity text;
             
+            float lastUpdateTime = 0;
+            float lastRenderTime = 0;
+            
             int numUpdates = 0;
             float timeInUpdates = 0;
             

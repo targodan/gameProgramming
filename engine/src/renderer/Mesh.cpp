@@ -53,6 +53,13 @@ namespace engine {
             
         }
         
+        void Mesh::setVerticesChanged(bool changed) {
+            this->verticesChanged = changed;
+        }
+        void Mesh::setIndicesChanged(bool changed) {
+            this->indicesChanged = changed;
+        }
+        
         void Mesh::render() {
 #ifdef DEBUG
             if(this->material == nullptr) {
@@ -63,6 +70,18 @@ namespace engine {
             this->material->makeActive();
             
             this->vao->bind();
+            
+            if(this->verticesChanged) {
+                this->vao->loadData();
+                this->verticesChanged = false;
+            }
+            if(this->indicesChanged) {
+                if(this->indices.size() > 0) {
+                    this->vao->loadIndices();
+                }
+                this->indicesChanged = false;
+            }
+            
             if(this->indices.size() > 0) {
                 this->vao->drawElements();
             } else {
@@ -82,6 +101,8 @@ namespace engine {
             this->vao->unbind();
             
             this->wasLoaded = true;
+            this->verticesChanged = false;
+            this->indicesChanged = false;
         }
         
         void Mesh::releaseMesh() {
@@ -113,9 +134,15 @@ namespace engine {
                     (GLvoid*)offsetof(Vertex, textureCoord)};
 
             vector<VertexAttribute> attribs;
-            attribs.push_back(positionAttrib);
-            attribs.push_back(normalAttrib);
-            attribs.push_back(textureCoordAttrib);
+            if(positionIndex != -1) {
+                attribs.push_back(positionAttrib);
+            }
+            if(normalIndex != -1) {
+                attribs.push_back(normalAttrib);
+            }
+            if(textureCoordinateIndex != -1) {
+                attribs.push_back(textureCoordAttrib);
+            }
             
             // Look for first VBO to have no attributes set
 #ifdef DEBUG

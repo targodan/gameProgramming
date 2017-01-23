@@ -30,13 +30,18 @@ namespace engine {
                 this->render(*comp);
             }
             
-            auto& fontRenderer = TextRenderer::getInstance();
-            fontRenderer.enableBatchMode();
-            for(auto it = em.begin({TextComponent::getComponentTypeId()}); it != em.end(); ++it) {
-                auto& comp = it->to<TextComponent>();
-                fontRenderer.renderRichText(comp.getText(), comp.getXPixel(), comp.getYPixel());
+            auto it = em.begin({TextComponent::getComponentTypeId()});
+            auto end = em.end();
+            
+            if(it != end) {
+                auto& fontRenderer = TextRenderer::getInstance();
+                fontRenderer.enableBatchMode();
+                for(; it != end; ++it) {
+                    auto& comp = it->to<TextComponent>();
+                    fontRenderer.renderRichText(comp.getText(), comp.getXPixel(), comp.getYPixel());
+                }
+                fontRenderer.endBatchMode();
             }
-            fontRenderer.endBatchMode();
         }
         
         systemId_t RenderSystem::systemTypeId() {

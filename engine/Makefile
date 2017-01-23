@@ -59,7 +59,7 @@ else
 	LD_FLAGS  = $(LD_FLAGS_COMMON) $(LD_FLAGS_RELEASE)
 endif
 
-C_FLAGS_TEST = $(C_FLAGS_DEBUG) -I$(SRCDIR) -I$(TESTDIR)
+C_FLAGS_TEST = $(C_FLAGS_DEBUG) -DELPP_THREAD_SAFE -I$(SRCDIR) -I$(TESTDIR)
 LD_FLAGS_TEST = -L. -lm -lcppunit -lengine -lprotobuf -pthread -lpthread -lboost_system -lboost_filesystem -Wl,-E,-rpath=.,--as-needed
 
 PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')

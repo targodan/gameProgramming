@@ -23,10 +23,6 @@ namespace engine {
                 return true;
             }
             
-            virtual Array<systemId_t> getDependencies() const {
-                return {PlacementSystem::systemTypeId()};
-            }
-            
             std::string getSystemName() const override {
                 return "CameraRenderSystem";
             }

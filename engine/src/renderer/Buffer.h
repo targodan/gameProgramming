@@ -96,12 +96,13 @@ namespace engine {
                 }
 #endif /*DEBUG*/
                 
-                glBufferData(this->getType(), data.size, data.dataPtr, data.usage);
+                glBufferData(this->getType(), this->data.size, this->data.dataPtr, this->data.usage);
                 this->loadedToGraphicsCard = true;
             }
-            void loadData(const void* data, size_t size, size_t nElements, DataUsagePattern usage) {
+            
+            void reloadData() {
 #ifdef DEBUG
-                if(data == nullptr) {
+                if(!this->data.dataPtr) {
                     throw BufferException("Could not buffer data: No data specified");
                 } else if(!this->bound) {
                     // throw BufferException("Could not buffer data: Buffer not bound");
@@ -113,10 +114,17 @@ namespace engine {
                 }
 #endif /*DEBUG*/
                 
-                glBufferData(this->getType(), size, data, usage);
+                // This is faster than glBufferData as glBufferData may reallocate new
+                // memory on the graphics card.
+                // NOTE: glBufferSubData may only ever write less than or equal amounts
+                //       of data as the previous glBufferData call.
+                glBufferSubData(this->getType(), 0, this->data.size, this->data.dataPtr);
                 this->loadedToGraphicsCard = true;
-                
+            }
+            
+            void loadData(const void* data, size_t size, size_t nElements, DataUsagePattern usage) {
                 this->data = {data, size, nElements, usage};
+                this->loadData();
             }
             
             virtual void bind() override {

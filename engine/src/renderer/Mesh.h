@@ -117,10 +117,10 @@ namespace engine {
             
             DataUsagePattern usage;
             
-            std::unique_ptr<VertexArray> vao;
-            
             vector<Vertex> vertices;
             vector<GLuint> indices;
+            
+            std::unique_ptr<VertexArray> vao;
             
             bool wasLoaded;
             bool verticesChanged = false;

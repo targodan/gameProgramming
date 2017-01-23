@@ -28,7 +28,7 @@ namespace demoSimulation {
         tetrahedronMesh.loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh"), false);
+                                                         "src/triangle_sh.fsh"), true);
         
         this->camera = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
@@ -59,7 +59,7 @@ namespace demoSimulation {
                 vc.getMesh(),
                 properties,
                 mass,
-                0.1,
+                0.001,
                 0.05e9,
                 0.4999,
                 this->updatesPerSecond

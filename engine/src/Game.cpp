@@ -33,7 +33,6 @@ namespace engine {
         // Catch uncaught exceptions and log
         std::set_terminate([] {
             // Retrieve a possibly uncaught exception.
-            // TODO: Try-catch really necessary here?
             std::exception_ptr exptr = std::current_exception();
             try {
                 std::rethrow_exception(exptr);

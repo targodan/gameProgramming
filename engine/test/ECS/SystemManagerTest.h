@@ -42,7 +42,6 @@ class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST(testSetupStop);
     CPPUNIT_TEST(testRun);
     CPPUNIT_TEST(testThrow);
-    // TODO: Test passing the dT parameter to Systems.
     CPPUNIT_TEST_SUITE_END();
 
 public:

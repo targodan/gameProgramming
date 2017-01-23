@@ -40,7 +40,7 @@ namespace engine {
                 
             VertexArray(const VertexArray& orig) 
                 : Bindable(orig), vbos(), id(orig.id), bound(orig.bound) {
-                for(auto&& vbo : orig.vbos) {
+                for(auto& vbo : orig.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 
@@ -53,7 +53,7 @@ namespace engine {
 
             VertexArray& operator=(const VertexArray& right) {
                 this->vbos.clear();
-                for(auto&& vbo : right.vbos) {
+                for(auto& vbo : right.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
                 this->ebo = right.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(right.ebo));
@@ -80,7 +80,7 @@ namespace engine {
                 glGenVertexArrays(1, &(this->id));
             }
             void releaseVertexArray() {
-                for(auto&& vbo : this->vbos) {
+                for(auto& vbo : this->vbos) {
                     vbo->releaseBuffer();
                 }
                 
@@ -92,10 +92,10 @@ namespace engine {
             }
             
             void loadData() {
-                for(auto&& vbo : this->vbos) {
+                for(auto& vbo : this->vbos) {
                     vbo->bind();
                     vbo->loadData();
-                    vbo->bind();
+                    vbo->unbind();
                 }
             }
             void loadIndices() {
@@ -136,7 +136,7 @@ namespace engine {
                 if(this->bound) {
                     return;
                 } else if(VertexArray::anyVAOBound) {
-                    // TODO: Log warning; maybe bindBuffer to 0?
+                    LOG(WARNING) << "Trying to bind a VAO, but there is one bound already.";
                     // No error - rebind buffer to this vao
                     VertexArray::anyVAOBound = false; 
                 }

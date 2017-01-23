@@ -17,6 +17,7 @@ namespace demoSimulation {
         Game(int argc, char** argv, double ups=60) : engine::Game(argc, argv, ups) {}
         
         virtual void initialize() override;
+        void render(float deltaTimeSeconds) override;
     };
 }
 

@@ -95,6 +95,8 @@ namespace engine {
             void render();
             
             void loadMesh();
+            void setVerticesChanged(bool changed);
+            void setIndicesChanged(bool changed);
             void releaseMesh();
             
             std::string getUsage() const;
@@ -121,6 +123,8 @@ namespace engine {
             vector<GLuint> indices;
             
             bool wasLoaded;
+            bool verticesChanged = false;
+            bool indicesChanged = false;
             
             template<class mat_t>
             void applyTransformation_Parallel(mat_t transformMatrix) {

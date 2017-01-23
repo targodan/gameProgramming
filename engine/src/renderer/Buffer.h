@@ -8,6 +8,8 @@
 #include "BufferException.h"
 #include "gl/gl_core_3_3.h"
 
+#include <easylogging++.h>
+
 namespace engine {
     namespace renderer {
         using namespace gl;
@@ -85,8 +87,8 @@ namespace engine {
                 if(!this->data.dataPtr) {
                     throw BufferException("Could not buffer data: No data specified");
                 } else if(!this->bound) {
-                    // TODO: Log warning
                     // throw BufferException("Could not buffer data: Buffer not bound");
+                    LOG(WARNING) << "Trying to load data on a not-bound buffer.";
                 }
 
                 if(this->loadedToGraphicsCard) {
@@ -102,8 +104,8 @@ namespace engine {
                 if(data == nullptr) {
                     throw BufferException("Could not buffer data: No data specified");
                 } else if(!this->bound) {
-                    // TODO: Log warning
                     // throw BufferException("Could not buffer data: Buffer not bound");
+                    LOG(WARNING) << "Trying to load data on a not-bound buffer.";
                 }
 
                 if(this->loadedToGraphicsCard) {

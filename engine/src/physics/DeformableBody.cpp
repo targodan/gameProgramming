@@ -195,11 +195,13 @@ namespace engine {
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;
             this->setMeshFromPlanarVectors(this->currentPosition);
-            LOG(INFO) << "---- step ----";
+            LOG(INFO) << "---- step " << deltaT << " ----";
             for(auto& v : this->mesh.getVertices()) {
                 LOG(INFO) << v.position;
             }
-            this->mesh.loadMesh();
+            if(this->lastVelocities != Matrix<float, 12, 1>::Zero()) {
+                this->mesh.setVerticesChanged(true);
+            }
         }
     }
 }

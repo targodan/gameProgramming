@@ -183,7 +183,7 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j4 build_test DEBUG=true</buildCommand>
+          <buildCommand>${MAKE} -f Makefile -j16 build_test DEBUG=true</buildCommand>
           <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-std=c++14 -pedantic -fPIC">
@@ -295,6 +295,9 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test/IO">
@@ -303,6 +306,9 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test/math">
@@ -311,6 +317,9 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test/physics">
@@ -319,6 +328,9 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="0/test/util">
@@ -745,6 +757,9 @@
             <pElem>test</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">

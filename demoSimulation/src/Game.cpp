@@ -6,11 +6,13 @@
 #include "engine/renderer/Mesh.h"
 #include "engine/renderer/TextRenderer.h"
 #include "engine/ECSCommon.h"
+#include "engine/physics/Explosion.h"
 #include "OneShotForce.h"
 #include "Actions.h"
 
 using namespace engine;
 using namespace engine::renderer;
+using namespace engine::physics;
 using namespace engine::ECSCommon;
 using namespace demo::IO;
 
@@ -19,6 +21,14 @@ namespace demoSimulation {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
         
         LOG(INFO) << "Window dimensions: " << this->window.getWidth() << "x" << this->window.getHeight();
+        
+        auto& fontfamiliy = FontRegistry::registerFontFamily(
+            "DejaVuSans",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-Oblique.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
+        );
 
         Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
         Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
@@ -59,7 +69,7 @@ namespace demoSimulation {
                 vc.getMesh(),
                 properties,
                 mass,
-                0.001,
+                70,
                 0.05e9,
                 0.4999,
                 this->updatesPerSecond
@@ -73,13 +83,10 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(5)
                 .addComponent<ForceComponent>(force);
         
-        auto& fontfamiliy = FontRegistry::registerFontFamily(
-            "DejaVuSans",
-            "/usr/share/fonts/TTF/DejaVuSans.ttf",
-            "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
-            "/usr/share/fonts/TTF/DejaVuSans-Oblique.ttf",
-            "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
-        );
+//        auto explosion = std::make_shared<Explosion>(Vector3f(-5.5, 0.5, 0), 100 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
+//        this->entityManager.createEntity("Force")
+//                .addComponent<TimerComponent>(5)
+//                .addComponent<ForceComponent>(explosion);
         
         RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
         testText << u8"Test öä§∑. "
@@ -92,6 +99,15 @@ namespace demoSimulation {
 //        this->entityManager.createEntity("testtext")
 //                .addComponent<TextComponent>(testText, 50, 100);
         
+//        this->systemManager.enableSystem<CustomUpdateSystem>("boom", [](EntityManager& em, float dT) {
+//            for(auto it = em.begin({TimerComponent::getComponentTypeId(), ForceComponent::getComponentTypeId()}); it != em.end(); ++it) {
+//                if(it->to<TimerComponent>().getTime() > 0) {
+//                    LOG(INFO) << "Boom";
+//                }
+//            }
+//        });
+        
+        this->systemManager.enableSystem<PerformanceMetricsSystem>(&this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();

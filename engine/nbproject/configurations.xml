@@ -34,6 +34,8 @@
           <in>ForceComponent.cpp</in>
           <in>ForceComponent.h</in>
           <in>InputSystem.cpp</in>
+          <in>PerformanceMetricsSystem.cpp</in>
+          <in>PerformanceMetricsSystem.h</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
@@ -420,6 +422,13 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -892,6 +901,16 @@
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/PerformanceMetricsSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"

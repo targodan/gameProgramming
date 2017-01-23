@@ -187,7 +187,10 @@ namespace engine {
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
-            this->step(deltaT, force.getForceOnVertices(this->properties));
+            auto forces = force.getForceOnVertices(this->properties);
+            if(forces.rows() > 0) {
+                this->step(deltaT, forces);
+            }
         }
         
         void DeformableBody::step(float deltaT, const Matrix<float, 12, 1>& forces) {

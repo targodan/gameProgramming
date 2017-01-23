@@ -32,6 +32,9 @@ namespace engine {
             static FontFamily& registerFontFamily(const std::string& name, Args... args) {
                 auto& reg = FontRegistry::getInstance();
                 reg.families[name] = std::make_shared<FontFamily>(args...);
+                if(reg.defaultFamily == nullptr) {
+                    reg.setDefaultFontFamily(name);
+                }
                 return *reg.families[name];
             }
         };

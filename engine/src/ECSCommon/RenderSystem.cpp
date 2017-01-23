@@ -1,6 +1,7 @@
 #include "RenderSystem.h"
 #include "VisualComponent.h"
 #include "TextComponent.h"
+#include "PerformanceMetricsSystem.h"
 
 #include "../ECS/SystemRegisterer.h"
 
@@ -42,6 +43,10 @@ namespace engine {
                 }
                 fontRenderer.endBatchMode();
             }
+        }
+            
+        Array<systemId_t> RenderSystem::getOptionalDependencies() const {
+            return {PerformanceMetricsSystem::systemTypeId()};
         }
         
         systemId_t RenderSystem::systemTypeId() {

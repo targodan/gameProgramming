@@ -51,15 +51,15 @@ namespace engine {
             Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertices.rows(), 1);
             int indexOfAffected = 0;
             for(int i = 0; i < object.surfaceVertices.rows(); i += 3) {
-                int indexVector = i * 3;
-                if(sqDistances(indexVector) == 0) {
+                int indexVector = i / 3;
+                if(indexOfAffected >= affectedForceVectors.cols() || sqDistances(0, indexVector) == 0) {
                     forceVectors(i+0) = 0;
                     forceVectors(i+1) = 0;
                     forceVectors(i+2) = 0;
                 } else {
-                    forceVectors(i+0) = affectedForceVectors(indexOfAffected, 0);
-                    forceVectors(i+1) = affectedForceVectors(indexOfAffected, 1);
-                    forceVectors(i+2) = affectedForceVectors(indexOfAffected, 2);
+                    forceVectors(i+0) = affectedForceVectors(0, indexOfAffected);
+                    forceVectors(i+1) = affectedForceVectors(1, indexOfAffected);
+                    forceVectors(i+2) = affectedForceVectors(2, indexOfAffected);
                     ++indexOfAffected;
                 }
             }
@@ -109,14 +109,18 @@ namespace engine {
         }
 
         Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) {
+            if(this->secondsSinceStart < 0) {
+                return MatrixXf(0, 1);
+            }
+            
             this->setTime(this->secondsSinceStart);
             
             auto distanceVectors = this->calculateDistancesVectorsFromCenter(object);
             auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
             
             MatrixXf affectedForceVectors = this->calculateAffectedParameters(object, sqDistances, distanceVectors);
-            if(affectedForceVectors.cols() == 0) {
-                return MatrixXf(0, 0);
+            if(affectedForceVectors.rows() == 0) {
+                return MatrixXf(0, 1);
             }
             
             return object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));

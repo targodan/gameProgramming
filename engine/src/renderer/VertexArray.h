@@ -98,8 +98,19 @@ namespace engine {
                     vbo->unbind();
                 }
             }
+            
+            void reloadData() {
+                for(auto& vbo : this->vbos) {
+                    vbo->bind();
+                    vbo->reloadData();
+                    vbo->unbind();
+                }
+            }
             void loadIndices() {
                 ebo->loadData();
+            }
+            void reloadIndices() {
+                ebo->reloadData();
             }
             
             void setAttributePointers() {

@@ -32,6 +32,8 @@ namespace engine {
         }
         glfwMakeContextCurrent(this->glfwWindow);
         
+        this->setVSync(false);
+        
         glfwSetErrorCallback(Window::glfwErrorCallback);
         glfwSetFramebufferSizeCallback(this->glfwWindow, Window::glfwFramebufferResizeCallback);
         glfwSetCursorEnterCallback(this->glfwWindow, Window::glfwCursorEnterCallback);
@@ -104,6 +106,10 @@ namespace engine {
     
     void Window::swapBuffers() {
         glfwSwapBuffers(this->glfwWindow);
+    }
+    
+    void Window::setVSync(bool on) {
+        glfwSwapInterval(on ? 1 : 0);
     }
     
     void Window::glfwErrorCallback(int error, const char* description) {

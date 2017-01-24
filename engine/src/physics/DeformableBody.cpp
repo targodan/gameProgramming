@@ -187,7 +187,10 @@ namespace engine {
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
-            this->step(deltaT, force.getForceOnVertices(this->properties));
+            auto forces = force.getForceOnVertices(this->properties);
+            if(forces.rows() > 0) {
+                this->step(deltaT, forces);
+            }
         }
         
         void DeformableBody::step(float deltaT, const Matrix<float, 12, 1>& forces) {
@@ -195,13 +198,7 @@ namespace engine {
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;
             this->setMeshFromPlanarVectors(this->currentPosition);
-            LOG(INFO) << "---- step " << deltaT << " ----";
-            for(auto& v : this->mesh.getVertices()) {
-                LOG(INFO) << v.position;
-            }
-            if(this->lastVelocities != Matrix<float, 12, 1>::Zero()) {
-                this->mesh.setVerticesChanged(true);
-            }
+            this->mesh.setVerticesChanged(true);
         }
     }
 }

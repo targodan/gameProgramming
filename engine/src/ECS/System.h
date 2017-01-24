@@ -9,6 +9,7 @@
 #include "../util/Array.h"
 
 #include "EntityManager.h"
+#include "SystemType.h"
 
 namespace engine {
     namespace ECS {
@@ -16,11 +17,18 @@ namespace engine {
         typedef std::size_t systemId_t;
         
         class System {
+        private:
+            SystemType currentRunType;
+            
+        protected:
+            SystemType getCurrentRunType() const { return this->currentRunType; }
+            
         public:
             System() {}
             System(const System& orig) {}
             virtual ~System() {}
             
+            void setCurrentRunType(SystemType type) { this->currentRunType = type; }
             virtual void run(EntityManager& em, float deltaTimeSeconds) = 0;
             virtual bool isUpdateSystem() const = 0;
             virtual bool isRenderSystem() const = 0;

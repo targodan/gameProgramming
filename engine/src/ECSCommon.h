@@ -16,6 +16,7 @@
 #include "./ECSCommon/TextComponent.h"
 #include "./ECSCommon/CustomUpdateSystem.h"
 #include "./ECSCommon/CustomRenderSystem.h"
+#include "./ECSCommon/PerformanceMetricsSystem.h"
 
 #endif /* ECSCOMMON_H */
 

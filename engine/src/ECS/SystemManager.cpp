@@ -136,6 +136,7 @@ namespace engine {
                 // Start all tasks
                 auto promise = std::make_unique<std::promise<void>>();
                 futures.push_back(std::move(promise->get_future().share()));
+                node->system->setCurrentRunType(type);
                 this->queue.push(std::make_unique<Task>(node->system, std::move(promise), dT));
             }
             // Wait for the last layer to finish
@@ -157,6 +158,7 @@ namespace engine {
             }
 #endif
             for(auto& node : this->dependencyTree) {
+                node->system->setCurrentRunType(type);
                 node->system->run(this->em, dT);
             }
         }

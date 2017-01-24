@@ -33,6 +33,10 @@ namespace engine {
             RichText& getText() {
                 return this->text;
             }
+            
+            void setText(const RichText& text) {
+                this->text = text;
+            }
 
             int getXPixel() const {
                 return this->xPixel;

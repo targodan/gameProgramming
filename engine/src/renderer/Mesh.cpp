@@ -3,29 +3,42 @@
 
 #include "../util/vec4.h"
 
+#include <easylogging++.h>
+
 namespace engine {
     namespace renderer {
         Mesh::Mesh(vector<Vertex> vertices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), wasLoaded(false) {
+            : material(nullptr), usage(usage), vertices(vertices), vao(std::make_unique<VertexArray>()), wasLoaded(false) {
             this->createVBO();
         }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vao(std::make_unique<VertexArray>()), vertices(vertices), indices(indices), wasLoaded(false) {
+            : material(nullptr), usage(usage), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), wasLoaded(false) {
             this->createEBO();
             this->createVBO();
         }
         
         Mesh::Mesh(const Mesh& orig)
-            : usage(orig.usage), 
-                vertices(orig.vertices), indices(orig.indices), wasLoaded(orig.wasLoaded) {
+            : usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
             this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
-            this->vao = orig.vao==nullptr ? nullptr : std::make_unique<VertexArray>(*(orig.vao));
+            /*
+             * The problem here is as follows.
+             * Creating new buffers may not be intuitive in a copy, but if we don't do this
+             * the pointer to the data will still be to orig.vertices, wich may result in
+             * data corruption when calling loadData.
+             * TODO: Fix this.
+             */
+            this->createEBO();
+            this->createVBO();
+            
+            if(orig.wasLoaded) {
+                this->loadMesh();
+            }
         }
         
         Mesh::Mesh(Mesh&& orig)
-            : material(std::move(orig.material)), usage(std::move(orig.usage)), vertices(std::move(orig.vertices)), indices(std::move(orig.indices)), wasLoaded(std::move(orig.wasLoaded)) {
-            //this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
-            this->vao = std::make_unique<VertexArray>(*(orig.vao));
+            : material(std::move(orig.material)), usage(std::move(orig.usage)),
+                vertices(std::move(orig.vertices)), indices(std::move(orig.indices)),
+                vao(std::move(orig.vao)), wasLoaded(std::move(orig.wasLoaded)) {
         }
         
         Mesh& Mesh::operator=(const Mesh& right) {
@@ -67,20 +80,24 @@ namespace engine {
             }
 #endif /*DEBUG*/
             
-            this->material->makeActive();
-            
             this->vao->bind();
             
             if(this->verticesChanged) {
-                this->vao->loadData();
+                this->vao->reloadData();
                 this->verticesChanged = false;
             }
             if(this->indicesChanged) {
                 if(this->indices.size() > 0) {
-                    this->vao->loadIndices();
+                    this->vao->reloadIndices();
                 }
                 this->indicesChanged = false;
             }
+            
+            this->vao->unbind();
+            
+            this->material->makeActive();
+            
+            this->vao->bind();
             
             if(this->indices.size() > 0) {
                 this->vao->drawElements();
@@ -183,7 +200,7 @@ namespace engine {
 #endif /*DEBUG*/
             
             // Create VBO that holds vertex data
-            auto vbo = std::make_unique<VertexBuffer>((void*) &this->vertices[0], sizeof(Vertex) * nVertices, nVertices, this->usage);
+            auto vbo = std::make_unique<VertexBuffer>(reinterpret_cast<void*>(&this->vertices[0]), sizeof(Vertex) * nVertices, nVertices, this->usage);
             this->vao->attachVBO(std::move(vbo));
         }
         void Mesh::createEBO(){
@@ -197,7 +214,7 @@ namespace engine {
 #endif /*DEBUG*/
             
             // Create EBO that holds index data
-            auto ebo = std::make_unique<ElementBuffer>((void*) &this->indices[0], sizeof(GLuint) * nIndices, nIndices, this->usage);
+            auto ebo = std::make_unique<ElementBuffer>(reinterpret_cast<void*>(&this->indices[0]), sizeof(GLuint) * nIndices, nIndices, this->usage);
             this->vao->setEBO(std::move(ebo));
         }
         

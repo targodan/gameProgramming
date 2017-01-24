@@ -32,6 +32,8 @@ namespace engine {
                 return {CameraRenderSystem::systemTypeId()};
             }
             
+            virtual Array<systemId_t> getOptionalDependencies() const;
+            
             std::string getSystemName() const override {
                 return "RenderSystem";
             }

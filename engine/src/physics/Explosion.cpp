@@ -47,7 +47,7 @@ namespace engine {
             return distanceVectors.colwise().squaredNorm();
         }
         
-        Matrix<float, Dynamic, 1> Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
+        VectorXf Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
             Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertices.rows(), 1);
             int indexOfAffected = 0;
             for(int i = 0; i < object.surfaceVertices.rows(); i += 3) {
@@ -108,7 +108,7 @@ namespace engine {
             return affectedForceVectors;
         }
 
-        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) {
+        VectorXf Explosion::getForceOnVertices(const ObjectProperties& object) {
             if(this->secondsSinceStart < 0) {
                 return MatrixXf(0, 1);
             }

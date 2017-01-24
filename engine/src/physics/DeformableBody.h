@@ -19,8 +19,8 @@ namespace engine {
             // The 4th vertex mustn't be in that same plane.
             Mesh& mesh;
             ObjectProperties properties;
-            Matrix<float, 12, 1> restPosition;
-            Matrix<float, 12, 1> currentPosition;
+            VectorXf restPosition;
+            VectorXf currentPosition;
             
             float mass; // in kg
             float dampening; // in kg/s
@@ -30,17 +30,17 @@ namespace engine {
             SparseMatrix<float> stiffnessMatrix; // Called K in lecture
             SparseMatrix<float> dampeningMatrix; // Called C in lecture
             
-            float stepSizeOnMatrixCalculation = 0; // The last value of h.
+            float stepSizeOnMatrixCalculation; // The last value of h.
             // If the current step size deviates more than
             // stepSizeDeviationPercentage % from the stepSizeOnMatrixCalculation
             // the stepMatrix is recalculated. Always updates if 0.
-            float stepSizeDeviationPercentage = 0.5;
+            float stepSizeDeviationPercentage;
             SparseMatrix<float, ColMajor> stepMatrix; // M + h² * K + h * C
             SparseSolver stepMatrixSolver;
             
-            Matrix<float, 12, 1> lastVelocities;
+            VectorXf lastVelocities;
             
-            Matrix<float, 12, 1> calculatePlanarVectorsFromMesh() const;
+            VectorXf calculatePlanarVectorsFromMesh() const;
             void setMeshFromPlanarVectors(const Matrix<float, 12, 1>& v);
             
             float calculateVolume() const;
@@ -51,9 +51,10 @@ namespace engine {
             SparseMatrix<float, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
             void prepareStepMatrixSolver();
             
-            Matrix<float, 12, 1> calculateCurrentDifferenceFromRestPosition() const;
-            Matrix<float, 12, 1> calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const;
+            VectorXf calculateCurrentDifferenceFromRestPosition() const;
+            VectorXf calculateVelocities(float h, const VectorXf& forces) const;
             
+            void updateStepMatrix(float h);
             void updateStepMatrixIfNecessary(float h);
             void calculateAndSetInitialState(float targetStepSize);
             
@@ -61,11 +62,12 @@ namespace engine {
             DeformableBody(Mesh& mesh, const ObjectProperties& properties, float mass, float dampening,
                     float youngsModulus, float poissonsRatio, float targetStepSize)
                     : mesh(mesh), properties(properties), mass(mass), dampening(dampening),
-                        youngsModulus(youngsModulus), poissonsRatio(poissonsRatio) {
+                        youngsModulus(youngsModulus), poissonsRatio(poissonsRatio),
+                        stepSizeOnMatrixCalculation(0), stepSizeDeviationPercentage(2) {
                 this->calculateAndSetInitialState(targetStepSize);
             }
             
-            void step(float deltaT, const Matrix<float, 12, 1>& forces);
+            void step(float deltaT, const VectorXf& forces);
             void step(float deltaT, Force& force);
         };
     }

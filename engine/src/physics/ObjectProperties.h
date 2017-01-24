@@ -13,13 +13,13 @@ namespace engine {
         using engine::util::vector;
         
         struct ObjectProperties {
-            ObjectProperties(const Matrix<float, Dynamic, 1>& allVertices,
+            ObjectProperties(const VectorXf& allVertices,
                     const vector<size_t>& surfaceVertexIndices,
-                    const Matrix<float, Dynamic, 1>& surfaceAreaPerVertex,
-                    const Matrix<float, Dynamic, 1>& massPerVertex)
+                    const VectorXf& surfaceAreaPerVertex,
+                    const VectorXf& massPerVertex)
                     : allVertices(allVertices),
                     surfaceVertexIndices(surfaceVertexIndices),
-                    surfaceVertices(surfaceVertexIndices.size() * 3, 1),
+                    surfaceVertices(surfaceVertexIndices.size() * 3),
                     surfaceAreaPerVertex(surfaceAreaPerVertex),
                     massPerVertex(massPerVertex) {
                 size_t i = 0;
@@ -37,48 +37,48 @@ namespace engine {
                     surfaceAreaPerVertex(orig.surfaceAreaPerVertex),
                     massPerVertex(orig.massPerVertex) {}
             
-            Matrix<float, Dynamic, 1> allVertices;
+            VectorXf allVertices;
             vector<size_t> surfaceVertexIndices;
-            Matrix<float, Dynamic, 1> surfaceVertices;
-            Matrix<float, Dynamic, 1> surfaceAreaPerVertex;
-            Matrix<float, Dynamic, 1> massPerVertex;
+            VectorXf surfaceVertices;
+            VectorXf surfaceAreaPerVertex;
+            VectorXf massPerVertex;
             
-            Matrix<float, Dynamic, 1> mapSurfaceForcesToAllVertices(const Matrix<float, Dynamic, 1>& surfaceForces) const;
+            VectorXf mapSurfaceForcesToAllVertices(const VectorXf& surfaceForces) const;
             
             class DensityDistribution {
             private:
-                const Matrix<float, Dynamic, 1>& allVertices;
+                const VectorXf& allVertices;
                 const vector<size_t>& surfaceVertexIndices;
-                Matrix<float, Dynamic, 1> massPerVertex;
+                VectorXf massPerVertex;
                 
             public:
                 DensityDistribution(
-                        const Matrix<float, Dynamic, 1>& allVertices,
+                        const VectorXf& allVertices,
                         const vector<size_t>& surfaceVertexIndices,
-                        const Matrix<float, Dynamic, 1>& massPerVertex
+                        const VectorXf& massPerVertex
                         ) : allVertices(allVertices), surfaceVertexIndices(surfaceVertexIndices),
                                 massPerVertex(massPerVertex) {}
                 ObjectProperties uniformAreaDistribution(float totalArea);
-                ObjectProperties nonUniformAreaDistribution(const Matrix<float, Dynamic, 1>& surfaceAreaPerVertex);
+                ObjectProperties nonUniformAreaDistribution(const VectorXf& surfaceAreaPerVertex);
             };
             
             class UniformTetrahedronDistribution {
             private:
-                const Matrix<float, Dynamic, 1>& allVertices;
+                const VectorXf& allVertices;
                 const vector<size_t>& surfaceVertexIndices;
                 
             public:
                 UniformTetrahedronDistribution(
-                        const Matrix<float, Dynamic, 1>& allVertices,
+                        const VectorXf& allVertices,
                         const vector<size_t>& surfaceVertexIndices
                         ) : allVertices(allVertices), surfaceVertexIndices(surfaceVertexIndices) {}
                 DensityDistribution uniformDensity(float totalVolume, float density);
-                DensityDistribution nonUniformDensity(const Matrix<float, Dynamic, 1>& massPerVertex);
+                DensityDistribution nonUniformDensity(const VectorXf& massPerVertex);
             };
             
-            static UniformTetrahedronDistribution uniformTetrahedronDistribution(const Matrix<float, Dynamic, 1>& allVertices, const vector<size_t>& surfaceVertexIndices);
-            static Matrix<float, Dynamic, 1> verticesToFlatVector(const engine::renderer::Mesh::ConstVertexProxy& vertices);
-            static Matrix<float, Dynamic, 1> verticesToFlatVector(const vector<engine::renderer::Vertex>& vertices);
+            static UniformTetrahedronDistribution uniformTetrahedronDistribution(const VectorXf& allVertices, const vector<size_t>& surfaceVertexIndices);
+            static VectorXf verticesToFlatVector(const engine::renderer::Mesh::ConstVertexProxy& vertices);
+            static VectorXf verticesToFlatVector(const vector<engine::renderer::Vertex>& vertices);
         };
     }
 }

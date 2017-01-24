@@ -29,7 +29,7 @@ namespace engine {
             MatrixXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
             MatrixXf calculateAffectedParameters(const ObjectProperties& object, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const;
             
-            Matrix<float, Dynamic, 1> mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const;
+            VectorXf mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const;
             
         public:
             Explosion(Matrix<float, 3, 1> center, float tntEquivalence, float expansionSpeed = SPEED_OF_SOUND_IN_AIR)

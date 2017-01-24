@@ -14,14 +14,6 @@ namespace engine {
     namespace renderer {
         using namespace gl;
         
-        struct BufferData {
-            const void* dataPtr;
-            size_t size; // size in bytes
-            size_t nElements; // no of elements (cannot be calculated here because data type is not known)
-            DataUsagePattern usage;
-        };
-        
-        
         /*
          * Buffer is a simple wrapper for VBOs and EBOs. It does NOT hold the data, 
          * but rather handles it -> it sets up the space on the 
@@ -34,83 +26,77 @@ namespace engine {
          */
         class Buffer : public Bindable {
         public:
-            Buffer() 
-                : loadedToGraphicsCard(false), bound(false), data {nullptr, 0, 0, DataUsagePattern::STATIC_DRAW} {
+            Buffer(DataUsagePattern usage) 
+                : bufferIsValid(false), bufferWasAllocated(false), bound(false), size(0), usage(usage) {
                 this->generateBuffer();
             }
-            Buffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
-                : loadedToGraphicsCard(false), bound(false), data {dataPtr, size, nElements, usage} {
-                this->generateBuffer();
-            }
-            Buffer(const Buffer& orig) 
-                : id(orig.id), loadedToGraphicsCard(orig.loadedToGraphicsCard), bound(orig.bound), data(orig.data) {
-                
-            }
+            Buffer(const Buffer& orig) = delete;
             Buffer(Buffer&& orig) 
-                : id(std::move(orig.id)), loadedToGraphicsCard(std::move(orig.loadedToGraphicsCard)), 
-                  bound(std::move(orig.bound)), data(std::move(orig.data)) {
-                
-            }
+                : id(std::move(orig.id)), bufferIsValid(std::move(orig.bufferIsValid)),
+                  bufferWasAllocated(std::move(orig.bufferWasAllocated)), 
+                  bound(std::move(orig.bound)), size(std::move(orig.size)),
+                  usage(std::move(orig.usage)) {}
             
-            Buffer& operator=(const Buffer& right) {
-                this->id = right.id;
-                this->loadedToGraphicsCard = right.loadedToGraphicsCard;
-                this->bound = right.bound;
-                this->data = right.data;
-                
-                return *this;
-            }
             Buffer& operator=(Buffer&& right){
                 this->id = std::move(right.id);
-                this->loadedToGraphicsCard = std::move(right.loadedToGraphicsCard);
+                this->bufferWasAllocated = std::move(right.bufferWasAllocated);
                 this->bound = std::move(right.bound);
-                this->data = std::move(right.data);
                 
                 return *this;
             }
             
             virtual ~Buffer() {
-            
+                this->releaseBuffer();
             }
             
             virtual const BufferType getType() const = 0;
             
             void generateBuffer() {
                 glGenBuffers(1, &(this->id));
+                this->bufferIsValid = true;
             }
             void releaseBuffer() {
-                glDeleteBuffers(1, &(this->id));
+                if(this->bufferIsValid) {
+                    glDeleteBuffers(1, &(this->id));
+                    this->bufferIsValid = false;
+                }
             }
             
-            void loadData() {
+            void allocateAndLoadData(const void* data, size_t size) {
 #ifdef DEBUG
-                if(!this->data.dataPtr) {
-                    throw BufferException("Could not buffer data: No data specified");
-                } else if(!this->bound) {
+                if(!this->bufferIsValid) {
+                    throw BufferException("The buffer was released.");
+                }
+                
+                if(!this->bound) {
                     // throw BufferException("Could not buffer data: Buffer not bound");
                     LOG(WARNING) << "Trying to load data on a not-bound buffer.";
-                }
-
-                if(this->loadedToGraphicsCard) {
-                    // TODO: Log warning: currently loaded data will be overwritten
                 }
 #endif /*DEBUG*/
                 
-                glBufferData(this->getType(), this->data.size, this->data.dataPtr, this->data.usage);
-                this->loadedToGraphicsCard = true;
+                glBufferData(this->getType(), size, data, this->usage);
+                this->size = size;
+                this->bufferWasAllocated = true;
             }
             
-            void reloadData() {
+            void loadData(const void* data, size_t size, size_t targetBufferOffset = 0) {
 #ifdef DEBUG
-                if(!this->data.dataPtr) {
-                    throw BufferException("Could not buffer data: No data specified");
-                } else if(!this->bound) {
+                if(!this->bufferIsValid) {
+                    throw BufferException("The buffer was released.");
+                }
+                
+                if(!this->bound) {
                     // throw BufferException("Could not buffer data: Buffer not bound");
                     LOG(WARNING) << "Trying to load data on a not-bound buffer.";
                 }
-
-                if(this->loadedToGraphicsCard) {
-                    // TODO: Log warning: currently loaded data will be overwritten
+                
+                if(!this->bufferWasAllocated) {
+                    throw BufferException("Buffer was not allocated. Allocate first.");
+                }
+                
+                if(size + targetBufferOffset > this->size) {
+                    throw BufferException("Trying to load %zu elements with offset %zu into a buffer of size %zu. "
+                            "This would overflow the buffer.", size, targetBufferOffset, this->size);
                 }
 #endif /*DEBUG*/
                 
@@ -118,13 +104,7 @@ namespace engine {
                 // memory on the graphics card.
                 // NOTE: glBufferSubData may only ever write less than or equal amounts
                 //       of data as the previous glBufferData call.
-                glBufferSubData(this->getType(), 0, this->data.size, this->data.dataPtr);
-                this->loadedToGraphicsCard = true;
-            }
-            
-            void loadData(const void* data, size_t size, size_t nElements, DataUsagePattern usage) {
-                this->data = {data, size, nElements, usage};
-                this->loadData();
+                glBufferSubData(this->getType(), targetBufferOffset, size, data);
             }
             
             virtual void bind() override {
@@ -144,24 +124,21 @@ namespace engine {
                 this->bound = false;
             }
             
-            size_t numberOfElements() const {
-                return this->data.nElements;
-            }
             GLuint getID() const {
                 return this->id;
             }
             virtual bool isBound() const override {
                 return this->bound;
             }
-            bool isLoadedToGraphicsCard() const {
-                return this->loadedToGraphicsCard;
-            }
         protected:
             GLuint id;
             
-            bool loadedToGraphicsCard; 
+            bool bufferIsValid;
+            bool bufferWasAllocated; 
+            
             bool bound;
-            BufferData data;
+            size_t size;
+            DataUsagePattern usage;
         };
     }
 }

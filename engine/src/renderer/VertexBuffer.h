@@ -16,22 +16,12 @@ namespace engine {
         
         class VertexBuffer : public Buffer {
         public:
-            VertexBuffer() 
-                : type(BufferType::ARRAY_BUFFER) {}
-            VertexBuffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
-                : Buffer(dataPtr, size, nElements, usage), type(BufferType::ARRAY_BUFFER) {}
-            VertexBuffer(const VertexBuffer& orig) 
-                : Buffer(orig), type(orig.type), attributes(orig.attributes) {}
+            VertexBuffer(DataUsagePattern usage = DataUsagePattern::STATIC_DRAW) 
+                : Buffer(usage), type(BufferType::ARRAY_BUFFER) {}
+            VertexBuffer(const VertexBuffer& orig) = delete;
             VertexBuffer(VertexBuffer&& orig) 
                 : Buffer(std::move(orig)), type(std::move(orig.type)), attributes(std::move(orig.attributes)) {}
             
-            VertexBuffer& operator=(const VertexBuffer& right) {
-                Buffer::operator=(right);
-                
-                this->attributes = right.attributes;
-                
-                return *this;
-            }
             VertexBuffer& operator=(VertexBuffer&& right){
                 Buffer::operator=(std::move(right));
                 

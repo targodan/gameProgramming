@@ -91,10 +91,10 @@ namespace engine {
                 glDeleteVertexArrays(1, &(this->id));
             }
             
-            void loadData() {
+            void allocateAndLoadData() {
                 for(auto& vbo : this->vbos) {
                     vbo->bind();
-                    vbo->loadData();
+                    vbo->allocateAndLoadData();
                     vbo->unbind();
                 }
             }

@@ -10,20 +10,12 @@ namespace engine {
         
         class ElementBuffer : public Buffer {
         public:
-            ElementBuffer() 
-                : type(BufferType::ELEMENT_ARRAY_BUFFER) {}
-            ElementBuffer(const void* dataPtr, size_t size, size_t nElements, DataUsagePattern usage) 
-                : Buffer(dataPtr, size, nElements, usage), type(BufferType::ELEMENT_ARRAY_BUFFER) {}
-            ElementBuffer(const ElementBuffer& orig) 
-                : Buffer(orig), type(orig.type) {}
+            ElementBuffer(DataUsagePattern usage = DataUsagePattern::STATIC_DRAW) 
+                : Buffer(usage), type(BufferType::ELEMENT_ARRAY_BUFFER) {}
+            ElementBuffer(const ElementBuffer& orig) = delete;
             ElementBuffer(ElementBuffer&& orig) 
                 : Buffer(std::move(orig)), type(std::move(orig.type)) {}
             
-            ElementBuffer& operator=(const ElementBuffer& right) {
-                Buffer::operator=(right);
-                
-                return *this;
-            }
             ElementBuffer& operator=(ElementBuffer&& right){
                 Buffer::operator=(std::move(right));
                 

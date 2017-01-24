@@ -49,6 +49,7 @@ namespace engine {
         
         // This has to be done after rendering
         void swapBuffers();
+        void setVSync(bool on);
         
         bool isOpened() const;
     };

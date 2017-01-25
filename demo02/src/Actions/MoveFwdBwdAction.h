@@ -29,7 +29,9 @@ namespace demo {
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
                 auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
-                placement.setVelocityAcc(bi.xAxis * camera.getDirection());
+                auto dir = camera.getDirection();
+                dir.y = 0;
+                placement.setVelocityAcc(bi.xAxis * dir);
             }
         private:
             shared_ptr<Entity> player;

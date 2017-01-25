@@ -17,6 +17,8 @@
 #include "Actions/MoveFwdBwdAction.h"
 #include "Actions/PanCameraAction.h"
 #include "Actions/MoveLRAction.h"
+#include "Actions/ChangeMouseMode.h"
+#include "Actions/FlyUpDownAction.h"
 
 #endif /* ACTIONS_H */
 

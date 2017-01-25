@@ -10,7 +10,7 @@
 namespace demoSimulation {
     class Game : public engine::Game {
     protected:
-        engine::ECS::Entity camera;
+        engine::ECS::Entity player;
         engine::ECS::Entity tetrahedron;
         
     public:

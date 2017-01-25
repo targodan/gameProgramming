@@ -14,8 +14,6 @@
 #ifndef MOVELRACTION_H
 #define MOVELRACTION_H
 
-#include <memory>
-
 
 #include "../../../engine/src/ECSCommon/CameraComponent.h"
 
@@ -24,10 +22,8 @@ namespace demo {
         
         using engine::IO::Action;
         using engine::ECS::EntityManager;
-        using engine::ECS::Entity;
         using engine::ECSCommon::PlacementComponent;
         using engine::ECSCommon::CameraComponent;
-        using std::shared_ptr;
         
         class MoveLRAction : public Action {
         public:
@@ -36,7 +32,9 @@ namespace demo {
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
                 auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
-                placement.setVelocityAcc(bi.xAxis * glm::cross(camera.getDirection(), camera.getUp()));
+                auto dir = glm::cross(camera.getDirection(), camera.getUp());
+                dir.y = 0;
+                placement.setVelocityAcc(bi.xAxis * dir);
             }
         private:
             shared_ptr<Entity> player;

@@ -69,10 +69,10 @@ namespace demoSimulation {
                 vc.getMesh(),
                 properties,
                 mass,
-                70,
+                50,
                 0.05e9,
                 0.4999,
-                this->updatesPerSecond
+                1. / this->updatesPerSecond
             );
         
         auto defBodyEntity = this->entityManager.createEntity("DeformableBody")

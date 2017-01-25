@@ -158,6 +158,10 @@ namespace engine {
             }
 #endif
             for(auto& node : this->dependencyTree) {
+                if((type == SystemType::UPDATE && !node->system->isUpdateSystem())
+                        || (type == SystemType::RENDER && !node->system->isRenderSystem())) {
+                    continue;
+                }
                 node->system->setCurrentRunType(type);
                 node->system->run(this->em, dT);
             }

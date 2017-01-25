@@ -8,8 +8,8 @@
 
 namespace engine {
     namespace physics {
-        Matrix<float, 12, 1> DeformableBody::calculatePlanarVectorsFromMesh() const {
-            Matrix<float, 12, 1> planarVectors;
+        VectorXf DeformableBody::calculatePlanarVectorsFromMesh() const {
+            VectorXf planarVectors(this->mesh.getVertices().size() * 3);
             size_t i = 0;
             for(const auto& v : this->mesh.getVertices()) {
                 planarVectors[i*3 + 0] = v.position.x;
@@ -139,20 +139,26 @@ namespace engine {
             this->stepMatrixSolver.factorize(this->stepMatrix);
         }
             
+        void DeformableBody::updateStepMatrix(float h) {
+            this->stepMatrix = this->calculateStepMatrix(h);
+            this->prepareStepMatrixSolver();
+            this->stepSizeOnMatrixCalculation = h;
+        }
+            
         void DeformableBody::updateStepMatrixIfNecessary(float h) {
+            float deviation = ABS(this->stepSizeOnMatrixCalculation - h) / (float)this->stepSizeOnMatrixCalculation;
             if(this->stepSizeOnMatrixCalculation == 0
-                    || ABS(this->stepSizeOnMatrixCalculation - h) / (float)this->stepSizeOnMatrixCalculation >= this->stepSizeDeviationPercentage) {
-                this->stepMatrix = this->calculateStepMatrix(h);
-                this->prepareStepMatrixSolver();
-                this->stepSizeOnMatrixCalculation = h;
+                    || deviation >= this->stepSizeDeviationPercentage) {
+                LOG(WARNING) << "Recalculating step matrix. Time delta deviation: " << deviation << " %";
+                this->updateStepMatrix(h);
             }
         }
         
-        Matrix<float, 12, 1> DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
+        VectorXf DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
             return this->currentPosition - this->restPosition;
         }
         
-        Matrix<float, 12, 1> DeformableBody::calculateVelocities(float h, const Matrix<float, 12, 1>& forces) const {
+        VectorXf DeformableBody::calculateVelocities(float h, const VectorXf& forces) const {
             return this->lastVelocities +
                     (
                         this->stepMatrixSolver.solve(
@@ -169,21 +175,12 @@ namespace engine {
         }
         
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
-            this->lastVelocities = Matrix<float, 12, 1>::Zero();
             this->restPosition = this->calculatePlanarVectorsFromMesh();
             this->currentPosition = this->restPosition;
+            this->lastVelocities = VectorXf::Zero(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
-            this->updateStepMatrixIfNecessary(targetStepSize);
-            LOG(DEBUG) << "--------- DefomableBody ---------" << "\n"
-                    << "restPosition/currentPosition" << "\n"
-                    << this->restPosition << "\n"
-                    << "dampeningMatrix" << "\n"
-                    << this->dampeningMatrix << "\n"
-                    << "stiffnessMatrix" << "\n"
-                    << this->stiffnessMatrix << "\n"
-                    << "stepMatrix" << "\n"
-                    << this->stepMatrix << "\n";
+            this->updateStepMatrix(targetStepSize);
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
@@ -193,7 +190,7 @@ namespace engine {
             }
         }
         
-        void DeformableBody::step(float deltaT, const Matrix<float, 12, 1>& forces) {
+        void DeformableBody::step(float deltaT, const VectorXf& forces) {
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;

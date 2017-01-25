@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <eigen3/Eigen/Eigen>
+
 #include <easylogging++.h>
 
 #include "WindowResizeMessage.h"
@@ -15,6 +17,9 @@ namespace engine {
         engine::renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
         
         engine::renderer::TextRenderer::getInstance().setWindowDimensions(this->window.getWidth(), this->window.getHeight());
+        
+        // Make Eigen work
+        Eigen::initParallel();
         
         // Configure logger
         el::Configurations defaultConf;

@@ -39,10 +39,13 @@ namespace demo {
         pc.setPosition(cubeOrig);
         pc.setVelocity(vec3{0.f, 0.f, 0.f});
         
-        Texture texture = {"src/media/container.jpg"};
-        vector<Texture> textures = {texture};
+//        Texture texture = {"src/media/container.jpg"};
+//        vector<Texture> textures = {texture};
+//        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
+//                                                         "src/triangle_sh.fsh"), textures};
         Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh"), textures};
+                                                             "src/triangle_sh.fsh")};
+        material.attachTexture("src/media/container.jpg");
         material.loadTextures();
 //        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}),
 //                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{0, 1, 0}), 

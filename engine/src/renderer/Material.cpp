@@ -12,13 +12,8 @@ namespace engine {
                 throw WTFException("Could not create material: shader pointer invalid.");
             }
 #endif 
-        }
-        Material::Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures, bool renderAsWireframe) : shader(shader), textures(textures), renderAsWireframe(renderAsWireframe) {
-#ifdef DEBUG
-            if(!this->shader) {
-                throw WTFException("Could not create material: shader pointer invalid.");
-            }
-#endif
+            
+            this->loadedTextures.set_empty_key("");
         }
         Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures), renderAsWireframe(orig.renderAsWireframe) {
             
@@ -51,6 +46,21 @@ namespace engine {
             }
         }
         
+        Material& Material::attachTexture(const std::string& pathToTexture) {
+            // Insert path as key with default value 'false'
+            auto result = this->loadedTextures.insert(std::make_pair(pathToTexture, false));
+            if(!result.second) {
+                // TODO: LOG WARNING Get texture from another material
+                return *this;
+            }
+            
+            Texture texture = {pathToTexture};
+            this->textures.push_back(texture);
+            this->loadedTextures[pathToTexture] = true;
+            
+            return *this;
+        }
+        
         void Material::makeActive() {
             if(this->renderAsWireframe) {
                 gl::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -58,22 +68,24 @@ namespace engine {
             
             this->shader->useProgram();
             
-            int specularCnt = 0;
-            int diffuseCnt = 0;
-            for(unsigned int i = 0; i < this->textures.size(); i++) {
-                Texture::activateTextureUnit(TextureUnit::TEXTURE0+i);
-                
-                std::string uniformName;
-                if(textures[i].isSpecular()) {
-                    uniformName = "specularTexture" + std::to_string(++specularCnt);
-                } else {
-                    uniformName = "diffuseTexture"  + std::to_string(++diffuseCnt);
+            if(!this->textures.empty()) {
+                int specularCnt = 0;
+                int diffuseCnt = 0;
+                for(unsigned int i = 0; i < this->textures.size(); i++) {
+                    Texture::activateTextureUnit(TextureUnit::TEXTURE0+i);
+
+                    std::string uniformName;
+                    if(textures[i].isSpecular()) {
+                        uniformName = "specularTexture" + std::to_string(++specularCnt);
+                    } else {
+                        uniformName = "diffuseTexture"  + std::to_string(++diffuseCnt);
+                    }
+
+                    this->shader->setUniform(uniformName, (GLint) i); // Set texture uniform to current texture unit
+                    textures[i].bind();
                 }
-                
-                this->shader->setUniform(uniformName, (GLint) i); // Set texture uniform to current texture unit
-                textures[i].bind();
+                // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
             }
-            // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
         }
         
         void Material::makeInactive() {
@@ -83,6 +95,10 @@ namespace engine {
         }
         
         void Material::loadTextures() {
+            if(this->textures.empty()) {
+                throw WTFException("Could not load textures: no textures specified.");
+            }
+            
             for(auto texture : textures) {
                 texture.bind();
                 texture.loadTexture();

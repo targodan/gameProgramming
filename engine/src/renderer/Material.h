@@ -3,15 +3,17 @@
 
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "../util/Map.h"
 #include <vector>
 #include <memory>
 
 namespace engine {
     namespace renderer {
+        using util::Map;
+        
         class Material {
         public:
             Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe = false);
-            Material(std::shared_ptr<ShaderProgram> shader, const vector<Texture>& textures, bool renderAsWireframe = false);
             Material(const Material& orig);
             Material(Material&& orig);
             
@@ -20,6 +22,9 @@ namespace engine {
             
             virtual ~Material();
             void releaseMaterial();
+            
+            Material& attachTexture(const std::string& pathToTexture);
+            
             
             // This needs to be called before drawing the corresponding mesh
             void makeActive();
@@ -31,6 +36,8 @@ namespace engine {
             std::shared_ptr<ShaderProgram> shader;    
             vector<Texture> textures;
             bool renderAsWireframe;
+            
+            Map<std::string, bool> loadedTextures; // Holds paths to textures that have already been loaded into RAM
         };
     }
 }

@@ -303,3 +303,4 @@ In order to not spend 90% of your time getting the engine to compile, check this
 * SOIL
 * assimp (tested with v3.3.1)
 * Eigen (v3.*)
+* FreeType2 (v2.*)

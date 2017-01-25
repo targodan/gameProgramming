@@ -7,6 +7,7 @@
 
 #include "Font.h"
 
+
 namespace engine {
     namespace renderer {
         enum class FontType {
@@ -16,6 +17,36 @@ namespace engine {
             BoldItalic,
             INVALID
         };
+    }
+}
+
+namespace std {
+
+    template<>
+
+    struct hash<engine::renderer::FontType> {
+
+       typedef engine::renderer::FontType argument_type;
+
+       typedef size_t result_type;
+
+
+
+       result_type operator() (const argument_type& x) const
+
+       {
+
+          using type = typename std::underlying_type<argument_type>::type;
+
+          return std::hash<type>()(static_cast<type>(x));
+
+       }
+
+    };
+
+}
+namespace engine {
+    namespace renderer {
         
         class FontFamily {
         protected:

@@ -2,8 +2,10 @@
 #define SHADERPROGRAM_H
 
 #include "Shader.h"
+#include "ShaderType.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "../WTFException.h"
+#include "../util/Map.h"
 
 namespace engine {
     namespace renderer {

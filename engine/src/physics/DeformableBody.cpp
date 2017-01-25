@@ -8,26 +8,6 @@
 
 namespace engine {
     namespace physics {
-        VectorXf DeformableBody::calculatePlanarVectorsFromMesh() const {
-            VectorXf planarVectors(this->mesh.getVertices().size() * 3);
-            size_t i = 0;
-            for(const auto& v : this->mesh.getVertices()) {
-                planarVectors[i*3 + 0] = v.position.x;
-                planarVectors[i*3 + 1] = v.position.y;
-                planarVectors[i*3 + 2] = v.position.z;
-                ++i;
-            }
-            return planarVectors;
-        }
-        
-        void DeformableBody::setMeshFromPlanarVectors(const Matrix<float, 12, 1>& v) {
-            for(size_t i = 0; i < 12; i += 3) {
-                this->mesh.getVertices()[i / 3].position.x = v[i+0];
-                this->mesh.getVertices()[i / 3].position.y = v[i+1];
-                this->mesh.getVertices()[i / 3].position.z = v[i+2];
-            }
-        }
-
         SparseMatrix<float> DeformableBody::calculateMaterialMatrix() const {
             SparseMatrix<float> materialMat(6, 6);
             materialMat.reserve(12);
@@ -47,83 +27,46 @@ namespace engine {
                     * materialMat;
         }
         
-        float DeformableBody::calculateVolume() const {
-            const Eigen::Map<MatrixXf> vertices(const_cast<float*>(this->currentPosition.data()), 3, this->currentPosition.rows() / 3);
-            
-            Vector3f normal = ((Vector3f)(vertices.col(1) - vertices.col(0))).cross((Vector3f)(vertices.col(2) - vertices.col(0)));
-            float normalLength = normal.norm();
-            float baseArea = normalLength / 2;
-            normal *= 1 / normalLength;
-            
-            Hyperplane<float, 3> basePlane(normal, vertices.col(0));
-            return baseArea * basePlane.absDistance(vertices.col(3)) / 3.;
-        }
-        
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
-            auto v = this->mesh.getVertices();
-            float buffer[16] = {
-                v[0].position.x, v[1].position.x, v[2].position.x, v[3].position.x,
-                v[0].position.y, v[1].position.y, v[2].position.y, v[3].position.y,
-                v[0].position.z, v[1].position.z, v[2].position.z, v[3].position.z,
-                1, 1, 1, 1
-            };
-            auto A = Matrix<float, 4, 4>(buffer).inverse();
+            TIMED_FUNC(timerCalcStiffnessMat);
             
-            auto B = SparseMatrix<float>(6, 12);
-            B.reserve(36);
-            B.insert(0, 0)  = A(0, 0);
-            B.insert(0, 3)  = A(1, 0);
-            B.insert(0, 6)  = A(2, 0);
-            B.insert(0, 9)  = A(3, 0);
+            auto numVertices = this->properties.allVertices.rows() / 3;
             
-            B.insert(1, 1)  = A(0, 1);
-            B.insert(1, 4)  = A(1, 1);
-            B.insert(1, 7)  = A(2, 1);
-            B.insert(1, 10) = A(3, 1);
+            const Eigen::Map<MatrixXf> vertices(const_cast<float*>(this->properties.allVertices.data()), 3, numVertices);
+            MatrixXf A_inv(numVertices, numVertices);
+            A_inv << vertices, MatrixXf::Ones(numVertices - 3, numVertices);
             
-            B.insert(2, 2)  = A(0, 2);
-            B.insert(2, 5)  = A(1, 2);
-            B.insert(2, 8)  = A(2, 2);
-            B.insert(2, 11) = A(3, 2);
+            FullPivLU<MatrixXf> lu(A_inv);
+            auto A = lu.inverse();
             
-            B.insert(3, 0)  = A(0, 1);
-            B.insert(3, 1)  = A(0, 0);
-            B.insert(3, 3)  = A(1, 1);
-            B.insert(3, 4)  = A(1, 0);
-            B.insert(3, 6)  = A(2, 1);
-            B.insert(3, 7)  = A(2, 0);
-            B.insert(3, 9)  = A(3, 1);
-            B.insert(3, 10) = A(3, 0);
+            auto B = SparseMatrix<float>(6, this->properties.allVertices.rows());
+            B.reserve(9 * numVertices);
             
-            B.insert(4, 1)  = A(0, 2);
-            B.insert(4, 2)  = A(0, 1);
-            B.insert(4, 4)  = A(1, 2);
-            B.insert(4, 5)  = A(1, 1);
-            B.insert(4, 7)  = A(2, 2);
-            B.insert(4, 8)  = A(2, 1);
-            B.insert(4, 10) = A(3, 2);
-            B.insert(4, 11) = A(3, 1);
+            for(int i = 0; i < numVertices; ++i) {
+                auto basInd = i * 3;
+                B.insert(0, basInd + 0) = A(i, 0);
+                B.insert(1, basInd + 1) = A(i, 1);
+                B.insert(2, basInd + 2) = A(i, 2);
+                
+                B.insert(3, basInd + 0) = A(i, 1);
+                B.insert(3, basInd + 1) = A(i, 0);
+                B.insert(4, basInd + 0) = A(i, 2);
+                B.insert(4, basInd + 2) = A(i, 0);
+                B.insert(5, basInd + 1) = A(i, 2);
+                B.insert(5, basInd + 2) = A(i, 1);
+            }
             
-            B.insert(5, 0)  = A(0, 2);
-            B.insert(5, 2)  = A(0, 0);
-            B.insert(5, 3)  = A(1, 2);
-            B.insert(5, 5)  = A(1, 0);
-            B.insert(5, 6)  = A(2, 2);
-            B.insert(5, 8)  = A(2, 0);
-            B.insert(5, 9)  = A(3, 2);
-            B.insert(5, 11) = A(3, 0);
-            
-            return this->calculateVolume() * B.transpose() * this->calculateMaterialMatrix() * B;
+            return this->mesh.calculateVolume() * B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
         SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
-            SparseMatrix<float> dampening(12, 12);
+            SparseMatrix<float> dampening(this->properties.allVertices.rows(), this->properties.allVertices.rows());
             dampening.setIdentity();
             return this->dampening * dampening;
         }
         
         SparseMatrix<float> DeformableBody::calculateMassMatrix() const {
-            SparseMatrix<float> mass(12, 12);
+            SparseMatrix<float> mass(this->properties.allVertices.rows(), this->properties.allVertices.rows());
             mass.setIdentity();
             return this->mass * mass;
         }
@@ -149,7 +92,9 @@ namespace engine {
             float deviation = ABS(this->stepSizeOnMatrixCalculation - h) / (float)this->stepSizeOnMatrixCalculation;
             if(this->stepSizeOnMatrixCalculation == 0
                     || deviation >= this->stepSizeDeviationPercentage) {
-                LOG(WARNING) << "Recalculating step matrix. Time delta deviation: " << deviation << " %";
+                if(this->stepSizeOnMatrixCalculation != 0) {
+                    LOG(WARNING) << "Recalculating step matrix. Time delta deviation: " << deviation << " %";
+                }
                 this->updateStepMatrix(h);
             }
         }
@@ -175,8 +120,8 @@ namespace engine {
         }
         
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
-            this->restPosition = this->calculatePlanarVectorsFromMesh();
-            this->currentPosition = this->restPosition;
+            // currentPosition points to the objectProperties->allVertices
+            this->restPosition = this->currentPosition;
             this->lastVelocities = VectorXf::Zero(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
@@ -194,8 +139,7 @@ namespace engine {
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->currentPosition += deltaT * this->lastVelocities;
-            this->setMeshFromPlanarVectors(this->currentPosition);
-            this->mesh.setVerticesChanged(true);
+            this->mesh.updateMeshFromPlanarVector(this->currentPosition);
         }
     }
 }

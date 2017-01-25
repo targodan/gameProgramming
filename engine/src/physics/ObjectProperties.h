@@ -19,29 +19,21 @@ namespace engine {
                     const VectorXf& massPerVertex)
                     : allVertices(allVertices),
                     surfaceVertexIndices(surfaceVertexIndices),
-                    surfaceVertices(surfaceVertexIndices.size() * 3),
                     surfaceAreaPerVertex(surfaceAreaPerVertex),
-                    massPerVertex(massPerVertex) {
-                size_t i = 0;
-                for(auto index : surfaceVertexIndices) {
-                    this->surfaceVertices(i++) = this->allVertices(index * 3 + 0);
-                    this->surfaceVertices(i++) = this->allVertices(index * 3 + 1);
-                    this->surfaceVertices(i++) = this->allVertices(index * 3 + 2);
-                }
-            }
+                    massPerVertex(massPerVertex) {}
             
             ObjectProperties(const ObjectProperties& orig)
                     : allVertices(orig.allVertices),
                     surfaceVertexIndices(orig.surfaceVertexIndices),
-                    surfaceVertices(orig.surfaceVertices),
                     surfaceAreaPerVertex(orig.surfaceAreaPerVertex),
                     massPerVertex(orig.massPerVertex) {}
             
             VectorXf allVertices;
             vector<size_t> surfaceVertexIndices;
-            VectorXf surfaceVertices;
             VectorXf surfaceAreaPerVertex;
             VectorXf massPerVertex;
+            
+            VectorXf getSurfaceVertices() const;
             
             VectorXf mapSurfaceForcesToAllVertices(const VectorXf& surfaceForces) const;
             

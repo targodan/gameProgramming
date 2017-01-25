@@ -6,6 +6,7 @@
 #include "../renderer/Mesh.h"
 
 #include "Force.h"
+#include "TetrahedronizedMesh.h"
 
 namespace engine {
     namespace physics {
@@ -15,12 +16,10 @@ namespace engine {
         class DeformableBody {
             using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
         protected:
-            // The first 3 vertices must build the base plane.
-            // The 4th vertex mustn't be in that same plane.
-            Mesh& mesh;
+            TetrahedronizedMesh mesh;
             ObjectProperties properties;
             VectorXf restPosition;
-            VectorXf currentPosition;
+            VectorXf& currentPosition;
             
             float mass; // in kg
             float dampening; // in kg/s
@@ -40,10 +39,6 @@ namespace engine {
             
             VectorXf lastVelocities;
             
-            VectorXf calculatePlanarVectorsFromMesh() const;
-            void setMeshFromPlanarVectors(const Matrix<float, 12, 1>& v);
-            
-            float calculateVolume() const;
             SparseMatrix<float> calculateMaterialMatrix() const; // Called D in lecture
             SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
             SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture
@@ -59,11 +54,12 @@ namespace engine {
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(Mesh& mesh, const ObjectProperties& properties, float mass, float dampening,
-                    float youngsModulus, float poissonsRatio, float targetStepSize)
-                    : mesh(mesh), properties(properties), mass(mass), dampening(dampening),
-                        youngsModulus(youngsModulus), poissonsRatio(poissonsRatio),
-                        stepSizeOnMatrixCalculation(0), stepSizeDeviationPercentage(2) {
+            DeformableBody(const TetrahedronizedMesh& mesh, const ObjectProperties& properties, float mass, float dampening,
+                    float youngsModulus, float poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
+                    : mesh(mesh), properties(properties), currentPosition(this->properties.allVertices),
+                        mass(mass), dampening(dampening), youngsModulus(youngsModulus),
+                        poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
+                        stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 this->calculateAndSetInitialState(targetStepSize);
             }
             

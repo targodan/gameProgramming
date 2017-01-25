@@ -2,6 +2,17 @@
 
 namespace engine {
     namespace physics {
+        VectorXf ObjectProperties::getSurfaceVertices() const {
+            VectorXf surface(this->surfaceVertexIndices.size() * 3);
+            size_t i = 0;
+            for(auto index : this->surfaceVertexIndices) {
+                surface(i++) = this->allVertices(index * 3 + 0);
+                surface(i++) = this->allVertices(index * 3 + 1);
+                surface(i++) = this->allVertices(index * 3 + 2);
+            }
+            return surface;
+        }
+                
         VectorXf ObjectProperties::mapSurfaceForcesToAllVertices(const VectorXf& surfaceForces) const {
             VectorXf forces = VectorXf::Zero(this->allVertices.rows());
             size_t i = 0;

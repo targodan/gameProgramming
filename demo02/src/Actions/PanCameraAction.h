@@ -27,14 +27,16 @@ namespace demo {
         
         class PanCameraAction : public Action {
         public:
-            PanCameraAction(int device, int button, shared_ptr<Entity> player) : Action(device, button), player(player){}
-            PanCameraAction(const PanCameraAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player){}
+            PanCameraAction(int device, int button, shared_ptr<Entity> player, float sensibility = 1e-3) : Action(device, button), player(player), sensibility(sensibility){}
+            PanCameraAction(const PanCameraAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player), sensibility(orig.sensibility){}
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
-                camera.pan(this->bi.xAxis, this->bi.yAxis, 1e-2);
+
+                camera.pan(this->bi.xAxis, this->bi.yAxis, sensibility);
             }
         private:
             shared_ptr<Entity> player;
+            float sensibility;
         };
         
     }

@@ -71,7 +71,7 @@ namespace demo {
     }
     
     void Demo02::initialize() {
-        auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player)));
+        auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 1e-2));
         ButtonMapping bm(this->window.getWindow());
         bm.insertMapping(-2, -1, action1);
         auto action2 = std::make_shared<MoveFwdBwdAction>(MoveFwdBwdAction(-1, GLFW_KEY_W, std::make_shared<Entity>(this->player)));
@@ -80,6 +80,11 @@ namespace demo {
         auto action3 = std::make_shared<MoveLRAction>(MoveLRAction(-1, GLFW_KEY_A, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_A, action3, true);
         bm.insertMapping(-1, GLFW_KEY_D, action3);
+        auto action4 = std::make_shared<ChangeMouseMode>(ChangeMouseMode(-1, GLFW_KEY_F10, this->window.getWindow()));
+        bm.insertMapping(-1, GLFW_KEY_F10, action4);
+        auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_Q, action5);
+        bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>();

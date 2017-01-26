@@ -38,7 +38,7 @@ namespace engine {
             // In the general case this is not a const operation,
             // as the Map only maps data, but does not copy it.
             // But in our case it is fine, as we never change the Map.
-            const Map<MatrixXf> surfaceVerticesInColumns(const_cast<float*>(object.surfaceVertices.data()), 3, numVertices);
+            const Map<MatrixXf> surfaceVerticesInColumns(const_cast<float*>(object.getSurfaceVertices().data()), 3, numVertices);
             
             return surfaceVerticesInColumns - centers;
         }
@@ -47,10 +47,10 @@ namespace engine {
             return distanceVectors.colwise().squaredNorm();
         }
         
-        Matrix<float, Dynamic, 1> Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
-            Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertices.rows(), 1);
+        VectorXf Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
+            Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertexIndices.size() * 3, 1);
             int indexOfAffected = 0;
-            for(int i = 0; i < object.surfaceVertices.rows(); i += 3) {
+            for(int i = 0; i < object.surfaceVertexIndices.size() * 3; i += 3) {
                 int indexVector = i / 3;
                 if(indexOfAffected >= affectedForceVectors.cols() || sqDistances(0, indexVector) == 0) {
                     forceVectors(i+0) = 0;
@@ -108,7 +108,7 @@ namespace engine {
             return affectedForceVectors;
         }
 
-        Matrix<float, Dynamic, 1> Explosion::getForceOnVertices(const ObjectProperties& object) {
+        VectorXf Explosion::getForceOnVertices(const ObjectProperties& object) {
             if(this->secondsSinceStart < 0) {
                 return MatrixXf(0, 1);
             }

@@ -7,6 +7,7 @@
 #include "engine/renderer/TextRenderer.h"
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
+#include "engine/physics/TetrahedronizedMesh.h"
 #include "OneShotForce.h"
 #include "Actions.h"
 
@@ -30,21 +31,25 @@ namespace demoSimulation {
             "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
         );
 
-        Vertex frontBottom({0, 0, 0.5}, {0, 1, 0});
-        Vertex backLeft({-0.5, 0, -0.5}, {0, 0, 1});
-        Vertex backRight({0.5, 0, -0.5}, {1, 0, 0});
-        Vertex up({0, 1, 0}, {1, 1, 0});
-        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up}, {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2}, DataUsagePattern::DYNAMIC_DRAW);
+        Vertex frontBottom( {0, 0.5, 0.5},        {0, 1, 0});
+        Vertex backLeft(    {-0.5, 0, -0.5},    {0, 0, 1});
+        Vertex backRight(   {0.5, 0, -0.5},     {1, 0, 0});
+        Vertex backBottom(  {0, 0.5, -0.5},       {1, 0, 1});
+        Vertex up(          {0, 1, 0},          {1, 1, 0});
+        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up, backBottom},
+                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
+                DataUsagePattern::DYNAMIC_DRAW);
         tetrahedronMesh.loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh"), true);
         
-        this->camera = this->entityManager.createEntity("Camera")
+        this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
                 .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
-        auto& cc = this->camera.getComponent<CameraComponent>();
-        cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1, 10);
+        auto& cc = this->player.getComponent<CameraComponent>();
+        cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
+        cc.setViewMatrix(engine::util::vec3(0, 0.5, 2));
         
         
         this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
@@ -66,13 +71,13 @@ namespace demoSimulation {
                         .uniformAreaDistribution(area);
         
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
-                vc.getMesh(),
+                TetrahedronizedMesh(vc.getMesh(), {0, 1, 2, 3, 1, 2, 3, 4}),
                 properties,
                 mass,
-                70,
+                50,
                 0.05e9,
                 0.4999,
-                this->updatesPerSecond
+                1. / this->updatesPerSecond
             );
         
         auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
@@ -107,12 +112,31 @@ namespace demoSimulation {
 //            }
 //        });
         
+        auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
+        ButtonMapping bm(this->window.getWindow());
+        bm.insertMapping(-2, -1, action1);
+        auto action2 = std::make_shared<MoveFwdBwdAction>(MoveFwdBwdAction(-1, GLFW_KEY_W, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_W, action2);
+        bm.insertMapping(-1, GLFW_KEY_S, action2, true);
+        auto action3 = std::make_shared<MoveLRAction>(MoveLRAction(-1, GLFW_KEY_A, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_A, action3, true);
+        bm.insertMapping(-1, GLFW_KEY_D, action3);
+        auto action4 = std::make_shared<ChangeMouseMode>(ChangeMouseMode(-1, GLFW_KEY_F10, this->window.getWindow()));
+        bm.insertMapping(-1, GLFW_KEY_ESCAPE, action4);
+        auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-1, GLFW_KEY_Q, action5);
+        bm.insertMapping(-1, GLFW_KEY_E, action5, true);
+        
+        this->systemManager.enableSystem<InputSystem>(bm);
+        
         this->systemManager.enableSystem<PerformanceMetricsSystem>(&this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        
+        glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         
         engine::Game::initialize();
     }

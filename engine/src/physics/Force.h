@@ -16,7 +16,7 @@ namespace engine {
             Force() {}
             virtual ~Force() {}
             
-            virtual Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& object) = 0;
+            virtual VectorXf getForceOnVertices(const ObjectProperties& object) = 0;
             
             virtual void addSecondsSinceStart(float secondsSinceStart) {
                 this->secondsSinceStart += secondsSinceStart;

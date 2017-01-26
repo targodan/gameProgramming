@@ -216,6 +216,7 @@
           </incDir>
           <preprocessorList>
             <Elem>DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -230,6 +231,7 @@
           </incDir>
           <preprocessorList>
             <Elem>DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -991,6 +993,7 @@
           </incDir>
           <preprocessorList>
             <Elem>DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>

@@ -8,23 +8,25 @@
 #ifndef MOVEFWDBWDACTION_H
 #define MOVEFWDBWDACTION_H
 
-#include <memory>
-
 #include "../../../engine/src/IO/Action.h"
 #include "../../../engine/src/ECS/EntityManager.h"
+#include "../../../engine/src/ECS/Entity.h"
 #include "../../../engine/src/ECSCommon/PlacementComponent.h"
 #include "../../../engine/src/ECSCommon/CameraComponent.h"
 #include "../../../engine/src/util/vec3.h"
 
+#include <memory>
+
 namespace demo {
     namespace IO {
+        
+        using std::shared_ptr;
         
         using engine::IO::Action;
         using engine::ECS::Entity;
         using engine::ECS::EntityManager;
         using engine::ECSCommon::PlacementComponent;
         using engine::ECSCommon::CameraComponent;
-        using std::shared_ptr;
         
         class MoveFwdBwdAction : public Action {
         public:
@@ -33,7 +35,9 @@ namespace demo {
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
                 auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
-                placement.setVelocityAcc(bi.xAxis * camera.getDirection());
+                auto dir = camera.getDirection();
+                dir.y = 0;
+                placement.setVelocityAcc(bi.xAxis * dir);
             }
         private:
             shared_ptr<Entity> player;

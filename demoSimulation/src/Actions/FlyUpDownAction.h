@@ -5,41 +5,45 @@
  */
 
 /* 
- * File:   PanCameraAction.h
+ * File:   FlyUpDownAction.h
  * Author: markus
  *
- * Created on 18. Januar 2017, 15:17
+ * Created on 24. Januar 2017, 14:55
  */
 
-#ifndef PANCAMERAACTION_H
-#define PANCAMERAACTION_H
+#ifndef FLYUPDOWNACTION_H
+#define FLYUPDOWNACTION_H
 
 #include "../../../engine/src/IO/Action.h"
 #include "../../../engine/src/ECS/EntityManager.h"
+#include "../../../engine/src/ECSCommon/PlacementComponent.h"
 #include "../../../engine/src/ECSCommon/CameraComponent.h"
+#include "../../../engine/src/util/vec3.h"
 
 namespace demo {
     namespace IO {
         
         using engine::IO::Action;
         using engine::ECS::EntityManager;
+        using engine::ECSCommon::PlacementComponent;
         using engine::ECSCommon::CameraComponent;
         
-        class PanCameraAction : public Action {
+        class FlyUpDownAction : public Action {
         public:
-            PanCameraAction(int device, int button, shared_ptr<Entity> player, float sensibility = 1e-3) : Action(device, button), player(player), sensibility(sensibility){}
-            PanCameraAction(const PanCameraAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player), sensibility(orig.sensibility){}
+            FlyUpDownAction(int device, int button, shared_ptr<Entity> player) : Action(device, button), player(player){}
+            FlyUpDownAction(const FlyUpDownAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player){}
             void execute(EntityManager& em) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
-                camera.pan(this->bi.xAxis, this->bi.yAxis, sensibility);
+                auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
+                placement.setVelocityAcc(bi.xAxis * camera.getUp());
             }
         private:
             shared_ptr<Entity> player;
-            float sensibility;
         };
         
     }
 }
 
-#endif /* PANCAMERAACTION_H */
+
+#endif /* FLYUPDOWNACTION_H */
 

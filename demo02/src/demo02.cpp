@@ -31,44 +31,28 @@ namespace demo {
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
         
-        // Create triangle entity
         this->cube = this->entityManager.createEntity("Cube");
         
-        vec3 cubeOrig = {0.f, 0.f, 0.f};
-        PlacementComponent pc;
-        pc.setPosition(cubeOrig);
-        pc.setVelocity(vec3{0.f, 0.f, 0.f});
-        
-//        Texture texture = {"src/media/container.jpg"};
-//        vector<Texture> textures = {texture};
-//        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-//                                                         "src/triangle_sh.fsh"), textures};
         Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                              "src/triangle_sh.fsh")};
         material.attachTexture("src/media/container.jpg");
         material.loadTextures();
-//        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}),
-//                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{0, 1, 0}), 
-//                                   Vertex(pc.getPosition()+vec3{0.f, 1.f, 0.f}, vec3{0, 0, 1}),
-//                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 0.f}, vec3{0, 0, 0})};
-//        vector<GLuint> indices = {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2};  
-        vector<Vertex> vertices = {Vertex(pc.getPosition()+vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
-                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
-                                   Vertex(pc.getPosition()+vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
-                                   Vertex(pc.getPosition()+vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
-                                   Vertex(pc.getPosition()+vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
-                                   Vertex(pc.getPosition()+vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
-                                   Vertex(pc.getPosition()+vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
-                                   Vertex(pc.getPosition()+vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
+        
+        vector<Vertex> vertices = {Vertex(vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
+                                   Vertex(vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
+                                   Vertex(vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
+                                   Vertex(vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
+                                   Vertex(vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
+                                   Vertex(vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
+                                   Vertex(vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
+                                   Vertex(vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
         vector<GLuint> indices = {0,1,3, 1,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 2,3,7, 2,7,6, 3,0,4, 3,4,7, 4,6,7, 4,5,6};
         Mesh mesh = {vertices, indices};
-
         mesh.loadMesh();
        
-        this->cube.addComponent<VisualComponent>(mesh, material);
-        this->cube.addComponent<PlacementComponent>(pc);
+        this->cube.addComponent<VisualComponent>(mesh, material).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
         
-        // Create player entity
+        
         this->player = this->entityManager.createEntity("Player");
         
         PlacementComponent pcPlayer;

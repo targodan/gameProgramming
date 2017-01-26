@@ -75,6 +75,9 @@
           <in>ObjectProperties.h</in>
           <in>TetrahedronizedMesh.cpp</in>
           <in>TetrahedronizedMesh.h</in>
+          <in>Tetrahedronizer.cpp</in>
+          <in>Tetrahedronizer.h</in>
+          <in>eigenHashes.h</in>
         </df>
         <df name="renderer">
           <df name="gl">
@@ -359,10 +362,16 @@
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
@@ -390,6 +399,9 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/CustomRenderSystem.cpp"
@@ -439,6 +451,9 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
@@ -446,18 +461,30 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/RenderSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/TextComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="11">
@@ -470,6 +497,9 @@
       </item>
       <item path="src/ECSCommon/VisualComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
@@ -496,6 +526,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -585,6 +616,13 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
           <incDir>
@@ -625,6 +663,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -637,6 +676,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -649,6 +689,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -685,6 +726,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -705,6 +747,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -827,6 +870,8 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -1049,6 +1094,12 @@
             flavor2="0">
       </item>
       <item path="src/physics/TetrahedronizedMesh.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/Tetrahedronizer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/eigenHashes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

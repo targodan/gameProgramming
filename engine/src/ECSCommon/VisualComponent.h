@@ -5,6 +5,8 @@
 #include "../renderer/Mesh.h"
 #include "../renderer/Material.h"
 
+#include <memory>
+
 namespace engine {
     namespace ECSCommon {
         using engine::ECS::componentId_t;
@@ -18,16 +20,16 @@ namespace engine {
             // TODO: This shouldn't be here, but I didn't come up with a better solution right now :(
             void _combineMeshAndMaterial(); 
         protected:
-            Mesh mesh;
+            std::shared_ptr<Mesh> mesh;
             Material material;
             
         public:
             VisualComponent();
-            VisualComponent(const Mesh& mesh, const Material& material);
+            VisualComponent(const std::shared_ptr<Mesh>& mesh, const Material& material);
             VisualComponent(const VisualComponent& orig) = delete;
             virtual ~VisualComponent();
             
-            void setMesh(const Mesh& mesh);
+            void setMesh(const std::shared_ptr<Mesh>& mesh);
             const Mesh& getMesh() const;
             Mesh& getMesh();
             

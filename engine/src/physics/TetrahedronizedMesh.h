@@ -3,6 +3,7 @@
 
 #include <initializer_list>
 #include <eigen3/Eigen/Eigen>
+#include <memory>
 
 #include "../util/Array.h"
 #include "../renderer/Mesh.h"
@@ -19,24 +20,29 @@ namespace engine {
         
         class TetrahedronizedMesh {
         private:
-            Mesh& mesh;
+            std::shared_ptr<Mesh> mesh;
             Array<size_t> tetrahedronIndices;
             
         public:
-            TetrahedronizedMesh(Mesh& mesh, const std::initializer_list<size_t>& tetrahedronIndices);
-            TetrahedronizedMesh(Mesh& mesh, const Array<size_t>& tetrahedronIndices);
+            TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const std::initializer_list<size_t>& tetrahedronIndices);
+            TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const Array<size_t>& tetrahedronIndices);
             TetrahedronizedMesh(const TetrahedronizedMesh& orig);
             
             // This would not work, as we cannot make the mesh reference point to a different mesh
             TetrahedronizedMesh& operator=(const TetrahedronizedMesh& orig) = delete;
             TetrahedronizedMesh& operator=(TetrahedronizedMesh&& orig) = delete;
             
-            Mesh& getMesh() {
-                return this->mesh;
-            }
-            const Mesh& getMesh() const {
-                return this->mesh;
-            }
+            Mesh& getMesh();
+            const Mesh& getMesh() const;
+            
+            std::shared_ptr<Mesh> getMeshPtr();
+            
+            size_t getNumberOfTetrahedron() const;
+            
+            const Array<size_t>& getTetrahedronIndices() const;
+            Array<size_t>& getTetrahedronIndices();
+            
+            size_t getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const;
             
             void updateMeshFromPlanarVector(const VectorXf& vertices);
             

@@ -32,7 +32,6 @@ namespace engine {
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
             MatrixXf A_inv(4, 4);
             A_inv << this->mesh.getTetrahedron(index), MatrixXf::Ones(1, 4);
-            A_inv.transposeInPlace();
             
             LOG(INFO) << "MESH" << this->mesh.getTetrahedron(index);
             
@@ -93,8 +92,9 @@ namespace engine {
 //            stiffnessMatrix.makeCompressed();
 //            
 //            return stiffnessMatrix;
-            
-            return this->calculateStiffnessMatrixForTetrahedron(0);
+            auto stiff = this->calculateStiffnessMatrixForTetrahedron(0);
+            stiff.makeCompressed();
+            return stiff;
         }
         
         SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {

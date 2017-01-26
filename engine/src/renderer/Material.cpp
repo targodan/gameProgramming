@@ -55,10 +55,16 @@ namespace engine {
             }
             
             Texture texture = {pathToTexture};
-            this->textures.push_back(texture);
             this->loadedTextures[pathToTexture] = true;
             
+            return this->attachTexture(texture);
+        }
+        Material& Material::attachTexture(Texture& texture) {
+            this->textures.push_back(texture);
             return *this;
+        }
+        void Material::setTextures(const vector<Texture>& textures) {
+            this->textures = textures;
         }
         
         void Material::makeActive() {

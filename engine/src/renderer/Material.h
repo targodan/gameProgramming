@@ -24,7 +24,8 @@ namespace engine {
             void releaseMaterial();
             
             Material& attachTexture(const std::string& pathToTexture);
-            
+            Material& attachTexture(Texture& texture);
+            void setTextures(const vector<Texture>& textures);
             
             // This needs to be called before drawing the corresponding mesh
             void makeActive();

@@ -31,12 +31,15 @@ namespace engine {
             TetrahedronizedMesh& operator=(const TetrahedronizedMesh& orig) = delete;
             TetrahedronizedMesh& operator=(TetrahedronizedMesh&& orig) = delete;
             
-            Mesh& getMesh() {
-                return this->mesh;
-            }
-            const Mesh& getMesh() const {
-                return this->mesh;
-            }
+            Mesh& getMesh();
+            const Mesh& getMesh() const;
+            
+            size_t getNumberOfTetrahedron() const;
+            
+            const Array<size_t>& getTetrahedronIndices() const;
+            Array<size_t>& getTetrahedronIndices();
+            
+            size_t getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const;
             
             void updateMeshFromPlanarVector(const VectorXf& vertices);
             

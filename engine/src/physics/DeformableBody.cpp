@@ -27,36 +27,61 @@ namespace engine {
                     * materialMat;
         }
         
-        SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
-            TIMED_FUNC(timerCalcStiffnessMat);
+        SparseMatrix<float> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
+            MatrixXf A_inv(4, 4);
+            A_inv << this->mesh.getTetrahedron(index), MatrixXf::Ones(1, 4);
             
-            auto numVertices = this->properties.allVertices.rows() / 3;
+            auto A = A_inv.inverse();
             
-            const Eigen::Map<MatrixXf> vertices(const_cast<float*>(this->properties.allVertices.data()), 3, numVertices);
-            MatrixXf A_inv(numVertices, numVertices);
-            A_inv << vertices, MatrixXf::Ones(numVertices - 3, numVertices);
+            auto B = SparseMatrix<float>(6, 12);
+            B.reserve(36);
             
-            FullPivLU<MatrixXf> lu(A_inv);
-            auto A = lu.inverse();
-            
-            auto B = SparseMatrix<float>(6, this->properties.allVertices.rows());
-            B.reserve(9 * numVertices);
-            
-            for(int i = 0; i < numVertices; ++i) {
-                auto basInd = i * 3;
-                B.insert(0, basInd + 0) = A(i, 0);
-                B.insert(1, basInd + 1) = A(i, 1);
-                B.insert(2, basInd + 2) = A(i, 2);
+            for(int i = 0; i < 4; ++i) {
+                auto baseInd = i * 3;
+                B.insert(0, baseInd + 0) = A(i, 0);
+                B.insert(1, baseInd + 1) = A(i, 1);
+                B.insert(2, baseInd + 2) = A(i, 2);
                 
-                B.insert(3, basInd + 0) = A(i, 1);
-                B.insert(3, basInd + 1) = A(i, 0);
-                B.insert(4, basInd + 0) = A(i, 2);
-                B.insert(4, basInd + 2) = A(i, 0);
-                B.insert(5, basInd + 1) = A(i, 2);
-                B.insert(5, basInd + 2) = A(i, 1);
+                B.insert(3, baseInd + 0) = A(i, 1);
+                B.insert(3, baseInd + 1) = A(i, 0);
+                B.insert(4, baseInd + 1) = A(i, 2);
+                B.insert(4, baseInd + 2) = A(i, 1);
+                B.insert(5, baseInd + 0) = A(i, 2);
+                B.insert(5, baseInd + 2) = A(i, 0);
             }
             
-            return this->mesh.calculateVolume() * B.transpose() * this->calculateMaterialMatrix() * B;
+            return this->mesh.calculateVolumeOfTetrahedron(index) * B.transpose() * this->calculateMaterialMatrix() * B;
+        }
+        
+        SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
+            SparseMatrix<float> stiffnessMatrix(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+            stiffnessMatrix.reserve(12 * 12 + 63 * this->mesh.getNumberOfTetrahedron());
+            
+            for(size_t tetraIndex = 0; tetraIndex < this->mesh.getNumberOfTetrahedron(); ++tetraIndex) {
+                auto tetraStiffness = this->calculateStiffnessMatrixForTetrahedron(tetraIndex);
+                
+                for(int tetraRowIndex = 0; tetraRowIndex < 4; ++tetraRowIndex) {
+                    auto rowVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraRowIndex) * 3;
+                    
+                    for(int tetraColIndex = 0; tetraColIndex < 4; ++tetraColIndex) {
+                        auto colVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraColIndex) * 3;
+                        
+                        for(int dimensionIndexRow = 0; dimensionIndexRow < 3; ++dimensionIndexRow) {
+                            for(int dimensionIndexCol = 0; dimensionIndexCol < 3; ++dimensionIndexCol) {
+                                auto coeff = tetraStiffness.coeffRef(tetraRowIndex + dimensionIndexRow, tetraColIndex + dimensionIndexCol);
+                                if(coeff != 0) {
+                                    stiffnessMatrix.coeffRef(rowVertexIndex + dimensionIndexRow, colVertexIndex + dimensionIndexCol)
+                                            += coeff;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            stiffnessMatrix.makeCompressed();
+            
+            return stiffnessMatrix;
         }
         
         SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
@@ -72,7 +97,9 @@ namespace engine {
         }
         
         SparseMatrix<float, ColMajor> DeformableBody::calculateStepMatrix(float h) const {
-            SparseMatrix<float, ColMajor> mat = this->calculateMassMatrix() + h * (h * this->stiffnessMatrix + this->dampeningMatrix);
+            TIMED_FUNC(timerCalcStiffnessMat);
+            
+            SparseMatrix<float, ColMajor> mat = this->calculateMassMatrix() + h * h * this->stiffnessMatrix + h * this->dampeningMatrix;
             mat.makeCompressed();
             return mat;
         }
@@ -109,11 +136,9 @@ namespace engine {
                         this->stepMatrixSolver.solve(
                             h * (
                                 forces
+                                - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
                                 - this->dampeningMatrix * this->lastVelocities
-                                - this->stiffnessMatrix * (
-                                    this->calculateCurrentDifferenceFromRestPosition()
-                                    - h * this->lastVelocities
-                                )
+                                - h * this->stiffnessMatrix * this->lastVelocities
                             )
                         )
                     );

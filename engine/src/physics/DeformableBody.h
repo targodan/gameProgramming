@@ -4,6 +4,7 @@
 #include <eigen3/Eigen/Eigen>
 
 #include "../renderer/Mesh.h"
+#include "../IllegalArgumentException.h"
 
 #include "Force.h"
 #include "TetrahedronizedMesh.h"
@@ -40,6 +41,7 @@ namespace engine {
             VectorXf lastVelocities;
             
             SparseMatrix<float> calculateMaterialMatrix() const; // Called D in lecture
+            SparseMatrix<float> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
             SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
             SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture
             SparseMatrix<float> calculateMassMatrix() const; // Called M in lecture
@@ -60,6 +62,9 @@ namespace engine {
                         mass(mass), dampening(dampening), youngsModulus(youngsModulus),
                         poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
                         stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
+                if(0 < this->poissonsRatio && this->poissonsRatio < 0.5) {
+                    throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (exclusive), is %d.", this->poissonsRatio);
+                }
                 this->calculateAndSetInitialState(targetStepSize);
             }
             

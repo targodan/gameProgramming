@@ -53,7 +53,7 @@ namespace engine {
         }
         
         void TetrahedronizedMesh::updateMeshFromPlanarVector(const VectorXf& vertices) {
-            for(size_t i = 0; i < 12; i += 3) {
+            for(int i = 0; i < vertices.rows(); i += 3) {
                 this->mesh.getVertices()[i / 3].position.x = vertices[i+0];
                 this->mesh.getVertices()[i / 3].position.y = vertices[i+1];
                 this->mesh.getVertices()[i / 3].position.z = vertices[i+2];
@@ -82,6 +82,29 @@ namespace engine {
                 volume += this->calculateVolumeOfTetrahedron(i);
             }
             return volume;
+        }
+        
+        Mesh& TetrahedronizedMesh::getMesh() {
+            return this->mesh;
+        }
+        const Mesh& TetrahedronizedMesh::getMesh() const {
+            return this->mesh;
+        }
+
+        size_t TetrahedronizedMesh::getNumberOfTetrahedron() const {
+            return this->tetrahedronIndices.size() / 4;
+        }
+
+        const Array<size_t>& TetrahedronizedMesh::getTetrahedronIndices() const {
+            return this->tetrahedronIndices;
+        }
+
+        Array<size_t>& TetrahedronizedMesh::getTetrahedronIndices() {
+            return this->tetrahedronIndices;
+        }
+
+        size_t TetrahedronizedMesh::getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const {
+            return this->tetrahedronIndices[tetrahedronIndex * 4 + vertexIndex];
         }
     }
 }

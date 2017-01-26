@@ -23,15 +23,24 @@ namespace engine {
             materialMat.insert(3, 3) = 1 - 2*this->poissonsRatio;
             materialMat.insert(4, 4) = 1 - 2*this->poissonsRatio;
             materialMat.insert(5, 5) = 1 - 2*this->poissonsRatio;
-            return (this->youngsModulus / (1+this->poissonsRatio)*(1-2*this->poissonsRatio))
+            auto ret = (this->youngsModulus / ((1+this->poissonsRatio)*(1-2*this->poissonsRatio)))
                     * materialMat;
+            LOG(INFO) << "D" << std::endl << ret;
+            return ret;
         }
         
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
             MatrixXf A_inv(4, 4);
             A_inv << this->mesh.getTetrahedron(index), MatrixXf::Ones(1, 4);
+            A_inv.transposeInPlace();
+            
+            LOG(INFO) << "MESH" << this->mesh.getTetrahedron(index);
+            
+            LOG(INFO) << "A_inv" << std::endl << A_inv;
             
             auto A = A_inv.inverse();
+            
+            LOG(INFO) << "A" << std::endl << A;
             
             auto B = SparseMatrix<float>(6, 12);
             B.reserve(36);
@@ -50,38 +59,42 @@ namespace engine {
                 B.insert(5, baseInd + 2) = A(i, 0);
             }
             
+            LOG(INFO) << "B" << std::endl << B;
+            
             return this->mesh.calculateVolumeOfTetrahedron(index) * B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
         SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
-            SparseMatrix<float> stiffnessMatrix(this->properties.allVertices.rows(), this->properties.allVertices.rows());
-            stiffnessMatrix.reserve(12 * 12 + 63 * this->mesh.getNumberOfTetrahedron());
+//            SparseMatrix<float> stiffnessMatrix(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+//            stiffnessMatrix.reserve(12 * 12 + 63 * this->mesh.getNumberOfTetrahedron());
+//            
+//            for(size_t tetraIndex = 0; tetraIndex < this->mesh.getNumberOfTetrahedron(); ++tetraIndex) {
+//                auto tetraStiffness = this->calculateStiffnessMatrixForTetrahedron(tetraIndex);
+//                
+//                for(int tetraRowIndex = 0; tetraRowIndex < 4; ++tetraRowIndex) {
+//                    auto rowVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraRowIndex) * 3;
+//                    
+//                    for(int tetraColIndex = 0; tetraColIndex < 4; ++tetraColIndex) {
+//                        auto colVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraColIndex) * 3;
+//                        
+//                        for(int dimensionIndexRow = 0; dimensionIndexRow < 3; ++dimensionIndexRow) {
+//                            for(int dimensionIndexCol = 0; dimensionIndexCol < 3; ++dimensionIndexCol) {
+//                                auto coeff = tetraStiffness.coeffRef(tetraRowIndex + dimensionIndexRow, tetraColIndex + dimensionIndexCol);
+//                                if(coeff != 0) {
+//                                    stiffnessMatrix.coeffRef(rowVertexIndex + dimensionIndexRow, colVertexIndex + dimensionIndexCol)
+//                                            += coeff;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            stiffnessMatrix.makeCompressed();
+//            
+//            return stiffnessMatrix;
             
-            for(size_t tetraIndex = 0; tetraIndex < this->mesh.getNumberOfTetrahedron(); ++tetraIndex) {
-                auto tetraStiffness = this->calculateStiffnessMatrixForTetrahedron(tetraIndex);
-                
-                for(int tetraRowIndex = 0; tetraRowIndex < 4; ++tetraRowIndex) {
-                    auto rowVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraRowIndex) * 3;
-                    
-                    for(int tetraColIndex = 0; tetraColIndex < 4; ++tetraColIndex) {
-                        auto colVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraColIndex) * 3;
-                        
-                        for(int dimensionIndexRow = 0; dimensionIndexRow < 3; ++dimensionIndexRow) {
-                            for(int dimensionIndexCol = 0; dimensionIndexCol < 3; ++dimensionIndexCol) {
-                                auto coeff = tetraStiffness.coeffRef(tetraRowIndex + dimensionIndexRow, tetraColIndex + dimensionIndexCol);
-                                if(coeff != 0) {
-                                    stiffnessMatrix.coeffRef(rowVertexIndex + dimensionIndexRow, colVertexIndex + dimensionIndexCol)
-                                            += coeff;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            stiffnessMatrix.makeCompressed();
-            
-            return stiffnessMatrix;
+            return this->calculateStiffnessMatrixForTetrahedron(0);
         }
         
         SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
@@ -150,6 +163,7 @@ namespace engine {
             this->lastVelocities = VectorXf::Zero(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
+            LOG(INFO) << "K" << std::endl << this->stiffnessMatrix;
             this->updateStepMatrix(targetStepSize);
         }
         

@@ -392,6 +392,9 @@
       </item>
       <item path="src/ECSCommon/CameraComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/CameraRenderSystem.cpp"

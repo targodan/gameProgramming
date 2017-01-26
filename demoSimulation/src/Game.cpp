@@ -37,15 +37,15 @@ namespace demoSimulation {
         Vertex backRight(   {0.5,  0, 0},     {1, 0, 0});
         Vertex backBottom(  {0, 0.5, -0.5},       {1, 0, 1});
         Vertex up(          {0, 1, 0},          {1, 1, 0});
-//        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up},
-//                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
-//                DataUsagePattern::DYNAMIC_DRAW);
+        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
+                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
+                DataUsagePattern::DYNAMIC_DRAW));
 //        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up, backBottom},
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
 //                DataUsagePattern::DYNAMIC_DRAW));
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
-        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
+//        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
+//        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
         tetrahedronMesh->loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
@@ -65,14 +65,15 @@ namespace demoSimulation {
         
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();
         
-//        TetrahedronizedMesh tMesh(vc.getMesh(), {0, 1, 2, 3});
+        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3});
 //        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3, 1, 2, 3, 4});
         
         float volume = tMesh.calculateVolume();
+        LOG(INFO) << "Volume: " << volume;
         float area = 5;
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
-        float mass = volume * density / 5;
+        float mass = volume * density;
         
         auto properties = 
                 engine::physics::ObjectProperties::uniformTetrahedronDistribution(
@@ -85,7 +86,7 @@ namespace demoSimulation {
                 tMesh,
                 properties,
                 mass,
-                5, // dampening
+                0.5, // dampening
                 0.05e9, // youngs modulus rubber
                 0.4999, // poissons ratio rubber
 //                200e9, // youngs modulus metal

@@ -74,8 +74,7 @@ namespace engine {
         }
         void CameraComponent::setYawAndPitchFromDirection() {
             this->pitch = glm::degrees(asin(this->direction.y));
-            this->yaw = glm::degrees(atan2(this->direction.x, this->direction.z));  // Use atan2 to get result for correct quadrants
-            // this->yaw = glm::degrees(acos(this->direction.x / cos(glm::radians(this->pitch))));
+            this->yaw = glm::degrees(atan2(this->direction.z, this->direction.x));  // Use atan2 to get result for correct quadrants
         }
         
         const mat4& CameraComponent::getProjectionMatrix() const {

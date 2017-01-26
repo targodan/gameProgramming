@@ -27,6 +27,7 @@
             <in>DeformableBodySystem.cpp</in>
             <in>ForceComponent.cpp</in>
             <in>InputSystem.cpp</in>
+            <in>PerformanceMetricsSystem.cpp</in>
             <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
             <in>RenderSystem.cpp</in>
@@ -52,6 +53,8 @@
             <in>DeformableBody.cpp</in>
             <in>Explosion.cpp</in>
             <in>ObjectProperties.cpp</in>
+            <in>TetrahedronizedMesh.cpp</in>
+            <in>Tetrahedronizer.cpp</in>
           </df>
           <df name="renderer">
             <df name="gl">
@@ -162,18 +165,6 @@
         </ccTool>
       </folder>
       <folder path="0/src/engine/math">
-        <ccTool>
-          <incDir>
-            <pElem>../engine/src</pElem>
-            <pElem>../engine</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BOOST_UBLAS_NDEBUG</Elem>
-            <Elem>NDEBUG</Elem>
-          </preprocessorList>
-        </ccTool>
-      </folder>
-      <folder path="0/src/engine/physics">
         <ccTool>
           <incDir>
             <pElem>../engine/src</pElem>
@@ -461,6 +452,32 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/engine/ECSCommon/PerformanceMetricsSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>../engine/src/ECS/pb</pElem>
+            <pElem>../engine/src/IO</pElem>
+            <pElem>../engine/src/ECSCommon/pb</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/freetype2/freetype</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/engine/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
@@ -712,10 +729,26 @@
             tool="1"
             flavor2="11">
         <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/physics/ObjectProperties.cpp"
@@ -723,6 +756,92 @@
             tool="1"
             flavor2="11">
         <ccTool flags="4">
+          <incDir>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/TetrahedronizedMesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/physics</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/functors</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/SOIL</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/Tetrahedronizer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>../engine/src/renderer</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine/src/physics</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/functors</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
+            <pElem>../engine/src/renderer/gl</pElem>
+            <pElem>../engine/src/util/pb</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/SOIL</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">

@@ -29,6 +29,7 @@ namespace engine {
         defaultConf.set(el::Level::Info, el::ConfigurationType::ToFile, "true");
         defaultConf.set(el::Level::Info, el::ConfigurationType::ToStandardOutput, "true");
         defaultConf.set(el::Level::Info, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level : [%logger] %msg");
+        el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
         el::Loggers::setDefaultConfigurations(defaultConf, true);
         
         START_EASYLOGGINGPP(argc, argv);

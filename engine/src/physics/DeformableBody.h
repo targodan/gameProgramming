@@ -62,8 +62,8 @@ namespace engine {
                         mass(mass), dampening(dampening), youngsModulus(youngsModulus),
                         poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
                         stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
-                if(0 < this->poissonsRatio && this->poissonsRatio < 0.5) {
-                    throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (exclusive), is %d.", this->poissonsRatio);
+                if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
+                    throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (both exclusive), is %f.", this->poissonsRatio);
                 }
                 this->calculateAndSetInitialState(targetStepSize);
             }

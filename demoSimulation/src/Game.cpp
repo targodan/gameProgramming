@@ -8,6 +8,7 @@
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
 #include "engine/physics/TetrahedronizedMesh.h"
+#include "engine/physics/Tetrahedronizer.h"
 #include "OneShotForce.h"
 #include "Actions.h"
 
@@ -39,10 +40,13 @@ namespace demoSimulation {
 //        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up},
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
 //                DataUsagePattern::DYNAMIC_DRAW);
-        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up, backBottom},
-                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
-                DataUsagePattern::DYNAMIC_DRAW);
-        tetrahedronMesh.loadMesh();
+//        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up, backBottom},
+//                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
+//                DataUsagePattern::DYNAMIC_DRAW));
+        
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
+        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
+        tetrahedronMesh->loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh"), true);
@@ -62,7 +66,7 @@ namespace demoSimulation {
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();
         
 //        TetrahedronizedMesh tMesh(vc.getMesh(), {0, 1, 2, 3});
-        TetrahedronizedMesh tMesh(vc.getMesh(), {0, 1, 2, 3, 1, 2, 3, 4});
+//        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3, 1, 2, 3, 4});
         
         float volume = tMesh.calculateVolume();
         float area = 5;
@@ -81,7 +85,7 @@ namespace demoSimulation {
                 tMesh,
                 properties,
                 mass,
-                0.1, // dampening
+                5, // dampening
                 0.05e9, // youngs modulus rubber
                 0.4999, // poissons ratio rubber
 //                200e9, // youngs modulus metal

@@ -9,9 +9,9 @@ namespace engine {
         
         componentId_t VisualComponent::typeId = 0;
         
-        VisualComponent::VisualComponent() : mesh({}, {}), material(nullptr) {}
+        VisualComponent::VisualComponent() : mesh(std::shared_ptr<Mesh>(new Mesh({}, {}))), material(nullptr) {}
         
-        VisualComponent::VisualComponent(const Mesh& mesh, const Material& material) 
+        VisualComponent::VisualComponent(const std::shared_ptr<Mesh>& mesh, const Material& material) 
             : mesh(mesh), material(material) {
             this->_combineMeshAndMaterial();
         }
@@ -19,14 +19,14 @@ namespace engine {
         VisualComponent::~VisualComponent() {
         }
         
-        void VisualComponent::setMesh(const Mesh& mesh) {
+        void VisualComponent::setMesh(const std::shared_ptr<Mesh>& mesh) {
             this->mesh = mesh;
         }
         const Mesh& VisualComponent::getMesh() const {
-            return this->mesh;
+            return *this->mesh;
         }
         Mesh& VisualComponent::getMesh() {
-            return this->mesh;
+            return *this->mesh;
         }
 
         void VisualComponent::setMaterial(const Material& mat) {
@@ -60,7 +60,7 @@ namespace engine {
         }
         
         void VisualComponent::_combineMeshAndMaterial() {
-            this->mesh.setMaterial(std::make_shared<Material>(this->material));
+            this->mesh->setMaterial(std::make_shared<Material>(this->material));
         }
     }
 }

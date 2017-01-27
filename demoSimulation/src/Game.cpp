@@ -32,11 +32,11 @@ namespace demoSimulation {
             "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
         );
 
-        Vertex frontBottom( {0, 0.5, 0.5},        {0, 1, 0});
-        Vertex backLeft(    {-0.5, 0, 0},    {0, 0, 1});
-        Vertex backRight(   {0.5,  0, 0},     {1, 0, 0});
-        Vertex backBottom(  {0, 0.5, -0.5},       {1, 0, 1});
-        Vertex up(          {0, 1, 0},          {1, 1, 0});
+        Vertex frontBottom( {0, 0.05, 0.05},        {0, 1, 0});
+        Vertex backLeft(    {-0.05, 0, 0},    {0, 0, 1});
+        Vertex backRight(   {0.05,  0, 0},     {1, 0, 0});
+        Vertex backBottom(  {0, 0.05, -0.05},       {1, 0, 1});
+        Vertex up(          {0, 0.1, 0},          {1, 1, 0});
         std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
                 {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
                 DataUsagePattern::DYNAMIC_DRAW));
@@ -52,11 +52,10 @@ namespace demoSimulation {
                                                          "src/triangle_sh.fsh"), true);
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0.5, 2))
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0.05, 0.5))
                 .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
         auto& cc = this->player.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
-        cc.setViewMatrix(engine::util::vec3(0, 0.5, 2));
         
         
         this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
@@ -69,11 +68,13 @@ namespace demoSimulation {
 //        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3, 1, 2, 3, 4});
         
         float volume = tMesh.calculateVolume();
-        LOG(INFO) << "Volume: " << volume;
         float area = 5;
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
         float mass = volume * density;
+        
+        LOG(INFO) << "Volume: " << volume * 100 * 100 << " cm³";
+        LOG(INFO) << "Mass: " << mass * 1000 << " g";
         
         auto properties = 
                 engine::physics::ObjectProperties::uniformTetrahedronDistribution(
@@ -86,21 +87,29 @@ namespace demoSimulation {
                 tMesh,
                 properties,
                 mass,
-                0.5, // dampening
-                0.05e9, // youngs modulus rubber
-                0.4999, // poissons ratio rubber
+                0, // dampening
+                0.01e9, // youngs modulus rubber
+                0.49, // poissons ratio rubber
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond
             );
         
+        // Deformable body created => restPosition copied
+        // Let's now pull on a vertex.
+//        defBody->getCurrentPosition()[1] += 0.01;
+        defBody->getCurrentPosition()[2] -= 0.025;
+//        tMesh.getMesh().getVertices()[0].position.y += 0.01;
+        tMesh.getMesh().getVertices()[0].position.z -= 0.025;
+//        tMesh.getMesh().loadMesh();
+        
         auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
                 .addComponent<DeformableBodyComponent>(defBody);
         
-        auto force = std::make_shared<OneShotForce>();
-        this->entityManager.createEntity("Force")
-                .addComponent<TimerComponent>(5)
-                .addComponent<ForceComponent>(force);
+//        auto force = std::make_shared<OneShotForce>();
+//        this->entityManager.createEntity("Force")
+//                .addComponent<TimerComponent>(3)
+//                .addComponent<ForceComponent>(force);
         
 //        auto explosion = std::make_shared<Explosion>(Vector3f(-5.5, 0.5, 0), 100 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
 //        this->entityManager.createEntity("Force")
@@ -137,6 +146,7 @@ namespace demoSimulation {
         bm.insertMapping(-1, GLFW_KEY_D, action3);
         auto action4 = std::make_shared<ChangeMouseMode>(ChangeMouseMode(-1, GLFW_KEY_F10, this->window.getWindow()));
         bm.insertMapping(-1, GLFW_KEY_ESCAPE, action4);
+        bm.insertMapping(-1, GLFW_KEY_F10, action4);
         auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_Q, action5);
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);

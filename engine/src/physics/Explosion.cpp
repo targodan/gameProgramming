@@ -54,7 +54,7 @@ namespace engine {
                 centers.col(i) = this->center;
             }
             
-            auto surface = object.getSurfaceVertices();
+            VectorXf surface = object.getSurfaceVertices();
             const Map<MatrixXf> surfaceVerticesInColumns(surface.data(), 3, numVertices);
             
             return surfaceVerticesInColumns - centers;
@@ -127,17 +127,17 @@ namespace engine {
 
         VectorXf Explosion::getForceOnVertices(const ObjectProperties& object) {
             if(this->secondsSinceStart < 0) {
-                return MatrixXf(0, 1);
+                return VectorXf(0);
             }
             
             this->setTime(this->secondsSinceStart);
             
-            auto distanceVectors = this->calculateDistancesVectorsFromCenter(object);
-            auto sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
+            MatrixXf distanceVectors = this->calculateDistancesVectorsFromCenter(object);
+            VectorXf sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
             
             MatrixXf affectedForceVectors = this->calculateAffectedParameters(object, sqDistances, distanceVectors);
             if(affectedForceVectors.rows() == 0) {
-                return MatrixXf(0, 1);
+                return VectorXf(0);
             }
             
             return object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));

@@ -50,12 +50,12 @@ namespace engine {
                 B.insert(1, baseInd + 1) = A(i, 1);
                 B.insert(2, baseInd + 2) = A(i, 2);
                 
-                B.insert(3, baseInd + 0) = A(i, 1);
-                B.insert(3, baseInd + 1) = A(i, 0);
-                B.insert(4, baseInd + 1) = A(i, 2);
-                B.insert(4, baseInd + 2) = A(i, 1);
-                B.insert(5, baseInd + 0) = A(i, 2);
-                B.insert(5, baseInd + 2) = A(i, 0);
+                B.insert(3, baseInd + 0) = 0.5 * A(i, 1);
+                B.insert(3, baseInd + 1) = 0.5 * A(i, 0);
+                B.insert(4, baseInd + 1) = 0.5 * A(i, 2);
+                B.insert(4, baseInd + 2) = 0.5 * A(i, 1);
+                B.insert(5, baseInd + 0) = 0.5 * A(i, 2);
+                B.insert(5, baseInd + 2) = 0.5 * A(i, 0);
             }
             
             LOG(INFO) << "B" << std::endl << B;
@@ -144,6 +144,7 @@ namespace engine {
         }
         
         VectorXf DeformableBody::calculateVelocities(float h, const VectorXf& forces) const {
+            LOG(INFO) << "Rückstellkraft: " << std::endl << - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition();
             return this->lastVelocities +
                     (
                         this->stepMatrixSolver.solve(
@@ -151,7 +152,7 @@ namespace engine {
                                 forces
                                 - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
                                 - this->dampeningMatrix * this->lastVelocities
-                                - h * this->stiffnessMatrix * this->lastVelocities
+                                - this->stiffnessMatrix * h * this->lastVelocities
                             )
                         )
                     );
@@ -177,8 +178,28 @@ namespace engine {
         void DeformableBody::step(float deltaT, const VectorXf& forces) {
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
+//            LOG(INFO) << "Position" << std::endl
+//                    << this->currentPosition;
+            LOG(INFO) << "Velocities" << std::endl
+                    << this->lastVelocities;
             this->currentPosition += deltaT * this->lastVelocities;
             this->mesh.updateMeshFromPlanarVector(this->currentPosition);
+        }
+        
+        const ObjectProperties& DeformableBody::getProperties() const {
+            return this->properties;
+        }
+        
+        VectorXf::Index DeformableBody::getExpectedForceVectorSize() const {
+            return this->currentPosition.rows();
+        }
+        
+        VectorXf& DeformableBody::getCurrentPosition() {
+            return this->currentPosition;
+        }
+        
+        const VectorXf& DeformableBody::getCurrentPosition() const {
+            return this->currentPosition;
         }
     }
 }

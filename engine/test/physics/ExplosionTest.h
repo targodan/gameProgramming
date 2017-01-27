@@ -62,28 +62,35 @@ private:
                 Matrix<float, 3, 1>(1, 1, 1)
             );
         
-        this->setSecondsSinceStart(1);
-        auto forces = this->getForceOnVertices(props);
-        CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(0), forces.rows());
+        {
+            this->setSecondsSinceStart(1);
+            VectorXf forces = this->getForceOnVertices(props);
+            CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(0), forces.rows());
+        }
         
-        this->setSecondsSinceStart(2.1);
-        forces = this->getForceOnVertices(props);
+        {
+            this->setSecondsSinceStart(2.1);
+            VectorXf forces = this->getForceOnVertices(props);
+
+            VectorXf expected(9);
+            expected << 3.05483e-5, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0;
+            CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(9), forces.rows());
+            CPPUNIT_ASSERT_MESSAGE("Only first vector should be affected.", forces.isApprox(expected));
+        }
         
-        VectorXf expected(9);
-        expected << 3.05483e-5, 0, 0,
-                0, 0, 0,
-                0, 0, 0;
-        CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(9), forces.rows());
-        CPPUNIT_ASSERT_MESSAGE("Only first vector should be affected.", forces.isApprox(expected));
-        
-        this->setSecondsSinceStart(3);
-        forces = this->getForceOnVertices(props);
-        
-        expected << 0, 0, 0,
-                0, 0, 0,
-                1.0206e-5, 0, 0;
-        CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(9), forces.rows());
-        CPPUNIT_ASSERT_MESSAGE("Only last vector should be affected.", forces.isApprox(expected));
+        {
+            this->setSecondsSinceStart(3);
+            VectorXf forces = this->getForceOnVertices(props);
+
+            VectorXf expected(9);
+            expected << 0, 0, 0,
+                    0, 0, 0,
+                    1.0206e-5, 0, 0;
+            CPPUNIT_ASSERT_EQUAL(static_cast<VectorXf::Index>(9), forces.rows());
+            CPPUNIT_ASSERT_MESSAGE("Only last vector should be affected.", forces.isApprox(expected));
+        }
     }
 };
 

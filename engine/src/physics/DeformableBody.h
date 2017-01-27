@@ -70,6 +70,13 @@ namespace engine {
             
             void step(float deltaT, const VectorXf& forces);
             void step(float deltaT, Force& force);
+            
+            const ObjectProperties& getProperties() const;
+            
+            VectorXf::Index getExpectedForceVectorSize() const;
+            
+            VectorXf& getCurrentPosition();
+            const VectorXf& getCurrentPosition() const;
         };
     }
 }

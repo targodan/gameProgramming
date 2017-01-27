@@ -17,9 +17,9 @@ namespace engine {
             VectorXf forces = VectorXf::Zero(this->allVertices.rows());
             size_t i = 0;
             for(auto index : this->surfaceVertexIndices) {
-                forces(index + 0) = surfaceForces(i + 0);
-                forces(index + 1) = surfaceForces(i + 1);
-                forces(index + 2) = surfaceForces(i + 2);
+                forces(index * 3 + 0) = surfaceForces(i + 0);
+                forces(index * 3 + 1) = surfaceForces(i + 1);
+                forces(index * 3 + 2) = surfaceForces(i + 2);
                 i += 3;
             }
             return forces;

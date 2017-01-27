@@ -5,6 +5,25 @@
 
 namespace engine {
     namespace physics {
+        Explosion& Explosion::operator=(const Explosion& orig) {
+            this->center = orig.center;
+            this->expansionSpeed = orig.expansionSpeed;
+            this->lastSecondsFromExplosion = orig.lastSecondsFromExplosion;
+            this->secondsFromExplosion = orig.secondsFromExplosion;
+            this->secondsSinceStart = orig.secondsSinceStart;
+            this->tntEquivalence = orig.tntEquivalence;
+            return *this;
+        }
+        Explosion& Explosion::operator=(Explosion&& orig) {
+            std::swap(this->center, orig.center);
+            std::swap(this->expansionSpeed, orig.expansionSpeed);
+            std::swap(this->lastSecondsFromExplosion, orig.lastSecondsFromExplosion);
+            std::swap(this->secondsFromExplosion, orig.secondsFromExplosion);
+            std::swap(this->secondsSinceStart, orig.secondsSinceStart);
+            std::swap(this->tntEquivalence, orig.tntEquivalence);
+            return *this;
+        }
+            
         float Explosion::calculatePressureAtDistance(float d) const {
             // Source: https://de.wikipedia.org/wiki/Sprengkraft (solved for P by Luca)
             return std::exp(
@@ -13,7 +32,7 @@ namespace engine {
                             6.4221 * 6.4221
                             - 25.1256 * (
                                 0.9267
-                                - std::log(d / std::cbrt(this->tntEquivalence))
+                                - std::log(d / std::cbrtf(this->tntEquivalence))
                             )
                         )
                     ) * 1e-5; // bar -> Pa
@@ -29,30 +48,28 @@ namespace engine {
         }
         
         MatrixXf Explosion::calculateDistancesVectorsFromCenter(const ObjectProperties& object) const {
-            Index numVertices = object.surfaceVertexIndices.size();
+            size_t numVertices = object.surfaceVertexIndices.size();
             MatrixXf centers(3, numVertices);
-            for(int i = 0; i < numVertices; i += 3) {
+            for(size_t i = 0; i < numVertices; ++i) {
                 centers.col(i) = this->center;
             }
             
-            // In the general case this is not a const operation,
-            // as the Map only maps data, but does not copy it.
-            // But in our case it is fine, as we never change the Map.
-            const Map<MatrixXf> surfaceVerticesInColumns(const_cast<float*>(object.getSurfaceVertices().data()), 3, numVertices);
+            auto surface = object.getSurfaceVertices();
+            const Map<MatrixXf> surfaceVerticesInColumns(surface.data(), 3, numVertices);
             
             return surfaceVerticesInColumns - centers;
         }
         
-        MatrixXf Explosion::calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const {
-            return distanceVectors.colwise().squaredNorm();
+        VectorXf Explosion::calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const {
+            return distanceVectors.colwise().squaredNorm().transpose();
         }
         
         VectorXf Explosion::mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const {
-            Matrix<float, Dynamic, 1> forceVectors(object.surfaceVertexIndices.size() * 3, 1);
+            VectorXf forceVectors(object.surfaceVertexIndices.size() * 3, 1);
             int indexOfAffected = 0;
-            for(int i = 0; i < object.surfaceVertexIndices.size() * 3; i += 3) {
+            for(size_t i = 0; i < object.surfaceVertexIndices.size() * 3; i += 3) {
                 int indexVector = i / 3;
-                if(indexOfAffected >= affectedForceVectors.cols() || sqDistances(0, indexVector) == 0) {
+                if(indexOfAffected >= affectedForceVectors.cols() || sqDistances(indexVector) == 0) {
                     forceVectors(i+0) = 0;
                     forceVectors(i+1) = 0;
                     forceVectors(i+2) = 0;
@@ -66,10 +83,10 @@ namespace engine {
             return forceVectors;
         }
         
-        MatrixXf Explosion::calculateAffectedParameters(const ObjectProperties& object, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const {
+        MatrixXf Explosion::calculateAffectedParameters(const ObjectProperties& object, VectorXf& sqDistances, const MatrixXf& distanceVectors) const {
             MatrixXf affectedForceVectors(3, distanceVectors.cols());
-            MatrixXf affectedDistances(distanceVectors.cols(), 1);
-            MatrixXf affectedSurfaceAreas(distanceVectors.cols(), 1);
+            VectorXf affectedDistances(distanceVectors.cols());
+            VectorXf affectedSurfaceAreas(distanceVectors.cols());
             
             float lastExpansionRadiusSq = this->calculateExpansionRadius(this->lastSecondsFromExplosion);
             lastExpansionRadiusSq *= lastExpansionRadiusSq;
@@ -94,18 +111,18 @@ namespace engine {
                 return MatrixXf(0, 0);
             }
             
-            affectedForceVectors.resize(3, numAffectedVectors);
-            affectedDistances.resize(numAffectedVectors, 1);
-            affectedDistances.cwiseSqrt();
+            
+            MatrixXf reducedAffectedForceVectors = affectedForceVectors.block(0, 0, 3, numAffectedVectors);
+            VectorXf reducedAffectedDistances = affectedDistances.block(0, 0, numAffectedVectors, 1).cwiseSqrt();
             
             for(int i = 0; i < numAffectedVectors; ++i) {
                 // normalize and multiply by force
-                affectedForceVectors.row(i) *= (
-                            this->calculatePressureAtDistance(affectedDistances(i)) * affectedSurfaceAreas(i)
-                        ) / affectedDistances(i);
+                reducedAffectedForceVectors.col(i) *= (
+                            this->calculatePressureAtDistance(reducedAffectedDistances(i)) * affectedSurfaceAreas(i)
+                        ) / reducedAffectedDistances(i);
             }
             
-            return affectedForceVectors;
+            return reducedAffectedForceVectors;
         }
 
         VectorXf Explosion::getForceOnVertices(const ObjectProperties& object) {

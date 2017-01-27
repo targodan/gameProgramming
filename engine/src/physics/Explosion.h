@@ -15,7 +15,7 @@ namespace engine {
                 MatrixXf affectedSurfaceAreas;
             };
             
-        private:
+        protected:
             Matrix<float, 3, 1> center;
             float tntEquivalence; // in kg
             float expansionSpeed; // in m/s
@@ -26,17 +26,26 @@ namespace engine {
             float calculateExpansionRadius(float secondsFromExplosion) const; // in m
             
             MatrixXf calculateDistancesVectorsFromCenter(const ObjectProperties& object) const;
-            MatrixXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
-            MatrixXf calculateAffectedParameters(const ObjectProperties& object, MatrixXf& sqDistances, const MatrixXf& distanceVectors) const;
+            VectorXf calculateSqDistancesFromCenter(const MatrixXf& distanceVectors) const;
+            MatrixXf calculateAffectedParameters(const ObjectProperties& object, VectorXf& sqDistances, const MatrixXf& distanceVectors) const;
             
             VectorXf mapAffectedForcesToSurface(const MatrixXf& sqDistances, const MatrixXf& affectedForceVectors, const ObjectProperties& object) const;
             
         public:
             Explosion(Matrix<float, 3, 1> center, float tntEquivalence, float expansionSpeed = SPEED_OF_SOUND_IN_AIR)
                 : center(center), tntEquivalence(tntEquivalence), expansionSpeed(expansionSpeed) {}
+            Explosion(const Explosion& orig)
+                : center(orig.center), tntEquivalence(orig.tntEquivalence), expansionSpeed(orig.expansionSpeed),
+                    secondsFromExplosion(orig.secondsFromExplosion), lastSecondsFromExplosion(orig.lastSecondsFromExplosion) {}
+            Explosion(Explosion&& orig)
+                : center(std::move(orig.center)), tntEquivalence(std::move(orig.tntEquivalence)), expansionSpeed(std::move(orig.expansionSpeed)),
+                    secondsFromExplosion(std::move(orig.secondsFromExplosion)), lastSecondsFromExplosion(std::move(orig.lastSecondsFromExplosion)) {}
+            
+            Explosion& operator=(const Explosion& orig);
+            Explosion& operator=(Explosion&& orig);
             
             void setTime(float secondsFromExplosion);
-            Matrix<float, Dynamic, 1> getForceOnVertices(const ObjectProperties& object) override;
+            VectorXf getForceOnVertices(const ObjectProperties& object) override;
         };
     }
 }

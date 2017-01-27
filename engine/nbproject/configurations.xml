@@ -153,6 +153,8 @@
         </df>
         <df name="physics">
           <in>DeformableBodyTest.cpp</in>
+          <in>ExplosionTest.cpp</in>
+          <in>ExplosionTest.h</in>
         </df>
         <df name="util">
           <in>MapTest.cpp</in>
@@ -262,6 +264,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -443,6 +446,9 @@
       </item>
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
@@ -596,9 +602,6 @@
       </item>
       <item path="src/physics/DeformableBody.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
@@ -614,16 +617,10 @@
             tool="1"
             flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
@@ -873,8 +870,8 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
+      </item>
+      <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -1158,6 +1155,8 @@
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
+      </item>
+      <item path="test/physics/ExplosionTest.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

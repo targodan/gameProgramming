@@ -13,7 +13,7 @@ using namespace engine::renderer;
 
 namespace engine {
     namespace physics {
-        TetrahedronizedMesh Tetrahedronizer::tetrahedronizeCuboid(
+        TetrahedronizedObject Tetrahedronizer::tetrahedronizeCuboid(
                     const Vector3f& corner,
                     const Vector3f& spanVectorOne, const Vector3f& spanVectorTwo, const Vector3f& spanVectorThree,
                     size_t numTetrahedronAlongSpanOne, size_t numTetrahedronAlongSpanTwo, size_t numTetrahedronAlongSpanThree 
@@ -195,7 +195,7 @@ namespace engine {
             
             auto mesh = std::make_shared<Mesh>(vertices, faceIndices, DataUsagePattern::DYNAMIC_DRAW);
             
-            return TetrahedronizedMesh(mesh, tetrahedronIndices);
+            return TetrahedronizedObject(mesh, tetrahedronIndices);
         }
     }
 }

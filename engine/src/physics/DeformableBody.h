@@ -7,7 +7,7 @@
 #include "../IllegalArgumentException.h"
 
 #include "Force.h"
-#include "TetrahedronizedMesh.h"
+#include "TetrahedronizedObject.h"
 
 namespace engine {
     namespace physics {
@@ -17,7 +17,7 @@ namespace engine {
         class DeformableBody {
             using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
         protected:
-            TetrahedronizedMesh mesh;
+            TetrahedronizedObject mesh;
             ObjectProperties properties;
             VectorXf restPosition;
             VectorXf& currentPosition;
@@ -56,7 +56,7 @@ namespace engine {
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(const TetrahedronizedMesh& mesh, const ObjectProperties& properties, float mass, float dampening,
+            DeformableBody(const TetrahedronizedObject& mesh, const ObjectProperties& properties, float mass, float dampening,
                     float youngsModulus, float poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
                     : mesh(mesh), properties(properties), currentPosition(this->properties.allVertices),
                         mass(mass), dampening(dampening), youngsModulus(youngsModulus),

@@ -5,8 +5,11 @@
 #include <eigen3/Eigen/Eigen>
 #include <memory>
 
+#include "ObjectProperties.h"
 #include "../util/Array.h"
 #include "../renderer/Mesh.h"
+
+#include "SimulationObject.h"
 
 namespace engine {
     namespace physics {
@@ -18,24 +21,26 @@ namespace engine {
         using engine::renderer::Mesh;
         using engine::util::Array;
         
-        class TetrahedronizedMesh {
+        class TetrahedronizedObject : public SimulationObject {
         private:
-            std::shared_ptr<Mesh> mesh;
+            ObjectProperties properties;
             Array<size_t> tetrahedronIndices;
             
         public:
-            TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const std::initializer_list<size_t>& tetrahedronIndices);
-            TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const Array<size_t>& tetrahedronIndices);
-            TetrahedronizedMesh(const TetrahedronizedMesh& orig);
+            TetrahedronizedObject(
+                    const VectorXf& simulationMesh,
+                    const vector<std::shared_ptr<Mesh>>& meshes,
+                    const vector<Array<std::pair<size_t, size_t>>>& simulationToRenderVertices,
+                    const ObjectProperties& properties,
+                    const Array<size_t>& tetrahedronIndices);
+            TetrahedronizedObject(const TetrahedronizedObject& orig);
+            TetrahedronizedObject(TetrahedronizedObject&& orig);
             
-            // This would not work, as we cannot make the mesh reference point to a different mesh
-            TetrahedronizedMesh& operator=(const TetrahedronizedMesh& orig) = delete;
-            TetrahedronizedMesh& operator=(TetrahedronizedMesh&& orig) = delete;
+            TetrahedronizedObject& operator=(const TetrahedronizedObject& orig);
+            TetrahedronizedObject& operator=(TetrahedronizedObject&& orig);
             
-            Mesh& getMesh();
-            const Mesh& getMesh() const;
-            
-            std::shared_ptr<Mesh> getMeshPtr();
+            ObjectProperties& getProperties();
+            const ObjectProperties& getProperties() const;
             
             size_t getNumberOfTetrahedron() const;
             
@@ -44,9 +49,6 @@ namespace engine {
             
             size_t getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const;
             
-            void updateMeshFromPlanarVector(const VectorXf& vertices);
-            
-            Vector3f getVertex(size_t index) const;
             MatrixXf getTetrahedron(size_t index) const;
             VectorXf getTetrahedronPlanar(size_t index) const;
             

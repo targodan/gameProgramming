@@ -37,15 +37,15 @@ namespace demoSimulation {
         Vertex backRight(   {0.05,  0, 0},     {1, 0, 0});
         Vertex backBottom(  {0, 0.05, -0.05},       {1, 0, 1});
         Vertex up(          {0, 0.1, 0},          {1, 1, 0});
-        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
-                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
-                DataUsagePattern::DYNAMIC_DRAW));
+//        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
+//                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
+//                DataUsagePattern::DYNAMIC_DRAW));
 //        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up, backBottom},
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
 //                DataUsagePattern::DYNAMIC_DRAW));
         
-//        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
-//        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
+        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
         tetrahedronMesh->loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
@@ -64,7 +64,7 @@ namespace demoSimulation {
         
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();
         
-        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3});
+//        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3});
 //        TetrahedronizedMesh tMesh(tetrahedronMesh, {0, 1, 2, 3, 1, 2, 3, 4});
         
         float volume = tMesh.calculateVolume();
@@ -73,7 +73,7 @@ namespace demoSimulation {
         float density = 920; // kg / m³ rubber
         float mass = volume * density;
         
-        LOG(INFO) << "Volume: " << volume * 100 * 100 << " cm³";
+        LOG(INFO) << "Volume: " << volume << " m³";
         LOG(INFO) << "Mass: " << mass * 1000 << " g";
         
         auto properties = 
@@ -98,13 +98,13 @@ namespace demoSimulation {
         // Deformable body created => restPosition copied
         // Let's now pull on a vertex.
 //        defBody->getCurrentPosition()[1] += 0.01;
-        defBody->getCurrentPosition()[2] -= 0.025;
+//        defBody->getCurrentPosition()[2] -= 0.025;
 //        tMesh.getMesh().getVertices()[0].position.y += 0.01;
-        tMesh.getMesh().getVertices()[0].position.z -= 0.025;
+//        tMesh.getMesh().getVertices()[0].position.z -= 0.025;
 //        tMesh.getMesh().loadMesh();
         
-        auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
-                .addComponent<DeformableBodyComponent>(defBody);
+//        auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
+//                .addComponent<DeformableBodyComponent>(defBody);
         
 //        auto force = std::make_shared<OneShotForce>();
 //        this->entityManager.createEntity("Force")
@@ -157,8 +157,8 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
-        this->systemManager.enableSystem<DeformableBodySystem>();
-        this->systemManager.enableSystem<TimerSystem>();
+//        this->systemManager.enableSystem<DeformableBodySystem>();
+//        this->systemManager.enableSystem<TimerSystem>();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         

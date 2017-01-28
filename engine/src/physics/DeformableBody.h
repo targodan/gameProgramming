@@ -15,7 +15,7 @@ namespace engine {
         using namespace engine::renderer;
         
         class DeformableBody {
-            using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
+            using SparseSolver = SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<SparseMatrix<double, ColMajor>::StorageIndex>>;
         protected:
             TetrahedronizedMesh mesh;
             ObjectProperties properties;
@@ -27,29 +27,29 @@ namespace engine {
             float youngsModulus; // in N/m² = Pa (Pascal)
             float poissonsRatio;
             
-            SparseMatrix<float> stiffnessMatrix; // Called K in lecture
-            SparseMatrix<float> dampeningMatrix; // Called C in lecture
+            SparseMatrix<double> stiffnessMatrix; // Called K in lecture
+            SparseMatrix<double> dampeningMatrix; // Called C in lecture
             
             float stepSizeOnMatrixCalculation; // The last value of h.
             // If the current step size deviates more than
             // stepSizeDeviationPercentage % from the stepSizeOnMatrixCalculation
             // the stepMatrix is recalculated. Always updates if 0.
             float stepSizeDeviationPercentage;
-            SparseMatrix<float, ColMajor> stepMatrix; // M + h² * K + h * C
+            SparseMatrix<double, ColMajor> stepMatrix; // M + h² * K + h * C
             SparseSolver stepMatrixSolver;
             
-            VectorXf lastVelocities;
+            VectorXd lastVelocities;
             
-            SparseMatrix<float> calculateMaterialMatrix() const; // Called D in lecture
-            SparseMatrix<float> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
-            SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
-            SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture
-            SparseMatrix<float> calculateMassMatrix() const; // Called M in lecture
-            SparseMatrix<float, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
+            SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
+            SparseMatrix<double> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            SparseMatrix<double> calculateStiffnessMatrix() const; // Called K in lecture
+            SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
+            SparseMatrix<double> calculateMassMatrix() const; // Called M in lecture
+            SparseMatrix<double, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
             void prepareStepMatrixSolver();
             
-            VectorXf calculateCurrentDifferenceFromRestPosition() const;
-            VectorXf calculateVelocities(float h, const VectorXf& forces) const;
+            VectorXd calculateCurrentDifferenceFromRestPosition() const;
+            VectorXd calculateVelocities(float h, const VectorXf& forces) const;
             
             void updateStepMatrix(float h);
             void updateStepMatrixIfNecessary(float h);

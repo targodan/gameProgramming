@@ -98,18 +98,18 @@ namespace demoSimulation {
         // Deformable body created => restPosition copied
         // Let's now pull on a vertex.
 //        defBody->getCurrentPosition()[1] += 0.01;
-        defBody->getCurrentPosition()[2] -= 0.025;
+//        defBody->getCurrentPosition()[2] -= 0.025;
 //        tMesh.getMesh().getVertices()[0].position.y += 0.01;
-        tMesh.getMesh().getVertices()[0].position.z -= 0.025;
+//        tMesh.getMesh().getVertices()[0].position.z -= 0.025;
 //        tMesh.getMesh().loadMesh();
         
         auto defBodyEntity = this->entityManager.createEntity("DeformableBody")
                 .addComponent<DeformableBodyComponent>(defBody);
         
-//        auto force = std::make_shared<OneShotForce>();
-//        this->entityManager.createEntity("Force")
-//                .addComponent<TimerComponent>(3)
-//                .addComponent<ForceComponent>(force);
+        auto force = std::make_shared<OneShotForce>();
+        this->entityManager.createEntity("Force")
+                .addComponent<TimerComponent>(3)
+                .addComponent<ForceComponent>(force);
         
 //        auto explosion = std::make_shared<Explosion>(Vector3f(-5.5, 0.5, 0), 100 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
 //        this->entityManager.createEntity("Force")

@@ -8,8 +8,8 @@
 
 namespace engine {
     namespace physics {
-        SparseMatrix<float> DeformableBody::calculateMaterialMatrix() const {
-            SparseMatrix<float> materialMat(6, 6);
+        SparseMatrix<double> DeformableBody::calculateMaterialMatrix() const {
+            SparseMatrix<double> materialMat(6, 6);
             materialMat.reserve(12);
             materialMat.insert(0, 0) = 1 - this->poissonsRatio;
             materialMat.insert(0, 1) = this->poissonsRatio;
@@ -29,7 +29,7 @@ namespace engine {
             return ret;
         }
         
-        SparseMatrix<float> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
+        SparseMatrix<double> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
             MatrixXf A_inv(4, 4);
             A_inv << this->mesh.getTetrahedron(index), MatrixXf::Ones(1, 4);
             
@@ -41,7 +41,7 @@ namespace engine {
             
             LOG(INFO) << "A" << std::endl << A;
             
-            auto B = SparseMatrix<float>(6, 12);
+            auto B = SparseMatrix<double>(6, 12);
             B.reserve(36);
             
             for(int i = 0; i < 4; ++i) {
@@ -63,7 +63,7 @@ namespace engine {
             return this->mesh.calculateVolumeOfTetrahedron(index) * B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
-        SparseMatrix<float> DeformableBody::calculateStiffnessMatrix() const {
+        SparseMatrix<double> DeformableBody::calculateStiffnessMatrix() const {
 //            SparseMatrix<float> stiffnessMatrix(this->properties.allVertices.rows(), this->properties.allVertices.rows());
 //            stiffnessMatrix.reserve(12 * 12 + 63 * this->mesh.getNumberOfTetrahedron());
 //            
@@ -97,22 +97,20 @@ namespace engine {
             return stiff;
         }
         
-        SparseMatrix<float> DeformableBody::calculateDampeningMatrix() const {
-            SparseMatrix<float> dampening(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+        SparseMatrix<double> DeformableBody::calculateDampeningMatrix() const {
+            SparseMatrix<double> dampening(this->properties.allVertices.rows(), this->properties.allVertices.rows());
             dampening.setIdentity();
             return this->dampening * dampening;
         }
         
-        SparseMatrix<float> DeformableBody::calculateMassMatrix() const {
-            SparseMatrix<float> mass(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+        SparseMatrix<double> DeformableBody::calculateMassMatrix() const {
+            SparseMatrix<double> mass(this->properties.allVertices.rows(), this->properties.allVertices.rows());
             mass.setIdentity();
             return this->mass * mass;
         }
         
-        SparseMatrix<float, ColMajor> DeformableBody::calculateStepMatrix(float h) const {
-            TIMED_FUNC(timerCalcStiffnessMat);
-            
-            SparseMatrix<float, ColMajor> mat = this->calculateMassMatrix() + h * h * this->stiffnessMatrix + h * this->dampeningMatrix;
+        SparseMatrix<double, ColMajor> DeformableBody::calculateStepMatrix(float h) const {
+            SparseMatrix<double, ColMajor> mat = this->calculateMassMatrix() + h * h * this->stiffnessMatrix + h * this->dampeningMatrix;
             mat.makeCompressed();
             return mat;
         }
@@ -123,6 +121,8 @@ namespace engine {
         }
             
         void DeformableBody::updateStepMatrix(float h) {
+            TIMED_FUNC(timerCalcStiffnessMat);
+            
             this->stepMatrix = this->calculateStepMatrix(h);
             this->prepareStepMatrixSolver();
             this->stepSizeOnMatrixCalculation = h;
@@ -139,20 +139,21 @@ namespace engine {
             }
         }
         
-        VectorXf DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
-            return this->currentPosition - this->restPosition;
+        VectorXd DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
+            return this->currentPosition.cast<double>() - this->restPosition.cast<double>();
         }
         
-        VectorXf DeformableBody::calculateVelocities(float h, const VectorXf& forces) const {
-            LOG(INFO) << "Rückstellkraft: " << std::endl << - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition();
+        VectorXd DeformableBody::calculateVelocities(float h, const VectorXf& forces) const {
+            LOG(INFO) << "Diff to Rest" << std::endl << this->calculateCurrentDifferenceFromRestPosition();
+            LOG(INFO) << "Rückstellkraft" << std::endl << this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition();
             return this->lastVelocities +
                     (
                         this->stepMatrixSolver.solve(
                             h * (
-                                forces
+                                forces.cast<double>()
                                 - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
                                 - this->dampeningMatrix * this->lastVelocities
-                                - this->stiffnessMatrix * h * this->lastVelocities
+//                                - this->stiffnessMatrix * h * this->lastVelocities
                             )
                         )
                     );
@@ -161,7 +162,7 @@ namespace engine {
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
             // currentPosition points to the objectProperties->allVertices
             this->restPosition = this->currentPosition;
-            this->lastVelocities = VectorXf::Zero(this->currentPosition.rows());
+            this->lastVelocities = VectorXd::Zero(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
             LOG(INFO) << "K" << std::endl << this->stiffnessMatrix;
@@ -176,13 +177,10 @@ namespace engine {
         }
         
         void DeformableBody::step(float deltaT, const VectorXf& forces) {
+            LOG(INFO) << "REST" << std::endl << this->restPosition;
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
-//            LOG(INFO) << "Position" << std::endl
-//                    << this->currentPosition;
-            LOG(INFO) << "Velocities" << std::endl
-                    << this->lastVelocities;
-            this->currentPosition += deltaT * this->lastVelocities;
+            this->currentPosition += deltaT * this->lastVelocities.cast<float>();
             this->mesh.updateMeshFromPlanarVector(this->currentPosition);
         }
         

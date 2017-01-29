@@ -78,7 +78,7 @@ namespace engine {
                 }
             };
             
-            Mesh() : wasLoaded(false) {}
+            Mesh() : loaded(false) {}
             Mesh(vector<Vertex> vertices, 
                     DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
@@ -99,6 +99,7 @@ namespace engine {
             void setIndicesChanged(bool changed);
             void releaseMesh();
             
+            bool wasLoaded() const;
             std::string getUsage() const;
             
             void setMaterial(const std::shared_ptr<Material>& material);
@@ -122,7 +123,7 @@ namespace engine {
             
             std::unique_ptr<VertexArray> vao;
             
-            bool wasLoaded;
+            bool loaded;
             bool verticesChanged = false;
             bool indicesChanged = false;
             

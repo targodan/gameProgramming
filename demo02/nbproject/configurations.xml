@@ -93,7 +93,7 @@
         <itemPath>../engine/src/physics/DeformableBody.h</itemPath>
         <itemPath>../engine/src/physics/Force.h</itemPath>
         <itemPath>../engine/src/physics/ObjectProperties.h</itemPath>
-        <itemPath>../engine/src/physics/TetrahedronizedMesh.h</itemPath>
+        <itemPath>../engine/src/physics/TetrahedronizedObject.h</itemPath>
       </logicalFolder>
       <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
         <logicalFolder name="gl" displayName="gl" projectFiles="true">

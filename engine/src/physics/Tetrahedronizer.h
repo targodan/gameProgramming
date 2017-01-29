@@ -1,7 +1,7 @@
 #ifndef TETRAHEDRONIZER_H
 #define TETRAHEDRONIZER_H
 
-#include "TetrahedronizedMesh.h"
+#include "TetrahedronizedObject.h"
 
 namespace engine {
     namespace physics {
@@ -13,7 +13,7 @@ namespace engine {
         class Tetrahedronizer {
         public:
             
-            static TetrahedronizedMesh tetrahedronizeCuboid(
+            static TetrahedronizedObject tetrahedronizeCuboid(
                     const Vector3f& corner,
                     const Vector3f& spanVectorOne, const Vector3f& spanVectorTwo, const Vector3f& spanVectorThree,
                     size_t numTetrahedronAlongSpanOne, size_t numTetrahedronAlongSpanTwo, size_t numTetrahedronAlongSpanThree 

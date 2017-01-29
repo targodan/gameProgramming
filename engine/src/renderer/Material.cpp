@@ -6,19 +6,25 @@
 
 namespace engine {
     namespace renderer {
-        Material::Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe) : shader(shader), renderAsWireframe(renderAsWireframe) {
+        Material::Material() : renderAsWireframe(false), texturesLoaded(false) {
+            this->importedTextures.set_empty_key("");
+        }
+        
+        Material::Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe) : shader(shader), renderAsWireframe(renderAsWireframe), texturesLoaded(false) {
 #ifdef DEBUG
             if(!this->shader) {
                 throw WTFException("Could not create material: shader pointer invalid.");
             }
 #endif 
             
-            this->loadedTextures.set_empty_key("");
+            this->importedTextures.set_empty_key("");
         }
-        Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures), renderAsWireframe(orig.renderAsWireframe) {
-            
+        Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures), renderAsWireframe(orig.renderAsWireframe), texturesLoaded(false) {
+            if(orig.texturesLoaded) {
+                this->loadTextures();
+            }
         }
-        Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)), renderAsWireframe(orig.renderAsWireframe) {
+        Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)), renderAsWireframe(orig.renderAsWireframe), texturesLoaded(orig.texturesLoaded) {
             
         } 
         
@@ -48,14 +54,15 @@ namespace engine {
         
         Material& Material::attachTexture(const std::string& pathToTexture) {
             // Insert path as key with default value 'false'
-            auto result = this->loadedTextures.insert(std::make_pair(pathToTexture, false));
+            auto result = this->importedTextures.insert(std::make_pair(pathToTexture, false));
             if(!result.second) {
                 // TODO: LOG WARNING Get texture from another material
-                return *this;
+                // TODO: MaterialManager to handle this?
+                // return *this;
             }
             
             Texture texture = {pathToTexture};
-            this->loadedTextures[pathToTexture] = true;
+            this->importedTextures[pathToTexture] = true;
             
             return this->attachTexture(texture);
         }
@@ -65,6 +72,9 @@ namespace engine {
         }
         void Material::setTextures(const vector<Texture>& textures) {
             this->textures = textures;
+        }
+        const vector<Texture>& Material::getTextures() const {
+            return this->textures;
         }
         
         void Material::makeActive() {

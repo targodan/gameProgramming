@@ -30,10 +30,13 @@ namespace engine {
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) { // Each and every visual component has to be rendered from the camera's perspective
                     auto& visual = (*itVisual)->to<VisualComponent>();
                     
-                    auto shaderPtr = visual.getMaterial().getShader();
-                    shaderPtr->useProgram();
-                    shaderPtr->setUniform("projectionMatrix", camera.getProjectionMatrix());
-                    shaderPtr->setUniform("viewMatrix", camera.getViewMatrix());
+                    visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
+                    visual.setShaderUniform("viewMatrix", camera.getViewMatrix());
+                    
+//                    auto shaderPtr = visual.getMaterial().getShader();
+//                    shaderPtr->useProgram();
+//                    shaderPtr->setUniform("projectionMatrix", camera.getProjectionMatrix());
+//                    shaderPtr->setUniform("viewMatrix", camera.getViewMatrix());
                 }
             }
         }

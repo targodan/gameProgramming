@@ -1,6 +1,7 @@
 #include "RenderSystem.h"
 #include "VisualComponent.h"
 #include "TextComponent.h"
+#include "CameraComponent.h"
 #include "PerformanceMetricsSystem.h"
 
 #include "../ECS/SystemRegisterer.h"
@@ -11,6 +12,8 @@ using engine::renderer::TextRenderer;
 
 namespace engine {
     namespace ECSCommon {
+        using glm::mat4;
+        
         ECS_REGISTER_SYSTEM(RenderSystem);
         
         systemId_t RenderSystem::systemId = 0;
@@ -25,10 +28,22 @@ namespace engine {
         }
         
         void RenderSystem::run(EntityManager& em, float deltaTimeSeconds) {
-            for(auto it = em.begin({VisualComponent::getComponentTypeId()}); it != em.end(); ++it) {
-                auto ptr = *it;
-                auto comp = dynamic_cast<VisualComponent*>(ptr.get());
-                this->render(*comp);
+            for(auto itCamera = em.begin({CameraComponent::getComponentTypeId(), PlacementComponent::getComponentTypeId()}); itCamera != em.end(); ++itCamera) {
+                auto& placement = itCamera[1]->to<PlacementComponent>();
+                auto& camera = itCamera[0]->to<CameraComponent>();
+                
+                camera.setViewMatrix(placement.getPosition());
+                
+                for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) { // Each and every visual component has to be rendered from the camera's perspective
+                    auto& visual = (*itVisual)->to<VisualComponent>();
+                    
+                    visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
+                    visual.setShaderUniform("viewMatrix", camera.getViewMatrix());
+                    
+                    this->render(visual);
+                }
+                
+                // TODO: If a second camera is present: ... take split-screen into account?
             }
             
             auto it = em.begin({TextComponent::getComponentTypeId()});
@@ -43,6 +58,10 @@ namespace engine {
                 }
                 fontRenderer.endBatchMode();
             }
+        }
+        
+        Array<systemId_t> RenderSystem::getDependencies() const {
+            return {ModelTransformationSystem::systemTypeId()};
         }
             
         Array<systemId_t> RenderSystem::getOptionalDependencies() const {

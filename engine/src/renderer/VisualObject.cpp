@@ -64,17 +64,17 @@ namespace engine {
             this->mesh->render();
         }
 
-        const std::shared_ptr<Mesh>& VisualObject::getMesh() const {
-            return this->mesh;
+        const Mesh& VisualObject::getMesh() const {
+            return *this->mesh;
         }
-        const std::shared_ptr<Material>& VisualObject::getMaterial() const {
-            return this->material;
+        const Material& VisualObject::getMaterial() const {
+            return *this->material;
         }
-        std::shared_ptr<Mesh>& VisualObject::getMesh() {
-            return this->mesh;
+        Mesh& VisualObject::getMesh() {
+            return *this->mesh;
         }
-        std::shared_ptr<Material>& VisualObject::getMaterial() {
-            return this->material;
+        Material& VisualObject::getMaterial() {
+            return *this->material;
         }
         
         bool VisualObject::isInitialized() const {

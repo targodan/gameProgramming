@@ -28,11 +28,11 @@ namespace engine {
             void loadObject();
             void render();
             
-            const std::shared_ptr<Mesh>& getMesh() const;
-            std::shared_ptr<Mesh>& getMesh();
+            const Mesh& getMesh() const;
+            Mesh& getMesh();
             
-            const std::shared_ptr<Material>& getMaterial() const;
-            std::shared_ptr<Material>& getMaterial();
+            const Material& getMaterial() const;
+            Material& getMaterial();
             
             bool isInitialized() const;
         private:

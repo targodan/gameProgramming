@@ -33,8 +33,8 @@ namespace engine {
             
             template<typename T>
             void setShaderUniform(const std::string& nameInShader, T data) const {
-                this->object.getMaterial()->getShader()->useProgram();
-                this->object.getMaterial()->getShader()->setUniform(nameInShader, data);
+                this->object.getMaterial().getShader()->useProgram();
+                this->object.getMaterial().getShader()->setUniform(nameInShader, data);
             }
             
             componentId_t getComponentId() const override;

@@ -9,7 +9,7 @@ namespace engine {
                 const vector<Array<std::pair<size_t, size_t>>>& simulationToRenderVertices,
                 const ObjectProperties& properties,
                 const Array<size_t>& tetrahedronIndices)
-            : SimulationObject(meshes, simulationMesh, simulationToRenderVertices), properties(properties), tetrahedronIndices(tetrahedronIndices) {
+            : SimulationObject(simulationMesh, meshes, simulationToRenderVertices), properties(properties), tetrahedronIndices(tetrahedronIndices) {
             if(tetrahedronIndices.size() % 4 != 0) {
                 throw IllegalArgumentException("The list of tetrahedron indices should be divisable by 4! Size: %zu", tetrahedronIndices.size());
             }

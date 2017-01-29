@@ -46,7 +46,7 @@ namespace engine {
             }
         }
 
-        Mesh ModelLoader::createMeshObject(aiMesh* mesh, const aiScene* scene) {
+        std::shared_ptr<Mesh> ModelLoader::createMeshObject(aiMesh* mesh, const aiScene* scene) {
             vector<Vertex> vertices;
             vector<GLuint> indices;
 
@@ -68,10 +68,11 @@ namespace engine {
                 }
             }
 
-            return Mesh{vertices, indices};
+            std::shared_ptr<Mesh> meshPtr = std::make_shared<Mesh>(vertices, indices);
+            return meshPtr;
         }
 
-        Material ModelLoader::createMaterialObject(aiMesh* mesh, const aiScene* scene) {
+        std::shared_ptr<Material> ModelLoader::createMaterialObject(aiMesh* mesh, const aiScene* scene) {
             if(mesh->mMaterialIndex < 0) {
                 throw WTFException("Currently processed mesh has no associated material.");
             } 
@@ -87,7 +88,7 @@ namespace engine {
             
             std::string vertexShader = "";
             std::string fragmentShader = "";
-            Material material;
+            std::shared_ptr<Material> material;
             if(pathToVertexShader == "" && pathToFragmentShader == "") {
                 if(!textures.empty()) {
                     vertexShader = DefaultShader::createSimpleTextureVertexShader();
@@ -97,15 +98,13 @@ namespace engine {
                     fragmentShader = DefaultShader::createFlatFragmentShader();
                 }
                 
-                Material fromSource = {std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader))};
-                material = fromSource;
+                material = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)));
             } else {
-                Material fromFile = {std::make_shared<ShaderProgram>(pathToVertexShader, pathToFragmentShader)};
-                material = fromFile;
+                material = std::make_shared<Material>(std::make_shared<ShaderProgram>(pathToVertexShader, pathToFragmentShader));
             }
             
             if(!textures.empty()) {
-                material.setTextures(textures);
+                material->setTextures(textures);
             }
 
             return material;

@@ -22,7 +22,7 @@ namespace engine {
             
         public:
             VisualComponent();
-            VisualComponent(const Mesh& mesh, const Material& material);
+            VisualComponent(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material);
             VisualComponent(const VisualObject& object);
             VisualComponent(const VisualComponent& orig) = delete;
             virtual ~VisualComponent();
@@ -33,8 +33,8 @@ namespace engine {
             
             template<typename T>
             void setShaderUniform(const std::string& nameInShader, T data) const {
-                this->object.getMaterial().getShader()->useProgram();
-                this->object.getMaterial().getShader()->setUniform(nameInShader, data);
+                this->object.getMaterial()->getShader()->useProgram();
+                this->object.getMaterial()->getShader()->setUniform(nameInShader, data);
             }
             
             componentId_t getComponentId() const override;

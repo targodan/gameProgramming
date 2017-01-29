@@ -15,7 +15,7 @@ namespace engine {
         class VisualObject {
         public:
             VisualObject();
-            VisualObject(const Mesh& mesh, const Material& material);
+            VisualObject(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material);
             VisualObject(string pathToModel, string pathToVertexShader = "", string pathToFragmentShader = "");
             
             VisualObject(const VisualObject& orig);
@@ -28,18 +28,19 @@ namespace engine {
             void loadObject();
             void render();
             
-            const Mesh& getMesh() const;
-            Mesh& getMesh();
-            const Material& getMaterial() const;
-            Material& getMaterial();
+            const std::shared_ptr<Mesh>& getMesh() const;
+            std::shared_ptr<Mesh>& getMesh();
+            
+            const std::shared_ptr<Material>& getMaterial() const;
+            std::shared_ptr<Material>& getMaterial();
             
             bool isInitialized() const;
         private:
             void init();
             
             bool initialized;
-            Mesh mesh;
-            Material material;
+            std::shared_ptr<Mesh> mesh;
+            std::shared_ptr<Material> material;
         };
     }
 }

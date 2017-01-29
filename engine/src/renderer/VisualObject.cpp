@@ -10,7 +10,7 @@ namespace engine {
         VisualObject::VisualObject() : initialized(false) {
             
         }
-        VisualObject::VisualObject(const Mesh& mesh, const Material& material) : initialized(false), mesh(mesh), material(material) {
+        VisualObject::VisualObject(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) : initialized(false), mesh(mesh), material(material) {           
             this->init();
         }
         VisualObject::VisualObject(string pathToModel, string pathToVertexShader, string pathToFragmentShader) : initialized(false) {
@@ -42,7 +42,7 @@ namespace engine {
         }
         
         void VisualObject::init() {
-            this->mesh.setMaterial(std::make_shared<Material>(this->material));
+            this->mesh->setMaterial(this->material);
             this->initialized = true;
         }
 
@@ -51,9 +51,9 @@ namespace engine {
                 throw WTFException("Could not load object: object not initialized!");
             }
             
-            this->mesh.loadMesh();
-            if(this->material.getTextures().size() > 0) {
-                this->material.loadTextures();
+            this->mesh->loadMesh();
+            if(this->material->getTextures().size() > 0) {
+                this->material->loadTextures();
             }
         }
         void VisualObject::render() {
@@ -61,19 +61,19 @@ namespace engine {
                 throw WTFException("Could not load object: object not initialized!");
             }
             
-            this->mesh.render();
+            this->mesh->render();
         }
 
-        const Mesh& VisualObject::getMesh() const {
+        const std::shared_ptr<Mesh>& VisualObject::getMesh() const {
             return this->mesh;
         }
-        const Material& VisualObject::getMaterial() const {
+        const std::shared_ptr<Material>& VisualObject::getMaterial() const {
             return this->material;
         }
-        Mesh& VisualObject::getMesh() {
+        std::shared_ptr<Mesh>& VisualObject::getMesh() {
             return this->mesh;
         }
-        Material& VisualObject::getMaterial() {
+        std::shared_ptr<Material>& VisualObject::getMaterial() {
             return this->material;
         }
         

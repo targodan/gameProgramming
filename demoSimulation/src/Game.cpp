@@ -7,7 +7,7 @@
 #include "engine/renderer/TextRenderer.h"
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
-#include "engine/physics/TetrahedronizedMesh.h"
+#include "engine/physics/TetrahedronizedObject.h"
 #include "engine/physics/Tetrahedronizer.h"
 #include "OneShotForce.h"
 #include "Actions.h"
@@ -44,22 +44,27 @@ namespace demoSimulation {
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
 //                DataUsagePattern::DYNAMIC_DRAW));
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4);
-        std::shared_ptr<Mesh> tetrahedronMesh = tMesh.getMeshPtr();
-        tetrahedronMesh->loadMesh();
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 8, 8, 8);
+        std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(0);
+        std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(1);
+        innerMesh->loadMesh();
+        outerMesh->loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
                                                          "src/triangle_sh.fsh"), true);
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0.05, 0.5))
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 1, 2))
                 .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
         auto& cc = this->player.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
-        this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
-                .addComponent<VisualComponent>(tetrahedronMesh, material)
+        this->tetrahedron = this->entityManager.createEntity("Inner")
+                .addComponent<VisualComponent>(innerMesh, material)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Outer")
+                .addComponent<VisualComponent>(outerMesh, material)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();
@@ -76,24 +81,17 @@ namespace demoSimulation {
         LOG(INFO) << "Volume: " << volume << " m³";
         LOG(INFO) << "Mass: " << mass * 1000 << " g";
         
-        auto properties = 
-                engine::physics::ObjectProperties::uniformTetrahedronDistribution(
-                            engine::physics::ObjectProperties::verticesToFlatVector(vc.getVisualObject().getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
-                        )
-                        .uniformDensity(volume, density)
-                        .uniformAreaDistribution(area);
-        
-        auto defBody = std::make_shared<engine::physics::DeformableBody>(
-                tMesh,
-                properties,
-                mass,
-                0, // dampening
-                0.01e9, // youngs modulus rubber
-                0.49, // poissons ratio rubber
-//                200e9, // youngs modulus metal
-//                0.27, // poissons ratio metal
-                1. / this->updatesPerSecond
-            );
+//        auto defBody = std::make_shared<engine::physics::DeformableBody>(
+//                tMesh,
+//                properties,
+//                mass,
+//                0, // dampening
+//                0.01e9, // youngs modulus rubber
+//                0.49, // poissons ratio rubber
+////                200e9, // youngs modulus metal
+////                0.27, // poissons ratio metal
+//                1. / this->updatesPerSecond
+//            );
         
         // Deformable body created => restPosition copied
         // Let's now pull on a vertex.

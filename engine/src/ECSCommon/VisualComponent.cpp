@@ -11,7 +11,7 @@ namespace engine {
         
         VisualComponent::VisualComponent() {}
         VisualComponent::VisualComponent(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) 
-            : object(VisualObject{mesh, material}) {}
+            : object(mesh, material) {}
         VisualComponent::VisualComponent(const VisualObject& object) : object(object) {}
         VisualComponent::~VisualComponent() {}
         

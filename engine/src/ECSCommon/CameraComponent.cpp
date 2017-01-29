@@ -68,9 +68,12 @@ namespace engine {
         }
         void CameraComponent::setDirection(const vec3& direction) {
             this->direction = glm::normalize(direction);
+            this->setYawAndPitchFromDirection();
+            this->updateViewMatrix();
         }
         void CameraComponent::setUp(const vec3& up) {
             this->up = glm::normalize(up);
+            this->updateViewMatrix();
         }
         void CameraComponent::setYawAndPitchFromDirection() {
             this->pitch = glm::degrees(asin(this->direction.y));

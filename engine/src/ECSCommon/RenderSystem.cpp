@@ -62,7 +62,7 @@ namespace engine {
         }
         
         void RenderSystem::render(VisualComponent& comp) {
-            comp.getMesh().render();
+            comp.getVisualObject().render();
         }
     }
 }

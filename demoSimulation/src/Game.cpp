@@ -59,7 +59,7 @@ namespace demoSimulation {
         
         
         this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
-                .addComponent<VisualComponent>(tetrahedronMesh, *material)
+                .addComponent<VisualComponent>(tetrahedronMesh, material)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();
@@ -78,7 +78,7 @@ namespace demoSimulation {
         
         auto properties = 
                 engine::physics::ObjectProperties::uniformTetrahedronDistribution(
-                            engine::physics::ObjectProperties::verticesToFlatVector(vc.getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
+                            engine::physics::ObjectProperties::verticesToFlatVector(vc.getVisualObject().getMesh().getVertices()), engine::util::vector<size_t>({0, 1, 2, 3})
                         )
                         .uniformDensity(volume, density)
                         .uniformAreaDistribution(area);

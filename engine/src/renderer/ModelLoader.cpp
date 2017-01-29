@@ -7,7 +7,7 @@ namespace engine {
     namespace renderer {
         ModelLoader::ModelLoader(string pathToModel, string pathToVertexShader, string pathToFragmentShader) 
             : pathToVertexShader(pathToVertexShader), pathToFragmentShader(pathToFragmentShader) {       
-            this->modelDirectory = pathToModel.substr(pathToModel.find_last_of("/"));
+            this->modelDirectory = pathToModel.substr(0, pathToModel.find_last_of("/")) + "/";
             
             // TODO: Test flags: aiProcess_OptimizeGraph, aiProcess_OptimizeMeshes
             Importer modelImporter;

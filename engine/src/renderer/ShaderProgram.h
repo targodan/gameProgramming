@@ -19,7 +19,7 @@ namespace engine {
                 : linked(false) {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
                 this->id = glCreateProgram();
-
+                
                 createShaderFromFile(vertexShaderFile, ShaderType::VERTEX_SHADER);
                 createShaderFromFile(fragmentShaderFile, ShaderType::FRAGMENT_SHADER);
                 
@@ -118,7 +118,6 @@ namespace engine {
                 std::string sourceCode = readFile(fileName, _getShaderFileExtensionForType(type));
                 this->createShader(sourceCode, type);
             }
-            
             void createShader(std::string sourceCode, ShaderType type) {
                 auto sourceCodePtr = std::make_unique<std::string>(sourceCode);
                 Shader* shader = new Shader{std::move(sourceCodePtr), type};
@@ -138,6 +137,15 @@ namespace engine {
                 GLint linkError;
                 glGetProgramiv(this->id, GL_LINK_STATUS, &linkError);
                 if(linkError != GL_TRUE) {
+                    GLsizei length = 0;
+                    glGetProgramiv(this->id, GL_INFO_LOG_LENGTH, &length);
+                    if(length>1) {
+                        GLchar* pInfo = new char[length+1];
+                        glGetProgramInfoLog(this->id, length, &length, pInfo);
+                        std::cout << "Linker log: " << std::string(pInfo) << std::endl;
+
+                    }
+                    
                     throw GLException("Shader link error. :(");
                 }
                 

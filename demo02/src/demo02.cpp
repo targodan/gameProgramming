@@ -4,19 +4,13 @@
 #include "../../engine/src/renderer/Mesh.h"
 #include "../../engine/src/renderer/Material.h"
 #include "../../engine/src/renderer/ShaderProgram.h"
-#include "../../engine/src/renderer/gl/gl_core_3_3.h"
 #include "../../engine/src/util/vec3.h"
 #include "../../engine/src/util/vector.h"
 #include "../../engine/src/renderer/Vertex.h"
-#include "../../engine/src/renderer/ElementBuffer.h"
 #include "../../engine/src/renderer/Texture.h"
-#include "../../engine/src/renderer/TextureParameter.h"
+#include "../../engine/src/renderer/VisualObject.h"
 #include <iostream>
-// GLM Mathematics
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "glm/gtx/string_cast.hpp"
 #include "IO/ButtonMapping.h"
 
 namespace demo {
@@ -33,34 +27,34 @@ namespace demo {
         
         this->cube = this->entityManager.createEntity("Cube");
         
-        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                             "src/triangle_sh.fsh")};
-        material.attachTexture("src/media/container.jpg");
-        material.loadTextures();
+//        Material material = {std::make_shared<ShaderProgram>("../engine/defaultShader/flat_shader.vsh", 
+//                                                             "../engine/defaultShader/flat_shader.fsh")};
+//        
+//        vector<Vertex> vertices = {Vertex(vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
+//                                   Vertex(vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
+//                                   Vertex(vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
+//                                   Vertex(vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
+//                                   Vertex(vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
+//                                   Vertex(vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
+//                                   Vertex(vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
+//                                   Vertex(vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
+//        vector<GLuint> indices = {0,1,3, 1,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 2,3,7, 2,7,6, 3,0,4, 3,4,7, 4,6,7, 4,5,6};
+//        Mesh mesh = {vertices, indices};
+//        mesh.loadMesh();
+//       
+//        this->cube.addComponent<VisualComponent>(mesh, material).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
         
-        vector<Vertex> vertices = {Vertex(vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
-                                   Vertex(vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
-                                   Vertex(vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
-                                   Vertex(vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
-                                   Vertex(vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
-                                   Vertex(vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
-                                   Vertex(vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
-                                   Vertex(vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
-        vector<GLuint> indices = {0,1,3, 1,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 2,3,7, 2,7,6, 3,0,4, 3,4,7, 4,6,7, 4,5,6};
-        Mesh mesh = {vertices, indices};
-        mesh.loadMesh();
-       
-        this->cube.addComponent<VisualComponent>(mesh, material).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
-        
+        VisualObject bomb = {"resources/models/bomb.obj"};
+        bomb.loadObject();
+        this->cube.addComponent<VisualComponent>(bomb).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
         
         this->player = this->entityManager.createEntity("Player");
         
         PlacementComponent pcPlayer;
-        pcPlayer.setPosition(vec3{-10.f, 0.f, -10.f});
-        pcPlayer.setVelocity(vec3{0.f, 0.f, 0.f});
+        pcPlayer.setPosition(vec3{3.f, 0.f, 3.f});
         
-        CameraComponent cc(vec3{1.f, 0.f, 1.f}, vec3{0.f, 1.f, 0.f});
-        cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
+        CameraComponent cc(vec3{-1.f, 0.f, -1.f}, vec3{0.f, 1.f, 0.f});
+        cc.setProjectionMatrix(45, this->window.getAspectRatio(), 0.1f, 100.f);
         cc.setViewMatrix(pcPlayer.getPosition());
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);

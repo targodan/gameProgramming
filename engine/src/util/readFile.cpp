@@ -36,11 +36,7 @@ namespace engine {
         }
         
         string getFileNameExtension(string fileName) {
-            std::stringstream buffer;
-            for(auto rit = fileName.rbegin(); rit!=fileName.rend(); ++rit) {
-                buffer << *rit;
-            }
-            return buffer.str();
+            return fileName.substr(fileName.find_last_of(".")+1);
         }
         
         string getAbsoluteFromRelativePath(string relativePath) {

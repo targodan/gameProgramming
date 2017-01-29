@@ -31,9 +31,11 @@ namespace engine {
             const VisualObject& getVisualObject() const;
             VisualObject& getVisualObject();
             
-            void setMaterial(const Material& mat);
-            const Material& getMaterial() const;
-            Material& getMaterial();
+            template<typename T>
+            void setShaderUniform(const std::string& nameInShader, T data) const {
+                this->object.getMaterial().getShader()->useProgram();
+                this->object.getMaterial().getShader()->setUniform(nameInShader, data);
+            }
             
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;

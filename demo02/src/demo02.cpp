@@ -82,7 +82,6 @@ namespace demo {
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>();
-        this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<InputSystem>(bm);
         Game::initialize();
         

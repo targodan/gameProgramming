@@ -17,7 +17,6 @@
 #include "./ECSCommon/CustomUpdateSystem.h"
 #include "./ECSCommon/CustomRenderSystem.h"
 #include "./ECSCommon/PerformanceMetricsSystem.h"
-#include "./ECSCommon/ModelTransformationSystem.h"
 
 #endif /* ECSCOMMON_H */
 

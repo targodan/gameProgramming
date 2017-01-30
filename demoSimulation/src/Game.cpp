@@ -144,7 +144,6 @@ namespace demoSimulation {
         
         this->systemManager.enableSystem<PerformanceMetricsSystem>(&this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
-        this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();

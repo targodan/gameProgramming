@@ -4,7 +4,6 @@
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
 #include "VisualComponent.h"
-#include "ModelTransformationSystem.h"
 
 namespace engine {
     namespace ECSCommon {

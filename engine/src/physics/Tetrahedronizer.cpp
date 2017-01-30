@@ -8,6 +8,8 @@
 
 #include "eigenHashes.h"
 
+#include <easylogging++.h>
+
 using engine::util::vector;
 using namespace engine::renderer;
 
@@ -16,27 +18,25 @@ namespace engine {
         TetrahedronizedObject Tetrahedronizer::tetrahedronizeCuboid(
                     const Vector3f& corner,
                     const Vector3f& spanVectorOne, const Vector3f& spanVectorTwo, const Vector3f& spanVectorThree,
-                    size_t numTetrahedronAlongSpanOne, size_t numTetrahedronAlongSpanTwo, size_t numTetrahedronAlongSpanThree 
+                    size_t numTetrahedronAlongSpanOne, size_t numTetrahedronAlongSpanTwo, size_t numTetrahedronAlongSpanThree,
+                    float textureRepeatAlongSpanOne, float textureRepeatAlongSpanTwo, float textureRepeatAlongSpanThree
                 ) {
-            if(numTetrahedronAlongSpanOne % 2 != 0
-                    || numTetrahedronAlongSpanTwo % 2 != 0
-                    || numTetrahedronAlongSpanThree % 2 != 0) {
-                throw IllegalArgumentException("The number of tetrahedron needs to be divisible by 2.");
-            }
             if(abs(spanVectorOne.cross(spanVectorTwo).dot(spanVectorThree)) < 1e-5) {
                 throw IllegalArgumentException("The span vectors must not be in the same plane.");
             }
             
-            MatrixXf euclidianToCuboid(3, 3);
-            euclidianToCuboid.col(0) = spanVectorOne;
-            euclidianToCuboid.col(1) = spanVectorTwo;
-            euclidianToCuboid.col(2) = spanVectorThree;
-            
-            MatrixXf cuboidToEuclidian(euclidianToCuboid.inverse());
+            MatrixXf cuboidToEuclidian(4, 4);
+            cuboidToEuclidian <<
+                    spanVectorOne, spanVectorTwo, spanVectorThree, corner,
+                    Vector4f(0, 0, 0, 1).transpose();
             
             float offsetX = 1. / numTetrahedronAlongSpanOne;
             float offsetY = 1. / numTetrahedronAlongSpanTwo;
             float offsetZ = 1. / numTetrahedronAlongSpanThree;
+            
+            float texOffsetX = textureRepeatAlongSpanOne / numTetrahedronAlongSpanOne;
+            float texOffsetY = textureRepeatAlongSpanTwo / numTetrahedronAlongSpanTwo;
+            float texOffsetZ = textureRepeatAlongSpanThree / numTetrahedronAlongSpanThree;
             
             engine::util::vector<size_t> tetrahedronIndices;
             engine::util::vector<Vector3f> allVectors;
@@ -48,30 +48,37 @@ namespace engine {
             
             vector<Array<std::pair<size_t, size_t>>> simulationToRenderVertices;
             
-            for(size_t xTetrahedron = 0; xTetrahedron < numTetrahedronAlongSpanOne / 2; ++xTetrahedron) {
-                for(size_t yTetrahedron = 0; yTetrahedron < numTetrahedronAlongSpanTwo / 2; ++yTetrahedron) {
-                    for(size_t zTetrahedron = 0; zTetrahedron < numTetrahedronAlongSpanThree / 2; ++zTetrahedron) {
-                        Vector3f corner_0_0_0 = {xTetrahedron * offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ};
-                        Vector3f corner_1_0_0 = {xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ};
-                        Vector3f corner_1_0_1 = {xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ + offsetZ};
-                        Vector3f corner_0_0_1 = {xTetrahedron * offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ + offsetZ};
+            for(size_t xTetrahedron = 0; xTetrahedron < numTetrahedronAlongSpanOne; ++xTetrahedron) {
+                for(size_t yTetrahedron = 0; yTetrahedron < numTetrahedronAlongSpanTwo; ++yTetrahedron) {
+                    for(size_t zTetrahedron = 0; zTetrahedron < numTetrahedronAlongSpanThree; ++zTetrahedron) {
+                        bool isX0 = xTetrahedron == 0;
+                        bool isY0 = yTetrahedron == 0;
+                        bool isZ0 = zTetrahedron == 0;
+                        bool isX1 = xTetrahedron+1 == numTetrahedronAlongSpanOne;
+                        bool isY1 = yTetrahedron+1 == numTetrahedronAlongSpanTwo;
+                        bool isZ1 = zTetrahedron+1 == numTetrahedronAlongSpanThree;
+                        
+                        Vector4f corner_0_0_0 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ, 1);
+                        Vector4f corner_1_0_0 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ, 1);
+                        Vector4f corner_1_0_1 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ + offsetZ, 1);
+                        Vector4f corner_0_0_1 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX, yTetrahedron * offsetY, zTetrahedron * offsetZ + offsetZ, 1);
 
-                        Vector3f corner_0_1_0 = {xTetrahedron * offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ};
-                        Vector3f corner_1_1_0 = {xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ};
-                        Vector3f corner_1_1_1 = {xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ + offsetZ};
-                        Vector3f corner_0_1_1 = {xTetrahedron * offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ + offsetZ};
+                        Vector4f corner_0_1_0 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ, 1);
+                        Vector4f corner_1_1_0 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ, 1);
+                        Vector4f corner_1_1_1 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX + offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ + offsetZ, 1);
+                        Vector4f corner_0_1_1 = cuboidToEuclidian * Vector4f(xTetrahedron * offsetX, yTetrahedron * offsetY + offsetY, zTetrahedron * offsetZ + offsetZ, 1);
                         
                         {   // All faces with x == 0
-                            auto& veretexList = xTetrahedron == 0 ? outerVertices : innerVertices;
-                            auto& indexList = xTetrahedron == 0 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = xTetrahedron == 0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isX0 ? outerVertices : innerVertices;
+                            auto& indexList = isX0 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isX0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_0_0_0, color)); // +0
-                            veretexList.push_back(Vertex(corner_0_1_0, color)); // +1
-                            veretexList.push_back(Vertex(corner_0_1_1, color)); // +2
-                            veretexList.push_back(Vertex(corner_0_0_1, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -83,16 +90,16 @@ namespace engine {
                         }
                         
                         {   // All faces with x == 1
-                            auto& veretexList = xTetrahedron+1 == numTetrahedronAlongSpanOne / 2 ? outerVertices : innerVertices;
-                            auto& indexList = xTetrahedron+1 == numTetrahedronAlongSpanOne / 2 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = xTetrahedron+1 == numTetrahedronAlongSpanOne / 2 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isX1 ? outerVertices : innerVertices;
+                            auto& indexList = isX1 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isX1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_1_0_1, color)); // +0
-                            veretexList.push_back(Vertex(corner_1_0_0, color)); // +1
-                            veretexList.push_back(Vertex(corner_1_1_0, color)); // +2
-                            veretexList.push_back(Vertex(corner_1_1_1, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(textureRepeatAlongSpanThree - (zTetrahedron * texOffsetZ), yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(textureRepeatAlongSpanThree - (zTetrahedron * texOffsetZ + texOffsetZ), yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(textureRepeatAlongSpanThree - (zTetrahedron * texOffsetZ + texOffsetZ), yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(textureRepeatAlongSpanThree - (zTetrahedron * texOffsetZ), yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -104,16 +111,16 @@ namespace engine {
                         }
                         
                         {   // All faces with y == 0
-                            auto& veretexList = yTetrahedron == 0 ? outerVertices : innerVertices;
-                            auto& indexList = yTetrahedron == 0 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = yTetrahedron == 0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isY0 ? outerVertices : innerVertices;
+                            auto& indexList = isY0 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isY0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_0_0_0, color)); // +0
-                            veretexList.push_back(Vertex(corner_1_0_0, color)); // +1
-                            veretexList.push_back(Vertex(corner_1_0_1, color)); // +2
-                            veretexList.push_back(Vertex(corner_0_0_1, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -125,16 +132,16 @@ namespace engine {
                         }
                         
                         {   // All faces with y == 1
-                            auto& veretexList = yTetrahedron+1 == numTetrahedronAlongSpanTwo / 2 ? outerVertices : innerVertices;
-                            auto& indexList = yTetrahedron+1 == numTetrahedronAlongSpanTwo / 2 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = yTetrahedron+1 == numTetrahedronAlongSpanTwo / 2 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isY1 ? outerVertices : innerVertices;
+                            auto& indexList = isY1 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isY1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_0_1_0, color)); // +0
-                            veretexList.push_back(Vertex(corner_1_1_0, color)); // +1
-                            veretexList.push_back(Vertex(corner_1_1_1, color)); // +2
-                            veretexList.push_back(Vertex(corner_0_1_1, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 3);
@@ -146,16 +153,16 @@ namespace engine {
                         }
                         
                         {   // All faces with z == 0
-                            auto& veretexList = zTetrahedron == 0 ? outerVertices : innerVertices;
-                            auto& indexList = zTetrahedron == 0 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = zTetrahedron == 0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isZ0 ? outerVertices : innerVertices;
+                            auto& indexList = isZ0 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isZ0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_0_0_0, color)); // +0
-                            veretexList.push_back(Vertex(corner_1_0_0, color)); // +1
-                            veretexList.push_back(Vertex(corner_1_1_0, color)); // +2
-                            veretexList.push_back(Vertex(corner_0_1_0, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(textureRepeatAlongSpanOne - (xTetrahedron * texOffsetX + texOffsetX), yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(textureRepeatAlongSpanOne - (xTetrahedron * texOffsetX), yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(textureRepeatAlongSpanOne - (xTetrahedron * texOffsetX), yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(textureRepeatAlongSpanOne - (xTetrahedron * texOffsetX + texOffsetX), yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -167,16 +174,16 @@ namespace engine {
                         }
                         
                         {   // All faces with z == 1
-                            auto& veretexList = zTetrahedron+1 == numTetrahedronAlongSpanThree / 2 ? outerVertices : innerVertices;
-                            auto& indexList = zTetrahedron+1 == numTetrahedronAlongSpanThree / 2 ? outerFaceIndices : innerFaceIndices;
-                            glm::vec3 color = zTetrahedron+1 == numTetrahedronAlongSpanThree / 2 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            auto& veretexList = isZ1 ? outerVertices : innerVertices;
+                            auto& indexList = isZ1 ? outerFaceIndices : innerFaceIndices;
+                            glm::vec3 color = isZ1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(corner_0_0_1, color)); // +0
-                            veretexList.push_back(Vertex(corner_1_0_1, color)); // +1
-                            veretexList.push_back(Vertex(corner_1_1_1, color)); // +2
-                            veretexList.push_back(Vertex(corner_0_1_1, color)); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 1);
@@ -192,10 +199,10 @@ namespace engine {
                         
                         float uvHeight = sqrtf(3) / 3;
                             
-                        innerVertices.push_back(Vertex(corner_0_1_1, {1, 0, 0}, {0,    0})); // +0
-                        innerVertices.push_back(Vertex(corner_1_0_1, {1, 0, 0}, {1./3, uvHeight})); // +1
-                        innerVertices.push_back(Vertex(corner_1_1_0, {1, 0, 0}, {1,    uvHeight})); // +2
-                        innerVertices.push_back(Vertex(corner_0_0_0, {1, 0, 0}, {2./3, 0})); // +3
+                        innerVertices.push_back(Vertex(vec4(corner_0_1_1), {1, 0, 0}, {0,    0})); // +0
+                        innerVertices.push_back(Vertex(vec4(corner_1_0_1), {1, 0, 0}, {1./3, uvHeight})); // +1
+                        innerVertices.push_back(Vertex(vec4(corner_1_1_0), {1, 0, 0}, {1,    uvHeight})); // +2
+                        innerVertices.push_back(Vertex(vec4(corner_0_0_0), {1, 0, 0}, {2./3, 0})); // +3
 
                         innerFaceIndices.push_back(firstIndex + 0);
                         innerFaceIndices.push_back(firstIndex + 1);

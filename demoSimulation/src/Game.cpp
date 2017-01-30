@@ -44,27 +44,35 @@ namespace demoSimulation {
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
 //                DataUsagePattern::DYNAMIC_DRAW));
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 8, 8, 8);
-        std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(0);
-        std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(1);
-        innerMesh->loadMesh();
-        outerMesh->loadMesh();
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4, 2, 2, 2);
+        std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
+        std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         
-        std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                         "src/triangle_sh.fsh"), true);
+        Texture outerTexture("textures/wall.png");
+        
+        std::shared_ptr<Material> outerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/textured.vsh", 
+                                                         "src/textured.fsh"));
+        outerMaterial->attachTexture(outerTexture);
+        std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
+                                                         "src/meshColor.fsh"), true);
+        
+        VisualObject outerObject(outerMesh, outerMaterial);
+        outerObject.loadObject();
+        VisualObject innerObject(innerMesh, innerMaterial);
+        innerObject.loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 1, 2))
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 4))
                 .addComponent<CameraComponent>(engine::util::vec3(0, 0, -1), engine::util::vec3(0, 1, 0));
         auto& cc = this->player.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
-                .addComponent<VisualComponent>(innerMesh, material)
+                .addComponent<VisualComponent>(innerObject)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         this->tetrahedron = this->entityManager.createEntity("Outer")
-                .addComponent<VisualComponent>(outerMesh, material)
+                .addComponent<VisualComponent>(outerObject)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
         auto& vc = this->tetrahedron.getComponent<VisualComponent>();

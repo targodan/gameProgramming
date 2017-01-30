@@ -24,7 +24,7 @@ C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp `freetype-config --cflags` 
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine `freetype-config --libs` -lglfw -Wl,-rpath=.,--as-needed
+LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine -lSOIL `freetype-config --libs` -lglfw -Wl,-rpath=.,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments

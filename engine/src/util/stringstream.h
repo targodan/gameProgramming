@@ -4,6 +4,7 @@
 #include <mutex>
 #include <sstream>
 #include <utility>
+#include <iostream>
 
 namespace engine {
     namespace util {

@@ -66,7 +66,7 @@ namespace engine {
             
             return this->attachTexture(texture);
         }
-        Material& Material::attachTexture(Texture& texture) {
+        Material& Material::attachTexture(const Texture& texture) {
             this->textures.push_back(texture);
             return *this;
         }
@@ -91,22 +91,23 @@ namespace engine {
                     Texture::activateTextureUnit(TextureUnit::TEXTURE0+i);
 
                     std::string uniformName;
-                    if(textures[i].isSpecular()) {
+                    if(this->textures[i].isSpecular()) {
                         uniformName = "specularTexture" + std::to_string(++specularCnt);
                     } else {
                         uniformName = "diffuseTexture"  + std::to_string(++diffuseCnt);
                     }
-
-                    this->shader->setUniform(uniformName, (GLint) i); // Set texture uniform to current texture unit
-                    textures[i].bind();
+                    this->shader->setUniformi(uniformName, i); // Set texture uniform to current texture unit
+                    this->textures[i].bind();
                 }
-                // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
             }
         }
         
         void Material::makeInactive() {
             if(this->renderAsWireframe) {
                 gl::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            for(auto& tex : this->textures) {
+                tex.unbind();
             }
         }
         

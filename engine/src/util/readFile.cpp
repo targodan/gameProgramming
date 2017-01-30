@@ -40,6 +40,11 @@ namespace engine {
         }
         
         string getAbsoluteFromRelativePath(string relativePath) {
+            // FIXME: This is highly instable!
+            // Example inputs that create questionable outputs:
+            // "/already/abs/path"
+            // "./relative/path"
+            // "../../parentDirectories"
             char currentDirectory[MAX_PATH_LENGTH];
             if(getcwd(currentDirectory, sizeof(currentDirectory)) == NULL) {
                 string err = "Error while getting absolute from relative path: could not read current directory.";

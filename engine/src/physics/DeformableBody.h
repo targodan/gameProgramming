@@ -18,14 +18,13 @@ namespace engine {
             using SparseSolver = SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<SparseMatrix<double, ColMajor>::StorageIndex>>;
         protected:
             TetrahedronizedObject mesh;
-            ObjectProperties properties;
-            VectorXf restPosition;
-            VectorXf& currentPosition;
+            VectorXd restPosition;
+            VectorXd currentPosition;
             
-            float mass; // in kg
-            float dampening; // in kg/s
-            float youngsModulus; // in N/m² = Pa (Pascal)
-            float poissonsRatio;
+            double mass; // in kg
+            double dampening; // in kg/s
+            double youngsModulus; // in N/m² = Pa (Pascal)
+            double poissonsRatio;
             
             SparseMatrix<double> stiffnessMatrix; // Called K in lecture
             SparseMatrix<double> dampeningMatrix; // Called C in lecture
@@ -39,6 +38,7 @@ namespace engine {
             SparseSolver stepMatrixSolver;
             
             VectorXd lastVelocities;
+            VectorXd vertexFreezer;
             
             SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
             SparseMatrix<double> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
@@ -56,9 +56,9 @@ namespace engine {
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(const TetrahedronizedObject& mesh, const ObjectProperties& properties, float mass, float dampening,
-                    float youngsModulus, float poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
-                    : mesh(mesh), properties(properties), currentPosition(this->properties.allVertices),
+            DeformableBody(const TetrahedronizedObject& mesh, double mass, double dampening,
+                    double youngsModulus, double poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
+                    : mesh(mesh), currentPosition(this->mesh.getSimulationMesh().cast<double>()),
                         mass(mass), dampening(dampening), youngsModulus(youngsModulus),
                         poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
                         stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
@@ -71,12 +71,17 @@ namespace engine {
             void step(float deltaT, const VectorXf& forces);
             void step(float deltaT, Force& force);
             
+            void freezeVertex(size_t index);
+            void freezeVertices(const engine::util::Array<size_t>& indices);
+            void unfreezeVertex(size_t index);
+            void unfreezeVertices(const engine::util::Array<size_t>& indices);
+            
             const ObjectProperties& getProperties() const;
             
-            VectorXf::Index getExpectedForceVectorSize() const;
+            VectorXd::Index getExpectedForceVectorSize() const;
             
-            VectorXf& getCurrentPosition();
-            const VectorXf& getCurrentPosition() const;
+            VectorXd& getCurrentPosition();
+            const VectorXd& getCurrentPosition() const;
         };
     }
 }

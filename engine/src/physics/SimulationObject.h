@@ -12,6 +12,7 @@
 namespace engine {
     namespace physics {
         using Eigen::VectorXf;
+        using Eigen::VectorXd;
         using Eigen::Vector3f;
         using Eigen::MatrixXf;
         using engine::renderer::Mesh;
@@ -39,6 +40,7 @@ namespace engine {
             SimulationObject& operator=(SimulationObject&& orig);
             
             const VectorXf& getSimulationMesh() const;
+            VectorXf& getSimulationMesh();
             Vector3f getVertexOfSimulationMesh(size_t index) const;
             
             Mesh& getMesh(size_t i);
@@ -47,6 +49,7 @@ namespace engine {
             std::shared_ptr<Mesh> getMeshPtr(size_t i);
             
             void updateMeshFromPlanarVector(const VectorXf& vertices);
+            void updateMeshFromPlanarVector(const VectorXd& vertices);
         };
     }
 }

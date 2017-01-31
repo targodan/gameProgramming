@@ -33,6 +33,10 @@ namespace engine {
             return this->simulationMesh;
         }
         
+        VectorXf& SimulationObject::getSimulationMesh() {
+            return this->simulationMesh;
+        }
+        
         Vector3f SimulationObject::getVertexOfSimulationMesh(size_t index) const {
             return this->simulationMesh.segment<3>(index * 3);
         }
@@ -50,6 +54,11 @@ namespace engine {
         
         void SimulationObject::updateMeshFromPlanarVector(const VectorXf& vertices) {
             this->simulationMesh = vertices;
+            this->updateRenderMeshes();
+        }
+        
+        void SimulationObject::updateMeshFromPlanarVector(const VectorXd& vertices) {
+            this->simulationMesh = vertices.cast<float>();
             this->updateRenderMeshes();
         }
         

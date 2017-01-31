@@ -23,25 +23,17 @@ namespace engine {
             materialMat.insert(3, 3) = 1 - 2*this->poissonsRatio;
             materialMat.insert(4, 4) = 1 - 2*this->poissonsRatio;
             materialMat.insert(5, 5) = 1 - 2*this->poissonsRatio;
-            auto ret = (this->youngsModulus / ((1+this->poissonsRatio)*(1-2*this->poissonsRatio)))
+            return (this->youngsModulus / ((1+this->poissonsRatio)*(1-2*this->poissonsRatio)))
                     * materialMat;
-            LOG(INFO) << "D" << std::endl << ret;
-            return ret;
         }
         
         SparseMatrix<double> DeformableBody::calculateStiffnessMatrixForTetrahedron(size_t index) const {
-            MatrixXf A_inv(4, 4);
-            A_inv << this->mesh.getTetrahedron(index), MatrixXf::Ones(1, 4);
-            
-            LOG(INFO) << "MESH" << this->mesh.getTetrahedron(index);
-            
-            LOG(INFO) << "A_inv" << std::endl << A_inv;
+            MatrixXd A_inv(4, 4);
+            A_inv << this->mesh.getTetrahedron(index).cast<double>(), MatrixXd::Ones(1, 4);
             
             auto A = A_inv.inverse();
             
-            LOG(INFO) << "A" << std::endl << A;
-            
-            auto B = SparseMatrix<double>(6, 12);
+            SparseMatrix<double> B(6, 12);
             B.reserve(36);
             
             for(int i = 0; i < 4; ++i) {
@@ -58,13 +50,12 @@ namespace engine {
                 B.insert(5, baseInd + 2) = 0.5 * A(i, 0);
             }
             
-            LOG(INFO) << "B" << std::endl << B;
             
             return this->mesh.calculateVolumeOfTetrahedron(index) * B.transpose() * this->calculateMaterialMatrix() * B;
         }
         
         SparseMatrix<double> DeformableBody::calculateStiffnessMatrix() const {
-//            SparseMatrix<float> stiffnessMatrix(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+//            SparseMatrix<float> stiffnessMatrix(this->currentPosition.rows(), this->currentPosition.rows());
 //            stiffnessMatrix.reserve(12 * 12 + 63 * this->mesh.getNumberOfTetrahedron());
 //            
 //            for(size_t tetraIndex = 0; tetraIndex < this->mesh.getNumberOfTetrahedron(); ++tetraIndex) {
@@ -98,13 +89,13 @@ namespace engine {
         }
         
         SparseMatrix<double> DeformableBody::calculateDampeningMatrix() const {
-            SparseMatrix<double> dampening(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+            SparseMatrix<double> dampening(this->currentPosition.rows(), this->currentPosition.rows());
             dampening.setIdentity();
             return this->dampening * dampening;
         }
         
         SparseMatrix<double> DeformableBody::calculateMassMatrix() const {
-            SparseMatrix<double> mass(this->properties.allVertices.rows(), this->properties.allVertices.rows());
+            SparseMatrix<double> mass(this->currentPosition.rows(), this->currentPosition.rows());
             mass.setIdentity();
             return this->mass * mass;
         }
@@ -140,12 +131,10 @@ namespace engine {
         }
         
         VectorXd DeformableBody::calculateCurrentDifferenceFromRestPosition() const {
-            return this->currentPosition.cast<double>() - this->restPosition.cast<double>();
+            return this->currentPosition - this->restPosition;
         }
         
         VectorXd DeformableBody::calculateVelocities(float h, const VectorXf& forces) const {
-            LOG(INFO) << "Diff to Rest" << std::endl << this->calculateCurrentDifferenceFromRestPosition();
-            LOG(INFO) << "Rückstellkraft" << std::endl << this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition();
             return this->lastVelocities +
                     (
                         this->stepMatrixSolver.solve(
@@ -153,51 +142,68 @@ namespace engine {
                                 forces.cast<double>()
                                 - this->stiffnessMatrix * this->calculateCurrentDifferenceFromRestPosition()
                                 - this->dampeningMatrix * this->lastVelocities
-//                                - this->stiffnessMatrix * h * this->lastVelocities
+                                - this->stiffnessMatrix * h * this->lastVelocities
                             )
                         )
                     );
         }
         
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
-            // currentPosition points to the objectProperties->allVertices
+            // currentPosition points to the this->mesh.getSimulationMesh()
             this->restPosition = this->currentPosition;
             this->lastVelocities = VectorXd::Zero(this->currentPosition.rows());
+            this->vertexFreezer = VectorXd::Ones(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
-            LOG(INFO) << "K" << std::endl << this->stiffnessMatrix;
             this->updateStepMatrix(targetStepSize);
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
-            auto forces = force.getForceOnVertices(this->properties);
+            auto forces = force.getForceOnVertices(this->mesh.getProperties());
             if(forces.rows() > 0) {
                 this->step(deltaT, forces);
             }
         }
         
         void DeformableBody::step(float deltaT, const VectorXf& forces) {
-            LOG(INFO) << "REST" << std::endl << this->restPosition;
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
-            this->currentPosition += deltaT * this->lastVelocities.cast<float>();
+            this->lastVelocities = this->lastVelocities.cwiseProduct(this->vertexFreezer);
+            this->currentPosition += deltaT * this->lastVelocities;
             this->mesh.updateMeshFromPlanarVector(this->currentPosition);
         }
         
         const ObjectProperties& DeformableBody::getProperties() const {
-            return this->properties;
+            return this->mesh.getProperties();
         }
         
-        VectorXf::Index DeformableBody::getExpectedForceVectorSize() const {
+        VectorXd::Index DeformableBody::getExpectedForceVectorSize() const {
             return this->currentPosition.rows();
         }
         
-        VectorXf& DeformableBody::getCurrentPosition() {
+        VectorXd& DeformableBody::getCurrentPosition() {
             return this->currentPosition;
         }
         
-        const VectorXf& DeformableBody::getCurrentPosition() const {
+        const VectorXd& DeformableBody::getCurrentPosition() const {
             return this->currentPosition;
+        }
+        
+        void DeformableBody::freezeVertex(size_t index) {
+            this->vertexFreezer.segment<3>(index * 3) = Vector3d::Zero();
+        }
+        void DeformableBody::freezeVertices(const engine::util::Array<size_t>& indices) {
+            for(auto index : indices) {
+                this->vertexFreezer.segment<3>(index * 3) = Vector3d::Zero();
+            }
+        }
+        void DeformableBody::unfreezeVertex(size_t index) {
+            this->vertexFreezer.segment<3>(index * 3) = Vector3d::Ones();
+        }
+        void DeformableBody::unfreezeVertices(const engine::util::Array<size_t>& indices) {
+            for(auto index : indices) {
+                this->vertexFreezer.segment<3>(index * 3) = Vector3d::Ones();
+            }
         }
     }
 }

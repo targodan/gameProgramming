@@ -19,7 +19,7 @@ namespace demoSimulation {
             if(!this->shotFired && this->secondsSinceStart > 0 && this->secondsSinceStart < 1) {
                 LOG(INFO) << "Boom.";
 //                forces(1) = 50;
-                forces(2) = -120;
+                forces(2) = -2;
 //                forces(10) = -700;
 //                forces(11) = 700;
                 this->shotFired = true;

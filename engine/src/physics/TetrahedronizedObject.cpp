@@ -16,11 +16,13 @@ namespace engine {
             if(tetrahedronIndices.size() % 4 != 0) {
                 throw IllegalArgumentException("The list of tetrahedron indices should be divisable by 4! Size: %zu", tetrahedronIndices.size());
             }
+            LOG(INFO) << "Calculating properties of deformable object...";
             this->properties = std::make_unique<ObjectProperties>(
                     this->simulationMesh,
                     surfaceIndices,
                     this->calculateSurfaceAreas(0, surfaceIndices),
                     this->calculateMasses(density));
+            LOG(INFO) << "Done";
         }
         TetrahedronizedObject::TetrahedronizedObject(const TetrahedronizedObject& orig)
             : SimulationObject(orig), properties(std::make_unique<ObjectProperties>(*orig.properties)), tetrahedronIndices(orig.tetrahedronIndices) {}

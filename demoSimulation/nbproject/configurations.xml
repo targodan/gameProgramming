@@ -123,12 +123,14 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0"
-                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC"/>
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp"/>
         <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC"/>
+        <element flagsID="2"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fstack-protector-strong -fopenmp -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp"/>
-        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
-        <element flagsID="4"
+        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fopenmp"/>
+        <element flagsID="4" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="5"
                  commonFlags="-std=c++14 -pedantic -fopenmp -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
@@ -205,21 +207,17 @@
       <folder path="0/test">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>src/engine</pElem>
+            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>test</pElem>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>src/engine/renderer/gl</pElem>
+            <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="3">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -237,7 +235,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -249,7 +247,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -261,7 +259,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -273,7 +271,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -285,7 +283,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -297,7 +295,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -312,14 +310,14 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/CameraComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/glm/detail</pElem>
             <pElem>../engine/src/ECS</pElem>
@@ -341,7 +339,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -356,7 +354,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/ECS</pElem>
             <pElem>../engine/src/ECSCommon</pElem>
@@ -376,7 +374,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/ECS</pElem>
             <pElem>../engine/src/ECSCommon</pElem>
@@ -396,7 +394,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -412,7 +410,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -427,7 +425,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -442,7 +440,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/ECS</pElem>
             <pElem>../engine/src/ECSCommon</pElem>
@@ -462,7 +460,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/ECS</pElem>
@@ -488,7 +486,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -503,7 +501,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -518,7 +516,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -533,7 +531,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/ECS</pElem>
             <pElem>../engine/src/util</pElem>
@@ -555,7 +553,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/ECS</pElem>
             <pElem>../engine/src/ECSCommon</pElem>
@@ -571,7 +569,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="4">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -588,7 +586,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -603,11 +601,11 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="src/engine/Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -615,7 +613,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -627,7 +625,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -639,7 +637,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -651,7 +649,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -663,7 +661,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -678,7 +676,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
           <incDir>
             <pElem>../engine/src/IO</pElem>
             <pElem>/usr/include/google/protobuf/stubs</pElem>
@@ -688,7 +686,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -703,7 +701,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>/usr/include/sparsehash/internal</pElem>
@@ -715,26 +713,26 @@
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
         </ccTool>
       </item>
       <item path="src/engine/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
         </ccTool>
       </item>
       <item path="src/engine/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
         </ccTool>
       </item>
       <item path="src/engine/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
         </ccTool>
       </item>
       <item path="src/engine/physics/DeformableBody.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -746,7 +744,7 @@
         </ccTool>
       </item>
       <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -761,7 +759,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -776,7 +774,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
@@ -815,7 +813,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
@@ -854,7 +852,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
@@ -893,7 +891,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
@@ -929,7 +927,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -941,7 +939,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Color.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/util</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -958,7 +956,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/renderer</pElem>
             <pElem>/usr/include/glm/detail</pElem>
@@ -990,7 +988,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1002,7 +1000,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Font.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -1025,7 +1023,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>/usr/include/sparsehash</pElem>
@@ -1041,7 +1039,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/sparsehash</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -1054,7 +1052,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1066,7 +1064,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1081,7 +1079,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/renderer</pElem>
             <pElem>../engine/src</pElem>
@@ -1116,7 +1114,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/RichText.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/util</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -1136,7 +1134,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -1157,7 +1155,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Texture.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/renderer</pElem>
             <pElem>../engine/src</pElem>
@@ -1194,7 +1192,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1209,7 +1207,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1224,7 +1222,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/renderer</pElem>
@@ -1262,14 +1260,14 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="src/engine/util/ostream_helper.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1281,11 +1279,11 @@
         </ccTool>
       </item>
       <item path="src/engine/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="2">
         </ccTool>
       </item>
       <item path="src/engine/util/readFile.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1297,7 +1295,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/unicode.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src/util</pElem>
             <pElem>../engine</pElem>
@@ -1305,7 +1303,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1317,7 +1315,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec4.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1329,22 +1327,47 @@
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="0">
           <incDir>
-            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src/engine/ECS</pElem>
             <pElem>src</pElem>
+            <pElem>src/engine/renderer</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src/engine</pElem>
+            <pElem>src/engine/util</pElem>
+            <pElem>src/engine/util/pb</pElem>
+            <pElem>src/engine/ECS/pb</pElem>
+            <pElem>src/engine/IO</pElem>
+            <pElem>src/engine/renderer/gl</pElem>
+            <pElem>src/engine/physics</pElem>
+            <pElem>src/engine/ECSCommon/pb</pElem>
+            <pElem>src/engine/ECSCommon</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="0">
         </ccTool>
       </item>
     </conf>

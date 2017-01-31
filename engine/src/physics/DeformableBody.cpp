@@ -152,12 +152,14 @@ namespace engine {
         
         void DeformableBody::calculateAndSetInitialState(float targetStepSize) {
             // currentPosition points to the this->mesh.getSimulationMesh()
+            LOG(INFO) << "Setting up deformable body matrices...";
             this->restPosition = this->currentPosition;
             this->lastVelocities = VectorXd::Zero(this->currentPosition.rows());
             this->vertexFreezer = VectorXd::Ones(this->currentPosition.rows());
             this->dampeningMatrix = this->calculateDampeningMatrix();
             this->stiffnessMatrix = this->calculateStiffnessMatrix();
             this->updateStepMatrix(targetStepSize);
+            LOG(INFO) << "Done.";
         }
         
         void DeformableBody::step(float deltaT, Force& force) {
@@ -168,6 +170,7 @@ namespace engine {
         }
         
         void DeformableBody::step(float deltaT, const VectorXf& forces) {
+            TIMED_FUNC_IF(timerSimulationStep, VLOG_IS_ON(1));
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
             this->lastVelocities = this->lastVelocities.cwiseProduct(this->vertexFreezer);

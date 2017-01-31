@@ -14,7 +14,7 @@ namespace demoSimulation {
         engine::ECS::Entity tetrahedron;
         
     public:
-        Game(int argc, char** argv) : engine::Game(argc, argv, 120) {}
+        Game(int argc, char** argv) : engine::Game(argc, argv, 60) {}
         
         virtual void initialize() override;
         void render(float deltaTimeSeconds) override;

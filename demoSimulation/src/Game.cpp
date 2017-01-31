@@ -47,7 +47,7 @@ namespace demoSimulation {
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -0.5}, 10, 10, 2, 2, 2, 0.5, density);
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -0.5}, 6, 6, 2, 2, 2, 0.5, density);
         std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
         std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         
@@ -72,7 +72,7 @@ namespace demoSimulation {
         innerObject.loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 2))
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 4))
                 .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0));
         auto& cc = this->player.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
@@ -125,9 +125,9 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(3)
                 .addComponent<ForceComponent>(force);
         
-//        auto explosion = std::make_shared<Explosion>(Vector3f(-5.5, 0.5, 0), 100 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
+//        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 1000 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
 //        this->entityManager.createEntity("Force")
-//                .addComponent<TimerComponent>(5)
+//                .addComponent<TimerComponent>(3)
 //                .addComponent<ForceComponent>(explosion);
         
         RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
@@ -171,8 +171,8 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
-//        this->systemManager.enableSystem<DeformableBodySystem>();
-//        this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<DeformableBodySystem>();
+        this->systemManager.enableSystem<TimerSystem>();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         

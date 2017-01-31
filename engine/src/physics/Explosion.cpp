@@ -3,6 +3,8 @@
 #include <math.h>
 #include <valarray>
 
+#include <easylogging++.h>
+
 namespace engine {
     namespace physics {
         Explosion& Explosion::operator=(const Explosion& orig) {
@@ -140,7 +142,9 @@ namespace engine {
                 return VectorXf(0);
             }
             
-            return object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));
+            auto forces = object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));
+            LOG(INFO) << "F" << std::endl << forces;
+            return forces;
         }
     }
 }

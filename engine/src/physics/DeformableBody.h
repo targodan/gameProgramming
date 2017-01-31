@@ -21,7 +21,6 @@ namespace engine {
             VectorXd restPosition;
             VectorXd currentPosition;
             
-            double mass; // in kg
             double dampening; // in kg/s
             double youngsModulus; // in N/m² = Pa (Pascal)
             double poissonsRatio;
@@ -42,6 +41,7 @@ namespace engine {
             
             SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
             SparseMatrix<double> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            void combine3by3Block(SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
             SparseMatrix<double> calculateStiffnessMatrix() const; // Called K in lecture
             SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
             SparseMatrix<double> calculateMassMatrix() const; // Called M in lecture
@@ -56,10 +56,10 @@ namespace engine {
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(const TetrahedronizedObject& mesh, double mass, double dampening,
+            DeformableBody(const TetrahedronizedObject& mesh, double dampening,
                     double youngsModulus, double poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
                     : mesh(mesh), currentPosition(this->mesh.getSimulationMesh().cast<double>()),
-                        mass(mass), dampening(dampening), youngsModulus(youngsModulus),
+                        dampening(dampening), youngsModulus(youngsModulus),
                         poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
                         stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {

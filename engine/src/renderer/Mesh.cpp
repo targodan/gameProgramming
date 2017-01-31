@@ -249,6 +249,14 @@ namespace engine {
         const Mesh::ConstVertexProxy Mesh::getVertices() const {
             return ConstVertexProxy(*this);
         }
+        
+        vector<GLuint>& Mesh::getFaceIndices() {
+            return this->indices;
+        }
+        
+        const vector<GLuint>& Mesh::getFaceIndices() const {
+            return this->indices;
+        }
     }
 }
 

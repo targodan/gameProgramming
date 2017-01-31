@@ -22,16 +22,20 @@ namespace engine {
         using engine::util::Array;
         
         class TetrahedronizedObject : public SimulationObject {
-        private:
-            ObjectProperties properties;
+        protected:
+            std::unique_ptr<ObjectProperties> properties;
             Array<size_t> tetrahedronIndices;
+            
+            VectorXf calculateSurfaceAreas(size_t surfaceMeshIndex, const vector<size_t>& surfaceVertexIndices) const;
+            VectorXf calculateMasses(float density) const;
             
         public:
             TetrahedronizedObject(
                     const VectorXf& simulationMesh,
+                    const vector<size_t>& surfaceIndices,
+                    const float density,
                     const vector<std::shared_ptr<Mesh>>& meshes,
                     const vector<Array<std::pair<size_t, size_t>>>& simulationToRenderVertices,
-                    const ObjectProperties& properties,
                     const Array<size_t>& tetrahedronIndices);
             TetrahedronizedObject(const TetrahedronizedObject& orig);
             TetrahedronizedObject(TetrahedronizedObject&& orig);

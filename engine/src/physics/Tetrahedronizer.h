@@ -17,7 +17,8 @@ namespace engine {
                     const Vector3f& corner,
                     const Vector3f& spanVectorOne, const Vector3f& spanVectorTwo, const Vector3f& spanVectorThree,
                     size_t numTetrahedronAlongSpanOne, size_t numTetrahedronAlongSpanTwo, size_t numTetrahedronAlongSpanThree,
-                    float textureRepeatAlongSpanOne, float textureRepeatAlongSpanTwo, float textureRepeatAlongSpanThree
+                    float textureRepeatAlongSpanOne, float textureRepeatAlongSpanTwo, float textureRepeatAlongSpanThree,
+                    float density
             );
         };
     }

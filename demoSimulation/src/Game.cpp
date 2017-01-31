@@ -37,67 +37,67 @@ namespace demoSimulation {
         Vertex backRight(   {0.05,  0, 0},     {1, 0, 0});
         Vertex backBottom(  {0, 0.05, -0.05},       {1, 0, 1});
         Vertex up(          {0, 0.1, 0},          {1, 1, 0});
-        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
-                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
-                DataUsagePattern::DYNAMIC_DRAW));
+//        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up},
+//                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2},
+//                DataUsagePattern::DYNAMIC_DRAW));
 //        std::shared_ptr<Mesh> tetrahedronMesh = std::shared_ptr<Mesh>(new Mesh({frontBottom, backRight, backLeft, up, backBottom},
 //                {0, 1, 3, 2, 0, 3, 1, 2, 3, 1, 0, 2, 1, 3, 2, 1, 4, 3, 4, 2, 3, 1, 2, 4},
 //                DataUsagePattern::DYNAMIC_DRAW));
         
-//        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -2}, 4, 4, 4, 2, 2, 2);
-//        std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
-//        std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
+//        float density = 7850; // kg / m³ metal
+        float density = 920; // kg / m³ rubber
         
-//        Texture outerTexture("textures/wall.png");
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -0.5}, 10, 10, 2, 2, 2, 0.5, density);
+        std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
+        std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         
-//        std::shared_ptr<Material> outerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/textured.vsh", 
-//                                                         "src/textured.fsh"));
-//        outerMaterial->attachTexture(outerTexture);
+        float volume = tMesh.calculateVolume();
+        LOG(INFO) << "Volume: " << volume << " m³";
+        LOG(INFO) << "Surface (via surfaces): " << tMesh.getProperties().surfaceAreaPerVertex.sum() << " m²";
+        LOG(INFO) << "Surface (by hand): " << 2 * 2 * 2 + 4 * 2 * 0.5 << " m²";
+        LOG(INFO) << "Total mass (via masses): " << tMesh.getProperties().massPerVertex.sum() << " kg";
+        LOG(INFO) << "Total mass (via density): " << volume * density << " kg";
+        
+        Texture outerTexture("textures/wall.png");
+        
+        std::shared_ptr<Material> outerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/textured.vsh", 
+                                                         "src/textured.fsh"));
+        outerMaterial->attachTexture(outerTexture);
         std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
                                                          "src/meshColor.fsh"), true);
         
-//        VisualObject outerObject(outerMesh, outerMaterial);
-//        outerObject.loadObject();
-//        VisualObject innerObject(innerMesh, innerMaterial);
-//        innerObject.loadObject();
+        VisualObject outerObject(outerMesh, outerMaterial);
+        outerObject.loadObject();
+        VisualObject innerObject(innerMesh, innerMaterial);
+        innerObject.loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(-0.75, 0, 0.75))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(1, 0, -1)), engine::util::vec3(0, 1, 0));
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 2))
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0));
         auto& cc = this->player.getComponent<CameraComponent>();
         cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
-//        this->tetrahedron = this->entityManager.createEntity("Inner")
-//                .addComponent<VisualComponent>(innerObject)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-//        this->tetrahedron = this->entityManager.createEntity("Outer")
-//                .addComponent<VisualComponent>(outerObject)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Inner")
+                .addComponent<VisualComponent>(innerObject)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Outer")
+                .addComponent<VisualComponent>(outerObject)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
-        TetrahedronizedObject tMesh(
-                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-                {tetrahedronMesh},
-                {{std::make_pair(0, 0)}, {std::make_pair(0, 1)}, {std::make_pair(0, 2)}, {std::make_pair(0, 3)}},
-                ObjectProperties(
-                        ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-                        {0, 1, 2, 3},
-                        Vector4f(1, 1, 1, 1),
-                        Vector4f(1, 1, 1, 1)),
-                {0, 1, 2, 3});
-        
-        float volume = tMesh.calculateVolume();
-        float area = 5;
-//        float density = 7850; // kg / m³ metal
-        float density = 920; // kg / m³ rubber
-        float mass = volume * density;
-        
-        LOG(INFO) << "Volume: " << volume << " m³";
-        LOG(INFO) << "Mass: " << mass * 1000 << " g";
+//        TetrahedronizedObject tMesh(
+//                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
+//                {tetrahedronMesh},
+//                {{std::make_pair(0, 0)}, {std::make_pair(0, 1)}, {std::make_pair(0, 2)}, {std::make_pair(0, 3)}},
+//                ObjectProperties(
+//                        ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
+//                        {0, 1, 2, 3},
+//                        Vector4f(1, 1, 1, 1),
+//                        Vector4f(1, 1, 1, 1)),
+//                {0, 1, 2, 3});
         
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
                 tMesh,
-                mass,
                 1e-3, // dampening
                 0.01e3, // youngs modulus rubber
                 0.49, // poissons ratio rubber
@@ -113,13 +113,11 @@ namespace demoSimulation {
 //        defBody->getCurrentPosition()[2] += 0.025;
 //        tMesh.getMesh(0).getVertices()[0].position.y += 0.001;
 //        tMesh.getMesh(0).getVertices()[0].position.z += 0.025;
-        tMesh.getMesh(0).loadMesh();
+//        tMesh.getMesh(0).loadMesh();
         
-        VisualObject tetraObject(tetrahedronMesh, innerMaterial);
-        tetraObject.loadObject();
-        this->tetrahedron = this->entityManager.createEntity("Tetrahedron")
-                .addComponent<VisualComponent>(tetraObject)
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0))
+//        VisualObject tetraObject(tetrahedronMesh, innerMaterial);
+//        tetraObject.loadObject();
+        this->tetrahedron = this->entityManager.createEntity("DefBody")
                 .addComponent<DeformableBodyComponent>(defBody);
         
         auto force = std::make_shared<OneShotForce>();
@@ -173,8 +171,8 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<RenderSystem>();
-        this->systemManager.enableSystem<DeformableBodySystem>();
-        this->systemManager.enableSystem<TimerSystem>();
+//        this->systemManager.enableSystem<DeformableBodySystem>();
+//        this->systemManager.enableSystem<TimerSystem>();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         

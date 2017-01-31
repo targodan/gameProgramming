@@ -110,6 +110,9 @@ namespace engine {
             
             VertexProxy getVertices();
             const ConstVertexProxy getVertices() const;
+            
+            vector<GLuint>& getFaceIndices();
+            const vector<GLuint>& getFaceIndices() const;
         private:
             void createVBO();
             void createEBO();

@@ -25,6 +25,7 @@ namespace engine {
         protected:
             std::unique_ptr<ObjectProperties> properties;
             Array<size_t> tetrahedronIndices;
+            Array<size_t> edgeIndices;
             
             VectorXf calculateSurfaceAreas(size_t surfaceMeshIndex, const vector<size_t>& surfaceVertexIndices) const;
             VectorXf calculateMasses(float density) const;
@@ -36,7 +37,8 @@ namespace engine {
                     const float density,
                     const vector<std::shared_ptr<Mesh>>& meshes,
                     const vector<Array<std::pair<size_t, size_t>>>& simulationToRenderVertices,
-                    const Array<size_t>& tetrahedronIndices);
+                    const Array<size_t>& tetrahedronIndices,
+                    const Array<size_t>& edgeIndices = {});
             TetrahedronizedObject(const TetrahedronizedObject& orig);
             TetrahedronizedObject(TetrahedronizedObject&& orig);
             
@@ -50,6 +52,9 @@ namespace engine {
             
             const Array<size_t>& getTetrahedronIndices() const;
             Array<size_t>& getTetrahedronIndices();
+            
+            const Array<size_t>& getEdgeIndices() const;
+            Array<size_t>& getEdgeIndices();
             
             size_t getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const;
             

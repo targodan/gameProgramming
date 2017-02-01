@@ -40,6 +40,7 @@ namespace engine {
             float texOffsetZ = textureRepeatAlongSpanThree / numTetrahedronAlongSpanThree;
             
             engine::util::vector<size_t> tetrahedronIndices;
+            engine::util::vector<size_t> edgeIndices;
             engine::util::vector<Vector3f> allVectors;
             
             vector<size_t> tmpSurfaceVectorIndices;
@@ -355,6 +356,56 @@ namespace engine {
                             tmpSurfaceVectorIndices.push_back(firstSimulationIndex + 6);
                             tmpSurfaceVectorIndices.push_back(firstSimulationIndex + 7);
                         }
+                        
+                        // Edges
+                        if(isX0 && isY0) {
+                            edgeIndices.push_back(firstSimulationIndex + 0);
+                            edgeIndices.push_back(firstSimulationIndex + 3);
+                        }
+                        if(isX0 && isY1) {
+                            edgeIndices.push_back(firstSimulationIndex + 4);
+                            edgeIndices.push_back(firstSimulationIndex + 7);
+                        }
+                        if(isX0 && isZ0) {
+                            edgeIndices.push_back(firstSimulationIndex + 0);
+                            edgeIndices.push_back(firstSimulationIndex + 4);
+                        }
+                        if(isX0 && isZ1) {
+                            edgeIndices.push_back(firstSimulationIndex + 3);
+                            edgeIndices.push_back(firstSimulationIndex + 7);
+                        }
+                        if(isX1 && isY0) {
+                            edgeIndices.push_back(firstSimulationIndex + 1);
+                            edgeIndices.push_back(firstSimulationIndex + 2);
+                        }
+                        if(isX1 && isY1) {
+                            edgeIndices.push_back(firstSimulationIndex + 5);
+                            edgeIndices.push_back(firstSimulationIndex + 6);
+                        }
+                        if(isX1 && isZ0) {
+                            edgeIndices.push_back(firstSimulationIndex + 1);
+                            edgeIndices.push_back(firstSimulationIndex + 5);
+                        }
+                        if(isX1 && isZ1) {
+                            edgeIndices.push_back(firstSimulationIndex + 2);
+                            edgeIndices.push_back(firstSimulationIndex + 6);
+                        }
+                        if(isY0 && isZ0) {
+                            edgeIndices.push_back(firstSimulationIndex + 0);
+                            edgeIndices.push_back(firstSimulationIndex + 1);
+                        }
+                        if(isY0 && isZ1) {
+                            edgeIndices.push_back(firstSimulationIndex + 2);
+                            edgeIndices.push_back(firstSimulationIndex + 3);
+                        }
+                        if(isY1 && isZ0) {
+                            edgeIndices.push_back(firstSimulationIndex + 4);
+                            edgeIndices.push_back(firstSimulationIndex + 5);
+                        }
+                        if(isY1 && isZ1) {
+                            edgeIndices.push_back(firstSimulationIndex + 6);
+                            edgeIndices.push_back(firstSimulationIndex + 7);
+                        }
                     }
                 }
             }
@@ -377,6 +428,11 @@ namespace engine {
                         if(allVectors[j].isApprox(vec)) {
                             // Found the same vector => reduce and update indices
                             for(auto& ind : tetrahedronIndices) {
+                                if(ind == j) {
+                                    ind = newIndex;
+                                }
+                            }
+                            for(auto& ind : edgeIndices) {
                                 if(ind == j) {
                                     ind = newIndex;
                                 }
@@ -420,7 +476,7 @@ namespace engine {
             renderMeshes.push_back(std::make_shared<Mesh>(outerVertices, outerFaceIndices, DataUsagePattern::DYNAMIC_DRAW));
             renderMeshes.push_back(std::make_shared<Mesh>(innerVertices, innerFaceIndices, DataUsagePattern::DYNAMIC_DRAW));
              
-            return TetrahedronizedObject(simulationMesh, surfaceVectorIndices, density, renderMeshes, simulationToRenderVertices, tetrahedronIndices);
+            return TetrahedronizedObject(simulationMesh, surfaceVectorIndices, density, renderMeshes, simulationToRenderVertices, tetrahedronIndices, edgeIndices);
         }
     }
 }

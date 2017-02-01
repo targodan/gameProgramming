@@ -908,7 +908,10 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">

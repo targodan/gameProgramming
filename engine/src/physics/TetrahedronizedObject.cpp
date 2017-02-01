@@ -11,8 +11,9 @@ namespace engine {
                 const float density,
                 const vector<std::shared_ptr<Mesh>>& meshes,
                 const vector<Array<std::pair<size_t, size_t>>>& simulationToRenderVertices,
-                const Array<size_t>& tetrahedronIndices)
-            : SimulationObject(simulationMesh, meshes, simulationToRenderVertices), tetrahedronIndices(tetrahedronIndices) {
+                const Array<size_t>& tetrahedronIndices,
+                const Array<size_t>& edgeIndices)
+            : SimulationObject(simulationMesh, meshes, simulationToRenderVertices), tetrahedronIndices(tetrahedronIndices), edgeIndices(edgeIndices) {
             if(tetrahedronIndices.size() % 4 != 0) {
                 throw IllegalArgumentException("The list of tetrahedron indices should be divisable by 4! Size: %zu", tetrahedronIndices.size());
             }
@@ -25,16 +26,17 @@ namespace engine {
             LOG(INFO) << "Done";
         }
         TetrahedronizedObject::TetrahedronizedObject(const TetrahedronizedObject& orig)
-            : SimulationObject(orig), properties(std::make_unique<ObjectProperties>(*orig.properties)), tetrahedronIndices(orig.tetrahedronIndices) {}
+            : SimulationObject(orig), properties(std::make_unique<ObjectProperties>(*orig.properties)), tetrahedronIndices(orig.tetrahedronIndices), edgeIndices(orig.edgeIndices) {}
         
         TetrahedronizedObject::TetrahedronizedObject(TetrahedronizedObject&& orig)
             : SimulationObject(orig), properties(std::move(orig.properties)),
-                tetrahedronIndices(std::move(orig.tetrahedronIndices)) {}
+                tetrahedronIndices(std::move(orig.tetrahedronIndices)), edgeIndices(std::move(orig.edgeIndices)) {}
         
         TetrahedronizedObject& TetrahedronizedObject::operator=(const TetrahedronizedObject& orig) {
             SimulationObject::operator=(orig);
             this->properties = std::make_unique<ObjectProperties>(*orig.properties);
             this->tetrahedronIndices = orig.tetrahedronIndices;
+            this->edgeIndices = orig.edgeIndices;
             
             return *this;
         }
@@ -42,6 +44,7 @@ namespace engine {
             SimulationObject::operator=(orig);
             std::swap(this->properties, orig.properties);
             std::swap(this->tetrahedronIndices, orig.tetrahedronIndices);
+            std::swap(this->edgeIndices, orig.edgeIndices);
             
             return *this;
         }
@@ -95,6 +98,14 @@ namespace engine {
 
         Array<size_t>& TetrahedronizedObject::getTetrahedronIndices() {
             return this->tetrahedronIndices;
+        }
+        
+        const Array<size_t>& TetrahedronizedObject::getEdgeIndices() const {
+            return this->edgeIndices;
+        }
+        
+        Array<size_t>& TetrahedronizedObject::getEdgeIndices() {
+            return this->edgeIndices;
         }
 
         size_t TetrahedronizedObject::getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const {

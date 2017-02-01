@@ -19,6 +19,7 @@
 #include "Actions/MoveLRAction.h"
 #include "Actions/ChangeMouseMode.h"
 #include "Actions/FlyUpDownAction.h"
+#include "Actions/BoomAction.h"
 
 #endif /* ACTIONS_H */
 

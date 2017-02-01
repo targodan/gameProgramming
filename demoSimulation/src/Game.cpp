@@ -98,14 +98,14 @@ namespace demoSimulation {
         
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
                 tMesh,
-                1e-3, // dampening
+                1, // dampening
                 0.01e6, // youngs modulus rubber
                 0.49, // poissons ratio rubber
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond
             );
-//        defBody->freezeVertex(1);
+        defBody->freezeVertices(tMesh.getEdgeIndices());
         
         // Deformable body created => restPosition copied
         // Let's now pull on a vertex.
@@ -122,7 +122,7 @@ namespace demoSimulation {
         
         auto force = std::make_shared<OneShotForce>();
         this->entityManager.createEntity("Force")
-                .addComponent<TimerComponent>(3)
+                .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
         
 //        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 1000 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
@@ -164,6 +164,8 @@ namespace demoSimulation {
         auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_Q, action5);
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
+        auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
+        bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
         
         this->systemManager.enableSystem<InputSystem>(bm);
         

@@ -11,18 +11,22 @@ namespace demoSimulation {
         bool shotFired;
         
     public:
-        OneShotForce() : shotFired(false) {}
+        OneShotForce() : shotFired(true) {}
         
         Eigen::VectorXf getForceOnVertices(const engine::physics::ObjectProperties& object) override {
             auto size = object.allVertices.rows();
             Eigen::VectorXf forces = Eigen::VectorXf::Zero(size);
-            if(!this->shotFired && this->secondsSinceStart > 0 && this->secondsSinceStart < 1) {
+            if(!this->shotFired && this->secondsSinceStart > 0) {
                 auto vertIndex = object.allVertices.rows() / 3 / 2;
-                forces[vertIndex*3 + 2] = -60000;
+                forces[vertIndex*3 + 2] = -6000;
                 LOG(INFO) << "Boom.";
                 this->shotFired = true;
             }
             return forces;
+        }
+        
+        void resetShot() {
+            this->shotFired = false;
         }
     };
 }

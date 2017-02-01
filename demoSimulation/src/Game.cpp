@@ -7,6 +7,7 @@
 #include "engine/renderer/TextRenderer.h"
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
+#include "engine/physics/GravitationalForce.h"
 #include "engine/physics/TetrahedronizedObject.h"
 #include "engine/physics/Tetrahedronizer.h"
 #include "OneShotForce.h"
@@ -124,6 +125,10 @@ namespace demoSimulation {
         this->entityManager.createEntity("Force")
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
+        
+        this->entityManager.createEntity("Gravity")
+                .addComponent<TimerComponent>(0)
+                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
         
 //        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 1000 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 5.);
 //        this->entityManager.createEntity("Force")

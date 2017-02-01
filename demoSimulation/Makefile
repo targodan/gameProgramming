@@ -36,7 +36,7 @@ endif
 # -DNDEBUG -DBOOST_UBLAS_NDEBUG turns off boost debug features and improves performance
 # -O3 Optimize as much as possible
 # -march=native Optimize for the current cpu => program may not run on other cpus without recompilation
-C_FLAGS_RELEASE = -DNDEBUG -DBOOST_UBLAS_NDEBUG -O3 -march=native -msse2
+C_FLAGS_RELEASE = -DNDEBUG -DBOOST_UBLAS_NDEBUG -DEIGEN_NO_DEBUG -O3 -march=native -msse2
 # -g    adds debugging information to the executable file
 # -gdwarf4: use the newer v4 format for debugging information
 C_FLAGS_DEBUG = -O0 -g -DDEBUG -gdwarf-4

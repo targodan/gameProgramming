@@ -48,7 +48,7 @@ namespace demoSimulation {
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -0.5}, 6, 6, 2, 2, 2, 0.5, density);
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-1, 1, 1}, {2, 0, 0}, {0, -2, 0}, {0, 0, -0.5}, 16, 16, 1, 2, 2, 0.5, density);
         std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
         std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         

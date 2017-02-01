@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <omp.h>
 #include <eigen3/Eigen/Eigen>
 
 #include <easylogging++.h>
@@ -69,7 +70,15 @@ namespace engine {
     }
 
     void Game::initialize() {
+        if(this->openmpThreads == -1) {
+            this->openmpThreads = std::thread::hardware_concurrency();
+        }
+        omp_set_num_threads(this->openmpThreads);
         this->systemManager.setup();
+        
+        LOG(INFO) << "OpenMP running on " << this->openmpThreads << " threads.";
+        LOG(INFO) << "Eigen running on " << Eigen::nbThreads() << " threads.";
+        LOG(INFO) << "SystemManager running on " << this->systemManager.getNumberOfThreads() << " threads.";
     }
     
     void Game::render(float deltaTimeSeconds) {

@@ -108,6 +108,7 @@ namespace engine {
             }
             
             void setNumberOfThreads(size_t n);
+            int getNumberOfThreads() const;
             
             void setup();
             void stop();

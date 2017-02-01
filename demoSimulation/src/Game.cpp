@@ -108,6 +108,8 @@ namespace demoSimulation {
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
+        this->openmpThreads = std::thread::hardware_concurrency() * 4;
+        
         // Deformable body created => restPosition copied
         // Let's now pull on a vertex.
 //        defBody->getCurrentPosition()[1] += 0.001;

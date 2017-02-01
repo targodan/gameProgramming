@@ -108,6 +108,10 @@ namespace engine {
             if(this->renderAsWireframe) {
                 gl::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
+            
+            if(!this->textures.empty()) {
+                this->textures[0].unbind();
+            }
         }
         
         void Material::loadTextures() {

@@ -18,8 +18,10 @@ namespace engine {
         }
         
         Mesh::Mesh(const Mesh& orig)
-            : usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
-            this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            : material(orig.material), usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
+            // this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            // For testing: copy points to same material
+            
             /*
              * The problem here is as follows.
              * Creating new buffers may not be intuitive in a copy, but if we don't do this
@@ -45,10 +47,15 @@ namespace engine {
         
         Mesh& Mesh::operator=(const Mesh& right) {
             this->usage = right.usage;
-            this->vao = std::make_unique<VertexArray>(*(right.vao));
+            this->vao = std::make_unique<VertexArray>();
             this->material = right.material;
             this->vertices = right.vertices;
             this->indices = right.indices;
+            
+            if(!this->indices.empty()) {
+                this->createEBO();
+            }
+            this->createVBO();
             
             if(right.loaded) {
                 this->loadMesh();

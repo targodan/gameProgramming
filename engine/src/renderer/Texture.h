@@ -23,7 +23,7 @@ namespace engine {
             Texture(std::string imagePath, ImageFormat format = ImageFormat::RGB, ImageFormat formatToStoreTextureIn = ImageFormat::RGB, bool specular = false, TextureType type = TextureType::TEXTURE_2D) 
                         : type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(0), bound(false), specular(false) {
                 std::string entireImagePath = util::getAbsoluteFromRelativePath(imagePath);
-                this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, SOIL_LOAD_RGBA);
+                this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, SOIL_LOAD_AUTO);
                 
                 if(!imageData) {
                     throw engine::IOException("Failed to create texture: Could not load image.");

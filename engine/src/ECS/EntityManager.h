@@ -18,6 +18,9 @@
 #include "pb/EntityManager.pb.h"
 #include "SerializableComponent.h"
 
+#include "MessageHandler.h"
+#include "MessageReceiver.h"
+
 #include "EntityId.h"
 #include "Component.h"
 
@@ -33,8 +36,10 @@ namespace engine {
 
         class Entity;
         
-        class EntityManager : public Serializable {
+        class EntityManager : public Serializable, MessageReceiver {
         protected:
+            MessageHandler& messageHandler;
+            
             entityId_t nextEntityId;
             
             Map<componentId_t, vector<shared_ptr<Component>>> components;
@@ -85,13 +90,16 @@ namespace engine {
                 void swap(ComponentIterator& ci);
             };
 
-            EntityManager();
+            EntityManager(MessageHandler& messageHandler);
             EntityManager(const EntityManager& orig) = delete;
             virtual ~EntityManager();
             
             Entity createEntity(const std::string& name);
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, const std::string& serializedData);
             Entity createEntityFromPrefab(engine::IO::Serializer& serializer, std::istream& serializedData);
+            void createEntityAsync(const std::string& name, const Array<std::shared_ptr<Component>>& components, Entity* out_newEntity = nullptr) const;
+            
+            virtual void receive(shared_ptr<Message> msg) override;
             
             Entity getEntity(entityId_t id);
             

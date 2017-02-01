@@ -1327,43 +1327,18 @@
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="3">
           <incDir>
-            <pElem>src/engine/ECS</pElem>
+            <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
-            <pElem>src/engine/renderer</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
             <pElem>src/engine</pElem>
-            <pElem>src/engine/util</pElem>
-            <pElem>src/engine/util/pb</pElem>
-            <pElem>src/engine/ECS/pb</pElem>
-            <pElem>src/engine/IO</pElem>
-            <pElem>src/engine/renderer/gl</pElem>
-            <pElem>src/engine/physics</pElem>
-            <pElem>src/engine/ECSCommon/pb</pElem>
-            <pElem>src/engine/ECSCommon</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/eigen3/Eigen</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">

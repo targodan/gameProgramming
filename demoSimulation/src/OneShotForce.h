@@ -17,11 +17,9 @@ namespace demoSimulation {
             auto size = object.allVertices.rows();
             Eigen::VectorXf forces = Eigen::VectorXf::Zero(size);
             if(!this->shotFired && this->secondsSinceStart > 0 && this->secondsSinceStart < 1) {
+                auto vertIndex = object.allVertices.rows() / 3 / 2;
+                forces[vertIndex*3 + 2] = -60000;
                 LOG(INFO) << "Boom.";
-//                forces(1) = 50;
-                forces(2) = -200;
-//                forces(10) = -700;
-//                forces(11) = 700;
                 this->shotFired = true;
             }
             return forces;

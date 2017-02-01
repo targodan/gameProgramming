@@ -99,7 +99,7 @@ namespace demoSimulation {
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
                 tMesh,
                 1e-3, // dampening
-                0.01e3, // youngs modulus rubber
+                0.01e6, // youngs modulus rubber
                 0.49, // poissons ratio rubber
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal

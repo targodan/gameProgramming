@@ -15,6 +15,7 @@ namespace engine {
         const float updatesPerSecond;
         bool aboutToClose = false; // Note: Probably temporary, used for testing
         bool shutdownComplete = false;
+        int openmpThreads = -1;
         
         ECS::MessageHandler messageHandler;
         

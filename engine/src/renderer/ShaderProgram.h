@@ -79,6 +79,9 @@ namespace engine {
                 
                 return sp;
             }
+            void setUniformi(const std::string& nameInShader, GLint data) {
+                glUniform1i(this->getUniformLocation(nameInShader), data);
+            }
         private:
             ShaderProgram() : linked(false) {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);

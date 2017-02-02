@@ -107,6 +107,9 @@ namespace engine {
             
             VertexProxy getVertices();
             const ConstVertexProxy getVertices() const;
+
+            vector<GLuint>& getFaceIndices();
+            const vector<GLuint>& getFaceIndices() const;
         protected:
             void createVBO(vector<Vertex>& vertices, DataUsagePattern usage);
             void createEBO(vector<GLuint>& indices, DataUsagePattern usage);

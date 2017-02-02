@@ -13,18 +13,25 @@ namespace engine {
         systemId_t DeformableBodySystem::systemId = 0;
             
         void DeformableBodySystem::run(EntityManager& em, float deltaTimeSeconds) {
+            for(auto itForces = em.begin({ForceComponent::getComponentTypeId(), TimerComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
+                auto& force = itForces[0]->to<ForceComponent>();
+                auto& timer = itForces[1]->to<TimerComponent>();
+
+                force.getForce().setSecondsSinceStart(timer.getTime());
+            }
             for(auto itBodies = em.begin({DeformableBodyComponent::getComponentTypeId()}); itBodies != em.end(); ++itBodies) {
                 auto& body = itBodies->to<DeformableBodyComponent>();
                 
-                for(auto itForces = em.begin({ForceComponent::getComponentTypeId(), TimerComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
-                    auto& force = itForces[0]->to<ForceComponent>();
-                    auto& timer = itForces[1]->to<TimerComponent>();
+                Eigen::VectorXf forces = Eigen::VectorXf::Zero(body.getDeformableBody().getExpectedForceVectorSize());
+                for(auto itForces = em.begin({ForceComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
+                    auto& force = (*itForces)->to<ForceComponent>();
                     
-                    // TODO: The following line is just a workaround
-                    force.getForce().setSecondsSinceStart(timer.getTime());
-                    
-                    body.getDeformableBody().step(deltaTimeSeconds, force.getForce());
+                    auto f = force.getForce().getForceOnVertices(body.getDeformableBody().getProperties());
+                    if(f.rows() > 0) {
+                        forces += f;
+                    }
                 }
+                body.getDeformableBody().step(deltaTimeSeconds, forces);
             }
         }
         

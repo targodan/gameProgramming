@@ -17,8 +17,8 @@ namespace engine {
         class CameraComponent : public engine::ECS::Component {
         public:
             CameraComponent(); // Default camera in origin, looking in negative z-direction
-            CameraComponent(vec3 direction); 
-            CameraComponent(vec3 direction, vec3 up);
+            CameraComponent(vec3 direction, float horizontalFieldOfView, float aspectRatio, float near, float far); 
+            CameraComponent(vec3 direction, vec3 up, float horizontalFieldOfView, float aspectRatio, float near, float far);
             CameraComponent(const CameraComponent& orig) 
                 : viewMatrix(orig.viewMatrix), projectionMatrix(orig.projectionMatrix), direction(orig.direction), up(orig.up), worldUp(orig.worldUp), yaw(orig.yaw), pitch(orig.pitch) {};
             CameraComponent(CameraComponent&& orig) 
@@ -26,14 +26,15 @@ namespace engine {
                   direction(std::move(orig.direction)), up(std::move(orig.up)), worldUp(std::move(orig.worldUp)), yaw(std::move(orig.yaw)), pitch(std::move(orig.pitch)) {};
             virtual ~CameraComponent();
             
-            /* 
-             * Field-of-view given in degrees
-             */
-            void setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far);
             void setViewMatrix(const vec3& position, const vec3& direction, const vec3& up);
             void setViewMatrix(const vec3& position);
             void setDirection(const vec3& direction);
             void setUp(const vec3& up);
+            
+            CameraComponent& setHorizontalFieldOfView(float fov);
+            CameraComponent& setAspectRatio(float ratio);
+            CameraComponent& setNearPlane(float distance);
+            CameraComponent& setFarPlane(float distance);
             
             const mat4& getProjectionMatrix() const;
             const mat4& getViewMatrix() const;
@@ -49,6 +50,8 @@ namespace engine {
             static void setComponentTypeId(componentId_t id);
             static componentId_t getComponentTypeId();
         private:
+            void updateProjectionMatrix();
+            
             void updateViewMatrix();
             void setYawAndPitchFromDirection();
             
@@ -64,6 +67,11 @@ namespace engine {
             
             float yaw; // Rotation around y-axis (~ vertical movement))
             float pitch; // Rotation around x-axis (~ horizontal movement)
+            
+            float horizontalFieldOfView;
+            float aspectRatio;
+            float near;
+            float far;
         };
     }
 }

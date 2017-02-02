@@ -3,6 +3,7 @@
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
+#include "TimerSystem.h"
 
 namespace engine {
     namespace ECSCommon {
@@ -24,6 +25,10 @@ namespace engine {
             }
             bool isRenderSystem() const override {
                 return false;
+            }
+            
+            virtual Array<systemId_t> getOptionalDependencies() const {
+                return {TimerSystem::systemTypeId()};
             }
             
             systemId_t getSystemTypeId() const override;

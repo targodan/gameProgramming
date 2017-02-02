@@ -33,7 +33,7 @@ namespace engine {
             RichText renderText() const;
             
         public:
-            PerformanceMetricsSystem(EntityManager* em) : text(em->createEntity("PerformanceMetrics")) {
+            PerformanceMetricsSystem(EntityManager& em) : text(em.createEntity("PerformanceMetrics")) {
                 this->text.addComponent<TextComponent>();
                 this->text.getComponent<TextComponent>().setXPixel(10);
                 this->text.getComponent<TextComponent>().setYPixel(20);

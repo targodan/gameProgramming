@@ -7,7 +7,7 @@
 #include "../IllegalArgumentException.h"
 
 #include "Force.h"
-#include "TetrahedronizedMesh.h"
+#include "TetrahedronizedObject.h"
 
 namespace engine {
     namespace physics {
@@ -15,51 +15,51 @@ namespace engine {
         using namespace engine::renderer;
         
         class DeformableBody {
-            using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
+            using SparseSolver = SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<SparseMatrix<double, ColMajor>::StorageIndex>>;
         protected:
-            TetrahedronizedMesh mesh;
-            ObjectProperties properties;
-            VectorXf restPosition;
-            VectorXf& currentPosition;
+            TetrahedronizedObject mesh;
+            VectorXd restPosition;
+            VectorXd currentPosition;
             
-            float mass; // in kg
-            float dampening; // in kg/s
-            float youngsModulus; // in N/m² = Pa (Pascal)
-            float poissonsRatio;
+            double dampening; // in kg/s
+            double youngsModulus; // in N/m² = Pa (Pascal)
+            double poissonsRatio;
             
-            SparseMatrix<float> stiffnessMatrix; // Called K in lecture
-            SparseMatrix<float> dampeningMatrix; // Called C in lecture
+            SparseMatrix<double> stiffnessMatrix; // Called K in lecture
+            SparseMatrix<double> dampeningMatrix; // Called C in lecture
             
             float stepSizeOnMatrixCalculation; // The last value of h.
             // If the current step size deviates more than
             // stepSizeDeviationPercentage % from the stepSizeOnMatrixCalculation
             // the stepMatrix is recalculated. Always updates if 0.
             float stepSizeDeviationPercentage;
-            SparseMatrix<float, ColMajor> stepMatrix; // M + h² * K + h * C
+            SparseMatrix<double, ColMajor> stepMatrix; // M + h² * K + h * C
             SparseSolver stepMatrixSolver;
             
-            VectorXf lastVelocities;
+            VectorXd lastVelocities;
+            VectorXd vertexFreezer;
             
-            SparseMatrix<float> calculateMaterialMatrix() const; // Called D in lecture
-            SparseMatrix<float> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
-            SparseMatrix<float> calculateStiffnessMatrix() const; // Called K in lecture
-            SparseMatrix<float> calculateDampeningMatrix() const; // Called C in lecture
-            SparseMatrix<float> calculateMassMatrix() const; // Called M in lecture
-            SparseMatrix<float, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
+            SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
+            SparseMatrix<double> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            void combine3by3Block(SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
+            SparseMatrix<double> calculateStiffnessMatrix() const; // Called K in lecture
+            SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
+            SparseMatrix<double> calculateMassMatrix() const; // Called M in lecture
+            SparseMatrix<double, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
             void prepareStepMatrixSolver();
             
-            VectorXf calculateCurrentDifferenceFromRestPosition() const;
-            VectorXf calculateVelocities(float h, const VectorXf& forces) const;
+            VectorXd calculateCurrentDifferenceFromRestPosition() const;
+            VectorXd calculateVelocities(float h, const VectorXf& forces) const;
             
             void updateStepMatrix(float h);
             void updateStepMatrixIfNecessary(float h);
             void calculateAndSetInitialState(float targetStepSize);
             
         public:
-            DeformableBody(const TetrahedronizedMesh& mesh, const ObjectProperties& properties, float mass, float dampening,
-                    float youngsModulus, float poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
-                    : mesh(mesh), properties(properties), currentPosition(this->properties.allVertices),
-                        mass(mass), dampening(dampening), youngsModulus(youngsModulus),
+            DeformableBody(const TetrahedronizedObject& mesh, double dampening,
+                    double youngsModulus, double poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
+                    : mesh(mesh), currentPosition(this->mesh.getSimulationMesh().cast<double>()),
+                        dampening(dampening), youngsModulus(youngsModulus),
                         poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
                         stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
@@ -70,6 +70,18 @@ namespace engine {
             
             void step(float deltaT, const VectorXf& forces);
             void step(float deltaT, Force& force);
+            
+            void freezeVertex(size_t index);
+            void freezeVertices(const engine::util::Array<size_t>& indices);
+            void unfreezeVertex(size_t index);
+            void unfreezeVertices(const engine::util::Array<size_t>& indices);
+            
+            const ObjectProperties& getProperties() const;
+            
+            VectorXd::Index getExpectedForceVectorSize() const;
+            
+            VectorXd& getCurrentPosition();
+            const VectorXd& getCurrentPosition() const;
         };
     }
 }

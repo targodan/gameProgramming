@@ -25,7 +25,7 @@ namespace engine {
             void releaseMaterial();
             
             Material& attachTexture(const std::string& pathToTexture);
-            Material& attachTexture(Texture& texture);
+            Material& attachTexture(const Texture& texture);
             void setTextures(const vector<Texture>& textures);
             const vector<Texture>& getTextures() const;
             

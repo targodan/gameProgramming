@@ -24,17 +24,17 @@ int main(int argc, char** argv) {
   
     
     // Deactivate logging
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-    defaultConf.set(el::Level::Global, el::ConfigurationType::ToStandardOutput, "false");
-    defaultConf.set(el::Level::Error, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Fatal, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Unknown, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Verbose, el::ConfigurationType::Enabled, "false");
-    defaultConf.set(el::Level::Warning, el::ConfigurationType::Enabled, "false");
-    el::Loggers::setDefaultConfigurations(defaultConf, true);
+//    el::Configurations defaultConf;
+//    defaultConf.setToDefault();
+//    defaultConf.set(el::Level::Global, el::ConfigurationType::ToStandardOutput, "false");
+//    defaultConf.set(el::Level::Error, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Fatal, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Info, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Trace, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Unknown, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Verbose, el::ConfigurationType::Enabled, "false");
+//    defaultConf.set(el::Level::Warning, el::ConfigurationType::Enabled, "false");
+//    el::Loggers::setDefaultConfigurations(defaultConf, true);
     
     if(argc == 2) {
         if(std::string(argv[1]) == "--brief" || std::string(argv[1]) == "-b") {

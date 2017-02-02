@@ -2,6 +2,35 @@
 
 namespace engine {
     namespace physics {
+        ObjectProperties::ObjectProperties(const ObjectProperties& orig)
+                : allVertices(orig.allVertices),
+                surfaceVertexIndices(orig.surfaceVertexIndices),
+                surfaceAreaPerVertex(orig.surfaceAreaPerVertex),
+                massPerVertex(orig.massPerVertex) {}
+        
+        ObjectProperties::ObjectProperties(ObjectProperties&& orig)
+                : allVertices(std::move(orig.allVertices)),
+                surfaceVertexIndices(std::move(orig.surfaceVertexIndices)),
+                surfaceAreaPerVertex(std::move(orig.surfaceAreaPerVertex)),
+                massPerVertex(std::move(orig.massPerVertex)) {}
+        
+        ObjectProperties& ObjectProperties::operator=(const ObjectProperties& orig) {
+            this->allVertices = orig.allVertices;
+            this->surfaceVertexIndices = orig.surfaceVertexIndices;
+            this->surfaceAreaPerVertex = orig.surfaceAreaPerVertex;
+            this->massPerVertex = orig.massPerVertex;
+            
+            return *this;
+        }
+        ObjectProperties& ObjectProperties::operator=(ObjectProperties&& orig) {
+            std::swap(this->allVertices, orig.allVertices);
+            std::swap(this->surfaceVertexIndices, orig.surfaceVertexIndices);
+            std::swap(this->surfaceAreaPerVertex, orig.surfaceAreaPerVertex);
+            std::swap(this->massPerVertex, orig.massPerVertex);
+            
+            return *this;
+        }
+        
         VectorXf ObjectProperties::getSurfaceVertices() const {
             VectorXf surface(this->surfaceVertexIndices.size() * 3);
             size_t i = 0;
@@ -17,9 +46,9 @@ namespace engine {
             VectorXf forces = VectorXf::Zero(this->allVertices.rows());
             size_t i = 0;
             for(auto index : this->surfaceVertexIndices) {
-                forces(index + 0) = surfaceForces(i + 0);
-                forces(index + 1) = surfaceForces(i + 1);
-                forces(index + 2) = surfaceForces(i + 2);
+                forces(index * 3 + 0) = surfaceForces(i + 0);
+                forces(index * 3 + 1) = surfaceForces(i + 1);
+                forces(index * 3 + 2) = surfaceForces(i + 2);
                 i += 3;
             }
             return forces;

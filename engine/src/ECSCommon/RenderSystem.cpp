@@ -7,6 +7,7 @@
 #include "../ECS/SystemRegisterer.h"
 
 #include "../renderer/TextRenderer.h"
+#include "../WindowResizeMessage.h"
 
 #include "glm/gtx/transform.hpp"
 
@@ -20,7 +21,8 @@ namespace engine {
         
         systemId_t RenderSystem::systemId = 0;
         
-        RenderSystem::RenderSystem() {
+        RenderSystem::RenderSystem(MessageHandler& handler) {
+            handler.registerReceiver(WindowResizeMessage::getMessageTypeId(), this);
         }
 
         RenderSystem::RenderSystem(const RenderSystem& orig) {
@@ -33,6 +35,10 @@ namespace engine {
             for(auto itCamera = em.begin({CameraComponent::getComponentTypeId(), PlacementComponent::getComponentTypeId()}); itCamera != em.end(); ++itCamera) {
                 auto& placement = itCamera[1]->to<PlacementComponent>();
                 auto& camera = itCamera[0]->to<CameraComponent>();
+                
+                if(this->aspectRatioUpdated) {
+                    camera.setAspectRatio(this->aspectRatio);
+                }
                 
                 camera.setViewMatrix(placement.getPosition());
                 
@@ -52,6 +58,8 @@ namespace engine {
                 
                 // TODO: If a second camera is present: ... take split-screen into account?
             }
+            
+            this->aspectRatioUpdated = false;
             
             auto it = em.begin({TextComponent::getComponentTypeId()});
             auto end = em.end();
@@ -85,6 +93,16 @@ namespace engine {
         
         void RenderSystem::setSystemTypeId(systemId_t id) {
             RenderSystem::systemId = id;
+        }
+        
+        void RenderSystem::receive(shared_ptr<Message> msg) {
+            if(msg->getId() == WindowResizeMessage::getMessageTypeId()) {
+                auto& message = msg->to<WindowResizeMessage>();
+                
+                glViewport(0, 0, message.getNewWidth(), message.getNewHeight());
+                this->aspectRatio = static_cast<float>(message.getNewWidth()) / message.getNewHeight();
+                this->aspectRatioUpdated = true;
+            }
         }
         
         void RenderSystem::render(VisualComponent& comp) {

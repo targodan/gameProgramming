@@ -93,7 +93,7 @@ namespace engine {
             ~SystemManager();
 
             template<class SystemT, typename... Args>
-            shared_ptr<SystemT> enableSystem(Args... args) {
+            shared_ptr<SystemT> enableSystem(Args&... args) {
 #ifdef DEBUG
                 if(this->hasBeenSetup) {
                     throw WTFException("The SystemManager has already been setup!");

@@ -8,7 +8,9 @@
             <cpp-extensions>cc,cpp,fsh,vsh</cpp-extensions>
             <header-extensions>h,proto</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
-            <make-dep-projects/>
+            <make-dep-projects>
+                <make-dep-project>../engine</make-dep-project>
+            </make-dep-projects>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
             </sourceRootList>

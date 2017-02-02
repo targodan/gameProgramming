@@ -74,9 +74,8 @@ namespace demoSimulation {
         
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 4))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0));
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
         auto& cc = this->player.getComponent<CameraComponent>();
-        cc.setProjectionMatrix(120, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -176,9 +175,9 @@ namespace demoSimulation {
         
         this->systemManager.enableSystem<InputSystem>(bm);
         
-        this->systemManager.enableSystem<PerformanceMetricsSystem>(&this->entityManager);
+        this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
-        this->systemManager.enableSystem<RenderSystem>();
+        this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
         

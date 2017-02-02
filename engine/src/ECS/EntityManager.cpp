@@ -12,6 +12,7 @@ namespace engine {
             this->entityComponentIndexes.set_empty_key(SIZE_MAX);
             
             AddEntityMessage::registerMessageName(messageHandler);
+            messageHandler.registerReceiver(AddEntityMessage::getMessageId(), this);
         }
 
         EntityManager::~EntityManager() {

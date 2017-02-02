@@ -3,13 +3,13 @@
 
 namespace engine {
     namespace physics {
-        TetrahedronizedMesh::TetrahedronizedMesh(Mesh& mesh, const std::initializer_list<size_t>& tetrahedronIndices)
+        TetrahedronizedMesh::TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const std::initializer_list<size_t>& tetrahedronIndices)
             : mesh(mesh), tetrahedronIndices(tetrahedronIndices) {
             if(tetrahedronIndices.size() % 4 != 0) {
                 throw IllegalArgumentException("The list of tetrahedron indices should be divisable by 4! Size: %zu", tetrahedronIndices.size());
             }
         }
-        TetrahedronizedMesh::TetrahedronizedMesh(Mesh& mesh, const Array<size_t>& tetrahedronIndices)
+        TetrahedronizedMesh::TetrahedronizedMesh(const std::shared_ptr<Mesh>& mesh, const Array<size_t>& tetrahedronIndices)
             : mesh(mesh), tetrahedronIndices(tetrahedronIndices) {
             if(tetrahedronIndices.size() % 4 != 0) {
                 throw IllegalArgumentException("The list of tetrahedron indices should be divisable by 4! Size: %zu", tetrahedronIndices.size());
@@ -25,7 +25,7 @@ namespace engine {
 //        }
         
         Vector3f TetrahedronizedMesh::getVertex(size_t index) const {
-            const auto& vertex = this->mesh.getVertices()[index];
+            const auto& vertex = this->mesh->getVertices()[index];
             return Vector3f(
                     vertex.position.x,
                     vertex.position.y,
@@ -53,12 +53,12 @@ namespace engine {
         }
         
         void TetrahedronizedMesh::updateMeshFromPlanarVector(const VectorXf& vertices) {
-            for(size_t i = 0; i < 12; i += 3) {
-                this->mesh.getVertices()[i / 3].position.x = vertices[i+0];
-                this->mesh.getVertices()[i / 3].position.y = vertices[i+1];
-                this->mesh.getVertices()[i / 3].position.z = vertices[i+2];
+            for(int i = 0; i < vertices.rows(); i += 3) {
+                this->mesh->getVertices()[i / 3].position.x = vertices[i+0];
+                this->mesh->getVertices()[i / 3].position.y = vertices[i+1];
+                this->mesh->getVertices()[i / 3].position.z = vertices[i+2];
             }
-            this->mesh.setVerticesChanged(true);
+            this->mesh->setVerticesChanged(true);
         }
         
         float TetrahedronizedMesh::calculateVolumeOfTetrahedron(size_t index) const {
@@ -82,6 +82,33 @@ namespace engine {
                 volume += this->calculateVolumeOfTetrahedron(i);
             }
             return volume;
+        }
+        
+        Mesh& TetrahedronizedMesh::getMesh() {
+            return *this->mesh;
+        }
+        const Mesh& TetrahedronizedMesh::getMesh() const {
+            return *this->mesh;
+        }
+        
+        std::shared_ptr<Mesh> TetrahedronizedMesh::getMeshPtr() {
+            return this->mesh;
+        }
+
+        size_t TetrahedronizedMesh::getNumberOfTetrahedron() const {
+            return this->tetrahedronIndices.size() / 4;
+        }
+
+        const Array<size_t>& TetrahedronizedMesh::getTetrahedronIndices() const {
+            return this->tetrahedronIndices;
+        }
+
+        Array<size_t>& TetrahedronizedMesh::getTetrahedronIndices() {
+            return this->tetrahedronIndices;
+        }
+
+        size_t TetrahedronizedMesh::getIndexOfVertexInTetrahedron(size_t tetrahedronIndex, size_t vertexIndex) const {
+            return this->tetrahedronIndices[tetrahedronIndex * 4 + vertexIndex];
         }
     }
 }

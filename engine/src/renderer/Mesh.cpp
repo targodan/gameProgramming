@@ -8,18 +8,20 @@
 namespace engine {
     namespace renderer {
         Mesh::Mesh(vector<Vertex> vertices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vertices(vertices), vao(std::make_unique<VertexArray>()), wasLoaded(false) {
+            : material(nullptr), usage(usage), vertices(vertices), vao(std::make_unique<VertexArray>()), loaded(false) {
             this->createVBO();
         }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), wasLoaded(false) {
+            : material(nullptr), usage(usage), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), loaded(false) {
             this->createEBO();
             this->createVBO();
         }
         
         Mesh::Mesh(const Mesh& orig)
-            : usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
-            this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            : material(orig.material), usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
+            // this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
+            // For testing: copy points to same material
+            
             /*
              * The problem here is as follows.
              * Creating new buffers may not be intuitive in a copy, but if we don't do this
@@ -27,10 +29,12 @@ namespace engine {
              * data corruption when calling loadData.
              * TODO: Fix this.
              */
-            this->createEBO();
+            if(!this->indices.empty()) {
+                this->createEBO();
+            }
             this->createVBO();
             
-            if(orig.wasLoaded) {
+            if(orig.loaded) {
                 this->loadMesh();
             }
         }
@@ -38,16 +42,24 @@ namespace engine {
         Mesh::Mesh(Mesh&& orig)
             : material(std::move(orig.material)), usage(std::move(orig.usage)),
                 vertices(std::move(orig.vertices)), indices(std::move(orig.indices)),
-                vao(std::move(orig.vao)), wasLoaded(std::move(orig.wasLoaded)) {
+                vao(std::move(orig.vao)), loaded(std::move(orig.loaded)) {
         }
         
         Mesh& Mesh::operator=(const Mesh& right) {
             this->usage = right.usage;
-            this->vao = std::make_unique<VertexArray>(*(right.vao));
+            this->vao = std::make_unique<VertexArray>();
             this->material = right.material;
             this->vertices = right.vertices;
             this->indices = right.indices;
-            this->wasLoaded = right.wasLoaded;
+            
+            if(!this->indices.empty()) {
+                this->createEBO();
+            }
+            this->createVBO();
+            
+            if(right.loaded) {
+                this->loadMesh();
+            }
             
             return *this;
         }
@@ -57,7 +69,7 @@ namespace engine {
             this->material = std::move(right.material);
             this->vertices = std::move(right.vertices);
             this->indices = std::move(right.indices);
-            this->wasLoaded = std::move(right.wasLoaded);
+            this->loaded = std::move(right.loaded);
             
             return *this;
         }
@@ -117,14 +129,14 @@ namespace engine {
             }
             this->vao->unbind();
             
-            this->wasLoaded = true;
+            this->loaded = true;
             this->verticesChanged = false;
             this->indicesChanged = false;
         }
         
         void Mesh::releaseMesh() {
-            if(this->wasLoaded) {
-                this->wasLoaded = false; 
+            if(this->loaded) {
+                this->loaded = false; 
             }
             vao->releaseVertexArray();
         }
@@ -187,6 +199,9 @@ namespace engine {
         }
         std::shared_ptr<const Material> Mesh::getMaterial() const {
             return this->material;
+        }
+        bool Mesh::wasLoaded() const {
+            return this->loaded;
         }
         
         void Mesh::createVBO() {

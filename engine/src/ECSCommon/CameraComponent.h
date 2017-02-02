@@ -16,7 +16,7 @@ namespace engine {
         
         class CameraComponent : public engine::ECS::Component {
         public:
-            CameraComponent();
+            CameraComponent(); // Default camera in origin, looking in negative z-direction
             CameraComponent(vec3 direction); 
             CameraComponent(vec3 direction, vec3 up);
             CameraComponent(const CameraComponent& orig) 
@@ -40,7 +40,6 @@ namespace engine {
             const vec3& getDirection() const;
             const vec3& getUp() const;
             
-            // void setTarget(vec3 targetPosition);
             void pan(float xOffset, float yOffset, float sensitivity = 0.1f);
             
             virtual componentId_t getComponentId() const override;

@@ -13,6 +13,7 @@ namespace engine {
         
         class Material {
         public:
+            Material();
             Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe = false);
             Material(const Material& orig);
             Material(Material&& orig);
@@ -26,6 +27,7 @@ namespace engine {
             Material& attachTexture(const std::string& pathToTexture);
             Material& attachTexture(Texture& texture);
             void setTextures(const vector<Texture>& textures);
+            const vector<Texture>& getTextures() const;
             
             // This needs to be called before drawing the corresponding mesh
             void makeActive();
@@ -38,7 +40,8 @@ namespace engine {
             vector<Texture> textures;
             bool renderAsWireframe;
             
-            Map<std::string, bool> loadedTextures; // Holds paths to textures that have already been loaded into RAM
+            bool texturesLoaded;
+            Map<std::string, bool> importedTextures; // Holds paths to textures that have already been loaded into RAM
         };
     }
 }

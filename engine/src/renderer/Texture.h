@@ -20,9 +20,10 @@ namespace engine {
         
         class Texture : public Bindable {
         public:
-            Texture(std::string imagePath, ImageFormat format = ImageFormat::RGB, bool specular = false, TextureType type = TextureType::TEXTURE_2D) : type(type), format(format), depth(0), bound(false), specular(false) {
+            Texture(std::string imagePath, ImageFormat format = ImageFormat::RGB, ImageFormat formatToStoreTextureIn = ImageFormat::RGB, bool specular = false, TextureType type = TextureType::TEXTURE_2D) 
+                        : type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(0), bound(false), specular(false) {
                 std::string entireImagePath = util::getAbsoluteFromRelativePath(imagePath);
-                this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, SOIL_LOAD_RGB);
+                this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, SOIL_LOAD_AUTO);
                 
                 if(!imageData) {
                     throw engine::IOException("Failed to create texture: Could not load image.");
@@ -30,14 +31,18 @@ namespace engine {
                 
                 this->generateTexture();
             };
-            Texture(const Texture& orig) : id(orig.id), type(orig.type), format(orig.format), width(orig.width), height(orig.height), depth(orig.depth), imageData(orig.imageData), bound(orig.bound), specular(orig.specular) {};
-            Texture(Texture&& orig) : id(std::move(orig.id)), type(std::move(orig.type)), format(std::move(orig.format)), width(std::move(orig.width)), height(std::move(orig.height)), depth(std::move(orig.depth)), 
-                                      imageData(std::move(orig.imageData)), bound(std::move(bound)), specular(std::move(specular)) {};
+            Texture(const Texture& orig) 
+                : id(orig.id), type(orig.type), format(orig.format), formatToStoreTextureIn(orig.formatToStoreTextureIn), 
+                  width(orig.width), height(orig.height), depth(orig.depth), imageData(orig.imageData), bound(orig.bound), specular(orig.specular) {};
+            Texture(Texture&& orig) 
+                : id(std::move(orig.id)), type(std::move(orig.type)), format(std::move(orig.format)), formatToStoreTextureIn(std::move(formatToStoreTextureIn)), 
+                  width(std::move(orig.width)), height(std::move(orig.height)), depth(std::move(orig.depth)), imageData(std::move(orig.imageData)), bound(std::move(bound)), specular(std::move(specular)) {};
             
             Texture& operator=(const Texture& right) {
                 this->id = right.id;
                 this->type = right.type;
                 this->format = right.format;
+                this->formatToStoreTextureIn = right.formatToStoreTextureIn;
                 this->width = right.width;
                 this->height = right.height;
                 this->depth = right.depth;
@@ -51,6 +56,7 @@ namespace engine {
                 this->id = std::move(right.id);
                 this->type = std::move(right.type);
                 this->format = std::move(right.format);
+                this->formatToStoreTextureIn = std::move(right.formatToStoreTextureIn);
                 this->width = std::move(right.width);
                 this->height = std::move(right.height);
                 this->depth = std::move(right.depth);
@@ -82,7 +88,7 @@ namespace engine {
                 glTexParameteri(this->type, name, type);
             }
             
-            void loadTexture(ImageFormat formatToStoreTextureIn = ImageFormat::RGB) {
+            void loadTexture() {
 #ifdef DEBUG
                 if(!this->bound) {
                     throw WTFException("Could not load texture: texture not bound.");
@@ -91,13 +97,13 @@ namespace engine {
                 
                 switch(this->type) {
                     case TEXTURE_1D:
-                        glTexImage1D(this->type, 0, formatToStoreTextureIn, this->width, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                        glTexImage1D(this->type, 0, this->formatToStoreTextureIn, this->width, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                         break;
                     case TEXTURE_2D:
-                        glTexImage2D(this->type, 0, formatToStoreTextureIn, this->width, this->height, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                        glTexImage2D(this->type, 0, this->formatToStoreTextureIn, this->width, this->height, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                         break;
                     case TEXTURE_3D:
-                        glTexImage3D(this->type, 0, formatToStoreTextureIn, this->width, this->height, this->depth, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                        glTexImage3D(this->type, 0, this->formatToStoreTextureIn, this->width, this->height, this->depth, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                         break;
                     default:
                         throw WTFException("Could not load texture: invalid texture type.");
@@ -150,6 +156,7 @@ namespace engine {
             GLuint id;
             TextureType type;
             ImageFormat format;
+            ImageFormat formatToStoreTextureIn;
             
             GLsizei width;
             GLsizei height;

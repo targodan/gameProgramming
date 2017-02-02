@@ -2,38 +2,40 @@
 #define VISUALCOMPONENT_H
 
 #include "../ECS/Component.h"
-#include "../renderer/Mesh.h"
-#include "../renderer/Material.h"
+#include "../renderer/VisualObject.h"
+
+#include <memory>
 
 namespace engine {
     namespace ECSCommon {
         using engine::ECS::componentId_t;
         using engine::renderer::Mesh;
         using engine::renderer::Material;
+        using engine::renderer::VisualObject;
         
         class VisualComponent : public engine::ECS::Component {
         private:
             static componentId_t typeId;
             
-            // TODO: This shouldn't be here, but I didn't come up with a better solution right now :(
-            void _combineMeshAndMaterial(); 
         protected:
-            Mesh mesh;
-            Material material;
+            VisualObject object;
             
         public:
             VisualComponent();
-            VisualComponent(const Mesh& mesh, const Material& material);
+            VisualComponent(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material);
+            VisualComponent(const VisualObject& object);
             VisualComponent(const VisualComponent& orig) = delete;
             virtual ~VisualComponent();
             
-            void setMesh(const Mesh& mesh);
-            const Mesh& getMesh() const;
-            Mesh& getMesh();
+            void setVisualObject(const VisualObject& object);
+            const VisualObject& getVisualObject() const;
+            VisualObject& getVisualObject();
             
-            void setMaterial(const Material& mat);
-            const Material& getMaterial() const;
-            Material& getMaterial();
+            template<typename T>
+            void setShaderUniform(const std::string& nameInShader, T data) const {
+                this->object.getMaterial().getShader()->useProgram();
+                this->object.getMaterial().getShader()->setUniform(nameInShader, data);
+            }
             
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;

@@ -12,7 +12,7 @@
 #include "renderer/TextRenderer.h"
 
 namespace engine {
-    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(this->messageHandler, 1024,768), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), messageHandler(), window(this->messageHandler, 1024,768), entityManager(this->messageHandler), systemManager(entityManager) {
         WindowResizeMessage::registerMessageType(this->messageHandler);
         engine::renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
         
@@ -29,6 +29,7 @@ namespace engine {
         defaultConf.set(el::Level::Info, el::ConfigurationType::ToFile, "true");
         defaultConf.set(el::Level::Info, el::ConfigurationType::ToStandardOutput, "true");
         defaultConf.set(el::Level::Info, el::ConfigurationType::Format, "%datetime{%Y-%M-%d %H:%m:%s} %level : [%logger] %msg");
+        el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
         el::Loggers::setDefaultConfigurations(defaultConf, true);
         
         START_EASYLOGGINGPP(argc, argv);

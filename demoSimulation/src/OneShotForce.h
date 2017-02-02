@@ -13,13 +13,15 @@ namespace demoSimulation {
     public:
         OneShotForce() {}
         
-        Eigen::Matrix<float, Eigen::Dynamic, 1> getForceOnVertices(const engine::physics::ObjectProperties& object) override {
+        Eigen::VectorXf getForceOnVertices(const engine::physics::ObjectProperties& object) override {
             auto size = object.allVertices.rows();
-            Eigen::Matrix<float, Eigen::Dynamic, 1> forces = Eigen::Matrix<float, Eigen::Dynamic, 1>::Zero(size, 1);
+            Eigen::VectorXf forces = Eigen::VectorXf::Zero(size);
             if(!this->shotFired && this->secondsSinceStart > 0) {
                 LOG(INFO) << "Boom.";
-                forces(4) = 700;
-                forces(5) = -700;
+                forces(1) = 50;
+                forces(2) = -50;
+//                forces(10) = -700;
+//                forces(11) = 700;
                 this->shotFired = true;
             }
             return forces;

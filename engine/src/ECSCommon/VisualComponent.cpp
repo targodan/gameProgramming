@@ -9,34 +9,20 @@ namespace engine {
         
         componentId_t VisualComponent::typeId = 0;
         
-        VisualComponent::VisualComponent() : mesh({}, {}), material(nullptr) {}
+        VisualComponent::VisualComponent() {}
+        VisualComponent::VisualComponent(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) 
+            : object(VisualObject{mesh, material}) {}
+        VisualComponent::VisualComponent(const VisualObject& object) : object(object) {}
+        VisualComponent::~VisualComponent() {}
         
-        VisualComponent::VisualComponent(const Mesh& mesh, const Material& material) 
-            : mesh(mesh), material(material) {
-            this->_combineMeshAndMaterial();
+        void VisualComponent::setVisualObject(const VisualObject& object) {
+            this->object = object;
         }
-
-        VisualComponent::~VisualComponent() {
+        const VisualObject& VisualComponent::getVisualObject() const {
+            return this->object;
         }
-        
-        void VisualComponent::setMesh(const Mesh& mesh) {
-            this->mesh = mesh;
-        }
-        const Mesh& VisualComponent::getMesh() const {
-            return this->mesh;
-        }
-        Mesh& VisualComponent::getMesh() {
-            return this->mesh;
-        }
-
-        void VisualComponent::setMaterial(const Material& mat) {
-            this->material = mat;
-        }
-        const Material& VisualComponent::getMaterial() const {
-            return this->material;
-        }
-        Material& VisualComponent::getMaterial() {
-            return this->material;
+        VisualObject& VisualComponent::getVisualObject() {
+            return this->object;
         }
         
         componentId_t VisualComponent::getComponentId() const {
@@ -59,8 +45,5 @@ namespace engine {
             return VisualComponent::typeId;
         }
         
-        void VisualComponent::_combineMeshAndMaterial() {
-            this->mesh.setMaterial(std::make_shared<Material>(this->material));
-        }
     }
 }

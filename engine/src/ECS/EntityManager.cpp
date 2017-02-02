@@ -1,16 +1,40 @@
 #include "EntityManager.h"
 
+#include "AddEntityMessage.h"
+
 #include "Entity.h"
 #include "ComponentRegistry.h"
 
 namespace engine {
     namespace ECS {
-        EntityManager::EntityManager() : nextEntityId(0) {
+        EntityManager::EntityManager(MessageHandler& messageHandler) : messageHandler(messageHandler), nextEntityId(0) {
             this->components.set_empty_key(SIZE_MAX);
             this->entityComponentIndexes.set_empty_key(SIZE_MAX);
+            
+            AddEntityMessage::registerMessageName(messageHandler);
         }
 
         EntityManager::~EntityManager() {
+        }
+        
+        void EntityManager::createEntityAsync(const std::string& name, const Array<std::shared_ptr<Component>>& components, Entity* out_newEntity) const {
+            this->messageHandler.dispatch(std::make_shared<AddEntityMessage>(name, components, out_newEntity));
+        }
+        
+        void EntityManager::receive(std::shared_ptr<Message> msg) {
+            if(msg->getId() == AddEntityMessage::getMessageId()) {
+                auto& message = msg->to<AddEntityMessage>();
+                
+                auto entity = this->createEntity(message.getName());
+                for(auto& comp : message.getComponents()) {
+                    this->addComponent(entity.getId(), comp);
+                }
+                
+                Entity* outPtr = message.getNewEntityPtr();
+                if(outPtr != nullptr) {
+                    *outPtr = entity;
+                }
+            }
         }
         
         Entity EntityManager::createEntity(const std::string& name) {

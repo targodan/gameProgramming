@@ -9,6 +9,7 @@
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/Texture.h"
 #include "../../engine/src/renderer/VisualObject.h"
+#include "../../engine/src/renderer/DefaultShader.h"
 #include <iostream>
 #include <glm/glm.hpp>
 #include "IO/ButtonMapping.h"
@@ -25,7 +26,7 @@ namespace demo {
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
         
-        this->cube = this->entityManager.createEntity("Cube");
+        
         
 //        Material material = {std::make_shared<ShaderProgram>("../engine/defaultShader/flat_shader.vsh", 
 //                                                             "../engine/defaultShader/flat_shader.fsh")};
@@ -44,16 +45,51 @@ namespace demo {
 //       
 //        this->cube.addComponent<VisualComponent>(mesh, material).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
         
-        VisualObject bomb = {"resources/models/bomb.obj"};
-        bomb.loadObject();
-        this->cube.addComponent<VisualComponent>(bomb).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
+        // Create floor
+        auto floor = this->entityManager.createEntity("Floor");
+        vector<Vertex> vertices = {Vertex(vec3{-100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,0}), 
+                                   Vertex(vec3{-100.f, 0.f, 100.f}, vec3{0.f, 0.f, 0.f}, vec2{0,0}), 
+                                   Vertex(vec3{100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,1}), 
+                                   Vertex(vec3{100.f, 0.f, 100.f}, vec3{0.f, 0.f, 0.f}, vec2{0,1})};
+        vector<GLuint> indices = {1, 0, 2,  1, 2, 3};
+        Mesh mesh = {vertices, indices};
+        Material material = {std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader()))};
+        Texture texture = {"resources/textures/container.jpg"};
+        material.attachTexture(texture);
         
+        VisualObject obj = {std::make_shared<Mesh>(mesh), std::make_shared<Material>(material)};
+        obj.loadObject();
+        
+        floor.addComponent<VisualComponent>(obj).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
+        //auto& floorVisual = floor.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
+        //floorVisual.loadObject();
+        
+        // Create bomb
+        this->bomb = this->entityManager.createEntity("Bomb");
+        VisualObject bombMesh = {"resources/models/bomb.obj"};
+        bombMesh.loadObject();
+        this->bomb.addComponent<VisualComponent>(bombMesh).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+        
+        // Create second bomb
+        auto bomb2 = this->entityManager.createEntity("Cube");
+        VisualObject bombMesh2 = {"resources/models/bomb.obj"};
+        bombMesh2.loadObject();
+        bomb2.addComponent<VisualComponent>(bombMesh2).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
+        
+        // Create third bomb
+        auto bomb3 = this->entityManager.createEntity("Cube");
+        VisualObject bombMesh3 = {"resources/models/bomb.obj"};
+        bombMesh3.loadObject();
+        bomb3.addComponent<VisualComponent>(bombMesh3).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
+       
+        
+        // Create camera/player
         this->player = this->entityManager.createEntity("Player");
         
         PlacementComponent pcPlayer;
-        pcPlayer.setPosition(vec3{3.f, 0.f, 3.f});
+        pcPlayer.setPosition(vec3{3.f, 0.f, 0.f});
         
-        CameraComponent cc(vec3{-1.f, 0.f, -1.f}, vec3{0.f, 1.f, 0.f});
+        CameraComponent cc(vec3{-1.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
         cc.setProjectionMatrix(45, this->window.getAspectRatio(), 0.1f, 100.f);
         cc.setViewMatrix(pcPlayer.getPosition());
         

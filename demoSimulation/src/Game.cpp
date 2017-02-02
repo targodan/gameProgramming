@@ -5,6 +5,7 @@
 
 #include "engine/renderer/Mesh.h"
 #include "engine/renderer/TextRenderer.h"
+#include "engine/renderer/Skybox.h"
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
 #include "engine/physics/GravitationalForce.h"
@@ -67,10 +68,10 @@ namespace demoSimulation {
         std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
                                                          "src/meshColor.fsh"), true);
         
-        VisualObject outerObject(outerMesh, outerMaterial);
-        outerObject.loadObject();
-        VisualObject innerObject(innerMesh, innerMaterial);
-        innerObject.loadObject();
+        auto outerObject = std::make_shared<VisualObject>(outerMesh, outerMaterial);
+        outerObject->loadObject();
+        auto innerObject = std::make_shared<VisualObject>(innerMesh, innerMaterial);
+        innerObject->loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, -2, 8))
@@ -96,16 +97,16 @@ namespace demoSimulation {
 //                        Vector4f(1, 1, 1, 1)),
 //                {0, 1, 2, 3});
         
-        auto defBody = std::make_shared<engine::physics::DeformableBody>(
-                tMesh,
-                1, // dampening
-                0.01e6, // youngs modulus rubber
-                0.49, // poissons ratio rubber
-//                200e9, // youngs modulus metal
-//                0.27, // poissons ratio metal
-                1. / this->updatesPerSecond
-            );
-        defBody->freezeVertices(tMesh.getEdgeIndices());
+//        auto defBody = std::make_shared<engine::physics::DeformableBody>(
+//                tMesh,
+//                1, // dampening
+//                0.01e6, // youngs modulus rubber
+//                0.49, // poissons ratio rubber
+////                200e9, // youngs modulus metal
+////                0.27, // poissons ratio metal
+//                1. / this->updatesPerSecond
+//            );
+//        defBody->freezeVertices(tMesh.getEdgeIndices());
         
         this->openmpThreads = std::thread::hardware_concurrency() * 4;
         
@@ -119,8 +120,8 @@ namespace demoSimulation {
         
 //        VisualObject tetraObject(tetrahedronMesh, innerMaterial);
 //        tetraObject.loadObject();
-        this->tetrahedron = this->entityManager.createEntity("DefBody")
-                .addComponent<DeformableBodyComponent>(defBody);
+//        this->tetrahedron = this->entityManager.createEntity("DefBody")
+//                .addComponent<DeformableBodyComponent>(defBody);
         
         auto force = std::make_shared<OneShotForce>();
         this->entityManager.createEntity("Force")
@@ -172,6 +173,10 @@ namespace demoSimulation {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
+        
+        Texture skyTexture("textures/skybox.jpg");
+        this->tetrahedron = this->entityManager.createEntity("Inner")
+                .addComponent<VisualComponent>(std::make_shared<Skybox>(skyTexture, EnvironmentTextureType::EQUIRECTANGULAR));
         
         this->systemManager.enableSystem<InputSystem>(bm);
         

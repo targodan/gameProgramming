@@ -5,7 +5,6 @@
 #include "./ECSCommon/PlacementComponent.h"
 #include "./ECSCommon/RenderSystem.h"
 #include "./ECSCommon/VisualComponent.h"
-#include "./ECSCommon/CameraRenderSystem.h"
 #include "./ECSCommon/CameraComponent.h"
 #include "./ECSCommon/InputSystem.h"
 #include "./ECSCommon/DeformableBodyComponent.h"

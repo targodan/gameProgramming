@@ -126,13 +126,13 @@ namespace engine {
                 }
             }
             
-            void drawArrays() const {
+            void drawArrays(GLenum mode = GL_TRIANGLES) const {
 #ifdef DEBUG
                 if(!this->bound) {
                     throw WTFException("Could not draw anything. No buffer bound.");
                 }
 #endif
-                glDrawArrays(GL_TRIANGLES, 0, vbos[0]->numberOfElements());
+                glDrawArrays(mode, 0, vbos[0]->numberOfElements());
             }    
             void drawElements() const {
 #ifdef DEBUG

@@ -8,7 +8,7 @@
 #include "util/vector.h"
 #include "GLException.h"
 #include <memory>
-#include <iostream>
+#include <easylogging++.h>
 
 namespace engine {
     namespace renderer {
@@ -70,8 +70,8 @@ namespace engine {
                     if(length>1) {
                         GLchar* pInfo = new char[length+1];
                         glGetShaderInfoLog(this->id, length, &length, pInfo);
-                        std::cout << "Compile log: " << std::string(pInfo) << std::endl;
-
+                        
+                        LOG(ERROR) << "Compile error in " << ShaderTypeToString(this->type) << ": " << std::string(pInfo) << std::endl;
                     }
                     throw GLException("Shader compile error. :(");
                 }

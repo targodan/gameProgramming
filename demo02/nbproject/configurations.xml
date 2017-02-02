@@ -17,6 +17,7 @@
           <itemPath>../engine/src/ECS/pb/EntityManager.pb.cc</itemPath>
           <itemPath>../engine/src/ECS/pb/EntityManager.pb.h</itemPath>
         </logicalFolder>
+        <itemPath>../engine/src/ECS/AddEntityMessage.h</itemPath>
         <itemPath>../engine/src/ECS/CollisionException.h</itemPath>
         <itemPath>../engine/src/ECS/Component.h</itemPath>
         <itemPath>../engine/src/ECS/ComponentRegisterer.h</itemPath>
@@ -51,15 +52,19 @@
         </logicalFolder>
         <itemPath>../engine/src/ECSCommon/CameraComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/CameraRenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/CustomRenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/CustomUpdateSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/DeformableBodyComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/DeformableBodySystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/ForceComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/InputSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/PerformanceMetricsSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.cpp</itemPath>
         <itemPath>../engine/src/ECSCommon/PlacementSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/RenderSystem.h</itemPath>
+        <itemPath>../engine/src/ECSCommon/TextComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/TimerComponent.h</itemPath>
         <itemPath>../engine/src/ECSCommon/TimerSystem.h</itemPath>
         <itemPath>../engine/src/ECSCommon/VisualComponent.h</itemPath>
@@ -89,6 +94,7 @@
         <itemPath>../engine/src/physics/DeformableBody.h</itemPath>
         <itemPath>../engine/src/physics/Force.h</itemPath>
         <itemPath>../engine/src/physics/ObjectProperties.h</itemPath>
+        <itemPath>../engine/src/physics/TetrahedronizedMesh.h</itemPath>
       </logicalFolder>
       <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
         <logicalFolder name="gl" displayName="gl" projectFiles="true">
@@ -103,15 +109,21 @@
         <itemPath>../engine/src/renderer/BufferException.h</itemPath>
         <itemPath>../engine/src/renderer/BufferType.h</itemPath>
         <itemPath>../engine/src/renderer/Camera.h</itemPath>
+        <itemPath>../engine/src/renderer/Color.h</itemPath>
         <itemPath>../engine/src/renderer/DataType.h</itemPath>
         <itemPath>../engine/src/renderer/DataUsagePattern.h</itemPath>
         <itemPath>../engine/src/renderer/ElementBuffer.h</itemPath>
+        <itemPath>../engine/src/renderer/Font.h</itemPath>
+        <itemPath>../engine/src/renderer/FontFamily.h</itemPath>
+        <itemPath>../engine/src/renderer/FontRegistry.h</itemPath>
         <itemPath>../engine/src/renderer/ImageFormat.h</itemPath>
         <itemPath>../engine/src/renderer/Material.h</itemPath>
         <itemPath>../engine/src/renderer/Mesh.h</itemPath>
+        <itemPath>../engine/src/renderer/RichText.h</itemPath>
         <itemPath>../engine/src/renderer/Shader.h</itemPath>
         <itemPath>../engine/src/renderer/ShaderProgram.h</itemPath>
         <itemPath>../engine/src/renderer/ShaderType.h</itemPath>
+        <itemPath>../engine/src/renderer/TextRenderer.h</itemPath>
         <itemPath>../engine/src/renderer/Texture.h</itemPath>
         <itemPath>../engine/src/renderer/TextureParameter.h</itemPath>
         <itemPath>../engine/src/renderer/TextureType.h</itemPath>
@@ -119,6 +131,7 @@
         <itemPath>../engine/src/renderer/VertexArray.h</itemPath>
         <itemPath>../engine/src/renderer/VertexAttribute.h</itemPath>
         <itemPath>../engine/src/renderer/VertexBuffer.h</itemPath>
+        <itemPath>../engine/src/renderer/VisualObject.h</itemPath>
       </logicalFolder>
       <logicalFolder name="util" displayName="util" projectFiles="true">
         <logicalFolder name="pb" displayName="pb" projectFiles="true">
@@ -136,6 +149,7 @@
         <itemPath>../engine/src/util/readFile.h</itemPath>
         <itemPath>../engine/src/util/stringstream.h</itemPath>
         <itemPath>../engine/src/util/thread_helper.h</itemPath>
+        <itemPath>../engine/src/util/unicode.h</itemPath>
         <itemPath>../engine/src/util/vec2.h</itemPath>
         <itemPath>../engine/src/util/vec3.h</itemPath>
         <itemPath>../engine/src/util/vec4.h</itemPath>
@@ -155,6 +169,7 @@
       <itemPath>../engine/src/WTFException.h</itemPath>
       <itemPath>../engine/src/Window.cpp</itemPath>
       <itemPath>../engine/src/Window.h</itemPath>
+      <itemPath>../engine/src/WindowResizeMessage.h</itemPath>
       <itemPath>../engine/src/util.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -591,6 +606,7 @@
       <folder path="0">
         <ccTool>
           <incDir>
+            <pElem>/usr/include/freetype2</pElem>
             <pElem>../engine/src</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>

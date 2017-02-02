@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "ECS/EntityManager.h"
+#include "ECS/MessageHandler.h"
 #include "ECS/Entity.h"
 
 #include "IO/SerializerFactory.h"
@@ -18,9 +19,12 @@
 #include "util/ostream_helper.h"
 #include "../helper.h"
 
+using engine::ECS::MessageHandler;
 using engine::ECS::EntityManager;
 using engine::ECS::Entity;
 using engine::util::vector;
+
+MessageHandler __mh;
 
 class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST_SUITE(EntityManagerTest);
@@ -35,6 +39,8 @@ class EntityManagerTest : public CPPUNIT_NS::TestFixture, EntityManager {
     CPPUNIT_TEST_SUITE_END();
     
 public:
+    EntityManagerTest() : EntityManager(__mh) {}
+    
     void setUp() override {
     }
     void tearDown() override {

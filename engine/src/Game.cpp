@@ -12,7 +12,7 @@
 #include "renderer/TextRenderer.h"
 
 namespace engine {
-    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), window(this->messageHandler, 1024,768), entityManager(), systemManager(entityManager) {
+    Game::Game(int argc, char** argv, float ups) : updatesPerSecond(ups), messageHandler(), window(this->messageHandler, 1024,768), entityManager(this->messageHandler), systemManager(entityManager) {
         WindowResizeMessage::registerMessageType(this->messageHandler);
         engine::renderer::TextRenderer::registerForResizeMessages(this->messageHandler);
         

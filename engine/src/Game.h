@@ -16,10 +16,11 @@ namespace engine {
         bool aboutToClose = false; // Note: Probably temporary, used for testing
         bool shutdownComplete = false;
         
+        ECS::MessageHandler messageHandler;
+        
         Window window;
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
-        ECS::MessageHandler messageHandler;
 
         virtual void render(float deltaTimeSeconds);
         virtual void update(float deltaTimeSeconds);

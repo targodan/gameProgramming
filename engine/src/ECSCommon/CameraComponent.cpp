@@ -19,20 +19,25 @@ namespace engine {
         componentId_t CameraComponent::typeId = 0;
         
         CameraComponent::CameraComponent() 
-            : position(vec3{0.f, 0.f, 0.f}), direction(vec3{-1.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
+            : position(vec3{0.f, 0.f, 0.f}), direction(vec3{-1.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}),
+                horizontalFieldOfView(90), aspectRatio(1), near(0.1), far(1e3) {
             this->up = this->worldUp;
             this->setYawAndPitchFromDirection();
+            this->updateProjectionMatrix();
         }
-        CameraComponent::CameraComponent(vec3 direction) 
-            : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
+        CameraComponent::CameraComponent(vec3 direction, float horizontalFieldOfView, float aspectRatio, float near, float far) 
+            : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}), horizontalFieldOfView(horizontalFieldOfView),
+                aspectRatio(aspectRatio), near(near), far(far) {
             this->direction = glm::normalize(direction);
             this->setYawAndPitchFromDirection();
             
             auto right = glm::normalize(glm::cross(this->direction, this->worldUp));
             this->up = glm::normalize(glm::cross(right, this->direction));
+            this->updateProjectionMatrix();
         }
-        CameraComponent::CameraComponent(vec3 direction, vec3 up) 
-            : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}) {
+        CameraComponent::CameraComponent(vec3 direction, vec3 up, float horizontalFieldOfView, float aspectRatio, float near, float far) 
+            : position(vec3{0.f, 0.f, 0.f}), worldUp(vec3{0.f, 1.f, 0.f}), horizontalFieldOfView(horizontalFieldOfView),
+                aspectRatio(aspectRatio), near(near), far(far) {
             if(glm::dot(direction, up) != 0) {
                 throw CameraException("Given direction and up vectors are not orthogonal.");
             }
@@ -40,14 +45,15 @@ namespace engine {
             this->direction = glm::normalize(direction);
             this->setYawAndPitchFromDirection();
             this->up = glm::normalize(up);
+            this->updateProjectionMatrix();
         }
         
         CameraComponent::~CameraComponent() {
             
         }
         
-        void CameraComponent::setProjectionMatrix(float horizontalFieldOfView, float aspectRatio, float near, float far) {
-            this->projectionMatrix = glm::perspective(horizontalFieldOfView, aspectRatio, near, far);
+        void CameraComponent::updateProjectionMatrix() {
+            this->projectionMatrix = glm::perspective(this->horizontalFieldOfView, this->aspectRatio, this->near, this->far);
         }
         void CameraComponent::setViewMatrix(const vec3& position, const vec3& direction, const vec3& up) {
             if(glm::dot(direction, up) != 0) {
@@ -132,6 +138,34 @@ namespace engine {
 
         componentId_t CameraComponent::getComponentTypeId() {
             return CameraComponent::typeId;
+        }
+        
+        CameraComponent& CameraComponent::setHorizontalFieldOfView(float fov) {
+            this->horizontalFieldOfView = fov;
+            this->updateProjectionMatrix();
+            
+            return *this;
+        }
+        
+        CameraComponent& CameraComponent::setAspectRatio(float ratio) {
+            this->aspectRatio = ratio;
+            this->updateProjectionMatrix();
+            
+            return *this;
+        }
+        
+        CameraComponent& CameraComponent::setNearPlane(float distance) {
+            this->near = distance;
+            this->updateProjectionMatrix();
+            
+            return *this;
+        }
+        
+        CameraComponent& CameraComponent::setFarPlane(float distance) {
+            this->far = distance;
+            this->updateProjectionMatrix();
+            
+            return *this;
         }
     }
 }

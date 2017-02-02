@@ -118,7 +118,6 @@ namespace engine {
     }
     
     void Window::glfwFramebufferResizeCallback(GLFWwindow* window, int newWidth, int newHeight) {
-        glViewport(0, 0, newWidth, newHeight);
         if(Window::instance != nullptr) {
             Window::instance->messageHandler.queueMessage(std::shared_ptr<ECS::Message>(new WindowResizeMessage(newWidth, newHeight)));
         }

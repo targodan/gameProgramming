@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="97">
+<configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
@@ -8,6 +8,7 @@
             <in>EntityManager.pb.cc</in>
             <in>EntityManager.proto</in>
           </df>
+          <in>AddEntityMessage.cpp</in>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
@@ -34,9 +35,6 @@
           <in>ForceComponent.cpp</in>
           <in>ForceComponent.h</in>
           <in>InputSystem.cpp</in>
-          <in>ParticleSystemComponent.cpp</in>
-          <in>ParticleSystemSystem.cpp</in>
-          <in>ParticleSystemSystem.h</in>
           <in>PerformanceMetricsSystem.cpp</in>
           <in>PerformanceMetricsSystem.h</in>
           <in>PlacementComponent.cpp</in>
@@ -74,11 +72,17 @@
           <in>Explosion.cpp</in>
           <in>Explosion.h</in>
           <in>Force.h</in>
+          <in>GravitationalForce.cpp</in>
+          <in>GravitationalForce.h</in>
           <in>ObjectProperties.cpp</in>
           <in>ObjectProperties.h</in>
-          <in>ParticleSystem.cpp</in>
-          <in>TetrahedronizedMesh.cpp</in>
-          <in>TetrahedronizedMesh.h</in>
+          <in>SimulationObject.cpp</in>
+          <in>SimulationObject.h</in>
+          <in>TetrahedronizedObject.cpp</in>
+          <in>TetrahedronizedObject.h</in>
+          <in>Tetrahedronizer.cpp</in>
+          <in>Tetrahedronizer.h</in>
+          <in>eigenHashes.h</in>
         </df>
         <df name="renderer">
           <df name="gl">
@@ -86,17 +90,21 @@
           </df>
           <in>Camera.cpp</in>
           <in>Color.cpp</in>
+          <in>DefaultShader.cpp</in>
           <in>ElementBuffer.cpp</in>
           <in>Font.cpp</in>
           <in>FontFamily.cpp</in>
           <in>FontRegistry.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
+          <in>ModelLoader.cpp</in>
           <in>RichText.cpp</in>
           <in>ShaderProgram.cpp</in>
           <in>TextRenderer.cpp</in>
+          <in>Texture.cpp</in>
           <in>VertexArray.cpp</in>
           <in>VertexBuffer.cpp</in>
+          <in>VisualObject.cpp</in>
         </df>
         <df name="util">
           <df name="pb">
@@ -154,6 +162,8 @@
         </df>
         <df name="physics">
           <in>DeformableBodyTest.cpp</in>
+          <in>ExplosionTest.cpp</in>
+          <in>ExplosionTest.h</in>
         </df>
         <df name="util">
           <in>MapTest.cpp</in>
@@ -183,16 +193,16 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="1" commonFlags="2"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j2 build_test DEBUG=true</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile -j2 clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j16 build_test DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-std=c++14 -pedantic -fPIC">
             <standard>11</standard>
@@ -311,6 +321,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -322,6 +333,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -333,6 +345,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -344,6 +357,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -361,6 +375,10 @@
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ECS/AddEntityMessage.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
@@ -438,20 +456,6 @@
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/ECSCommon/ParticleSystemComponent.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -471,7 +475,7 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/RenderSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/ECSCommon/TextComponent.cpp" ex="false" tool="1" flavor2="11">
@@ -491,7 +495,7 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/pb/Placement.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
@@ -590,18 +594,29 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/physics/GravitationalForce.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/physics/ParticleSystem.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/physics/SimulationObject.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/physics/TetrahedronizedMesh.cpp"
+      <item path="src/physics/TetrahedronizedObject.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -614,6 +629,19 @@
         </ccTool>
       </item>
       <item path="src/renderer/Color.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/DefaultShader.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
@@ -704,6 +732,19 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/renderer/ModelLoader.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/renderer/RichText.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
@@ -726,6 +767,19 @@
         </ccTool>
       </item>
       <item path="src/renderer/TextRenderer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/renderer/Texture.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
@@ -764,6 +818,19 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/renderer/VisualObject.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/renderer/gl/gl_core_3_3.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -773,7 +840,7 @@
         </ccTool>
       </item>
       <item path="src/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="11">
@@ -820,6 +887,7 @@
             <pElem>.</pElem>
           </incDir>
           <preprocessorList>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
@@ -834,6 +902,8 @@
             ex="false"
             tool="1"
             flavor2="11">
+      </item>
+      <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -955,16 +1025,6 @@
       </item>
       <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/ParticleSystemSystem.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -1056,16 +1116,33 @@
       </item>
       <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/physics/GravitationalForce.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/GravitationalForce.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/physics/TetrahedronizedMesh.cpp"
+      <item path="src/physics/SimulationObject.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/TetrahedronizedObject.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="src/physics/TetrahedronizedMesh.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/TetrahedronizedObject.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/physics/Tetrahedronizer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/physics/eigenHashes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/renderer/Texture.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -1121,6 +1198,8 @@
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
+      </item>
+      <item path="test/physics/ExplosionTest.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

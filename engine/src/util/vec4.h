@@ -2,6 +2,7 @@
 #define VEC4_H
 
 #include <glm/glm.hpp>
+#include <eigen3/Eigen/Eigen>
 #include <google/protobuf/message.h>
 #include <iostream>
 
@@ -14,6 +15,7 @@ namespace engine {
         class vec4 : public glm::vec4 {
         public:
             vec4() : glm::vec4() {}
+            vec4(const Eigen::Vector4f& v) : vec4(v[0], v[1], v[2], v[3]) {}
             vec4(float x, float y, float z, float w) : glm::vec4(x, y, z, w) {}
             
             vec4(const glm::vec4& orig) : glm::vec4(orig) {}

@@ -36,7 +36,11 @@ namespace engine {
             this->numThreads = n;
             this->threads = std::move(Array<std::thread>(n));
         }
-            
+        
+        int SystemManager::getNumberOfThreads() const {
+            return this->numThreads;
+        }
+        
         void SystemManager::setup() {
             LOG(INFO) << "Setting up the System dependency tree.";
             if(this->hasBeenSetup) {

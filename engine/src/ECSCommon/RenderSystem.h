@@ -4,18 +4,24 @@
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
 #include "VisualComponent.h"
+#include "CameraRenderSystem.h"
+#include "../ECS/MessageHandler.h"
+#include "../ECS/MessageReceiver.h"
 
 namespace engine {
     namespace ECSCommon {
         using namespace engine::ECS;
         
-        class RenderSystem : public System {
+        class RenderSystem : public System, MessageReceiver {
         private:
             static systemId_t systemId;
             
+            bool aspectRatioUpdated = false;
+            float aspectRatio = 1;
+            
             void render(VisualComponent& comp);
         public:
-            RenderSystem();
+            RenderSystem(MessageHandler& handler);
             RenderSystem(const RenderSystem& orig);
             virtual ~RenderSystem();
             
@@ -26,6 +32,8 @@ namespace engine {
             virtual bool isRenderSystem() const override {
                 return true;
             }
+            
+            void receive(shared_ptr<Message> msg) override;
             
             virtual Array<systemId_t> getDependencies() const override;
             

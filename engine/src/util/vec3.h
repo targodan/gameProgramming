@@ -2,6 +2,7 @@
 #define VEC3_H
 
 #include <glm/glm.hpp>
+#include <eigen3/Eigen/Eigen>
 #include <google/protobuf/message.h>
 
 #include "pb/vec.pb.h"
@@ -13,6 +14,7 @@ namespace engine {
         class vec3 : public glm::vec3 {
         public:
             vec3() : glm::vec3() {}
+            vec3(const Eigen::Vector3f& v) : vec3(v[0], v[1], v[2]) {}
             vec3(float x, float y, float z) : glm::vec3(x, y, z) {}
             
             vec3(const glm::vec3& orig) : glm::vec3(orig) {}

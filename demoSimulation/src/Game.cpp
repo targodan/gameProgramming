@@ -79,12 +79,12 @@ namespace demoSimulation {
         auto& cc = this->player.getComponent<CameraComponent>();
         
         
-        this->tetrahedron = this->entityManager.createEntity("Inner")
-                .addComponent<VisualComponent>(innerObject)
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-        this->tetrahedron = this->entityManager.createEntity("Outer")
-                .addComponent<VisualComponent>(outerObject)
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+//        this->tetrahedron = this->entityManager.createEntity("Inner")
+//                .addComponent<VisualComponent>(innerObject)
+//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+//        this->tetrahedron = this->entityManager.createEntity("Outer")
+//                .addComponent<VisualComponent>(outerObject)
+//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
 //        TetrahedronizedObject tMesh(
 //                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
@@ -137,17 +137,6 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(3)
                 .addComponent<ForceComponent>(explosion);
         
-        RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
-        testText << u8"Test öä§∑. "
-                << RichText::fontType(FontType::Bold) << RichText::color(Color(1, 1, 0, 1)) << u8"Bold "
-                << RichText::fontType(FontType::Italic) << RichText::color(Color::BLUE) << u8"Italic "
-                << RichText::fontType(FontType::BoldItalic) << RichText::color(Color::GREEN) << u8"BoldItalic ";
-        
-        LOG(INFO) << testText.getPlainText_utf8();
-        
-//        this->entityManager.createEntity("testtext")
-//                .addComponent<TextComponent>(testText, 50, 100);
-        
 //        this->systemManager.enableSystem<CustomUpdateSystem>("boom", [](EntityManager& em, float dT) {
 //            for(auto it = em.begin({TimerComponent::getComponentTypeId(), ForceComponent::getComponentTypeId()}); it != em.end(); ++it) {
 //                if(it->to<TimerComponent>().getTime() > 0) {
@@ -180,7 +169,7 @@ namespace demoSimulation {
         
         this->systemManager.enableSystem<InputSystem>(bm);
         
-        this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
+//        this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<DeformableBodySystem>();

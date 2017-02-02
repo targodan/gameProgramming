@@ -13,7 +13,7 @@ namespace engine {
             
             VertexArray vao;
           
-            void init() override {}
+            void init() override;
         public:
             Skybox(const Texture& texture, EnvironmentTextureType texType);
             

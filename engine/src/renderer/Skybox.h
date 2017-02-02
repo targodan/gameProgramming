@@ -11,9 +11,6 @@ namespace engine {
         protected:
             EnvironmentTextureType textureType;
             
-            VertexArray vao;
-          
-            void init() override;
         public:
             Skybox(const Texture& texture, EnvironmentTextureType texType);
             
@@ -21,9 +18,6 @@ namespace engine {
             Skybox(Skybox&& orig);
             Skybox& operator=(const Skybox& right);
             Skybox& operator=(Skybox&& right);
-            
-            void loadObject() override;
-            void render() override;
         };
     }
 }

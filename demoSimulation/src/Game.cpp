@@ -76,15 +76,14 @@ namespace demoSimulation {
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, -2, 8))
                 .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
-        auto& cc = this->player.getComponent<CameraComponent>();
         
         
-//        this->tetrahedron = this->entityManager.createEntity("Inner")
-//                .addComponent<VisualComponent>(innerObject)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-//        this->tetrahedron = this->entityManager.createEntity("Outer")
-//                .addComponent<VisualComponent>(outerObject)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Inner")
+                .addComponent<VisualComponent>(innerObject)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Outer")
+                .addComponent<VisualComponent>(outerObject)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         
 //        TetrahedronizedObject tMesh(
 //                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),

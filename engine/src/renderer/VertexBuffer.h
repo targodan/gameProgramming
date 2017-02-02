@@ -82,6 +82,15 @@ namespace engine {
             static bool isAnyVBOBound() {
                 return anyVBOBound;
             }
+            
+            void setDivisors(GLuint divisor) {
+                for(auto& attribute : this->attributes) {
+                    setDivisor(attribute.index, divisor);
+                }
+            }
+            void setDivisor(GLuint index, GLuint divisor) {
+                glVertexAttribDivisor(index, divisor);
+            }
         private:
             void enableAttribute(GLuint index) {
                 glEnableVertexAttribArray(index);

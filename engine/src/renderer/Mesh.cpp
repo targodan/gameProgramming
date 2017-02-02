@@ -8,17 +8,17 @@
 namespace engine {
     namespace renderer {
         Mesh::Mesh(vector<Vertex> vertices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vertices(vertices), vao(std::make_unique<VertexArray>()), loaded(false) {
-            this->createVBO();
+            : material(nullptr), vertices(vertices), vao(std::make_unique<VertexArray>()), loaded(false), usage(usage) {
+            this->createVBO(this->vertices, usage);
         }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
-            : material(nullptr), usage(usage), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), loaded(false) {
-            this->createEBO();
-            this->createVBO();
+            : material(nullptr), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), loaded(false), usage(usage) {
+            this->createEBO(this->indices, usage);
+            this->createVBO(this->vertices, usage);
         }
         
         Mesh::Mesh(const Mesh& orig)
-            : material(orig.material), usage(orig.usage), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()) {
+            : material(orig.material), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()), usage(orig.usage) {
             // this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
             // For testing: copy points to same material
             
@@ -30,9 +30,9 @@ namespace engine {
              * TODO: Fix this.
              */
             if(!this->indices.empty()) {
-                this->createEBO();
+                this->createEBO(this->indices, this->usage);
             }
-            this->createVBO();
+            this->createVBO(this->vertices, this->usage);
             
             if(orig.loaded) {
                 this->loadMesh();
@@ -40,22 +40,22 @@ namespace engine {
         }
         
         Mesh::Mesh(Mesh&& orig)
-            : material(std::move(orig.material)), usage(std::move(orig.usage)),
+            : material(std::move(orig.material)),
                 vertices(std::move(orig.vertices)), indices(std::move(orig.indices)),
-                vao(std::move(orig.vao)), loaded(std::move(orig.loaded)) {
+                vao(std::move(orig.vao)), loaded(std::move(orig.loaded)), usage(std::move(orig.usage)) {
         }
         
         Mesh& Mesh::operator=(const Mesh& right) {
-            this->usage = right.usage;
             this->vao = std::make_unique<VertexArray>();
             this->material = right.material;
             this->vertices = right.vertices;
             this->indices = right.indices;
+            this->usage = right.usage;
             
             if(!this->indices.empty()) {
-                this->createEBO();
+                this->createEBO(this->indices, this->usage);
             }
-            this->createVBO();
+            this->createVBO(this->vertices, this->usage);
             
             if(right.loaded) {
                 this->loadMesh();
@@ -64,12 +64,12 @@ namespace engine {
             return *this;
         }
         Mesh& Mesh::operator=(Mesh&& right) {
-            this->usage = std::move(right.usage);
             this->vao = std::make_unique<VertexArray>(*(right.vao));
             this->material = std::move(right.material);
             this->vertices = std::move(right.vertices);
             this->indices = std::move(right.indices);
             this->loaded = std::move(right.loaded);
+            this->usage = std::move(right.usage);
             
             return *this;
         }
@@ -144,6 +144,45 @@ namespace engine {
         void Mesh::setMaterial(const std::shared_ptr<Material>& material) {
             this->material = material;
             
+            this->setVAOAttributes();
+            this->enableVAOAttributes();
+        }
+        std::shared_ptr<const Material> Mesh::getMaterial() const {
+            return this->material;
+        }
+        bool Mesh::wasLoaded() const {
+            return this->loaded;
+        }
+        
+        void Mesh::createVBO(vector<Vertex>& vertices, DataUsagePattern usage) {
+            // Get no. of elements
+            auto nVertices = vertices.size();
+            
+#ifdef DEBUG
+            if(!nVertices) {
+                throw WTFException("Cannot create VBO: no vertices given.");
+            }
+#endif /*DEBUG*/
+            
+            // Create VBO that holds vertex data
+            auto vbo = std::make_unique<VertexBuffer>(reinterpret_cast<void*>(vertices.data()), sizeof(Vertex) * nVertices, nVertices, usage);
+            this->vao->attachVBO(std::move(vbo));
+        }
+        void Mesh::createEBO(vector<GLuint>& indices, DataUsagePattern usage){
+            // Get no. of elements
+            auto nIndices = this->indices.size();
+            
+#ifdef DEBUG
+            if(!nIndices) {
+                throw WTFException("Cannot create EBO: no indices given.");
+            }
+#endif /*DEBUG*/
+            
+            // Create EBO that holds index data
+            auto ebo = std::make_unique<ElementBuffer>(reinterpret_cast<void*>(indices.data()), sizeof(GLuint) * nIndices, nIndices, usage);
+            this->vao->setEBO(std::move(ebo));
+        }
+        void Mesh::setVAOAttributes() {
             // Retrieve attribute locations in shader program
             auto positionIndex = this->material->getShader()->getAttributeLocation("position");
             auto normalIndex = this->material->getShader()->getAttributeLocation("normal");
@@ -177,60 +216,27 @@ namespace engine {
 #ifdef DEBUG
             bool foundEmptyVBO = false;
 #endif /*DEBUG*/
-            for(auto& vbo : this->vao->getVBOs()) {
-                if(vbo->getAttributes().empty()) {
-                    vbo->setAttributes(attribs);
+            // for(auto& vbo : this->vao->getVBOs()) {
+            auto& vbo = this->vao->getVBOs()[0];
+            if(vbo->getAttributes().empty()) {
+                vbo->setAttributes(attribs);
                     
 #ifdef DEBUG
                     foundEmptyVBO = true;
 #endif /*DEBUG*/
                 }
-            }
+            // }
 #ifdef DEBUG
             if(!foundEmptyVBO) {
                 throw WTFException("Could not set material: WTF did you do.");
             }
 #endif /*DEBUG*/
-            
+        }
+        void Mesh::enableVAOAttributes() {
             // Attach 
             this->vao->bind();
             this->vao->setAttributePointers();
             this->vao->unbind();
-        }
-        std::shared_ptr<const Material> Mesh::getMaterial() const {
-            return this->material;
-        }
-        bool Mesh::wasLoaded() const {
-            return this->loaded;
-        }
-        
-        void Mesh::createVBO() {
-            // Get no. of elements
-            auto nVertices = this->vertices.size();
-            
-#ifdef DEBUG
-            if(!nVertices) {
-                throw WTFException("Cannot create VBO: no vertices given.");
-            }
-#endif /*DEBUG*/
-            
-            // Create VBO that holds vertex data
-            auto vbo = std::make_unique<VertexBuffer>(reinterpret_cast<void*>(&this->vertices[0]), sizeof(Vertex) * nVertices, nVertices, this->usage);
-            this->vao->attachVBO(std::move(vbo));
-        }
-        void Mesh::createEBO(){
-            // Get no. of elemnts
-            auto nIndices = this->indices.size();
-            
-#ifdef DEBUG
-            if(!nIndices) {
-                throw WTFException("Cannot create EBO: no indices given.");
-            }
-#endif /*DEBUG*/
-            
-            // Create EBO that holds index data
-            auto ebo = std::make_unique<ElementBuffer>(reinterpret_cast<void*>(&this->indices[0]), sizeof(GLuint) * nIndices, nIndices, this->usage);
-            this->vao->setEBO(std::move(ebo));
         }
         
         void Mesh::applyTransformation(glm::mat4 transformMatrix) {
@@ -240,7 +246,6 @@ namespace engine {
                 this->applyTransformation_Sequential(transformMatrix);
             }
         }
-        
         void Mesh::applyTransformation(glm::mat3 transformMatrix) {
             if(this->vertices.size() > 16) {
                 this->applyTransformation_Parallel(transformMatrix);
@@ -252,7 +257,6 @@ namespace engine {
         Mesh::VertexProxy Mesh::getVertices() {
             return VertexProxy(*this);
         }
-        
         const Mesh::ConstVertexProxy Mesh::getVertices() const {
             return ConstVertexProxy(*this);
         }

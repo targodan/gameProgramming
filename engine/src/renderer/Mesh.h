@@ -79,10 +79,8 @@ namespace engine {
             };
             
             Mesh() : loaded(false) {}
-            Mesh(vector<Vertex> vertices, 
-                    DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
-            Mesh(vector<Vertex> vertices, vector<GLuint> indices, 
-                    DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
+            Mesh(vector<Vertex> vertices, DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
+            Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
             
             Mesh(const Mesh& orig);
             Mesh(Mesh&& orig);
@@ -92,17 +90,16 @@ namespace engine {
             
             virtual ~Mesh();
             
-            void render();
+            virtual void loadMesh();
+            virtual void render();
             
-            void loadMesh();
             void setVerticesChanged(bool changed);
             void setIndicesChanged(bool changed);
             void releaseMesh();
             
             bool wasLoaded() const;
-            std::string getUsage() const;
             
-            void setMaterial(const std::shared_ptr<Material>& material);
+            virtual void setMaterial(const std::shared_ptr<Material>& material);
             std::shared_ptr<const Material> getMaterial() const;
             
             void applyTransformation(glm::mat3 transformMatrix);
@@ -110,13 +107,13 @@ namespace engine {
             
             VertexProxy getVertices();
             const ConstVertexProxy getVertices() const;
-        private:
-            void createVBO();
-            void createEBO();
+        protected:
+            void createVBO(vector<Vertex>& vertices, DataUsagePattern usage);
+            void createEBO(vector<GLuint>& indices, DataUsagePattern usage);
+            void enableVAOAttributes();
+            virtual void setVAOAttributes();
             
             std::shared_ptr<Material> material;
-            
-            DataUsagePattern usage;
             
             vector<Vertex> vertices;
             vector<GLuint> indices;
@@ -126,6 +123,8 @@ namespace engine {
             bool loaded;
             bool verticesChanged = false;
             bool indicesChanged = false;
+            
+            DataUsagePattern usage;
             
             template<class mat_t>
             void applyTransformation_Parallel(mat_t transformMatrix) {

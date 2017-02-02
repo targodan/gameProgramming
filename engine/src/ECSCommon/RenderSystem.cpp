@@ -38,25 +38,15 @@ namespace engine {
                 
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
                     auto& visual = (*itVisual)->to<VisualComponent>();
+                    try{
+                        auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
+                        mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
+                        visual.setShaderUniform("modelMatrix", modelMatrix);
+                    } catch(...) {}
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
                     visual.setShaderUniform("viewMatrix", camera.getViewMatrix());
                     
-                    
-                }
-                
-                /*
-                 * Setting the modelMatrix cannot be done separately as multiple
-                 * Meshes may share the same Material. In this case, the Material's
-                 * shader would only ever know the latest set modelMatrix :(
-                 */
-                for(auto it = em.begin({VisualComponent::getComponentTypeId(), PlacementComponent::getComponentTypeId()}); it != em.end(); ++it) {
-                    auto& placement = it[1]->to<PlacementComponent>();
-                    auto& visual = it[0]->to<VisualComponent>();
-
-                    mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
-                    visual.setShaderUniform("modelMatrix", modelMatrix);
-
                     this->render(visual);
                 }
                 

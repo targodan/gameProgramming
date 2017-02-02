@@ -25,8 +25,9 @@ namespace engine {
             
             virtual ~VisualObject();
             
-            void loadObject();
-            void render();
+            virtual void loadObject();
+            virtual void render();
+            virtual int getRenderPriority() const { return 0; }
             
             const Mesh& getMesh() const;
             Mesh& getMesh();
@@ -35,8 +36,8 @@ namespace engine {
             Material& getMaterial();
             
             bool isInitialized() const;
-        private:
-            void init();
+        protected:
+            virtual void init();
             
             bool initialized;
             std::shared_ptr<Mesh> mesh;

@@ -4,7 +4,6 @@
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
 #include "VisualComponent.h"
-#include "CameraRenderSystem.h"
 #include "../ECS/MessageHandler.h"
 #include "../ECS/MessageReceiver.h"
 

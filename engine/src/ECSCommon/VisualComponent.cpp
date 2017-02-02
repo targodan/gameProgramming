@@ -11,18 +11,18 @@ namespace engine {
         
         VisualComponent::VisualComponent() {}
         VisualComponent::VisualComponent(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) 
-            : object(mesh, material) {}
-        VisualComponent::VisualComponent(const VisualObject& object) : object(object) {}
+            : object(std::make_shared<VisualObject>(mesh, material)) {}
+        VisualComponent::VisualComponent(const std::shared_ptr<VisualObject>& object) : object(object) {}
         VisualComponent::~VisualComponent() {}
         
-        void VisualComponent::setVisualObject(const VisualObject& object) {
+        void VisualComponent::setVisualObject(const std::shared_ptr<VisualObject>& object) {
             this->object = object;
         }
         const VisualObject& VisualComponent::getVisualObject() const {
-            return this->object;
+            return *this->object;
         }
         VisualObject& VisualComponent::getVisualObject() {
-            return this->object;
+            return *this->object;
         }
         
         componentId_t VisualComponent::getComponentId() const {

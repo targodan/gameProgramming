@@ -101,6 +101,7 @@ namespace engine {
                     vbo->unbind();
                 }
             }
+            
             void reloadData() {
                 for(auto& vbo : this->vbos) {
                     vbo->bind();

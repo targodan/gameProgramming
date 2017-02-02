@@ -29,16 +29,16 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -fPIC -O3 -march=native"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <buildCommand>${MAKE} -f Makefile DEBUG=true -j2</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath>demo02</executablePath>
+          <executablePath>demo03</executablePath>
           <ccTool>
             <incDir>
               <pElem>/usr/include/freetype2</pElem>
@@ -47,9 +47,8 @@
               <pElem>.</pElem>
             </incDir>
             <preprocessorList>
-              <Elem>BOOST_UBLAS_NDEBUG</Elem>
+              <Elem>DEBUG</Elem>
               <Elem>ELPP_THREAD_SAFE</Elem>
-              <Elem>NDEBUG</Elem>
             </preprocessorList>
           </ccTool>
         </makeTool>

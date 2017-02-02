@@ -14,14 +14,14 @@
 #include "ParticleSystem.h"
 namespace engine {
     namespace physics {
-        ParticleSystem::ParticleSystem(float mass, float dampening, /*vector<Mesh> parts,*/ VectorXf positions, VectorXf force) :
+        ParticleSystem::ParticleSystem(float mass, float dampening, vector<Mesh> parts, VectorXf positions, VectorXf force) :
             first(true),
             mass(mass),
             dampening(dampening),
-           /* parts(parts),*/
+            parts(parts),
             positions(positions),
             initialForce(force),
-            lastVelocities(VectorXf::Zero(NUM_OF_PARTICLES))
+            lastVelocities(VectorXf::Zero(3*NUM_OF_PARTICLES))
         {
             
         }
@@ -30,7 +30,7 @@ namespace engine {
             first(orig.first),
             mass(orig.mass),
             dampening(orig.dampening),
-            /*parts(orig.parts),*/
+            parts(orig.parts),
             positions(orig.positions),
             initialForce(orig.initialForce) ,
             lastVelocities(orig.lastVelocities)
@@ -50,7 +50,7 @@ namespace engine {
         }
         
         SparseMatrix<float> ParticleSystem::calculateMassMatrix() {
-            SparseMatrix<float> massMat(NUM_OF_PARTICLES, NUM_OF_PARTICLES);
+            SparseMatrix<float> massMat(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
             massMat.setIdentity();
             return this->mass * massMat;
         }
@@ -62,13 +62,13 @@ namespace engine {
         }
         
         SparseMatrix<float> ParticleSystem::calculateDampeningDerivative() {
-            SparseMatrix<float> force(NUM_OF_PARTICLES, NUM_OF_PARTICLES);
+            SparseMatrix<float> force(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
             force.setIdentity();
             return this->dampening * force;
         }
         
         void ParticleSystem::calculateStep(float deltaT) {
-            SparseMatrix<float> step(NUM_OF_PARTICLES, NUM_OF_PARTICLES);
+            SparseMatrix<float> step(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
             step = this->calculateMassMatrix() - deltaT*this->calculateDampeningDerivative();
             stepMatrixSolver.analyzePattern(step);
             stepMatrixSolver.factorize(step);
@@ -77,7 +77,7 @@ namespace engine {
         void ParticleSystem::step(float deltaT, VectorXf force) {
             this->positions = this->positions + deltaT * this->calculateVelocities(deltaT, force);
             int i = 0;
-            /*for(auto it : this->parts) {
+            for(auto it : this->parts) {
                 
                 it.getVertices()[0].position.x = this->positions[i+0];
                 it.getVertices()[0].position.y = this->positions[i+1];
@@ -92,13 +92,13 @@ namespace engine {
                 it.getVertices()[3].position.y = this->positions[i+1]+0.2;
                 it.getVertices()[3].position.z = this->positions[i+2];
                 
-                it->setVerticesChanged(true);
-                i++;
-            }*/
+                it.setVerticesChanged(true);
+                i+=3;
+            }
         }
         
         void ParticleSystem::step(float deltaT) {
-            VectorXf force = VectorXf::Zero(NUM_OF_PARTICLES);
+            VectorXf force = VectorXf::Zero(3*NUM_OF_PARTICLES);
             this->step(deltaT, force);
         }
     }

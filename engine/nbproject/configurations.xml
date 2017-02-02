@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="100">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
@@ -8,8 +8,6 @@
             <in>EntityManager.pb.cc</in>
             <in>EntityManager.proto</in>
           </df>
-          <in>AddEntityMessage.cpp</in>
-          <in>AddEntityMessage.h</in>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
@@ -36,6 +34,9 @@
           <in>ForceComponent.cpp</in>
           <in>ForceComponent.h</in>
           <in>InputSystem.cpp</in>
+          <in>ParticleSystemComponent.cpp</in>
+          <in>ParticleSystemSystem.cpp</in>
+          <in>ParticleSystemSystem.h</in>
           <in>PerformanceMetricsSystem.cpp</in>
           <in>PerformanceMetricsSystem.h</in>
           <in>PlacementComponent.cpp</in>
@@ -75,11 +76,9 @@
           <in>Force.h</in>
           <in>ObjectProperties.cpp</in>
           <in>ObjectProperties.h</in>
+          <in>ParticleSystem.cpp</in>
           <in>TetrahedronizedMesh.cpp</in>
           <in>TetrahedronizedMesh.h</in>
-          <in>Tetrahedronizer.cpp</in>
-          <in>Tetrahedronizer.h</in>
-          <in>eigenHashes.h</in>
         </df>
         <df name="renderer">
           <df name="gl">
@@ -87,20 +86,17 @@
           </df>
           <in>Camera.cpp</in>
           <in>Color.cpp</in>
-          <in>DefaultShader.cpp</in>
           <in>ElementBuffer.cpp</in>
           <in>Font.cpp</in>
           <in>FontFamily.cpp</in>
           <in>FontRegistry.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
-          <in>ModelLoader.cpp</in>
           <in>RichText.cpp</in>
           <in>ShaderProgram.cpp</in>
           <in>TextRenderer.cpp</in>
           <in>VertexArray.cpp</in>
           <in>VertexBuffer.cpp</in>
-          <in>VisualObject.cpp</in>
         </df>
         <df name="util">
           <df name="pb">
@@ -195,8 +191,8 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile -j16 build_test DEBUG=true</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile -j4 clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j2 build_test DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j2 clean</cleanCommand>
           <executablePath>libengine.so</executablePath>
           <ccTool flags="-std=c++14 -pedantic -fPIC">
             <standard>11</standard>
@@ -367,10 +363,6 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/ECS/AddEntityMessage.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -443,6 +435,20 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -588,14 +594,14 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/physics/ParticleSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/physics/TetrahedronizedMesh.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
-        </ccTool>
-      </item>
-      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -608,19 +614,6 @@
         </ccTool>
       </item>
       <item path="src/renderer/Color.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
-      <item path="src/renderer/DefaultShader.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
@@ -711,19 +704,6 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/renderer/ModelLoader.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
       <item path="src/renderer/RichText.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
@@ -772,19 +752,6 @@
         </ccTool>
       </item>
       <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
-          <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
-        </ccTool>
-      </item>
-      <item path="src/renderer/VisualObject.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
@@ -925,10 +892,6 @@
       </item>
       <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ECS/AddEntityMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECS/AddEntityMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -991,6 +954,16 @@
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ParticleSystemSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
@@ -1093,12 +1066,6 @@
             flavor2="0">
       </item>
       <item path="src/physics/TetrahedronizedMesh.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/physics/Tetrahedronizer.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/eigenHashes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

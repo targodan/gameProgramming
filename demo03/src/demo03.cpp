@@ -1,6 +1,7 @@
 #include "demo03.h"
 #include "../../engine/src/physics/constants.h"
 #include "../../engine/src/physics/ParticleSystem.h"
+#include "ParticleForce.h"
 #include <eigen3/Eigen/Eigen>
 #include "../../engine/src/ECSCommon.h"
 #include "ParticleForce.h"
@@ -10,7 +11,8 @@
 #include "../../engine/src/renderer/ShaderProgram.h"
 #include "../../engine/src/renderer/gl/gl_core_3_3.h"
 #include "../../engine/src/util/vec3.h"
-#include "../../engine/src/util/vector.h"
+#include <vector>
+#include <memory>
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/ElementBuffer.h"
 #include "../../engine/src/renderer/Texture.h"
@@ -29,47 +31,40 @@ namespace demo {
     using namespace IO;
     using engine::physics::ParticleSystem;
     using glm::vec3;
-    using engine::util::vector;
     using engine::Game;
     using namespace Eigen;
     
-    Demo02::Demo02(int argc, char** argv, double ups) 
+    Demo03::Demo03(int argc, char** argv, double ups) 
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
-        
-        this->cube = this->entityManager.createEntity("Cube");
-        
-        Material material = {std::make_shared<ShaderProgram>("src/triangle_sh.vsh", 
-                                                             "src/triangle_sh.fsh")};
-        material.attachTexture("src/media/container.jpg");
-        material.loadTextures();
-        
+              
         
         Vertex front( {0.1, 0, 0},        {0, 1, 0});
         Vertex backRight(    {0.1, 0, -0.1},    {0, 0, 1});
         Vertex backLeft(   {-0.1, 0, -0.1},     {1, 0, 0});
         Vertex up(          {0, 0.2, 0},          {1, 1, 0});
-        Mesh tetrahedronMesh({frontBottom, backRight, backLeft, up, backBottom},
-                {0, 1, 3, 1, 2, 3, 2, 0, 3, 0, 2, 1},
-                DataUsagePattern::DYNAMIC_DRAW);
-        tetrahedronMesh.loadMesh();
         
         std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", "src/triangle_sh.fsh"), true);
         
-        vector<Mesh> tetras;
+        std::vector<Mesh> tetras;
         
         for(int i=0; i<NUM_OF_PARTICLES; i++){
+            Mesh tetrahedronMesh({front, backRight, backLeft, up},
+                {0, 1, 3, 1, 2, 3, 2, 0, 3, 0, 2, 1},
+                DataUsagePattern::DYNAMIC_DRAW);
             auto vc = this->entityManager.createEntity("Tetrahedron" + i)
                 .addComponent<VisualComponent>(tetrahedronMesh, *material)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+            vc.getComponent<VisualComponent>().getMesh().loadMesh();
             tetras.push_back(vc.getComponent<VisualComponent>().getMesh());
         }
         
         VectorXf pos = VectorXf::Zero(3*NUM_OF_PARTICLES);
         
         ParticleSystem pats(2, 0.5, tetras, pos, ParticleForce::getForceOnVertices(3*NUM_OF_PARTICLES));
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
         
-        this->entityManager.createEntity("pew").addComponent<ParticleSystemComponent>()
+        this->entityManager.createEntity("pew").addComponent<ParticleSystemComponent>(patsptr);
         
         this->player = this->entityManager.createEntity("Player");
         
@@ -84,11 +79,11 @@ namespace demo {
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
     }
 
-    Demo02::~Demo02() {
+    Demo03::~Demo03() {
         
     }
     
-    void Demo02::initialize() {
+    void Demo03::initialize() {
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 1e-2));
         ButtonMapping bm(this->window.getWindow());
         bm.insertMapping(-2, -1, action1);
@@ -114,7 +109,7 @@ namespace demo {
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
-    void Demo02::shutdown() {
+    void Demo03::shutdown() {
         Game::shutdown();
     }
 }

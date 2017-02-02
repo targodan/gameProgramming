@@ -15,7 +15,7 @@
 #define PARTICLESYSTEM_H
 
 #include "constants.h"
-#include "../util/vector.h"
+#include <vector>
 #include <memory>
 #include "../renderer/Mesh.h"
 #include <eigen3/Eigen/Eigen>
@@ -23,13 +23,13 @@
 namespace engine {
     namespace physics {
         using namespace Eigen;
-        using engine::util::vector;
+        using std::vector;
         using engine::renderer::Mesh;
         using std::shared_ptr;
         class ParticleSystem {
             using SparseSolver = SparseLU<SparseMatrix<float, ColMajor>, COLAMDOrdering<SparseMatrix<float, ColMajor>::StorageIndex>>;
         public:
-            ParticleSystem(float mass, float dampening, /*vector<Mesh> parts, */VectorXf positions, VectorXf Force);
+            ParticleSystem(float mass, float dampening, vector<Mesh> parts, VectorXf positions, VectorXf Force);
             ParticleSystem(const ParticleSystem& orig);
             virtual ~ParticleSystem();
             
@@ -39,7 +39,7 @@ namespace engine {
                     bool first;
                     float mass; // in kg
                     float dampening;
-                    /*vector<Mesh> parts; //just for debug*/
+                    vector<Mesh> parts; //just for debug*/
                     
                     VectorXf positions;
                     VectorXf initialForce;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="100">
+<configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
@@ -27,6 +27,7 @@
             <in>DeformableBodySystem.cpp</in>
             <in>ForceComponent.cpp</in>
             <in>InputSystem.cpp</in>
+            <in>ParticleSystemComponent.cpp</in>
             <in>PerformanceMetricsSystem.cpp</in>
             <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
@@ -53,8 +54,8 @@
             <in>DeformableBody.cpp</in>
             <in>Explosion.cpp</in>
             <in>ObjectProperties.cpp</in>
+            <in>ParticleSystem.cpp</in>
             <in>TetrahedronizedMesh.cpp</in>
-            <in>Tetrahedronizer.cpp</in>
           </df>
           <df name="renderer">
             <df name="gl">
@@ -119,10 +120,14 @@
         <element flagsID="0"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC"/>
         <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fPIC -fstack-protector-strong"/>
+        <element flagsID="2"
+                 commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fopenmp -fstack-protector-strong"/>
+        <element flagsID="3"
                  commonFlags="-mtune=generic -march=x86-64 -std=c++14 -fstack-protector-strong -fopenmp -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp"/>
-        <element flagsID="3" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
-        <element flagsID="4"
+        <element flagsID="4" commonFlags="-std=c++14 -pedantic -fopenmp"/>
+        <element flagsID="5" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="6"
                  commonFlags="-std=c++14 -pedantic -fopenmp -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
@@ -130,8 +135,8 @@
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f Makefile DEBUG=true</buildCommand>
-          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <buildCommand>${MAKE} -f Makefile -j2 DEBUG=true</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile -j2 clean</cleanCommand>
           <executablePath>../engine/libengine.so</executablePath>
         </makeTool>
         <preBuild>
@@ -199,21 +204,24 @@
       <folder path="0/test">
         <ccTool>
           <incDir>
-            <pElem>/usr/include/freetype2</pElem>
-            <pElem>src</pElem>
-            <pElem>src/engine</pElem>
+            <pElem>/usr/include/c++/5/bits</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/5/bits</pElem>
+            <pElem>/usr/include/c++/5/ext</pElem>
+            <pElem>/usr/include/c++/5</pElem>
+            <pElem>/usr/include/cppunit/portability</pElem>
             <pElem>test</pElem>
+            <pElem>/usr/include/c++/5/debug</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/5/include</pElem>
+            <pElem>/usr/include/cppunit</pElem>
+            <pElem>src/engine/renderer/gl</pElem>
+            <pElem>src</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/5</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="2">
+        <ccTool flags="4">
           <incDir>
             <pElem>/usr/include/freetype2</pElem>
             <pElem>src</pElem>
@@ -231,7 +239,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -243,7 +251,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -255,7 +263,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -267,7 +275,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -279,7 +287,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -291,7 +299,7 @@
         </ccTool>
       </item>
       <item path="src/engine/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -306,7 +314,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/CameraComponent.cpp"
@@ -335,7 +343,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -390,7 +398,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -406,7 +414,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -421,7 +429,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -452,11 +460,41 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/engine/ECSCommon/ParticleSystemComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>../engine/src/ECS</pElem>
+            <pElem>../engine/src/ECSCommon</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>../engine/src/physics</pElem>
+            <pElem>../engine/src/util</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/engine/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/ECS</pElem>
@@ -465,8 +503,8 @@
             <pElem>/usr/include/sparsehash</pElem>
             <pElem>../engine/src/ECSCommon</pElem>
             <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
             <pElem>../engine/src/util/pb</pElem>
             <pElem>../engine/src/ECS/pb</pElem>
             <pElem>../engine/src/IO</pElem>
@@ -482,7 +520,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -497,7 +535,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -512,7 +550,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -565,7 +603,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="3">
+        <ccTool flags="5">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -582,7 +620,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -597,7 +635,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/Exception.cpp" ex="false" tool="1" flavor2="11">
@@ -609,7 +647,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Game.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -621,7 +659,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/ButtonMapping.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -633,7 +671,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/Console.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -645,7 +683,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -657,7 +695,7 @@
         </ccTool>
       </item>
       <item path="src/engine/IO/InputManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -672,7 +710,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
           <incDir>
             <pElem>../engine/src/IO</pElem>
             <pElem>/usr/include/google/protobuf/stubs</pElem>
@@ -682,7 +720,7 @@
         </ccTool>
       </item>
       <item path="src/engine/Window.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -709,26 +747,26 @@
         </ccTool>
       </item>
       <item path="src/engine/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
         </ccTool>
       </item>
       <item path="src/engine/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
         </ccTool>
       </item>
       <item path="src/engine/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
         </ccTool>
       </item>
       <item path="src/engine/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
         </ccTool>
       </item>
       <item path="src/engine/physics/DeformableBody.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -740,7 +778,7 @@
         </ccTool>
       </item>
       <item path="src/engine/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -755,7 +793,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -766,78 +804,81 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/engine/physics/TetrahedronizedMesh.cpp"
+      <item path="src/engine/physics/ParticleSystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
-            <pElem>../engine/src/util</pElem>
-            <pElem>../engine/src/renderer</pElem>
-            <pElem>../engine/src</pElem>
-            <pElem>../engine/src/physics</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/functors</pElem>
-            <pElem>/usr/include/eigen3/Eigen</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/OrderingMethods</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseLU</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>../engine/src/physics</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/functors</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
-            <pElem>../engine/src/renderer/gl</pElem>
-            <pElem>../engine/src/util/pb</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
-            <pElem>/usr/include/glm</pElem>
-            <pElem>/usr/include/SOIL</pElem>
             <pElem>../engine</pElem>
           </incDir>
         </ccTool>
       </item>
-      <item path="src/engine/physics/Tetrahedronizer.cpp"
+      <item path="src/engine/physics/TetrahedronizedMesh.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
           <incDir>
             <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
             <pElem>../engine/src/util</pElem>
-            <pElem>/usr/include/glm/detail</pElem>
             <pElem>../engine/src/renderer</pElem>
             <pElem>../engine/src</pElem>
             <pElem>../engine/src/physics</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
-            <pElem>/usr/include/sparsehash</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
-            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Core/functors</pElem>
             <pElem>/usr/include/eigen3/Eigen</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/CUDA</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
-            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
             <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
             <pElem>../engine/src/renderer/gl</pElem>
             <pElem>../engine/src/util/pb</pElem>
-            <pElem>/usr/include/google/protobuf/stubs</pElem>
-            <pElem>/usr/include/google/protobuf</pElem>
+            <pElem>/usr/include/boost/config</pElem>
+            <pElem>/usr/include/boost/mpl/aux_</pElem>
+            <pElem>/usr/include/boost/mpl</pElem>
+            <pElem>/usr/include/boost/mpl/aux_/preprocessed/gcc</pElem>
+            <pElem>/usr/include/boost/type_traits/detail</pElem>
+            <pElem>/usr/include/boost/type_traits</pElem>
+            <pElem>/usr/include/boost/range</pElem>
+            <pElem>/usr/include/boost/range/detail</pElem>
+            <pElem>/usr/include/boost/detail</pElem>
+            <pElem>/usr/include/boost/iterator</pElem>
+            <pElem>/usr/include/boost/concept/detail</pElem>
+            <pElem>/usr/include/boost</pElem>
+            <pElem>/usr/include/boost/core</pElem>
+            <pElem>/usr/include/boost/algorithm/string</pElem>
+            <pElem>/usr/include/boost/algorithm/string/detail</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
             <pElem>/usr/include/glm</pElem>
             <pElem>/usr/include/SOIL</pElem>
             <pElem>../engine</pElem>
@@ -845,7 +886,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Camera.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -874,7 +915,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -938,7 +979,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -950,7 +991,7 @@
         </ccTool>
       </item>
       <item path="src/engine/renderer/Mesh.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1006,7 +1047,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1021,7 +1062,7 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1036,14 +1077,14 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/util/ostream_helper.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1055,11 +1096,11 @@
         </ccTool>
       </item>
       <item path="src/engine/util/pb/vec.pb.cc" ex="false" tool="1" flavor2="11">
-        <ccTool flags="1">
+        <ccTool flags="3">
         </ccTool>
       </item>
       <item path="src/engine/util/readFile.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1079,7 +1120,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1091,7 +1132,7 @@
         </ccTool>
       </item>
       <item path="src/engine/util/vec4.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="4">
+        <ccTool flags="6">
           <incDir>
             <pElem>../engine/src</pElem>
             <pElem>../engine</pElem>
@@ -1105,16 +1146,64 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">
           <incDir>
-            <pElem>/usr/include/freetype2</pElem>
+            <pElem>/usr/include/c++/5/bits</pElem>
+            <pElem>/usr/include/c++/5</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/5/bits</pElem>
+            <pElem>/usr/include/c++/5/ext</pElem>
+            <pElem>src/engine/ECS</pElem>
             <pElem>src</pElem>
+            <pElem>/usr/include/c++/5/debug</pElem>
+            <pElem>/usr/include/c++/5/tr1</pElem>
+            <pElem>src/engine/renderer</pElem>
+            <pElem>/usr/lib/gcc/x86_64-linux-gnu/5/include</pElem>
+            <pElem>/usr/include/sparsehash/internal</pElem>
+            <pElem>/usr/include/sparsehash</pElem>
+            <pElem>/usr/local/include/google/protobuf/stubs</pElem>
+            <pElem>/usr/local/include/google/protobuf</pElem>
             <pElem>src/engine</pElem>
+            <pElem>src/engine/util</pElem>
+            <pElem>src/engine/util/pb</pElem>
+            <pElem>src/engine/ECS/pb</pElem>
+            <pElem>src/engine/IO</pElem>
+            <pElem>src/engine/renderer/gl</pElem>
+            <pElem>src/engine/physics</pElem>
+            <pElem>src/engine/ECSCommon</pElem>
+            <pElem>src/engine/ECSCommon/pb</pElem>
+            <pElem>/usr/include/glm/detail</pElem>
+            <pElem>/usr/include/glm</pElem>
+            <pElem>/usr/include/eigen3/Eigen</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/arch/SSE</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SVD</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Geometry</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Core/products</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/LU</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Cholesky</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/QR</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Householder</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/SparseCore</pElem>
+            <pElem>/usr/include/eigen3/Eigen/src/Eigenvalues</pElem>
+            <pElem>/usr/include/boost/config</pElem>
+            <pElem>/usr/include/boost/mpl/aux_</pElem>
+            <pElem>/usr/include/boost/mpl</pElem>
+            <pElem>/usr/include/boost/mpl/aux_/preprocessed/gcc</pElem>
+            <pElem>/usr/include/boost/type_traits/detail</pElem>
+            <pElem>/usr/include/boost/type_traits</pElem>
+            <pElem>/usr/include/boost/range</pElem>
+            <pElem>/usr/include/boost/range/detail</pElem>
+            <pElem>/usr/include/boost/detail</pElem>
+            <pElem>/usr/include/boost/iterator</pElem>
+            <pElem>/usr/include/boost/concept/detail</pElem>
+            <pElem>/usr/include/boost</pElem>
+            <pElem>/usr/include/boost/core</pElem>
+            <pElem>/usr/include/boost/algorithm/string</pElem>
+            <pElem>/usr/include/boost/algorithm/string/detail</pElem>
+            <pElem>/usr/include/SOIL</pElem>
+            <pElem>/usr/include/x86_64-linux-gnu/c++/5</pElem>
             <pElem>.</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>DEBUG</Elem>
-            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
-            <Elem>ELPP_THREAD_SAFE</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">

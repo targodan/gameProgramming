@@ -55,7 +55,7 @@ SOURCES = $(shell find $(SRCDIR) -type f -name '*.cpp')
 OBJECTS = $(addprefix $(BUILDDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 
 # the build target executable:
-TARGET = demo02
+TARGET = demo03
 
 # All is same as build test
 all: lnengine test

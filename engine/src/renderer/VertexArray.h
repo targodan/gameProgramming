@@ -6,6 +6,7 @@
 #include "ElementBuffer.h"
 #include "Bindable.h"
 #include "BufferException.h"
+#include "RenderPrimitives.h"
 #include "gl/gl_core_3_3.h"
 #include <memory>
 #include "../util/vector.h"
@@ -25,21 +26,21 @@ namespace engine {
          */
         class VertexArray : public Bindable {
         public:
-            VertexArray() 
-                : vbos(), ebo(), bound(false) {
+            VertexArray(RenderPrimitives renderPrimitive = RenderPrimitives::TRIANGLES) 
+                : vbos(), ebo(), bound(false), renderPrimitive(renderPrimitive) {
                 this->generateVertexArray();
             }
-            VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos) 
-                : vbos(std::move(vbos)), ebo(), bound(false) {
+            VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos, RenderPrimitives renderPrimitive = RenderPrimitives::TRIANGLES) 
+                : vbos(std::move(vbos)), ebo(), bound(false), renderPrimitive(renderPrimitive) {
                 this->generateVertexArray();
             }
-            VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos, std::unique_ptr<ElementBuffer>&& ebo) 
-                : vbos(std::move(vbos)), ebo(std::move(ebo)), bound(false) {
+            VertexArray(vector<std::unique_ptr<VertexBuffer>>&& vbos, std::unique_ptr<ElementBuffer>&& ebo, RenderPrimitives renderPrimitive = RenderPrimitives::TRIANGLES) 
+                : vbos(std::move(vbos)), ebo(std::move(ebo)), bound(false), renderPrimitive(renderPrimitive) {
                 this->generateVertexArray();
             }
                 
             VertexArray(const VertexArray& orig) 
-                : Bindable(orig), vbos(), id(orig.id), bound(orig.bound) {
+                : Bindable(orig), vbos(), id(orig.id), bound(orig.bound), renderPrimitive(orig.renderPrimitive) {
                 for(auto& vbo : orig.vbos) {
                     this->vbos.push_back(std::make_unique<VertexBuffer>(*vbo));
                 }
@@ -47,7 +48,7 @@ namespace engine {
                 this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
             VertexArray(VertexArray&& orig) 
-                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(orig.ebo)), id(std::move(orig.id)), bound(std::move(orig.bound)) {
+                : Bindable(std::move(orig)), vbos(std::move(orig.vbos)), ebo(std::move(orig.ebo)), id(std::move(orig.id)), bound(std::move(orig.bound)), renderPrimitive(std::move(orig.renderPrimitive)) {
                 // this->ebo = orig.ebo == nullptr ? nullptr : std::make_unique<ElementBuffer>(*(orig.ebo));
             }
 
@@ -60,6 +61,7 @@ namespace engine {
                
                 this->id = right.id;
                 this->bound = right.bound;
+                this->renderPrimitive = right.renderPrimitive;
                 
                 return *this;
             }
@@ -68,6 +70,7 @@ namespace engine {
                 this->ebo = std::move(right.ebo);
                 this->id = std::move(right.id);
                 this->bound = std::move(right.bound);
+                this->renderPrimitive = std::move(right.renderPrimitive);
                 
                 return *this;
             }
@@ -98,7 +101,6 @@ namespace engine {
                     vbo->unbind();
                 }
             }
-            
             void reloadData() {
                 for(auto& vbo : this->vbos) {
                     vbo->bind();
@@ -132,7 +134,7 @@ namespace engine {
                     throw WTFException("Could not draw anything. No buffer bound.");
                 }
 #endif
-                glDrawArrays(GL_TRIANGLES, 0, vbos[0]->numberOfElements());
+                glDrawArrays(this->renderPrimitive, 0, vbos[0]->numberOfElements());
             }    
             void drawElements() const {
 #ifdef DEBUG
@@ -140,7 +142,16 @@ namespace engine {
                     throw WTFException("Could not draw anything. No buffer bound.");
                 }
 #endif                
-                glDrawElements(GL_TRIANGLES, ebo->numberOfElements(), DataType::UINT, (const void*) 0);
+                glDrawElements(this->renderPrimitive, ebo->numberOfElements(), DataType::UINT, (const void*) 0);
+            }
+            void drawArraysInstanced(unsigned int numberOfPrimitiveVertices, unsigned int numberOfInstances) const {
+#ifdef DEBUG
+                if(!this->bound) {
+                    throw WTFException("Could not draw anything. No buffer bound.");
+                }
+#endif
+                
+                glDrawArraysInstanced(this->renderPrimitive, 0, numberOfPrimitiveVertices, numberOfInstances);
             }
             
             virtual void bind() override {
@@ -202,6 +213,8 @@ namespace engine {
             
             bool bound;
             static bool anyVAOBound;
+            
+            RenderPrimitives renderPrimitive;
         };
     }
 }

@@ -473,8 +473,8 @@ namespace engine {
             
             vector<std::shared_ptr<Mesh>> renderMeshes;
             renderMeshes.reserve(2);
-            renderMeshes.push_back(std::make_shared<Mesh>(outerVertices, outerFaceIndices, DataUsagePattern::DYNAMIC_DRAW));
-            renderMeshes.push_back(std::make_shared<Mesh>(innerVertices, innerFaceIndices, DataUsagePattern::DYNAMIC_DRAW));
+            renderMeshes.push_back(std::make_shared<Mesh>(outerVertices, outerFaceIndices, DataUsagePattern::STREAM_DRAW));
+            renderMeshes.push_back(std::make_shared<Mesh>(innerVertices, innerFaceIndices, DataUsagePattern::STREAM_DRAW));
              
             return TetrahedronizedObject(simulationMesh, surfaceVectorIndices, density, renderMeshes, simulationToRenderVertices, tetrahedronIndices, edgeIndices);
         }

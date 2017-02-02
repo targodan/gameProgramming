@@ -2,6 +2,7 @@
 #include "../../engine/src/ECSCommon.h"
 #include "Actions.h"
 #include "../../engine/src/renderer/Mesh.h"
+#include "../../engine/src/renderer/InstanceMesh.h"
 #include "../../engine/src/renderer/Material.h"
 #include "../../engine/src/renderer/ShaderProgram.h"
 #include "../../engine/src/util/vec3.h"
@@ -83,6 +84,7 @@ namespace demo {
         bomb3.addComponent<VisualComponent>(bombMesh3).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
        
         
+        
         // Create camera/player
         this->player = this->entityManager.createEntity("Player");
         
@@ -94,6 +96,27 @@ namespace demo {
         cc.setViewMatrix(pcPlayer.getPosition());
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
+        
+        // Create instances
+        auto instances = this->entityManager.createEntity("Triangles");
+        vector<Vertex> instanceVertices = {Vertex{vec3{-0.1f, 0.f, -0.1f}}, Vertex{vec3{0.1f, 0.f, -0.1f}}, Vertex{vec3{0.f, 1.f, 0.f}}};
+        vector<float> positions;
+        
+        float x = 0.f;
+        float y = 0.f;
+        float z = 0.f;
+        for(int i = 0; i < 100; i++) {
+            x += 2.f;
+            y += 2.f;
+            // z += 0.1f;
+            positions.push_back(x);
+            positions.push_back(y);
+            positions.push_back(z);
+        }
+        
+        VisualObject vo = {std::make_shared<InstanceMesh>(instanceVertices, positions), std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
+        vo.loadObject();
+        instances.addComponent<VisualComponent>(vo).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
     }
 
     Demo02::~Demo02() {

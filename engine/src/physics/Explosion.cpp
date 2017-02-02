@@ -37,7 +37,7 @@ namespace engine {
                                 - std::log(d / std::cbrtf(this->tntEquivalence))
                             )
                         )
-                    ) * 1e-5; // bar -> Pa
+                    ) * 1e5; // bar -> Pa
         }
         
         float Explosion::calculateExpansionRadius(float secondsFromExplosion) const {
@@ -115,13 +115,14 @@ namespace engine {
             
             
             MatrixXf reducedAffectedForceVectors = affectedForceVectors.block(0, 0, 3, numAffectedVectors);
-            VectorXf reducedAffectedDistances = affectedDistances.block(0, 0, numAffectedVectors, 1).cwiseSqrt();
+            reducedAffectedForceVectors.colwise().normalize();
+            VectorXf reducedAffectedDistances = affectedDistances.segment(0, numAffectedVectors).cwiseSqrt();
             
             for(int i = 0; i < numAffectedVectors; ++i) {
                 // normalize and multiply by force
                 reducedAffectedForceVectors.col(i) *= (
                             this->calculatePressureAtDistance(reducedAffectedDistances(i)) * affectedSurfaceAreas(i)
-                        ) / reducedAffectedDistances(i);
+                        );
             }
             
             return reducedAffectedForceVectors;
@@ -141,10 +142,7 @@ namespace engine {
             if(affectedForceVectors.rows() == 0) {
                 return VectorXf(0);
             }
-            
-            auto forces = object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));
-            LOG(INFO) << "F" << std::endl << forces;
-            return forces;
+            return object.mapSurfaceForcesToAllVertices(this->mapAffectedForcesToSurface(sqDistances, affectedForceVectors, object));
         }
     }
 }

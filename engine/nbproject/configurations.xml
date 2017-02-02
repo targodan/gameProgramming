@@ -6,60 +6,42 @@
         <df name="ECS">
           <df name="pb">
             <in>EntityManager.pb.cc</in>
-            <in>EntityManager.proto</in>
           </df>
           <in>AddEntityMessage.cpp</in>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
-          <in>GraphicalComponent.h</in>
           <in>MessageHandler.cpp</in>
-          <in>SerializableComponent.h</in>
           <in>SystemManager.cpp</in>
           <in>SystemRegistry.cpp</in>
-          <in>UnknownComponentException.h</in>
         </df>
         <df name="ECSCommon">
           <df name="pb">
             <in>Placement.pb.cc</in>
-            <in>Placement.proto</in>
           </df>
           <in>CameraComponent.cpp</in>
           <in>CameraRenderSystem.cpp</in>
           <in>CustomRenderSystem.cpp</in>
           <in>CustomUpdateSystem.cpp</in>
           <in>DeformableBodyComponent.cpp</in>
-          <in>DeformableBodyComponent.h</in>
           <in>DeformableBodySystem.cpp</in>
-          <in>DeformableBodySystem.h</in>
           <in>ForceComponent.cpp</in>
-          <in>ForceComponent.h</in>
           <in>InputSystem.cpp</in>
           <in>PerformanceMetricsSystem.cpp</in>
-          <in>PerformanceMetricsSystem.h</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
           <in>RenderSystem.cpp</in>
           <in>TextComponent.cpp</in>
           <in>TimerComponent.cpp</in>
-          <in>TimerComponent.h</in>
           <in>TimerSystem.cpp</in>
-          <in>TimerSystem.h</in>
           <in>VisualComponent.cpp</in>
         </df>
         <df name="IO">
           <in>ButtonMapping.cpp</in>
-          <in>Command.h</in>
           <in>Console.cpp</in>
-          <in>Console.h</in>
           <in>EntityCommand.cpp</in>
-          <in>EntityCommand.h</in>
           <in>InputManager.cpp</in>
-          <in>Keys.h</in>
-          <in>Serializable.h</in>
-          <in>Serializer.h</in>
           <in>SerializerFactory.cpp</in>
-          <in>SerializerFactory.h</in>
         </df>
         <df name="math">
           <in>Matrix.cpp</in>
@@ -70,19 +52,11 @@
         <df name="physics">
           <in>DeformableBody.cpp</in>
           <in>Explosion.cpp</in>
-          <in>Explosion.h</in>
-          <in>Force.h</in>
           <in>GravitationalForce.cpp</in>
-          <in>GravitationalForce.h</in>
           <in>ObjectProperties.cpp</in>
-          <in>ObjectProperties.h</in>
           <in>SimulationObject.cpp</in>
-          <in>SimulationObject.h</in>
           <in>TetrahedronizedObject.cpp</in>
-          <in>TetrahedronizedObject.h</in>
           <in>Tetrahedronizer.cpp</in>
-          <in>Tetrahedronizer.h</in>
-          <in>eigenHashes.h</in>
         </df>
         <df name="renderer">
           <df name="gl">
@@ -112,33 +86,20 @@
           </df>
           <in>ostream_helper.cpp</in>
           <in>readFile.cpp</in>
-          <in>stringstream.h</in>
           <in>unicode.cpp</in>
-          <in>vec2.h</in>
           <in>vec3.cpp</in>
-          <in>vec3.h</in>
           <in>vec4.cpp</in>
-          <in>vec4.h</in>
         </df>
         <in>Camera.cpp</in>
-        <in>CastException.h</in>
-        <in>ECS.h</in>
-        <in>ECSCommon.h</in>
         <in>Exception.cpp</in>
-        <in>GLException.h</in>
         <in>Game.cpp</in>
-        <in>IO.h</in>
-        <in>InvalidConversionException.h</in>
         <in>Window.cpp</in>
         <in>WindowResizeMessage.cpp</in>
-        <in>engine.h</in>
-        <in>util.h</in>
       </df>
       <df name="test">
         <df name="ECS">
           <df name="pb">
             <in>mockcomponents.pb.cc</in>
-            <in>mockcomponents.proto</in>
           </df>
           <in>EntityManagerTest.cpp</in>
           <in>MessageHandlerTest.cpp</in>
@@ -148,12 +109,8 @@
         </df>
         <df name="IO">
           <in>ConsoleTest.cpp</in>
-          <in>ConsoleTest.h</in>
-          <in>MockCommands.h</in>
           <in>SerializerTest.cpp</in>
-          <in>SerializerTest.h</in>
           <in>serializer_test.pb.cc</in>
-          <in>serializer_test.proto</in>
         </df>
         <df name="math">
           <in>MatrixTest.cpp</in>
@@ -163,7 +120,6 @@
         <df name="physics">
           <in>DeformableBodyTest.cpp</in>
           <in>ExplosionTest.cpp</in>
-          <in>ExplosionTest.h</in>
         </df>
         <df name="util">
           <in>MapTest.cpp</in>
@@ -917,7 +873,10 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
+        <element flagsID="0" commonFlags="-std=c++14"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fPIC -O3 -march=native"/>
+        <element flagsID="2"
+                 commonFlags="-std=c++14 -pedantic -fopenmp -fPIC -O3 -march=native"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -938,13 +897,45 @@
       </makefileType>
       <folder path="0/src">
         <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/ECS">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/IO">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/math">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/renderer">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/util">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </folder>
       <folder path="0/test">
@@ -958,248 +949,268 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <item path="src/CastException.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECS.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/Entity.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/EntityManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/ECS/GraphicalComponent.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECS/MessageHandler.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/ECS/SerializableComponent.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/ECS/SystemManager.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/SystemRegistry.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
-      </item>
-      <item path="src/ECS/UnknownComponentException.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/ECS/pb/EntityManager.proto" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECSCommon.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/DeformableBodyComponent.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/DeformableBodyComponent.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/ECSCommon/DeformableBodySystem.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
-      <item path="src/ECSCommon/DeformableBodySystem.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECSCommon/ForceComponent.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
-      </item>
-      <item path="src/ECSCommon/PerformanceMetricsSystem.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementComponent.cpp"
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/ECSCommon/TimerComponent.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ECSCommon/TimerComponent.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/ECSCommon/TimerSystem.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
-      </item>
-      <item path="src/ECSCommon/TimerSystem.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/ECSCommon/pb/Placement.proto" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Exception.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </ccTool>
-      </item>
-      <item path="src/GLException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="src/IO.h" ex="false" tool="3" flavor2="0">
+      <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="src/IO/Command.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/Console.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/IO/Console.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/EntityCommand.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/IO/EntityCommand.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/Keys.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/Serializable.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/Serializer.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/IO/SerializerFactory.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/InvalidConversionException.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/engine.h" ex="false" tool="3" flavor2="0">
+      <item path="src/IO/SerializerFactory.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="src/math/Matrix.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/MatrixSq.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/Vector3.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/math/functions.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
+        <ccTool flags="1">
         </ccTool>
       </item>
-      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/physics/Explosion.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
-      <item path="src/physics/Explosion.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/GravitationalForce.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/physics/Force.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/GravitationalForce.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/physics/GravitationalForce.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/physics/ObjectProperties.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/SimulationObject.h" ex="false" tool="3" flavor2="0">
+      <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/physics/TetrahedronizedObject.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/physics/TetrahedronizedObject.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="2">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>src</pElem>
+            <pElem>.</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
-      <item path="src/physics/Tetrahedronizer.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/physics/Tetrahedronizer.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/physics/eigenHashes.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/renderer/Texture.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/util.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/renderer/Texture.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/renderer/VertexArray.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="src/util/stringstream.h" ex="false" tool="3" flavor2="0">
+      <item path="src/renderer/VertexBuffer.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="src/util/vec2.h" ex="false" tool="3" flavor2="0">
+      <item path="src/util/ostream_helper.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
       </item>
-      <item path="src/util/vec3.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/util/vec4.h" ex="false" tool="3" flavor2="0">
+      <item path="src/util/readFile.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/MockComponents.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/SystemImplementations.cpp"
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/ECS/pb/mockcomponents.proto" ex="false" tool="3" flavor2="0">
+      <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
-      <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/IO/ConsoleTest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/IO/MockCommands.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/IO/SerializerTest.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/IO/serializer_test.proto" ex="false" tool="3" flavor2="0">
+      <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/math/MatrixTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/math/SqrtTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/math/VectorTest.cpp" ex="false" tool="1" flavor2="11">
-      </item>
-      <item path="test/physics/ExplosionTest.h" ex="false" tool="3" flavor2="0">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
   </confs>

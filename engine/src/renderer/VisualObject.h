@@ -27,6 +27,7 @@ namespace engine {
             
             virtual void loadObject();
             virtual void render();
+            virtual int getRenderPriority() const { return 0; }
             
             const Mesh& getMesh() const;
             Mesh& getMesh();

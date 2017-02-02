@@ -11,58 +11,58 @@ std::string EQUIRECTANGULAR_VERTEX_SHADER =
     "#extension GL_ARB_separate_shader_objects : require\n"
     "\n"
     "layout (location = 0) in vec3 position;\n"
-//    "uniform mat4 modelMatrix = mat4(vec4(1,0,0,0), vec4(0,1,0,0), vec4(0,0,1,0), vec4(0,0,0,1));\n"
-//    "uniform mat4 viewMatrix;\n"
-//    "uniform mat4 projectionMatrix;\n"
+    "uniform mat4 modelMatrix = mat4(vec4(1,0,0,0), vec4(0,1,0,0), vec4(0,0,1,0), vec4(0,0,0,1));\n"
+    "uniform mat4 viewMatrix;\n"
+    "uniform mat4 projectionMatrix;\n"
     "\n"
-//    "out vec3 rayDirection;\n"
+    "out vec3 rayDirection;\n"
     "\n"
     "void main() {\n"
-//    "    vec4 reverseVec;\n"
-//    "    mat4 projectionMatrixInverse = inverse(projectionMatrix);"
-//    "    mat4 modelViewMatrixInverse = inverse(modelMatrix * viewMatrix);"
-//    "\n"
-//    "    /* inverse perspective projection */\n"
-//    "    reverseVec = vec4(position.xy, 0, 1);\n"
-//    "    reverseVec = projectionMatrixInverse * reverseVec;\n"
-//    "\n"
-//    "    /* inverse modelview, without translation */\n"
-//    "    reverseVec.w = 0;\n"
-//    "    reverseVec = modelViewMatrixInverse * reverseVec;\n"
-//    "\n"
-//    "    /* send */\n"
-//    "    rayDirection = vec3(reverseVec);\n"
+    "    vec4 reverseVec;\n"
+    "    mat4 projectionMatrixInverse = inverse(projectionMatrix);"
+    "    mat4 modelViewMatrixInverse = inverse(modelMatrix * viewMatrix);"
+    "\n"
+    "    /* inverse perspective projection */\n"
+    "    reverseVec = vec4(position.xy, 0, 1);\n"
+    "    reverseVec = projectionMatrixInverse * reverseVec;\n"
+    "\n"
+    "    /* inverse modelview, without translation */\n"
+    "    reverseVec.w = 0;\n"
+    "    reverseVec = modelViewMatrixInverse * reverseVec;\n"
+    "\n"
+    "    /* send */\n"
+    "    rayDirection = vec3(reverseVec);\n"
     "    gl_Position = vec4(position.xy, 0, 1);\n"
     "}";
 std::string EQUIRECTANGULAR_FRAGMENT_SHADER = 
     "#version 330\n"
     "\n"
-//    "uniform sampler2D diffuseTexture1;\n"
-//    "in vec3 rayDirection;\n"
-//    "\n"
-//    "const float PI = 3.14159265358979323846264;\n"
+    "uniform sampler2D diffuseTexture1;\n"
+    "in vec3 rayDirection;\n"
+    "\n"
     "out vec4 fragmentColor;\n"
     "\n"
+    "const float PI = 3.14159265358979323846264;\n"
+    "\n"
     "void main() {\n"
-//    "    vec3 normalizedDirection;\n"
-//    "    vec2 polarDirection;\n"
-//    "\n"
-//    "    /* T computation */\n"
-//    "    normalizedDirection  = normalize(rayDirection);\n"
-//    "    polarDirection.t = acos(normalizedDirection.y)/PI;\n"
-//    "\n"
-//    "    /* S computation */\n"
-//    "    vec3 rayDirection_noY = vec3(rayDirection.x, 0, rayDirection.z);\n"
-//    "    normalizedDirection  = normalize(rayDirection_noY);\n"
-//    "\n"
-//    "    if(normalizedDirection.x >= 0) {\n"
-//    "        polarDirection.s = acos(-normalizedDirection.z)/(2*PI);\n"
-//    "    } else {\n"
-//    "        polarDirection.s = (acos(normalizedDirection.z) + PI)/(2*PI);\n"
-//    "    }\n"
-//    "    /* color */\n"
-//    "    gl_FragColor = texture2D(diffuseTexture1, polarDirection.st);\n"
-    "    fragmentColor = vec4(0, 1, 0, 1);\n"
+    "    vec3 normalizedDirection;\n"
+    "    vec2 polarDirection;\n"
+    "\n"
+    "    /* T computation */\n"
+    "    normalizedDirection  = normalize(rayDirection);\n"
+    "    polarDirection.t = acos(normalizedDirection.y)/PI;\n"
+    "\n"
+    "    /* S computation */\n"
+    "    vec3 rayDirection_noY = vec3(rayDirection.x, 0, rayDirection.z);\n"
+    "    normalizedDirection  = normalize(rayDirection_noY);\n"
+    "\n"
+    "    if(normalizedDirection.x >= 0) {\n"
+    "        polarDirection.s = acos(-normalizedDirection.z)/(2*PI);\n"
+    "    } else {\n"
+    "        polarDirection.s = (acos(normalizedDirection.z) + PI)/(2*PI);\n"
+    "    }\n"
+    "    /* color */\n"
+    "    fragmentColor = texture(diffuseTexture1, polarDirection.st);\n"
     "}";
 
 namespace engine {
@@ -93,6 +93,7 @@ namespace engine {
                         )
                     )
                 );
+            this->material->attachTexture(texture);
             
             this->init();
         }
@@ -108,6 +109,16 @@ namespace engine {
             Skybox::operator=(std::move(right));
             std::swap(this->textureType, right.textureType);
             return *this;
+        }
+        
+        void Skybox::render() {
+            gl::glDisable(GL_DEPTH_TEST);
+            gl::glDepthMask(false);
+            
+            VisualObject::render();
+            
+            gl::glDepthMask(true);
+            gl::glEnable(GL_DEPTH_TEST);
         }
     }
 }

@@ -18,6 +18,10 @@ namespace engine {
             Skybox(Skybox&& orig);
             Skybox& operator=(const Skybox& right);
             Skybox& operator=(Skybox&& right);
+            
+            void render() override;
+            
+            virtual int getRenderPriority() const override { return -100; }
         };
     }
 }

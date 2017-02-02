@@ -18,7 +18,7 @@ namespace demo {
         virtual void initialize() override;
         virtual void shutdown() override;
     private:
-        Entity cube;
+        Entity bomb;
         Entity player;
         
         float lastX;

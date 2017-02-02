@@ -8,6 +8,8 @@
             <in>EntityManager.pb.cc</in>
             <in>EntityManager.proto</in>
           </df>
+          <in>AddEntityMessage.cpp</in>
+          <in>AddEntityMessage.h</in>
           <in>ComponentRegistry.cpp</in>
           <in>Entity.cpp</in>
           <in>EntityManager.cpp</in>
@@ -192,9 +194,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <flagsDictionary>
-        <element flagsID="0" commonFlags="-std=c++14"/>
-        <element flagsID="1" commonFlags="-std=c++14 -fPIC"/>
-        <element flagsID="2" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
+        <element flagsID="0" commonFlags="-std=c++14 -fPIC"/>
+        <element flagsID="1" commonFlags="-std=c++14 -pedantic -fopenmp -fPIC"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -372,6 +373,10 @@
             <pElem>src</pElem>
             <pElem>.</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="src/ECS/AddEntityMessage.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
         </ccTool>
       </item>
       <item path="src/ECS/ComponentRegistry.cpp" ex="false" tool="1" flavor2="11">

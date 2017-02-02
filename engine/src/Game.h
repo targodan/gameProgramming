@@ -17,10 +17,11 @@ namespace engine {
         bool shutdownComplete = false;
         int openmpThreads = -1;
         
+        ECS::MessageHandler messageHandler;
+        
         Window window;
         ECS::EntityManager entityManager;
         ECS::SystemManager systemManager;
-        ECS::MessageHandler messageHandler;
 
         virtual void render(float deltaTimeSeconds);
         virtual void update(float deltaTimeSeconds);

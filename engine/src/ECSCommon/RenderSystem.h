@@ -4,7 +4,6 @@
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
 #include "VisualComponent.h"
-#include "CameraRenderSystem.h"
 
 namespace engine {
     namespace ECSCommon {
@@ -28,11 +27,9 @@ namespace engine {
                 return true;
             }
             
-            virtual Array<systemId_t> getDependencies() const {
-                return {CameraRenderSystem::systemTypeId()};
-            }
+            virtual Array<systemId_t> getDependencies() const override;
             
-            virtual Array<systemId_t> getOptionalDependencies() const;
+            virtual Array<systemId_t> getOptionalDependencies() const override;
             
             std::string getSystemName() const override {
                 return "RenderSystem";

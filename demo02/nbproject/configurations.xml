@@ -17,6 +17,7 @@
           <itemPath>../engine/src/ECS/pb/EntityManager.pb.cc</itemPath>
           <itemPath>../engine/src/ECS/pb/EntityManager.pb.h</itemPath>
         </logicalFolder>
+        <itemPath>../engine/src/ECS/AddEntityMessage.h</itemPath>
         <itemPath>../engine/src/ECS/CollisionException.h</itemPath>
         <itemPath>../engine/src/ECS/Component.h</itemPath>
         <itemPath>../engine/src/ECS/ComponentRegisterer.h</itemPath>
@@ -93,7 +94,7 @@
         <itemPath>../engine/src/physics/DeformableBody.h</itemPath>
         <itemPath>../engine/src/physics/Force.h</itemPath>
         <itemPath>../engine/src/physics/ObjectProperties.h</itemPath>
-        <itemPath>../engine/src/physics/TetrahedronizedObject.h</itemPath>
+        <itemPath>../engine/src/physics/TetrahedronizedMesh.h</itemPath>
       </logicalFolder>
       <logicalFolder name="renderer" displayName="renderer" projectFiles="true">
         <logicalFolder name="gl" displayName="gl" projectFiles="true">
@@ -130,6 +131,7 @@
         <itemPath>../engine/src/renderer/VertexArray.h</itemPath>
         <itemPath>../engine/src/renderer/VertexAttribute.h</itemPath>
         <itemPath>../engine/src/renderer/VertexBuffer.h</itemPath>
+        <itemPath>../engine/src/renderer/VisualObject.h</itemPath>
       </logicalFolder>
       <logicalFolder name="util" displayName="util" projectFiles="true">
         <logicalFolder name="pb" displayName="pb" projectFiles="true">
@@ -604,6 +606,7 @@
       <folder path="0">
         <ccTool>
           <incDir>
+            <pElem>/usr/include/freetype2</pElem>
             <pElem>../engine/src</pElem>
             <pElem>src</pElem>
             <pElem>.</pElem>
@@ -714,20 +717,10 @@
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>../engine/src</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/notmain.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
-          <incDir>
-            <pElem>../engine/src</pElem>
-            <pElem>src</pElem>
-            <pElem>.</pElem>
-          </incDir>
         </ccTool>
       </item>
     </conf>

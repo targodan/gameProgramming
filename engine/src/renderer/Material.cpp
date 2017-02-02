@@ -99,6 +99,7 @@ namespace engine {
                     this->shader->setUniformi(uniformName, i); // Set texture uniform to current texture unit
                     this->textures[i].bind();
                 }
+                // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
             }
         }
         

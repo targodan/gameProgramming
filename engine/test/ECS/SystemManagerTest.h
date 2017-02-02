@@ -14,6 +14,7 @@
 #include "util/ostream_helper.h"
 #include "ECS/DependencyException.h"
 #include "ECS/SystemManager.h"
+#include "ECS/MessageHandler.h"
 
 #include "SystemImplementations.h"
 
@@ -31,7 +32,8 @@ typename std::vector<T>::const_iterator isSet(const std::vector<T>& v) {
     return v.end();
 }
 
-EntityManager _em;
+MessageHandler _mh;
+EntityManager _em(_mh);
 
 class SystemManagerTest : public CPPUNIT_NS::TestFixture, public SystemManager {
     CPPUNIT_TEST_SUITE(SystemManagerTest);

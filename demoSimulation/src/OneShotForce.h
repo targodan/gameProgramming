@@ -16,9 +16,13 @@ namespace demoSimulation {
         Eigen::VectorXf getForceOnVertices(const engine::physics::ObjectProperties& object) override {
             auto size = object.allVertices.rows();
             Eigen::VectorXf forces = Eigen::VectorXf::Zero(size);
+            float force = 600*3;
             if(!this->shotFired && this->secondsSinceStart > 0) {
                 auto vertIndex = object.allVertices.rows() / 3 / 2;
-                forces[vertIndex*3 + 2] = -6000;
+                forces[vertIndex++*3 + 2] = -force;
+                forces[vertIndex++*3 + 2] = -force;
+                forces[vertIndex++*3 + 2] = -force;
+                forces[vertIndex++*3 + 2] = -force;
                 LOG(INFO) << "Boom.";
                 this->shotFired = true;
             }

@@ -196,6 +196,10 @@ namespace engine {
                 return this->vbos;
             }
             
+            ElementBuffer& getEBO() {
+                return *this->ebo;
+            }
+            
             void setEBO(std::unique_ptr<ElementBuffer> ebo) {
                 this->ebo = std::move(ebo);
                 

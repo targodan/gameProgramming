@@ -147,6 +147,11 @@ namespace engine {
             size_t numberOfElements() const {
                 return this->data.nElements;
             }
+            void setNumberOfElements(size_t n) {
+                int sizePerElement = this->data.size / this->data.nElements;
+                this->data.nElements = n;
+                this->data.size = this->data.nElements * sizePerElement;
+            }
             GLuint getID() const {
                 return this->id;
             }

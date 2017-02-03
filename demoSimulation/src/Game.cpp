@@ -51,7 +51,7 @@ namespace demoSimulation {
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-2, 4, 2}, {4, 0, 0}, {0, -4, 0}, {0, 0, -0.5}, 16, 16, 2, 8, 8, 2, density);
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-2, 4, 2}, {4, 0, 0}, {0, -4, 0}, {0, 0, -0.5}, 16, 16, 1, 8, 8, 2, density);
         std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
         std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         
@@ -80,9 +80,9 @@ namespace demoSimulation {
                 .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
-//        this->tetrahedron = this->entityManager.createEntity("Inner")
-//                .addComponent<VisualComponent>(innerObject)
-//                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
+        this->tetrahedron = this->entityManager.createEntity("Inner")
+                .addComponent<VisualComponent>(innerObject)
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
         this->tetrahedron = this->entityManager.createEntity("Outer")
                 .addComponent<VisualComponent>(outerObject)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
@@ -105,7 +105,8 @@ namespace demoSimulation {
                 0.49, // poissons ratio rubber
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
-                1. / this->updatesPerSecond
+                1. / this->updatesPerSecond,
+                1e4
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         

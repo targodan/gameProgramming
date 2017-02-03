@@ -45,8 +45,9 @@ namespace engine {
             VectorXd vertexFreezer;
             
             SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
-            std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            std::pair<SparseMatrix<double>, MatrixXd> calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const; // Called K in lecture
             void combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
+            void combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const MatrixXd& source, int sourceRow, int sourceCol) const;
             void combineStiffnessMatrices(SparseMatrix<double>& target, const SparseMatrix<double>& source, size_t tetraIndex) const;
             std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrix() const; // Called K in lecture
             SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
@@ -56,7 +57,7 @@ namespace engine {
             
             VectorXd calculateCurrentDifferenceFromRestPosition() const;
             VectorXd calculateVelocities(float h, const VectorXf& forces) const;
-            VectorXd calculateSqStressPerTetrahedron(const VectorXd& deformation);
+            VectorXd calculateStressPerTetrahedron(const VectorXd& deformation);
             
             Vector3f getVertexOfRestPosition(int index) const;
             MatrixXf getRestTetrahedron(int tetraIndex) const;
@@ -74,7 +75,7 @@ namespace engine {
             DeformableBody(const TetrahedronizedObject& mesh, double dampening,
                     double youngsModulus, double poissonsRatio, float targetStepSize, double stressThresholdForBreaking = 0, float stepSizeDeviationPercentageForRecalculation = 2)
                     : mesh(mesh), dampening(dampening), youngsModulus(youngsModulus),
-                        poissonsRatio(poissonsRatio), stressThresholdSqForBreaking(stressThresholdForBreaking*stressThresholdForBreaking),
+                        poissonsRatio(poissonsRatio), stressThresholdSqForBreaking(stressThresholdForBreaking),
                         stepSizeOnMatrixCalculation(0), stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
                     throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (both exclusive), is %f.", this->poissonsRatio);

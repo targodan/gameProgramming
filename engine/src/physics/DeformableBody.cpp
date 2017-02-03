@@ -27,7 +27,7 @@ namespace engine {
                     * materialMat;
         }
         
-        std::pair<SparseMatrix<double>, SparseMatrix<double>> DeformableBody::calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const {
+        std::pair<SparseMatrix<double>, MatrixXd> DeformableBody::calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const {
             MatrixXd A_inv(4, 4);
             auto tetrahedron = this->getRestTetrahedron(index);
             A_inv << tetrahedron.cast<double>(), MatrixXd::Ones(1, 4);
@@ -60,13 +60,23 @@ namespace engine {
                         .dot(static_cast<Vector3f>(tetrahedron.col(3) - tetrahedron.col(0)))
                     ) / 6;
             
-            return std::make_pair(volume * B.transpose() * stressMatrix, stressMatrix);
+            return std::make_pair(volume * B.transpose() * stressMatrix, MatrixXd(stressMatrix));
         }
         
         void DeformableBody::combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const {
             for(int dimensionIndexRow = 0; dimensionIndexRow < blockRows; ++dimensionIndexRow) {
                 for(int dimensionIndexCol = 0; dimensionIndexCol < blockCols; ++dimensionIndexCol) {
                     auto coeff = source.coeff(sourceRow + dimensionIndexRow, sourceCol + dimensionIndexCol);
+                    if(coeff != double(0)) {
+                        target.coeffRef(targetRow + dimensionIndexRow, targetCol + dimensionIndexCol) += coeff;
+                    }
+                }
+            }
+        }
+        void DeformableBody::combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const MatrixXd& source, int sourceRow, int sourceCol) const {
+            for(int dimensionIndexRow = 0; dimensionIndexRow < blockRows; ++dimensionIndexRow) {
+                for(int dimensionIndexCol = 0; dimensionIndexCol < blockCols; ++dimensionIndexCol) {
+                    auto coeff = source(sourceRow + dimensionIndexRow, sourceCol + dimensionIndexCol);
                     if(coeff != double(0)) {
                         target.coeffRef(targetRow + dimensionIndexRow, targetCol + dimensionIndexCol) += coeff;
                     }
@@ -90,7 +100,7 @@ namespace engine {
             SparseMatrix<double> stiffnessMatrix(this->mesh.getSimulationMesh().rows(), this->mesh.getSimulationMesh().rows());
             stiffnessMatrix.reserve(12 * 12 + 63 * (this->mesh.getNumberOfTetrahedron()-1));
             
-            SparseMatrix<double> stressMatrix(this->mesh.getNumberOfTetrahedron() * 6, this->mesh.getSimulationMesh().rows());
+            SparseMatrix<double> stressMatrix(this->mesh.getNumberOfTetrahedron(), this->mesh.getSimulationMesh().rows());
             if(this->isBreakingEnabled()) {
                 // TODO: Reserve on stressMatrix
             }
@@ -101,17 +111,21 @@ namespace engine {
                 this->combineStiffnessMatrices(stiffnessMatrix, tetraMatrices.first, tetraIndex);
                 
                 if(this->isBreakingEnabled()) {
+                    auto tetraStress = tetraMatrices.second.colwise().sum();
                     for(int tetraColIndex = 0; tetraColIndex < 4; ++tetraColIndex) {
-                        auto rowIndex = tetraIndex*6;
+                        auto rowIndex = tetraIndex;
                         auto colVertexIndex = this->mesh.getIndexOfVertexInTetrahedron(tetraIndex, tetraColIndex) * 3;
 
-                        this->combineBlock(6, 3, stressMatrix, rowIndex, colVertexIndex, tetraMatrices.second, 0, tetraColIndex * 3);
+                        this->combineBlock(1, 3, stressMatrix, rowIndex, colVertexIndex, tetraStress, 0, tetraColIndex * 3);
                     }
                 }
             }
             
             stiffnessMatrix.makeCompressed();
             stressMatrix.makeCompressed();
+            
+            LOG(INFO) << "big stress "  << stressMatrix.rows() << "x" << stressMatrix.cols();
+            
             return std::make_pair(stiffnessMatrix, stressMatrix);
         }
         
@@ -137,8 +151,7 @@ namespace engine {
         }
         
         void DeformableBody::prepareStepMatrixSolver() {
-            this->stepMatrixSolver.analyzePattern(this->stepMatrix);
-            this->stepMatrixSolver.factorize(this->stepMatrix);
+            this->stepMatrixSolver.compute(this->stepMatrix);
         }
             
         void DeformableBody::updateStepMatrix(float h) {
@@ -204,6 +217,7 @@ namespace engine {
             TIMED_FUNC_IF(timerSimulationStep, VLOG_IS_ON(1));
             this->updateStepMatrixIfNecessary(deltaT);
             this->lastVelocities = this->calculateVelocities(deltaT, forces);
+            // LOG(INFO) << "Error: " << this->stepMatrixSolver.error();
             this->lastVelocities = this->lastVelocities.cwiseProduct(this->vertexFreezer);
             this->mesh.updateMeshFromPlanarVector(this->mesh.getSimulationMesh() + (deltaT * this->lastVelocities).cast<float>());
             if(this->isBreakingEnabled()) {
@@ -211,23 +225,21 @@ namespace engine {
             }
         }
         
-        VectorXd DeformableBody::calculateSqStressPerTetrahedron(const VectorXd& deformation) {
-            VectorXd stress = this->stressMatrix * deformation;
-            
-            Eigen::Map<MatrixXd> stressInCols(stress.data(), 6, stress.rows()/6);
-            
-            return stressInCols.colwise().squaredNorm().transpose();
+        VectorXd DeformableBody::calculateStressPerTetrahedron(const VectorXd& deformation) {
+            return (this->stressMatrix * deformation).cwiseAbs();
         }
         
         void DeformableBody::breakOnHighStress() {
-            VectorXd sqStress = this->calculateSqStressPerTetrahedron(this->calculateCurrentDifferenceFromRestPosition());
+            VectorXd stress = this->calculateStressPerTetrahedron(this->calculateCurrentDifferenceFromRestPosition());
+            
+            LOG(INFO) << "Avg stress:" << stress.sum() / stress.rows();
             
             Set<size_t> breakingTetrahedra;
             breakingTetrahedra.set_empty_key(SIZE_MAX);
             
             vector<std::pair<size_t, size_t>> breakingEdges;
-            for(int tetraIndex = 0; tetraIndex < sqStress.rows(); ++tetraIndex) {
-                if(sqStress[tetraIndex] > this->stressThresholdSqForBreaking) {
+            for(int tetraIndex = 0; tetraIndex < stress.rows(); ++tetraIndex) {
+                if(stress[tetraIndex] > this->stressThresholdSqForBreaking) {
                     auto breakingEdge = this->findBreakingEdgeOfTetrahedron(tetraIndex);
                     breakingEdges.push_back(breakingEdge);
                     
@@ -244,7 +256,7 @@ namespace engine {
             
             this->prepareStepMatrixSolver();
             // batch-remove all 0es
-//            this->stressMatrix.prune([](auto row, auto col, auto val) { return abs(val) > 1e-16; });
+            this->stressMatrix.prune([](auto row, auto col, auto val) { return abs(val) > 1e-16; });
         }
 
         vector<size_t> DeformableBody::findTetrahedraAdjacentToEdge(const std::pair<size_t, size_t>& edge) const {

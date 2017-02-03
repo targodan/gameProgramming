@@ -106,7 +106,7 @@ namespace demoSimulation {
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond,
-                1e4
+                0
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         

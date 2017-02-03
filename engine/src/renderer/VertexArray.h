@@ -101,6 +101,7 @@ namespace engine {
                     vbo->unbind();
                 }
             }
+            
             void reloadData() {
                 for(auto& vbo : this->vbos) {
                     vbo->bind();
@@ -193,6 +194,10 @@ namespace engine {
             }
             const vector<std::unique_ptr<VertexBuffer>>& getVBOs() const {
                 return this->vbos;
+            }
+            
+            ElementBuffer& getEBO() {
+                return *this->ebo;
             }
             
             void setEBO(std::unique_ptr<ElementBuffer> ebo) {

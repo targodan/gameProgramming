@@ -61,6 +61,9 @@ namespace engine {
             MatrixXf getTetrahedron(size_t index) const;
             VectorXf getTetrahedronPlanar(size_t index) const;
             
+            void deleteEdge(int vertIndexA, int vertIndexB);
+            void deleteEdges(const vector<std::pair<size_t, size_t>>& edges);
+            
             float calculateVolumeOfTetrahedron(size_t index) const;
             float calculateVolume() const;
         };

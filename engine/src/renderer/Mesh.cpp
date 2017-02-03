@@ -268,6 +268,79 @@ namespace engine {
         const vector<GLuint>& Mesh::getFaceIndices() const {
             return this->indices;
         }
+        
+        bool Mesh::isEdgePartOfFace(size_t faceIndex, GLuint vertIndexA, GLuint vertIndexB) const {
+            auto indexOne = this->indices[faceIndex*3 + 0];
+            auto indexTwo = this->indices[faceIndex*3 + 1];
+            auto indexThree = this->indices[faceIndex*3 + 2];
+            return         (indexOne == vertIndexA && indexTwo == vertIndexB)
+                        || (indexOne == vertIndexA && indexThree == vertIndexB)
+                        || (indexTwo == vertIndexA && indexThree == vertIndexB)
+                        || (indexOne == vertIndexB && indexTwo == vertIndexA)
+                        || (indexOne == vertIndexB && indexThree == vertIndexA)
+                        || (indexTwo == vertIndexB && indexThree == vertIndexA);
+        }
+        
+        void Mesh::deleteEdge(GLuint vertIndexA, GLuint vertIndexB) {
+            bool deleteNext3 = false;
+            this->indices.erase(std::remove_if(this->indices.begin(), this->indices.end(), [&,this](const auto& element) {
+                // This fells so dirty.
+                auto index = &element - &*this->indices.begin();
+                if(index % 3 == 0) {
+                    // start of face => check it
+                    deleteNext3 = this->isEdgePartOfFace(index / 3, vertIndexA, vertIndexB);
+                }
+                return deleteNext3;
+            }), this->indices.end());
+            this->vao->getEBO().setNumberOfElements(this->indices.size());
+            this->setIndicesChanged(true);
+        }
+        
+        void Mesh::deleteEdges(const vector<std::pair<GLuint, GLuint>>& edges) {
+//            bool deleteNext3 = false;
+//            this->indices.erase(std::remove_if(this->indices.begin(), this->indices.end(), [&,this](const auto& element) {
+//                // This fells so dirty.
+//                auto index = &element - &*this->indices.begin();
+//                if(index % 3 == 0) {
+//                    // start of face => check it
+//                    deleteNext3 = false;
+//                    for(auto& edge : edges) {
+//                        if(this->isEdgePartOfFace(index / 3, edge.first, edge.second)) {
+//                            deleteNext3 = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//                return deleteNext3;
+//            }), this->indices.end());
+//            this->vao->getEBO().setNumberOfElements(this->indices.size());
+//            this->setIndicesChanged(true);
+            
+            size_t size = this->indices.size();
+            for(GLuint* elem = &this->indices[0]; elem <= &this->indices[size-1]; elem += 3) {
+                const GLuint* elem0 = elem+0;
+                const GLuint* elem1 = elem+1;
+                const GLuint* elem2 = elem+2;
+                for(auto& edge : edges) {
+                    if(    (*(elem0) == edge.first  && *(elem1) == edge.second)
+                        || (*(elem0) == edge.first  && *(elem2) == edge.second)
+                        || (*(elem1) == edge.first  && *(elem2) == edge.second)
+                        || (*(elem0) == edge.second && *(elem1) == edge.first)
+                        || (*(elem0) == edge.second && *(elem2) == edge.first)
+                        || (*(elem1) == edge.second && *(elem2) == edge.first)) {
+                        // Move to end
+                        for(GLuint* it = elem; it <= &this->indices[size-1-3]; it += 3) {
+                            *(it+0) = *(it+3);
+                            *(it+1) = *(it+4);
+                            *(it+2) = *(it+5);
+                        }
+                        size -= 3;
+                        break;
+                    }
+                }
+            }
+            this->indices.erase(this->indices.begin()+size, this->indices.end());
+        }
     }
 }
 

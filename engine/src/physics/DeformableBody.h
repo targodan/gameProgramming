@@ -5,6 +5,7 @@
 
 #include "../renderer/Mesh.h"
 #include "../IllegalArgumentException.h"
+#include "../util/Set.h"
 
 #include "Force.h"
 #include "TetrahedronizedObject.h"
@@ -13,20 +14,24 @@ namespace engine {
     namespace physics {
         using namespace Eigen;
         using namespace engine::renderer;
+        using engine::util::Set;
         
         class DeformableBody {
             using SparseSolver = SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<SparseMatrix<double, ColMajor>::StorageIndex>>;
         protected:
             TetrahedronizedObject mesh;
-            VectorXd restPosition;
-            VectorXd currentPosition;
+            VectorXf restPosition;
             
             double dampening; // in kg/s
             double youngsModulus; // in N/m² = Pa (Pascal)
             double poissonsRatio;
             
+            double stressThresholdSqForBreaking;
+            Set<size_t> deletedTetrahedra;
+            
             SparseMatrix<double> stiffnessMatrix; // Called K in lecture
             SparseMatrix<double> dampeningMatrix; // Called C in lecture
+            SparseMatrix<double> stressMatrix; // Calculates stress from deformation
             
             float stepSizeOnMatrixCalculation; // The last value of h.
             // If the current step size deviates more than
@@ -40,9 +45,10 @@ namespace engine {
             VectorXd vertexFreezer;
             
             SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
-            SparseMatrix<double> calculateStiffnessMatrixForTetrahedron(size_t index) const; // Called K in lecture
-            void combine3by3Block(SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
-            SparseMatrix<double> calculateStiffnessMatrix() const; // Called K in lecture
+            std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            void combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
+            void combineStiffnessMatrices(SparseMatrix<double>& target, const SparseMatrix<double>& source, size_t tetraIndex) const;
+            std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrix() const; // Called K in lecture
             SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
             SparseMatrix<double> calculateMassMatrix() const; // Called M in lecture
             SparseMatrix<double, ColMajor> calculateStepMatrix(float h) const; // M + h² * K + h * C
@@ -50,6 +56,15 @@ namespace engine {
             
             VectorXd calculateCurrentDifferenceFromRestPosition() const;
             VectorXd calculateVelocities(float h, const VectorXf& forces) const;
+            VectorXd calculateSqStressPerTetrahedron(const VectorXd& deformation);
+            
+            Vector3f getVertexOfRestPosition(int index) const;
+            MatrixXf getRestTetrahedron(int tetraIndex) const;
+
+            void breakOnHighStress();
+            std::pair<size_t, size_t> findBreakingEdgeOfTetrahedron(size_t tetraIndex) const;
+            vector<size_t> findTetrahedraAdjacentToEdge(const std::pair<size_t, size_t>& edge) const;
+            void deleteTetrahedronFromStiffnessAndStress(size_t tetraIndex);
             
             void updateStepMatrix(float h);
             void updateStepMatrixIfNecessary(float h);
@@ -57,14 +72,15 @@ namespace engine {
             
         public:
             DeformableBody(const TetrahedronizedObject& mesh, double dampening,
-                    double youngsModulus, double poissonsRatio, float targetStepSize, float stepSizeDeviationPercentageForRecalculation = 2)
-                    : mesh(mesh), currentPosition(this->mesh.getSimulationMesh().cast<double>()),
-                        dampening(dampening), youngsModulus(youngsModulus),
-                        poissonsRatio(poissonsRatio), stepSizeOnMatrixCalculation(0),
-                        stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
+                    double youngsModulus, double poissonsRatio, float targetStepSize, double stressThresholdForBreaking = 0, float stepSizeDeviationPercentageForRecalculation = 2)
+                    : mesh(mesh), dampening(dampening), youngsModulus(youngsModulus),
+                        poissonsRatio(poissonsRatio), stressThresholdSqForBreaking(stressThresholdForBreaking*stressThresholdForBreaking),
+                        stepSizeOnMatrixCalculation(0), stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
                     throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (both exclusive), is %f.", this->poissonsRatio);
                 }
+                this->deletedTetrahedra.set_empty_key(SIZE_MAX);
+                this->deletedTetrahedra.resize(this->mesh.getNumberOfTetrahedron());
                 this->calculateAndSetInitialState(targetStepSize);
             }
             
@@ -76,12 +92,13 @@ namespace engine {
             void unfreezeVertex(size_t index);
             void unfreezeVertices(const engine::util::Array<size_t>& indices);
             
+            bool isBreakingEnabled() const;
+            
             const ObjectProperties& getProperties() const;
             
             VectorXd::Index getExpectedForceVectorSize() const;
             
-            VectorXd& getCurrentPosition();
-            const VectorXd& getCurrentPosition() const;
+            const VectorXf& getCurrentPosition() const;
         };
     }
 }

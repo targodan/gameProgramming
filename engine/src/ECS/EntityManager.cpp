@@ -165,17 +165,13 @@ namespace engine {
         
         size_t EntityManager::getComponentIndexOfEntity(entityId_t eId, componentId_t compId) {
             auto eIt = this->entityComponentIndexes.find(eId);
-#ifdef DEBUG
             if(eIt == this->entityComponentIndexes.end()) {
                 throw IllegalArgumentException("Entity with id %us does not exist.", eId);
             }
-#endif
             auto cIt = eIt->second.find(compId);
-#ifdef DEBUG
             if(cIt == eIt->second.end()) {
                 throw IllegalArgumentException("Entity with id %us does not have a component with id %us.", eId, compId);
             }
-#endif
             return cIt->second;
         }
             

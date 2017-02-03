@@ -174,5 +174,34 @@ namespace engine {
             }
             return masses;
         }
+        
+        void TetrahedronizedObject::deleteEdge(int vertIndexA, int vertIndexB) {
+            for(auto renderIndicesA : this->simulationToRenderVertices[vertIndexA]) {
+                for(auto renderIndicesB : this->simulationToRenderVertices[vertIndexB]) {
+                    if(renderIndicesA.first == renderIndicesB.first) {
+                        this->renderMeshes[renderIndicesA.first]->deleteEdge(renderIndicesA.second, renderIndicesB.second);
+                    }
+                }
+            }
+        }
+        
+        void TetrahedronizedObject::deleteEdges(const vector<std::pair<size_t, size_t>>& edges) {
+            vector<vector<std::pair<GLuint, GLuint>>> meshEdges(this->renderMeshes.size());
+            
+            for(auto edge : edges) {
+                for(auto renderIndicesA : this->simulationToRenderVertices[edge.first]) {
+                    for(auto renderIndicesB : this->simulationToRenderVertices[edge.second]) {
+                        if(renderIndicesA.first == renderIndicesB.first) {
+                            meshEdges[renderIndicesA.first].push_back(std::make_pair(renderIndicesA.second, renderIndicesB.second));
+                        }
+                    }
+                }
+            }
+            
+            size_t i = 0;
+            for(auto& edges : meshEdges) {
+                this->renderMeshes[i++]->deleteEdges(edges);
+            }
+        }
     }
 }

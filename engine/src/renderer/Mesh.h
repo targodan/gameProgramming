@@ -110,11 +110,16 @@ namespace engine {
 
             vector<GLuint>& getFaceIndices();
             const vector<GLuint>& getFaceIndices() const;
+            
+            void deleteEdge(GLuint vertIndexA, GLuint vertIndexB);
+            void deleteEdges(const vector<std::pair<GLuint, GLuint>>& edges);
         protected:
             void createVBO(vector<Vertex>& vertices, DataUsagePattern usage);
             void createEBO(vector<GLuint>& indices, DataUsagePattern usage);
             void enableVAOAttributes();
             virtual void setVAOAttributes();
+            
+            bool isEdgePartOfFace(size_t faceIndex, GLuint vertIndexA, GLuint vertIndexB) const;
             
             std::shared_ptr<Material> material;
             

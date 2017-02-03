@@ -2,9 +2,11 @@
 
 #include <memory>
 #include <thread>
+#include <glm/gtx/transform.hpp>
 
 #include "engine/renderer/Mesh.h"
 #include "engine/renderer/TextRenderer.h"
+#include "engine/renderer/Skybox.h"
 #include "engine/ECSCommon.h"
 #include "engine/physics/Explosion.h"
 #include "engine/physics/GravitationalForce.h"
@@ -12,6 +14,7 @@
 #include "engine/physics/Tetrahedronizer.h"
 #include "OneShotForce.h"
 #include "Actions.h"
+#include "renderer/DefaultShader.h"
 
 using namespace engine;
 using namespace engine::renderer;
@@ -48,7 +51,7 @@ namespace demoSimulation {
 //        float density = 7850; // kg / m³ metal
         float density = 920; // kg / m³ rubber
         
-        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-2, 2, 2}, {4, 0, 0}, {0, -4, 0}, {0, 0, -0.5}, 16, 16, 2, 8, 8, 2, density);
+        auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-2, 4, 2}, {4, 0, 0}, {0, -4, 0}, {0, 0, -0.5}, 16, 16, 1, 8, 8, 2, density);
         std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
         std::shared_ptr<Mesh> innerMesh = tMesh.getMeshPtr(1);
         
@@ -67,15 +70,14 @@ namespace demoSimulation {
         std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
                                                          "src/meshColor.fsh"), true);
         
-        VisualObject outerObject(outerMesh, outerMaterial);
-        outerObject.loadObject();
-        VisualObject innerObject(innerMesh, innerMaterial);
-        innerObject.loadObject();
+        auto outerObject = std::make_shared<VisualObject>(outerMesh, outerMaterial);
+        outerObject->loadObject();
+        auto innerObject = std::make_shared<VisualObject>(innerMesh, innerMaterial);
+        innerObject->loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
-                .addComponent<PlacementComponent>(engine::util::vec3(0, -2, 8))
+                .addComponent<PlacementComponent>(engine::util::vec3(0, 1.8, 8))
                 .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
-        auto& cc = this->player.getComponent<CameraComponent>();
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -103,7 +105,8 @@ namespace demoSimulation {
                 0.49, // poissons ratio rubber
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
-                1. / this->updatesPerSecond
+                1. / this->updatesPerSecond,
+                1e4
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
@@ -131,21 +134,10 @@ namespace demoSimulation {
 //                .addComponent<TimerComponent>(0)
 //                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
 //        
-        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 10 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
-        this->entityManager.createEntity("Force")
-                .addComponent<TimerComponent>(3)
-                .addComponent<ForceComponent>(explosion);
-        
-        RichText testText(fontfamiliy, FontType::Regular, 80, Color::RED);
-        testText << u8"Test öä§∑. "
-                << RichText::fontType(FontType::Bold) << RichText::color(Color(1, 1, 0, 1)) << u8"Bold "
-                << RichText::fontType(FontType::Italic) << RichText::color(Color::BLUE) << u8"Italic "
-                << RichText::fontType(FontType::BoldItalic) << RichText::color(Color::GREEN) << u8"BoldItalic ";
-        
-        LOG(INFO) << testText.getPlainText_utf8();
-        
-//        this->entityManager.createEntity("testtext")
-//                .addComponent<TextComponent>(testText, 50, 100);
+//        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 10 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
+//        this->entityManager.createEntity("Force")
+//                .addComponent<TimerComponent>(3)
+//                .addComponent<ForceComponent>(explosion);
         
 //        this->systemManager.enableSystem<CustomUpdateSystem>("boom", [](EntityManager& em, float dT) {
 //            for(auto it = em.begin({TimerComponent::getComponentTypeId(), ForceComponent::getComponentTypeId()}); it != em.end(); ++it) {
@@ -154,6 +146,40 @@ namespace demoSimulation {
 //                }
 //            }
 //        });
+        
+        
+//        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
+//        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
+//        bombVO->loadObject();
+//        this->entityManager.createEntity("Bomb")
+//                .addComponent<VisualComponent>(bombVO)
+//                .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
+        
+        float floorRadius = 1e4;
+        float floorTexRepeat = 4e4;
+        auto floorMesh = std::make_shared<Mesh>(engine::util::vector<Vertex>({
+                Vertex({-floorRadius, 0, -floorRadius}, {0, floorRadius, 0}, {0, floorTexRepeat}),
+                Vertex({-floorRadius, 0,  floorRadius}, {0, floorRadius, 0}, {0, 0}),
+                Vertex({ floorRadius, 0,  floorRadius}, {0, floorRadius, 0}, {floorTexRepeat, 0}),
+                Vertex({ floorRadius, 0, -floorRadius}, {0, floorRadius, 0}, {floorTexRepeat, floorTexRepeat}),
+            }), engine::util::vector<GLuint>({
+                0, 1, 2,
+                0, 2, 3
+            }));
+        Texture floorTex("textures/floor_diffuse.png");
+        auto floorMat = std::make_shared<Material>(
+            std::make_shared<ShaderProgram>(
+                ShaderProgram::createShaderProgramFromSource(
+                    DefaultShader::createSimpleTextureVertexShader(),
+                    DefaultShader::createSimpleTextureFragmentShader()
+                )
+            )
+        );
+        floorMat->attachTexture(floorTex);
+        auto floorVO = std::make_shared<VisualObject>(floorMesh, floorMat);
+        floorVO->loadObject();
+        this->entityManager.createEntity("Floor")
+                .addComponent<VisualComponent>(floorVO);
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
         ButtonMapping bm(this->window.getWindow());
@@ -173,6 +199,12 @@ namespace demoSimulation {
         auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
         
+        Texture skyTexture("textures/skybox_small.png");
+        auto skybox = std::make_shared<Skybox>(skyTexture, EnvironmentTextureType::EQUIRECTANGULAR);
+        skybox->loadObject();
+        this->tetrahedron = this->entityManager.createEntity("Skybox")
+                .addComponent<VisualComponent>(skybox);
+        
         this->systemManager.enableSystem<InputSystem>(bm);
         
         this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
@@ -180,6 +212,10 @@ namespace demoSimulation {
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        
+        this->entityManager.sort(VisualComponent::getComponentTypeId(), [](std::shared_ptr<Component> c1, std::shared_ptr<Component> c2) {
+            return c1->to<VisualComponent>().getVisualObject().getRenderPriority() < c2->to<VisualComponent>().getVisualObject().getRenderPriority();
+        });
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         

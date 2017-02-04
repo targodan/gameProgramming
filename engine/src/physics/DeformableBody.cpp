@@ -241,22 +241,29 @@ namespace engine {
             for(int tetraIndex = 0; tetraIndex < stress.rows(); ++tetraIndex) {
                 if(stress[tetraIndex] > this->stressThresholdSqForBreaking) {
                     auto breakingEdge = this->findBreakingEdgeOfTetrahedron(tetraIndex);
-                    breakingEdges.push_back(breakingEdge);
-                    
-                    auto tetrahedra = this->findTetrahedraAdjacentToEdge(breakingEdge);
-                    breakingTetrahedra.insert(tetrahedra.begin(), tetrahedra.end());
+                    if(this->deletedEdges.find(breakingEdge) == this->deletedEdges.end()) {
+                        breakingEdges.push_back(breakingEdge);
+                        this->deletedEdges.insert(breakingEdge);
+                        this->deletedEdges.insert(std::make_pair(breakingEdge.second, breakingEdge.first));
+
+                        auto tetrahedra = this->findTetrahedraAdjacentToEdge(breakingEdge);
+                        breakingTetrahedra.insert(tetrahedra.begin(), tetrahedra.end());
+                    }
                 }
             }
             
-            this->mesh.deleteEdges(breakingEdges);
+            if(breakingEdges.size() > 0) {
+                this->mesh.deleteEdges(breakingEdges);
+
+                for(auto index : breakingTetrahedra) {
+                    this->deleteTetrahedronFromStiffnessAndStress(index);
+                }
+
+                this->prepareStepMatrixSolver();
             
-            for(auto index : breakingTetrahedra) {
-                this->deleteTetrahedronFromStiffnessAndStress(index);
+                // batch-remove all 0es
+                this->stressMatrix.prune([](auto row, auto col, auto val) { return abs(val) > 1e-16; });
             }
-            
-            this->prepareStepMatrixSolver();
-            // batch-remove all 0es
-            this->stressMatrix.prune([](auto row, auto col, auto val) { return abs(val) > 1e-16; });
         }
 
         vector<size_t> DeformableBody::findTetrahedraAdjacentToEdge(const std::pair<size_t, size_t>& edge) const {

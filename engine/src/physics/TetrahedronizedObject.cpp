@@ -188,7 +188,7 @@ namespace engine {
         void TetrahedronizedObject::deleteEdges(const vector<std::pair<size_t, size_t>>& edges) {
             vector<vector<std::pair<GLuint, GLuint>>> meshEdges(this->renderMeshes.size());
             
-            for(auto edge : edges) {
+            for(auto& edge : edges) {
                 for(auto renderIndicesA : this->simulationToRenderVertices[edge.first]) {
                     for(auto renderIndicesB : this->simulationToRenderVertices[edge.second]) {
                         if(renderIndicesA.first == renderIndicesB.first) {

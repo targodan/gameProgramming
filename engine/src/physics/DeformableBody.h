@@ -10,6 +10,20 @@
 #include "Force.h"
 #include "TetrahedronizedObject.h"
 
+namespace std {
+    template<>
+    struct hash<pair<size_t,size_t>> {
+       typedef pair<size_t,size_t> argument_type;
+       typedef unsigned long long result_type;
+
+       result_type operator() (const argument_type& x) const
+       {
+            // Yay, primes. :D
+            return std::hash<result_type>()(static_cast<result_type>(x.first) * 3 + x.second * 5);
+       }
+    };
+}
+
 namespace engine {
     namespace physics {
         using namespace Eigen;
@@ -28,6 +42,7 @@ namespace engine {
             
             double stressThresholdSqForBreaking;
             Set<size_t> deletedTetrahedra;
+            Set<std::pair<size_t, size_t>> deletedEdges;
             
             SparseMatrix<double> stiffnessMatrix; // Called K in lecture
             SparseMatrix<double> dampeningMatrix; // Called C in lecture
@@ -80,6 +95,7 @@ namespace engine {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
                     throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (both exclusive), is %f.", this->poissonsRatio);
                 }
+                this->deletedEdges.set_empty_key(std::make_pair(SIZE_MAX, SIZE_MAX));
                 this->deletedTetrahedra.set_empty_key(SIZE_MAX);
                 this->deletedTetrahedra.resize(this->mesh.getNumberOfTetrahedron());
                 this->calculateAndSetInitialState(targetStepSize);

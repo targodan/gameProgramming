@@ -11,7 +11,7 @@ namespace engine {
             
             // TODO: Test flags: aiProcess_OptimizeGraph, aiProcess_OptimizeMeshes
             Importer modelImporter;
-            const aiScene* scene = modelImporter.ReadFile(getAbsoluteFromRelativePath(pathToModel), aiProcess_Triangulate);
+            const aiScene* scene = modelImporter.ReadFile(pathToModel, aiProcess_Triangulate);
 
             if(!scene) {
                 std::ostringstream error; 
@@ -79,12 +79,12 @@ namespace engine {
 
             aiMaterial* assimpMaterial = scene->mMaterials[mesh->mMaterialIndex];
 
-            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
-            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
-            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
-//            Texture texture = {"resources/textures/BombColor.png", ImageFormat::RGBA};
-//            vector<Texture> textures;
-//            textures.push_back(texture);
+//            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
+//            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
+//            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
+            Texture texture = {"textures/bomb_diffuse.png", ImageFormat::RGBA};
+            vector<Texture> textures;
+            textures.push_back(texture);
             
             std::string vertexShader = "";
             std::string fragmentShader = "";

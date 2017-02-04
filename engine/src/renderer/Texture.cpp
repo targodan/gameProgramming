@@ -4,8 +4,6 @@ namespace engine {
     namespace renderer {
         Texture::Texture(std::string imagePath, ImageFormat format, ImageFormat formatToStoreTextureIn, bool specular, TextureType type) 
                     : type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(0), bound(false), specular(false) {
-//            std::string entireImagePath = imagePath;
-            std::string entireImagePath = util::getAbsoluteFromRelativePath(imagePath);
             int forceChannels;
             switch(format) {
                 case ImageFormat::RGB:
@@ -17,7 +15,7 @@ namespace engine {
                 default:
                     throw IllegalArgumentException("Only ImageFormats RGB and RGBA are supported yet.");
             }
-            this->imageData = SOIL_load_image(entireImagePath.c_str(), &this->width, &this->height, 0, forceChannels);
+            this->imageData = SOIL_load_image(imagePath.c_str(), &this->width, &this->height, 0, forceChannels);
 
             if(!imageData) {
                 throw engine::IOException("Failed to create texture: Could not load image.");

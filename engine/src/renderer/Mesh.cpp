@@ -150,6 +150,9 @@ namespace engine {
         std::shared_ptr<const Material> Mesh::getMaterial() const {
             return this->material;
         }
+        std::shared_ptr<Material> Mesh::getMaterial() {
+            return this->material;
+        }
         bool Mesh::wasLoaded() const {
             return this->loaded;
         }

@@ -20,9 +20,9 @@ namespace engine {
             this->importedTextures.set_empty_key("");
         }
         Material::Material(const Material& orig) : shader(orig.shader), textures(orig.textures), renderAsWireframe(orig.renderAsWireframe), texturesLoaded(false) {
-            if(orig.texturesLoaded) {
-                this->loadTextures();
-            }
+//            if(orig.texturesLoaded) {
+//                this->loadTextures();
+//            }
         }
         Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)), renderAsWireframe(orig.renderAsWireframe), texturesLoaded(orig.texturesLoaded) {
             

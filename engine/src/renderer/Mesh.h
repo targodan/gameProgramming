@@ -90,6 +90,10 @@ namespace engine {
             
             virtual ~Mesh();
             
+            virtual Mesh* clone() {
+                return new Mesh(*this);
+            };
+            
             virtual void loadMesh();
             virtual void render();
             
@@ -101,6 +105,7 @@ namespace engine {
             
             virtual void setMaterial(const std::shared_ptr<Material>& material);
             std::shared_ptr<const Material> getMaterial() const;
+            std::shared_ptr<Material> getMaterial();
             
             void applyTransformation(glm::mat3 transformMatrix);
             void applyTransformation(glm::mat4 transformMatrix);

@@ -27,25 +27,6 @@ namespace demo {
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
         
-        
-        
-//        Material material = {std::make_shared<ShaderProgram>("../engine/defaultShader/flat_shader.vsh", 
-//                                                             "../engine/defaultShader/flat_shader.fsh")};
-//        
-//        vector<Vertex> vertices = {Vertex(vec3{1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 0}), // 0 
-//                                   Vertex(vec3{-1.f, -1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 1
-//                                   Vertex(vec3{-1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 0}),  // 2
-//                                   Vertex(vec3{1.f, -1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 0}), // 3
-//                                   Vertex(vec3{1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 4 
-//                                   Vertex(vec3{-1.f, 1.f, -1.f}, vec3{1, 0, 0}, vec2{0, 1}),  // 5
-//                                   Vertex(vec3{-1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{1, 1}), // 6
-//                                   Vertex(vec3{1.f, 1.f, 1.f}, vec3{1, 0, 0}, vec2{0, 1})}; // 7
-//        vector<GLuint> indices = {0,1,3, 1,2,3, 0,1,5, 0,5,4, 1,2,6, 1,6,5, 2,3,7, 2,7,6, 3,0,4, 3,4,7, 4,6,7, 4,5,6};
-//        Mesh mesh = {vertices, indices};
-//        mesh.loadMesh();
-//       
-//        this->cube.addComponent<VisualComponent>(mesh, material).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
-        
         // Create floor
         auto floor = this->entityManager.createEntity("Floor");
         vector<Vertex> vertices = {Vertex(vec3{-100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,0}), 
@@ -61,41 +42,30 @@ namespace demo {
         VisualObject obj = {std::make_shared<Mesh>(mesh), std::make_shared<Material>(material)};
         obj.loadObject();
         
-        floor.addComponent<VisualComponent>(obj).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
-        //auto& floorVisual = floor.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
-        //floorVisual.loadObject();
+        floor.addComponent<VisualComponent>(std::make_shared<VisualObject>(obj)).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
+        
+        // Import bomb
+        VisualObject bombMesh = {"resources/models/bomb.obj"};
+        bombMesh.loadObject();
+        VisualObject bombMesh2 = bombMesh;
+        VisualObject bombMesh3 = bombMesh;
         
         // Create bomb
         this->bomb = this->entityManager.createEntity("Bomb");
-        VisualObject bombMesh = {"resources/models/bomb.obj"};
-        bombMesh.loadObject();
-        this->bomb.addComponent<VisualComponent>(bombMesh).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+        this->bomb.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombMesh)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
         
         // Create second bomb
         auto bomb2 = this->entityManager.createEntity("Cube");
-        VisualObject bombMesh2 = {"resources/models/bomb.obj"};
-        bombMesh2.loadObject();
-        bomb2.addComponent<VisualComponent>(bombMesh2).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
+        bomb2.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombMesh2)).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
         
         // Create third bomb
         auto bomb3 = this->entityManager.createEntity("Cube");
-        VisualObject bombMesh3 = {"resources/models/bomb.obj"};
-        bombMesh3.loadObject();
-        bomb3.addComponent<VisualComponent>(bombMesh3).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
+        bomb3.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombMesh3)).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
        
-        
         
         // Create camera/player
         this->player = this->entityManager.createEntity("Player");
-        
-        PlacementComponent pcPlayer;
-        pcPlayer.setPosition(vec3{3.f, 0.f, 0.f});
-        
-        CameraComponent cc(vec3{-1.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f});
-        cc.setProjectionMatrix(45, this->window.getAspectRatio(), 0.1f, 100.f);
-        cc.setViewMatrix(pcPlayer.getPosition());
-        
-        this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
+        this->player.addComponent<CameraComponent>(vec3{-1.f, 0.f, 0.f}, vec3{0.f, 1.f, 0.f}, 45, this->window.getAspectRatio(), 0.1f, 100.f).addComponent<PlacementComponent>(vec3{3.f, 0.f, 0.f});
         
         // Create instances
         auto instances = this->entityManager.createEntity("Triangles");
@@ -108,7 +78,6 @@ namespace demo {
         for(int i = 0; i < 100; i++) {
             x += 2.f;
             y += 2.f;
-            // z += 0.1f;
             positions.push_back(x);
             positions.push_back(y);
             positions.push_back(z);
@@ -116,7 +85,10 @@ namespace demo {
         
         VisualObject vo = {std::make_shared<InstanceMesh>(instanceVertices, positions), std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
         vo.loadObject();
-        instances.addComponent<VisualComponent>(vo).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+        instances.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+        
+        // std::cout << engine::renderer::DefaultShader::createLightingFragmentShader(1, true, TextureType::DIFFUSE) << std::endl;
+        // ShaderProgram prog = ShaderProgram::createShaderProgramFromSource(engine::renderer::DefaultShader::createLightingVertexShader(), engine::renderer::DefaultShader::createLightingFragmentShader(1, true, TextureType::DIFFUSE));
     }
 
     Demo02::~Demo02() {
@@ -140,7 +112,7 @@ namespace demo {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         
         this->systemManager.enableSystem<PlacementSystem>();
-        this->systemManager.enableSystem<RenderSystem>();
+        this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<InputSystem>(bm);
         Game::initialize();
         

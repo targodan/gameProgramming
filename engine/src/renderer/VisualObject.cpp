@@ -21,21 +21,18 @@ namespace engine {
             this->init();
         }
 
-        VisualObject::VisualObject(const VisualObject& orig) : initialized(orig.initialized), mesh(orig.mesh), material(orig.material) {
+        VisualObject::VisualObject(const VisualObject& orig) : initialized(orig.initialized), mesh(std::shared_ptr<Mesh>(orig.mesh->clone())), material(mesh->getMaterial()) {
             //this->mesh = std::make_shared<Mesh>(*(orig.mesh));
             //this->material = std::make_shared<Material>(*(orig.material));
-            //this->mesh->setMaterial(this->material);
             
             this->init();
         }
         VisualObject::VisualObject(VisualObject&& orig) : initialized(std::move(orig.initialized)), mesh(std::move(orig.mesh)), material(std::move(orig.material)) {}
         
         VisualObject& VisualObject::operator=(const VisualObject& right) {
-//            this->mesh = std::make_shared<Mesh>(*right.mesh);
-//            this->material = std::make_shared<Material>(*right.material);
-//            this->mesh->setMaterial(this->material);
-            this->mesh = right.mesh;
-            this->material = right.material;
+            this->mesh = std::make_shared<Mesh>(*right.mesh);
+            this->material = this->mesh->getMaterial();
+            this->init();
             
             return *this;
         }

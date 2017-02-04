@@ -10,12 +10,28 @@ namespace engine {
             }
 #endif
             
-            this->createVBO(this->instancePositions, usage);
+            this->createPositionVBO(this->instancePositions, usage);
         }
         
         InstanceMesh::InstanceMesh(const InstanceMesh& orig) 
-            : Mesh(orig), instancePositions(orig.instancePositions), usage(orig.usage) {
-            this->createVBO(this->instancePositions, usage);
+            : Mesh() {
+            this->material = orig.material;
+            this->vertices = orig.vertices;
+            this->indices = orig.indices;
+            this->vao = std::make_unique<VertexArray>();
+            this->usage = orig.usage;
+            this->instancePositions = orig.instancePositions;
+            
+            
+            if(!this->indices.empty()) {
+                this->createEBO(this->indices, this->usage);
+            }
+            this->createVBO(this->vertices, this->usage);
+            this->createPositionVBO(this->instancePositions, this->usage);
+            
+            if(orig.loaded) {
+                this->loadMesh();
+            }
         }
         InstanceMesh::InstanceMesh(InstanceMesh&& orig) 
             : Mesh(std::move(orig)), instancePositions(std::move(orig.instancePositions)), usage(std::move(orig.usage)) {
@@ -27,7 +43,7 @@ namespace engine {
             this->instancePositions = right.instancePositions;
             this->usage = right.usage;
             
-            this->createVBO(this->instancePositions, this->usage);
+            this->createPositionVBO(this->instancePositions, this->usage);
             
             return *this;
         }
@@ -44,6 +60,11 @@ namespace engine {
         }
         
         void InstanceMesh::loadMesh() {
+            if(!this->createdBuffer) {
+                this->createPositionVBO(this->instancePositions, usage);
+                this->createdBuffer = true;
+            }
+            
             Mesh::loadMesh();
             // this->instancePositionsChanged = true;
         }
@@ -104,7 +125,7 @@ namespace engine {
             this->instancePositionsChanged = changed;
         }
         
-        void InstanceMesh::createVBO(vector<float>& positions, DataUsagePattern usage) {
+        void InstanceMesh::createPositionVBO(vector<float>& positions, DataUsagePattern usage) {
             // Get no. of elements
             auto nPositions = positions.size();
             

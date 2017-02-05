@@ -18,7 +18,7 @@ namespace demo {
         virtual void shutdown() override;
     private:
         Entity PatSys;
-        Entity cube;
+        Entity floor;
         Entity player;
         
         float lastX;

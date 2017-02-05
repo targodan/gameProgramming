@@ -11,12 +11,13 @@
 #include "../../engine/src/renderer/ShaderProgram.h"
 #include "../../engine/src/renderer/gl/gl_core_3_3.h"
 #include "../../engine/src/util/vec3.h"
-#include <vector>
+#include "../../engine/src/util/vector.h"
 #include <memory>
 #include "../../engine/src/renderer/Vertex.h"
 #include "../../engine/src/renderer/ElementBuffer.h"
 #include "../../engine/src/renderer/Texture.h"
 #include "../../engine/src/renderer/TextureParameter.h"
+#include "../../engine/src/renderer/DefaultShader.h"
 #include <iostream>
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -30,6 +31,7 @@ namespace demo {
     using namespace engine::ECSCommon;
     using namespace IO;
     using engine::physics::ParticleSystem;
+    using engine::util::vector;
     using glm::vec3;
     using engine::Game;
     using namespace Eigen;
@@ -38,33 +40,34 @@ namespace demo {
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
               
+        auto test = this->entityManager.createEntity("Test");
+        vector<Vertex> tests = {Vertex(vec3(-1.f, 0.f, 0.f)), Vertex(vec3(0.f, 1.f, 0.f)), Vertex(vec3(0.f, 0.f, -1.f))};
+        vector<GLuint> inds = {0,1,2};
+        Mesh t = {tests, inds};
+        Material mat = {std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader()))};
         
-        Vertex front( {0.1, 0, 0},        {0, 1, 0});
-        Vertex backRight(    {0.1, 0, -0.1},    {0, 0, 1});
-        Vertex backLeft(   {-0.1, 0, -0.1},     {1, 0, 0});
-        Vertex up(          {0, 0.2, 0},          {1, 1, 0});
+        auto testobj = std::make_shared<VisualObject>(std::make_shared<Mesh>(t), std::make_shared<Material>(mat));
+        testobj->loadObject();
+        LOG(INFO) << testobj->isInitialized();
+        LOG(INFO) << testobj->getMesh().wasLoaded();
+        test.addComponent<VisualComponent>(testobj).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
         
-        std::shared_ptr<Material> material = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/triangle_sh.vsh", "src/triangle_sh.fsh"), true);
+        this->floor = this->entityManager.createEntity("Floor");
+        vector<Vertex> vertices = {Vertex(vec3{-100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,0}), 
+                                   Vertex(vec3{-100.f, 0.f, 100.f}, vec3{0.f, 0.f, 0.f}, vec2{0,0}), 
+                                   Vertex(vec3{100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,1}), 
+                                   Vertex(vec3{100.f, 0.f, 100.f}, vec3{0.f, 0.f, 0.f}, vec2{0,1})};
+        vector<GLuint> indices = {1, 0, 2,  1, 2, 3};
+        Mesh mesh = {vertices, indices};
+        Material material = {std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader()))};
+        Texture texture = {"resources/textures/container.jpg"};
+        material.attachTexture(texture);
         
-        std::vector<Mesh> tetras;
+        VisualObject obj = {std::make_shared<Mesh>(mesh), std::make_shared<Material>(material)};
+        obj.loadObject();
         
-        for(int i=0; i<NUM_OF_PARTICLES; i++){
-            Mesh tetrahedronMesh({front, backRight, backLeft, up},
-                {0, 1, 3, 1, 2, 3, 2, 0, 3, 0, 2, 1},
-                DataUsagePattern::DYNAMIC_DRAW);
-            auto vc = this->entityManager.createEntity("Tetrahedron" + i)
-                .addComponent<VisualComponent>(tetrahedronMesh, *material)
-                .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-            vc.getComponent<VisualComponent>().getMesh().loadMesh();
-            tetras.push_back(vc.getComponent<VisualComponent>().getMesh());
-        }
+        this->floor.addComponent<VisualComponent>(std::make_shared<VisualObject>(obj)).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
         
-        VectorXf pos = VectorXf::Zero(3*NUM_OF_PARTICLES);
-        
-        ParticleSystem pats(2, 0.5, tetras, pos, ParticleForce::getForceOnVertices(3*NUM_OF_PARTICLES));
-        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
-        
-        this->entityManager.createEntity("pew").addComponent<ParticleSystemComponent>(patsptr);
         
         this->player = this->entityManager.createEntity("Player");
         
@@ -72,11 +75,23 @@ namespace demo {
         pcPlayer.setPosition(vec3{-10.f, 0.f, -10.f});
         pcPlayer.setVelocity(vec3{0.f, 0.f, 0.f});
         
-        CameraComponent cc(vec3{1.f, 0.f, 1.f}, vec3{0.f, 1.f, 0.f});
-        cc.setProjectionMatrix(45, this->window.getAspectRatio(),0.1f, 100.f);
-        cc.setViewMatrix(pcPlayer.getPosition());
+        CameraComponent cc(vec3{1.f, 0.f, 1.f}, vec3(0.f, 1.f, 0.f), 90.f, this->window.getAspectRatio(),0.1f, 100.f);
         
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
+        
+        this->PatSys = this->entityManager.createEntity("Triangles");
+        vector<Vertex> instanceVertices = {Vertex{vec3{-0.4f, 0.f, -0.4f}}, Vertex{vec3{0.4f, 0.f, -0.4f}}, Vertex{vec3{0.f, 0.4f, 0.f}}};
+        vector<float> positions(60, 0.0f);
+        auto iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
+        VisualObject vo = {iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
+        vo.loadObject();
+        
+        ParticleSystem pats(1, 0.3, iMesh ,ParticleForce::getForceOnVertices(60));
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
+        
+        this->PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
+        
+        
     }
 
     Demo03::~Demo03() {
@@ -98,10 +113,12 @@ namespace demo {
         auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_Q, action5);
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
+        auto action6 = std::make_shared<PlaceBombAction>(PlaceBombAction(-2, GLFW_MOUSE_BUTTON_RIGHT, std::make_shared<Entity>(this->player)));
+        bm.insertMapping(-2, GLFW_MOUSE_BUTTON_RIGHT, action6);
         
         this->systemManager.enableSystem<PlacementSystem>();
-        this->systemManager.enableSystem<RenderSystem>();
-        this->systemManager.enableSystem<CameraRenderSystem>();
+        this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
+        //this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<InputSystem>(bm);
         this->systemManager.enableSystem<ParticleSystemSystem>();
         Game::initialize();

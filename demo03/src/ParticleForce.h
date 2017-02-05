@@ -42,7 +42,10 @@ namespace demo {
                 float pitch;
                 float jaw;
                 float pow;
-                for(i = 0; i<size; i+=3){
+                forces(0,0) = 0;
+                forces(1,0) = 0;
+                forces(2,0) = 0;
+                for(i = 3; i<size; i+=3){
                     pitch = pitchDis(generator);
                     jaw = jawDis(generator);
                     pow = powDis(generator);

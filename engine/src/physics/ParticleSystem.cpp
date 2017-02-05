@@ -12,25 +12,33 @@
  */
 
 #include "ParticleSystem.h"
+
+#include "../util/vector.h"
 namespace engine {
     namespace physics {
-        ParticleSystem::ParticleSystem(float mass, float dampening, vector<Mesh> parts, VectorXf positions, VectorXf force) :
+        using engine::util::vector;
+        
+        ParticleSystem::ParticleSystem(float mass, float dampening, shared_ptr<InstanceMesh> mesh, VectorXf force) :
             first(true),
             mass(mass),
             dampening(dampening),
-            parts(parts),
-            positions(positions),
+            numParticles(mesh->getInstancePositions().size()/3),
+            mesh(mesh),
+            positions(Eigen::Map<VectorXf>(mesh->getInstancePositions().data(), 3*this->numParticles)),
             initialForce(force),
-            lastVelocities(VectorXf::Zero(3*NUM_OF_PARTICLES))
+            lastVelocities(VectorXf::Zero(3*this->numParticles))
         {
-            
+            LOG(INFO) << "initialPos:" << this->positions;
+            LOG(INFO) << "initialForce:" << this->initialForce;
+            LOG(INFO) << "initialVelo:" << this->lastVelocities;
         }
 
         ParticleSystem::ParticleSystem(const ParticleSystem& orig) :
             first(orig.first),
             mass(orig.mass),
             dampening(orig.dampening),
-            parts(orig.parts),
+            numParticles(orig.numParticles),
+            mesh(orig.mesh),
             positions(orig.positions),
             initialForce(orig.initialForce) ,
             lastVelocities(orig.lastVelocities)
@@ -40,65 +48,52 @@ namespace engine {
         ParticleSystem::~ParticleSystem() {
         }
         
-        VectorXf ParticleSystem::calculateVelocities(float deltaT, VectorXf force) {
+        void ParticleSystem::calculateVelocities(float deltaT, VectorXf force) {
             this->calculateStep(deltaT);
             if(this->first){
                 force += this->initialForce;
                 this->first = false;
             }
-            return this->lastVelocities + stepMatrixSolver.solve(deltaT * (this->calculateDampeningForce() + force));
+            VectorXf diff = stepMatrixSolver.solve(deltaT * (this->calculateDampeningForce() + force));
+            LOG(INFO) << "diff" << diff;
+            this->lastVelocities = this->lastVelocities + diff;
         }
         
         SparseMatrix<float> ParticleSystem::calculateMassMatrix() {
-            SparseMatrix<float> massMat(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
+            SparseMatrix<float> massMat(3*this->numParticles, 3*this->numParticles);
             massMat.setIdentity();
             return this->mass * massMat;
         }
         
         VectorXf ParticleSystem::calculateDampeningForce() {
             
-            return this->dampening * this->lastVelocities;
+            return -(this->dampening) * this->lastVelocities;
             
         }
         
         SparseMatrix<float> ParticleSystem::calculateDampeningDerivative() {
-            SparseMatrix<float> force(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
+            SparseMatrix<float> force(3*this->numParticles, 3*this->numParticles);
             force.setIdentity();
-            return this->dampening * force;
+            return -(this->dampening) * force;
         }
         
         void ParticleSystem::calculateStep(float deltaT) {
-            SparseMatrix<float> step(3*NUM_OF_PARTICLES, 3*NUM_OF_PARTICLES);
+            SparseMatrix<float> step(3*this->numParticles, 3*this->numParticles);
             step = this->calculateMassMatrix() - deltaT*this->calculateDampeningDerivative();
             stepMatrixSolver.analyzePattern(step);
             stepMatrixSolver.factorize(step);
         }
         
         void ParticleSystem::step(float deltaT, VectorXf force) {
-            this->positions = this->positions + deltaT * this->calculateVelocities(deltaT, force);
-            int i = 0;
-            for(auto it : this->parts) {
-                
-                it.getVertices()[0].position.x = this->positions[i+0];
-                it.getVertices()[0].position.y = this->positions[i+1];
-                it.getVertices()[0].position.z = this->positions[i+2]+0.1;
-                it.getVertices()[1].position.x = this->positions[i+0]+0.1;
-                it.getVertices()[1].position.y = this->positions[i+1];
-                it.getVertices()[1].position.z = this->positions[i+2]-0.1;
-                it.getVertices()[2].position.x = this->positions[i+0]-0.1;
-                it.getVertices()[2].position.y = this->positions[i+1];
-                it.getVertices()[2].position.z = this->positions[i+2]-0.1;
-                it.getVertices()[3].position.x = this->positions[i+0];
-                it.getVertices()[3].position.y = this->positions[i+1]+0.2;
-                it.getVertices()[3].position.z = this->positions[i+2];
-                
-                it.setVerticesChanged(true);
-                i+=3;
-            }
+            this->calculateVelocities(deltaT, force);
+            this->positions = this->positions + deltaT * this->lastVelocities;
+            vector<float> pos(this->positions.data(), this->positions.data() + sizeof(this->positions)/sizeof(float));
+            this->mesh->setInstancePositions(pos);
+            this->mesh->setInstancePositionsChanged(true);
         }
         
         void ParticleSystem::step(float deltaT) {
-            VectorXf force = VectorXf::Zero(3*NUM_OF_PARTICLES);
+            VectorXf force = VectorXf::Zero(3*this->numParticles);
             this->step(deltaT, force);
         }
     }

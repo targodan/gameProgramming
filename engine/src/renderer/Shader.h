@@ -67,11 +67,11 @@ namespace engine {
                 if(shaderError != GL_TRUE) {
                     GLsizei length = 0;
                     glGetShaderiv(this->id, GL_INFO_LOG_LENGTH, &length);
-                    if(length>1) {
+                    if(length>=1) {
                         GLchar* pInfo = new char[length+1];
                         glGetShaderInfoLog(this->id, length, &length, pInfo);
                         
-                        LOG(ERROR) << "Compile error in " << ShaderTypeToString(this->type) << ": " << std::string(pInfo) << std::endl;
+                        std::cout << "Compile error in " << ShaderTypeToString(this->type) << ": " << std::string(pInfo) << std::endl;
                     }
                     throw GLException("Shader compile error. :(");
                 }

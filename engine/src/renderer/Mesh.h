@@ -104,6 +104,7 @@ namespace engine {
             bool wasLoaded() const;
             
             virtual void setMaterial(const std::shared_ptr<Material>& material);
+            virtual void updateBuffer();
             std::shared_ptr<const Material> getMaterial() const;
             std::shared_ptr<Material> getMaterial();
             

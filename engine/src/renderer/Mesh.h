@@ -77,6 +77,10 @@ namespace engine {
                     return ConstVertexProxy(this->m);
                 }
             };
+            struct Tangents {
+                vec3 tangent;
+                vec3 bitangent;
+            };
             
             Mesh() : loaded(false) {}
             Mesh(vector<Vertex> vertices, DataUsagePattern usage = DataUsagePattern::STATIC_DRAW);
@@ -120,10 +124,13 @@ namespace engine {
             void deleteEdge(GLuint vertIndexA, GLuint vertIndexB);
             void deleteEdges(const vector<std::pair<GLuint, GLuint>>& edges);
         protected:
+            void createTBO(vector<Tangents>& tangents, DataUsagePattern usage);
             void createVBO(vector<Vertex>& vertices, DataUsagePattern usage);
             void createEBO(vector<GLuint>& indices, DataUsagePattern usage);
             void enableVAOAttributes();
             virtual void setVAOAttributes();
+            
+            void calculateTangentBasis();
             
             bool isEdgePartOfFace(size_t faceIndex, GLuint vertIndexA, GLuint vertIndexB) const;
             
@@ -131,6 +138,7 @@ namespace engine {
             
             vector<Vertex> vertices;
             vector<GLuint> indices;
+            vector<Tangents> tangents;
             
             std::unique_ptr<VertexArray> vao;
             

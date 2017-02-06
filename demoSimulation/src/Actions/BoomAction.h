@@ -17,7 +17,6 @@ namespace demo {
             BoomAction(int device, int button, OneShotForce& force) : Action(device, button), force(force) {}
             BoomAction(const BoomAction& orig) : Action(orig), force(orig.force) {}
             void execute(EntityManager& em) override {
-                LOG(INFO) << "Click";
                 this->force.resetShot();
             }
         private:

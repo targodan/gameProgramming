@@ -13,6 +13,7 @@ namespace engine {
         }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
             : material(nullptr), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), loaded(false), usage(usage) {
+            this->calculateTangentBasis();
             this->createEBO(this->indices, usage);
             this->createVBO(this->vertices, usage);
         }
@@ -188,6 +189,16 @@ namespace engine {
             auto vbo = std::make_unique<VertexBuffer>(reinterpret_cast<void*>(vertices.data()), sizeof(Vertex) * nVertices, nVertices, usage);
             this->vao->attachVBO(std::move(vbo));
         }
+        void Mesh::createTBO(vector<Mesh::Tangents>& tangents, DataUsagePattern usage) {
+            // Create tangent VBO
+            if(tangents.size() > 0) {
+                this->vao->attachVBO(std::make_unique<VertexBuffer>(
+                        reinterpret_cast<void*>(tangents.data()),
+                        sizeof(Tangents) * tangents.size(),
+                        tangents.size(),
+                        usage));
+            }
+        }
         void Mesh::createEBO(vector<GLuint>& indices, DataUsagePattern usage){
             // Get no. of elements
             auto nIndices = this->indices.size();
@@ -207,6 +218,8 @@ namespace engine {
             auto positionIndex = this->material->getShader()->getAttributeLocation("position");
             auto normalIndex = this->material->getShader()->getAttributeLocation("normal");
             auto textureCoordinateIndex = this->material->getShader()->getAttributeLocation("textureCoordinate");
+            auto tangentIndex = this->material->getShader()->getAttributeLocation("tangent");
+            auto bitangentIndex = this->material->getShader()->getAttributeLocation("bitangent");
             
             // State VBO attributes
             VertexAttribute positionAttrib {positionIndex, Vertex::nElements, 
@@ -220,8 +233,26 @@ namespace engine {
             VertexAttribute textureCoordAttrib {textureCoordinateIndex, Vertex::nElements, 
                     DataType::FLOAT, 0, sizeof(Vertex), 
                     (GLvoid*)offsetof(Vertex, textureCoord)};
-
+                
             vector<VertexAttribute> attribs;
+            if(this->tangents.size() > 0 && tangentIndex != -1 && bitangentIndex != -1) {
+                attribs.push_back({
+                        tangentIndex,
+                        3,
+                        DataType::FLOAT,
+                        GL_FALSE,
+                        sizeof(Tangents),
+                        (GLvoid*)offsetof(Tangents, tangent)
+                    });
+                attribs.push_back({
+                        bitangentIndex,
+                        3,
+                        DataType::FLOAT,
+                        GL_FALSE,
+                        sizeof(Tangents),
+                        (GLvoid*)offsetof(Tangents, bitangent)
+                    });
+            }    
             if(positionIndex != -1) {
                 attribs.push_back(positionAttrib);
             }
@@ -317,50 +348,6 @@ namespace engine {
         }
         
         void Mesh::deleteEdges(const vector<std::pair<GLuint, GLuint>>& edges) {
-//            bool deleteNext3 = false;
-//            this->indices.erase(std::remove_if(this->indices.begin(), this->indices.end(), [&,this](const auto& element) {
-//                // This fells so dirty.
-//                auto index = &element - &*this->indices.begin();
-//                if(index % 3 == 0) {
-//                    // start of face => check it
-//                    deleteNext3 = false;
-//                    for(auto& edge : edges) {
-//                        if(this->isEdgePartOfFace(index / 3, edge.first, edge.second)) {
-//                            deleteNext3 = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//                return deleteNext3;
-//            }), this->indices.end());
-//            this->vao->getEBO().setNumberOfElements(this->indices.size());
-//            this->setIndicesChanged(true);
-            
-//            size_t size = this->indices.size();
-//            for(GLuint* elem = &this->indices[0]; elem <= &this->indices[size-1]; elem += 3) {
-//                const GLuint* elem0 = elem+0;
-//                const GLuint* elem1 = elem+1;
-//                const GLuint* elem2 = elem+2;
-//                for(auto& edge : edges) {
-//                    if(    (*(elem0) == edge.first  && *(elem1) == edge.second)
-//                        || (*(elem0) == edge.first  && *(elem2) == edge.second)
-//                        || (*(elem1) == edge.first  && *(elem2) == edge.second)
-//                        || (*(elem0) == edge.second && *(elem1) == edge.first)
-//                        || (*(elem0) == edge.second && *(elem2) == edge.first)
-//                        || (*(elem1) == edge.second && *(elem2) == edge.first)) {
-//                        // Move to end
-//                        for(GLuint* it = elem; it <= &this->indices[size-1-3]; it += 3) {
-//                            *(it+0) = *(it+3);
-//                            *(it+1) = *(it+4);
-//                            *(it+2) = *(it+5);
-//                        }
-//                        size -= 3;
-//                        break;
-//                    }
-//                }
-//            }
-//            this->indices.erase(this->indices.begin()+size, this->indices.end());
-            
             vector<GLuint> newIndices;
             newIndices.reserve(this->indices.size());
             
@@ -388,6 +375,49 @@ namespace engine {
                 }
             }
             this->indices = std::move(newIndices);
+        }
+        
+        void Mesh::calculateTangentBasis() {
+            // Code from http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/
+            this->tangents.clear();
+            this->tangents.resize(this->vertices.size(), {{0,0,0}, {0,0,0}});
+            vector<size_t> counts(this->vertices.size(), 0);
+            
+            for(size_t faceIndex = 0; faceIndex < this->indices.size(); faceIndex += 3) {
+                auto i0 = this->indices[faceIndex + 0];
+                auto i1 = this->indices[faceIndex + 1];
+                auto i2 = this->indices[faceIndex + 2];
+                
+                auto v0 = this->vertices[i0];
+                auto v1 = this->vertices[i1];
+                auto v2 = this->vertices[i2];
+                
+                auto p01 = v1.position - v0.position;
+                auto p02 = v2.position - v0.position;
+                
+                auto uv01 = v1.textureCoord - v0.textureCoord;
+                auto uv02 = v2.textureCoord - v0.textureCoord;
+                
+                float r = 1. / (uv01.x * uv02.y - uv01.y * uv02.x);
+                auto tangent = r * (p01 * uv02.y - p02 * uv01.y);
+                auto bitangent = r * (p02 * uv01.x - p01 * uv02.x);
+                
+                this->tangents[i0].tangent += tangent;
+                this->tangents[i0].bitangent += bitangent;
+                ++(counts[i0]);
+                this->tangents[i1].tangent += tangent;
+                this->tangents[i1].bitangent += bitangent;
+                ++(counts[i1]);
+                this->tangents[i2].tangent += tangent;
+                this->tangents[i2].bitangent += bitangent;
+                ++(counts[i2]);
+            }
+            
+            // And average
+            for(size_t i = 0; i < this->tangents.size(); ++i) {
+                this->tangents[i].tangent /= static_cast<float>(counts[i]);
+                this->tangents[i].bitangent /= static_cast<float>(counts[i]);
+            }
         }
     }
 }

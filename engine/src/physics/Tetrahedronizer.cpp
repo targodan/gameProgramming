@@ -85,14 +85,15 @@ namespace engine {
                             auto& veretexList = isX0 ? outerVertices : innerVertices;
                             auto& indexList = isX0 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isX0 ? 0 : 1;
-                            glm::vec3 color = isX0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(-1, 0, 0, 0);
+                            auto normal = isX0 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), normal, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), normal, vec2(zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), normal, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), normal, vec2(zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -112,14 +113,15 @@ namespace engine {
                             auto& veretexList = isX1 ? outerVertices : innerVertices;
                             auto& indexList = isX1 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isX1 ? 0 : 1;
-                            glm::vec3 color = isX1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(1, 0, 0, 0);
+                            auto normal = isX1 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), normal, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), normal, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), normal, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ + texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), normal, vec2(textureRepeatAlongSpanThree - zTetrahedron * texOffsetZ, yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -139,14 +141,15 @@ namespace engine {
                             auto& veretexList = isY0 ? outerVertices : innerVertices;
                             auto& indexList = isY0 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isY0 ? 0 : 1;
-                            glm::vec3 color = isY0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(0, -1, 0, 0);
+                            auto normal = isY0 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), normal, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), normal, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), normal, vec2(xTetrahedron * texOffsetX + texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), normal, vec2(xTetrahedron * texOffsetX, zTetrahedron * texOffsetZ + texOffsetZ))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 2);
@@ -166,14 +169,15 @@ namespace engine {
                             auto& veretexList = isY1 ? outerVertices : innerVertices;
                             auto& indexList = isY1 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isY1 ? 0 : 1;
-                            glm::vec3 color = isY1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(0, 1, 0, 0);
+                            auto normal = isY1 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), normal, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), normal, vec2(zTetrahedron * texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), normal, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX + texOffsetX))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), normal, vec2(zTetrahedron * texOffsetZ + texOffsetZ, xTetrahedron * texOffsetX))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 3);
@@ -193,14 +197,15 @@ namespace engine {
                             auto& veretexList = isZ0 ? outerVertices : innerVertices;
                             auto& indexList = isZ0 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isZ0 ? 0 : 1;
-                            glm::vec3 color = isZ0 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(0, 0, -1, 0);
+                            auto normal = isZ0 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_1_0_0), color, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX, yTetrahedron * texOffsetY))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_0_0_0), color, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_1_1_0), color, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_0_1_0), color, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_1_0_0), normal, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX, yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_0_0_0), normal, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_1_0), normal, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_0), normal, vec2(textureRepeatAlongSpanOne - xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 1);
@@ -220,14 +225,15 @@ namespace engine {
                             auto& veretexList = isZ1 ? outerVertices : innerVertices;
                             auto& indexList = isZ1 ? outerFaceIndices : innerFaceIndices;
                             auto meshIndex = isZ1 ? 0 : 1;
-                            glm::vec3 color = isZ1 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+                            Vector4f tmpNormal = cuboidToEuclidian * Vector4f(0, 0, 1, 0);
+                            auto normal = isZ1 ? vec3(tmpNormal[0], tmpNormal[1], tmpNormal[2]) : vec3(1, 0, 0);
 
                             auto firstIndex = veretexList.size();
                             
-                            veretexList.push_back(Vertex(vec4(corner_0_0_1), color, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY))); // +0
-                            veretexList.push_back(Vertex(vec4(corner_1_0_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY))); // +1
-                            veretexList.push_back(Vertex(vec4(corner_1_1_1), color, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +2
-                            veretexList.push_back(Vertex(vec4(corner_0_1_1), color, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +3
+                            veretexList.push_back(Vertex(vec4(corner_0_0_1), normal, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY))); // +0
+                            veretexList.push_back(Vertex(vec4(corner_1_0_1), normal, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY))); // +1
+                            veretexList.push_back(Vertex(vec4(corner_1_1_1), normal, vec2(xTetrahedron * texOffsetX + texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +2
+                            veretexList.push_back(Vertex(vec4(corner_0_1_1), normal, vec2(xTetrahedron * texOffsetX, yTetrahedron * texOffsetY + texOffsetY))); // +3
                             
                             indexList.push_back(firstIndex + 0);
                             indexList.push_back(firstIndex + 1);

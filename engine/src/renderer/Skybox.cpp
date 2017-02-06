@@ -115,6 +115,11 @@ namespace engine {
             gl::glDisable(GL_DEPTH_TEST);
             gl::glDepthMask(false);
             
+            gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+            gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+            gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            
             VisualObject::render();
             
             gl::glDepthMask(true);

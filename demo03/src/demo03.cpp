@@ -86,7 +86,7 @@ namespace demo {
         VisualObject vo = {iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
         vo.loadObject();
         
-        ParticleSystem pats(1, 0.3, iMesh ,ParticleForce::getForceOnVertices(60));
+        ParticleSystem pats(3, 0.2, iMesh ,ParticleForce::getForceOnVertices(60));
         std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
         
         this->PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);

@@ -87,9 +87,10 @@ namespace engine {
         void ParticleSystem::step(float deltaT, VectorXf force) {
             this->calculateVelocities(deltaT, force);
             this->positions = this->positions + deltaT * this->lastVelocities;
-            vector<float> pos(this->positions.data(), this->positions.data() + sizeof(this->positions)/sizeof(float));
+            vector<float> pos(this->positions.data(), this->positions.data() + this->positions.rows());
             this->mesh->setInstancePositions(pos);
             this->mesh->setInstancePositionsChanged(true);
+            LOG(INFO) << "Pos" << this->positions;
         }
         
         void ParticleSystem::step(float deltaT) {

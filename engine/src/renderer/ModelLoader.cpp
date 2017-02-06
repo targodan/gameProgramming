@@ -101,7 +101,6 @@ namespace engine {
                 material = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)));
             } else {
                 material = std::make_shared<Material>(std::make_shared<ShaderProgram>(pathToVertexShader, pathToFragmentShader));
-                std::cout << pathToVertexShader << endl << pathToFragmentShader;
             }
             
             if(!textures.empty()) {

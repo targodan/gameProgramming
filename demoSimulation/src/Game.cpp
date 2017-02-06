@@ -106,7 +106,7 @@ namespace demoSimulation {
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond,
-                1e4
+                1e3
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
@@ -148,12 +148,12 @@ namespace demoSimulation {
 //        });
         
         
-//        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
-//        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
-//        bombVO->loadObject();
-//        this->entityManager.createEntity("Bomb")
-//                .addComponent<VisualComponent>(bombVO)
-//                .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
+        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
+        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
+        bombVO->loadObject();
+        this->entityManager.createEntity("Bomb")
+                .addComponent<VisualComponent>(bombVO)
+                .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
         
         float floorRadius = 1e4;
         float floorTexRepeat = 4e4;

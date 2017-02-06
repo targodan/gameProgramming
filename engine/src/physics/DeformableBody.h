@@ -10,6 +10,20 @@
 #include "Force.h"
 #include "TetrahedronizedObject.h"
 
+namespace std {
+    template<>
+    struct hash<pair<size_t,size_t>> {
+       typedef pair<size_t,size_t> argument_type;
+       typedef unsigned long long result_type;
+
+       result_type operator() (const argument_type& x) const
+       {
+            // Yay, primes. :D
+            return std::hash<result_type>()(static_cast<result_type>(x.first) * 3 + x.second * 5);
+       }
+    };
+}
+
 namespace engine {
     namespace physics {
         using namespace Eigen;
@@ -28,6 +42,7 @@ namespace engine {
             
             double stressThresholdSqForBreaking;
             Set<size_t> deletedTetrahedra;
+            Set<std::pair<size_t, size_t>> deletedEdges;
             
             SparseMatrix<double> stiffnessMatrix; // Called K in lecture
             SparseMatrix<double> dampeningMatrix; // Called C in lecture
@@ -45,8 +60,9 @@ namespace engine {
             VectorXd vertexFreezer;
             
             SparseMatrix<double> calculateMaterialMatrix() const; // Called D in lecture
-            std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const; // Called K in lecture
+            std::pair<SparseMatrix<double>, MatrixXd> calculateStiffnessAndStressMatrixForTetrahedron(size_t index) const; // Called K in lecture
             void combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const SparseMatrix<double>& source, int sourceRow, int sourceCol) const;
+            void combineBlock(int blockRows, int blockCols, SparseMatrix<double>& target, int targetRow, int targetCol, const MatrixXd& source, int sourceRow, int sourceCol) const;
             void combineStiffnessMatrices(SparseMatrix<double>& target, const SparseMatrix<double>& source, size_t tetraIndex) const;
             std::pair<SparseMatrix<double>, SparseMatrix<double>> calculateStiffnessAndStressMatrix() const; // Called K in lecture
             SparseMatrix<double> calculateDampeningMatrix() const; // Called C in lecture
@@ -56,7 +72,7 @@ namespace engine {
             
             VectorXd calculateCurrentDifferenceFromRestPosition() const;
             VectorXd calculateVelocities(float h, const VectorXf& forces) const;
-            VectorXd calculateSqStressPerTetrahedron(const VectorXd& deformation);
+            VectorXd calculateStressPerTetrahedron(const VectorXd& deformation);
             
             Vector3f getVertexOfRestPosition(int index) const;
             MatrixXf getRestTetrahedron(int tetraIndex) const;
@@ -74,11 +90,12 @@ namespace engine {
             DeformableBody(const TetrahedronizedObject& mesh, double dampening,
                     double youngsModulus, double poissonsRatio, float targetStepSize, double stressThresholdForBreaking = 0, float stepSizeDeviationPercentageForRecalculation = 2)
                     : mesh(mesh), dampening(dampening), youngsModulus(youngsModulus),
-                        poissonsRatio(poissonsRatio), stressThresholdSqForBreaking(stressThresholdForBreaking*stressThresholdForBreaking),
+                        poissonsRatio(poissonsRatio), stressThresholdSqForBreaking(stressThresholdForBreaking),
                         stepSizeOnMatrixCalculation(0), stepSizeDeviationPercentage(stepSizeDeviationPercentageForRecalculation) {
                 if(this->poissonsRatio <= 0 || 0.5 <= this->poissonsRatio) {
                     throw IllegalArgumentException("The poisson's ratio must be between 0 and 0.5 (both exclusive), is %f.", this->poissonsRatio);
                 }
+                this->deletedEdges.set_empty_key(std::make_pair(SIZE_MAX, SIZE_MAX));
                 this->deletedTetrahedra.set_empty_key(SIZE_MAX);
                 this->deletedTetrahedra.resize(this->mesh.getNumberOfTetrahedron());
                 this->calculateAndSetInitialState(targetStepSize);

@@ -1,4 +1,5 @@
 #include "InstanceMesh.h"
+#include <easylogging++.h>
 
 namespace engine {
     namespace renderer {
@@ -67,7 +68,7 @@ namespace engine {
                 }
                 this->indicesChanged = false;
             }
-
+            
             this->vao->unbind();
 
             this->material->makeActive();

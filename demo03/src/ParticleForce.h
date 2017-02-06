@@ -49,9 +49,9 @@ namespace demo {
                     pitch = pitchDis(generator);
                     jaw = jawDis(generator);
                     pow = powDis(generator);
-                    forces(i,0) = 50*pow*glm::cos(jaw)*glm::cos(pitch) ;
-                    forces(i+1,0) = 50*pow*glm::sin(pitch);
-                    forces(i+2,0) = 50*pow*glm::sin(jaw)*glm::cos(pitch);
+                    forces(i,0) = 300*pow*glm::cos(jaw)*glm::cos(pitch) ;
+                    forces(i+1,0) = 300*pow*glm::sin(pitch);
+                    forces(i+2,0) = 300*pow*glm::sin(jaw)*glm::cos(pitch);
                 }
                 
             }

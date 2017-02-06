@@ -316,11 +316,40 @@ namespace engine {
 //            this->vao->getEBO().setNumberOfElements(this->indices.size());
 //            this->setIndicesChanged(true);
             
-            size_t size = this->indices.size();
-            for(GLuint* elem = &this->indices[0]; elem <= &this->indices[size-1]; elem += 3) {
+//            size_t size = this->indices.size();
+//            for(GLuint* elem = &this->indices[0]; elem <= &this->indices[size-1]; elem += 3) {
+//                const GLuint* elem0 = elem+0;
+//                const GLuint* elem1 = elem+1;
+//                const GLuint* elem2 = elem+2;
+//                for(auto& edge : edges) {
+//                    if(    (*(elem0) == edge.first  && *(elem1) == edge.second)
+//                        || (*(elem0) == edge.first  && *(elem2) == edge.second)
+//                        || (*(elem1) == edge.first  && *(elem2) == edge.second)
+//                        || (*(elem0) == edge.second && *(elem1) == edge.first)
+//                        || (*(elem0) == edge.second && *(elem2) == edge.first)
+//                        || (*(elem1) == edge.second && *(elem2) == edge.first)) {
+//                        // Move to end
+//                        for(GLuint* it = elem; it <= &this->indices[size-1-3]; it += 3) {
+//                            *(it+0) = *(it+3);
+//                            *(it+1) = *(it+4);
+//                            *(it+2) = *(it+5);
+//                        }
+//                        size -= 3;
+//                        break;
+//                    }
+//                }
+//            }
+//            this->indices.erase(this->indices.begin()+size, this->indices.end());
+            
+            vector<GLuint> newIndices;
+            newIndices.reserve(this->indices.size());
+            
+            const GLuint* end = &this->indices[this->indices.size()-1];
+            for(GLuint* elem = &this->indices[0]; elem <= end; elem += 3) {
                 const GLuint* elem0 = elem+0;
                 const GLuint* elem1 = elem+1;
                 const GLuint* elem2 = elem+2;
+                bool deleteThis = false;
                 for(auto& edge : edges) {
                     if(    (*(elem0) == edge.first  && *(elem1) == edge.second)
                         || (*(elem0) == edge.first  && *(elem2) == edge.second)
@@ -328,18 +357,17 @@ namespace engine {
                         || (*(elem0) == edge.second && *(elem1) == edge.first)
                         || (*(elem0) == edge.second && *(elem2) == edge.first)
                         || (*(elem1) == edge.second && *(elem2) == edge.first)) {
-                        // Move to end
-                        for(GLuint* it = elem; it <= &this->indices[size-1-3]; it += 3) {
-                            *(it+0) = *(it+3);
-                            *(it+1) = *(it+4);
-                            *(it+2) = *(it+5);
-                        }
-                        size -= 3;
+                        deleteThis = true;
                         break;
                     }
                 }
+                if(!deleteThis) {
+                    newIndices.push_back(*elem0);
+                    newIndices.push_back(*elem1);
+                    newIndices.push_back(*elem2);
+                }
             }
-            this->indices.erase(this->indices.begin()+size, this->indices.end());
+            this->indices = std::move(newIndices);
         }
     }
 }

@@ -11,6 +11,7 @@
 
 #include "glm/gtx/transform.hpp"
 #include "RenderLoadingSystem.h"
+#include "LightingSystem.h"
 
 using engine::renderer::TextRenderer;
 
@@ -55,6 +56,7 @@ namespace engine {
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
                     visual.setShaderUniform("viewMatrix", camera.getViewMatrix());
+                    visual.setShaderUniform("viewPosition", placement.getPosition());
                     
                     this->render(visual);
                 }
@@ -83,7 +85,7 @@ namespace engine {
         }
             
         Array<systemId_t> RenderSystem::getOptionalDependencies() const {
-            return {PerformanceMetricsSystem::systemTypeId()};
+            return {PerformanceMetricsSystem::systemTypeId(), LightingSystem::systemTypeId()};
         }
         
         systemId_t RenderSystem::systemTypeId() {

@@ -105,11 +105,6 @@ namespace engine {
 
             this->material->makeInactive();
         }
-//
-//        void InstanceMesh::setMaterial(const std::shared_ptr<Material>& material) {
-//            Mesh::setMaterial(material);
-//
-//        }
 
         const vector<float>& InstanceMesh::getInstancePositions() const {
             return this->instancePositions;

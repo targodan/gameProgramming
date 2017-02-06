@@ -8,6 +8,7 @@
 namespace engine {
     namespace ECSCommon {
         using namespace engine::ECS;
+        using util::Array;
         using renderer::Mapping;
         
         class LightingSystem : public System {
@@ -32,6 +33,9 @@ namespace engine {
             }
             
             systemId_t getSystemTypeId() const override;
+            
+            virtual Array<systemId_t> getDependencies() const override;
+            virtual Array<systemId_t> getOptionalDependencies() const override;
             
             unsigned int nPreviousPointLights = 0;
             Mapping mapping = Mapping::NONE;

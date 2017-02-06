@@ -113,15 +113,18 @@ namespace engine {
                     "out vec3 fragPosition;\n"
                     "out vec3 fragNormal;\n"
                     "out vec2 uv;\n"
+                    "out mat4 oModelViewMatrix;\n"
                     ""
                     "void main() {\n"
-                    "   mat4 invModelMatrix = inverse(modelMatrix);\n"
+                    "   mat4 modelViewMatrix = viewMatrix * modelMatrix;\n"
                     ""
-                    "   fragPosition = vec3(modelMatrix * vec4(position, 1.0f));\n"
-                    "   fragNormal = normalize(vec3(invModelMatrix * vec4(normal, 0.f)));\n"
+                    "   fragPosition = vec3(modelViewMatrix * vec4(position, 1.0f));\n"
+                    "   fragNormal = normalize(vec3(inverse(transpose(modelViewMatrix)) * vec4(normal, 0.f)));\n"
                     "   uv = textureCoordinates;\n"
                     ""
-                    "   gl_Position = projectionMatrix * viewMatrix * vec4(fragPosition, 1.0f);\n"
+                    "   gl_Position = projectionMatrix * vec4(fragPosition, 1.0f);\n"
+                    ""
+                    "   oModelViewMatrix = modelViewMatrix;\n"  
                     "}";
         }
         string DefaultShader::createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures) {
@@ -206,25 +209,26 @@ namespace engine {
             if(nPointLights > 0) {
                 calculatePointLight =
                     "vec3 calculatePointLight(PointLight light, vec3 unitNormal, vec3 unitViewDirection){\n"
-                    "     vec3 unitLightDirection = normalize(light.position - fragPosition);\n"
+                    "     vec3 unitLightDirection = normalize(vec3(oModelViewMatrix * vec4(light.position, 1.f)) - fragPosition);\n"
                     ""
                     "     vec3 ambientColor = light.ambient * " + diffuseValue + ";\n"
-                    "     vec3 diffuseColor = light.diffuse * calcDiffuseTerm(unitNormal, unitLightDirection) * " + diffuseValue + ";\n"
+                    "     vec3 diffuseColor = " + diffuseValue + ";\n"
                     "     vec3 specularColor = light.specular * calcSpecularTerm(unitNormal, unitLightDirection, unitViewDirection) * " + specularValue + ";\n"
-                    "     return ambientColor + calcAttenuationFactor(length(fragPosition - light.position), light.linAttenuation, light.quadAttenuation) * (diffuseColor + specularColor);\n"
+                    "     // return ambientColor + calcAttenuationFactor(length(fragPosition - vec3(oModelViewMatrix * vec4(light.position, 1.f))), light.linAttenuation, light.quadAttenuation) * (diffuseColor + specularColor);\n"
+                    "     return diffuseColor;\n"
                     "}\n";
             }
             
             string main = 
                     "void main() {\n"
                     "     vec3 unitNorm = normalize(fragNormal);\n"
-                    "     vec3 unitViewingDir = normalize(viewPosition - fragPosition);\n"
+                    "     vec3 unitViewingDir = normalize(-fragPosition);\n"
                     "\n";
             
             if(directionalLight) {
-                main += "   vec3 color = calculateDirectionalLight(directionalLight, unitNorm, unitViewingDir);\n";
+                main += "     vec3 color = calculateDirectionalLight(directionalLight, unitNorm, unitViewingDir);\n";
             } else {
-                main += "   vec3 color = vec3(0.f, 0.f, 0.f);\n";
+                main += "     vec3 color = vec3(0.f, 0.f, 0.f);\n";
             }
             main += "     for(int i = 0; i < " + std::to_string(nPointLights) + "; i++)\n"
                     "         color += calculatePointLight(pointLightSources[i], unitNorm, unitViewingDir);\n"
@@ -237,11 +241,11 @@ namespace engine {
                     ""
                     + pointLightStruct + directionalLightStruct +
                     ""
-                    "in vec3 fragPosition;\n"
-                    "in vec3 fragNormal;\n"
+                    "in vec3 fragPosition;\n" // in CC
+                    "in vec3 fragNormal;\n" // in CC 
                     "in vec2 uv;\n"
                     "\n"
-                    "uniform vec3 viewPosition;\n"
+                    "in mat4 oModelViewMatrix;\n"
                     "\n"
                     "uniform float shininess;\n"
                     + diffuseInput + specularInput +
@@ -259,7 +263,7 @@ namespace engine {
                     "     return max(0.0, dot(unitNormal, unitLightDirection));\n"
                     "}\n"
                     "float calcAttenuationFactor(float distanceLightToFrag, float linAttenuation, float quadAttenuation){\n"
-                    "     return 1.0 / (1.0 + linAttenuation * distanceLightToFrag + quadAttenuation * pow(distanceLightToFrag, 2));\n"
+                    "     return 1.0 / (1.0 + linAttenuation * distanceLightToFrag + quadAttenuation * distanceLightToFrag * distanceLightToFrag);\n"
                     "}\n"
                     ""
                     + calculateDirectionalLight

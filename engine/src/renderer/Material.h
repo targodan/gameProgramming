@@ -98,7 +98,7 @@ namespace engine {
             
             bool active = false;
             bool allTexturesLoaded = false;
-            bool lighting = true; // If false, objects with this material won't show lighting effects (for example: skybox)
+            bool lighting = false; // If false, objects with this material won't show lighting effects (for example: skybox)
             bool attachedNewShader = false; 
             
             float shininess;

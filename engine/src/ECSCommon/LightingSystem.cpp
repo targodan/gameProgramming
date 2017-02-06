@@ -7,7 +7,9 @@
 #include "renderer/TextureType.h"
 #include "renderer/ShaderProgram.h"
 
+#include "../ECS/Entity.h"
 #include "../WTFException.h"
+#include "RenderLoadingSystem.h"
 
 #include <easylogging++.h>
 
@@ -41,6 +43,10 @@ namespace engine {
                 auto& visual = itVisual->to<VisualComponent>();
                 auto& material = visual.getVisualObject().getMaterial();
                 
+                if(!material.isLightingEnabled()) {
+                    continue;
+                }
+                
                 bool hasSpecularTexture = material.hasSpecularTexture();
                 bool hasDiffuseTexture = material.hasDiffuseTexture();
                 bool hasNormalTexture = material.hasNormalTexture();
@@ -70,12 +76,14 @@ namespace engine {
                 }
                 
                 unsigned int iLightSource = 0;
+                
                 for(auto itLight = em.begin({LightingComponent::getComponentTypeId()}); itLight != em.end(); ++itLight) {
-                    auto& lightSource =  itLight->to<LightingComponent>().getLightSource();
+                    auto& lightComp = itLight[0]->to<LightingComponent>();
+                    auto& lightSource =  lightComp.getLightSource();
+                    
                     try{
-                        auto& placement = em.getEntity(itLight.getEntityId()).getComponent<PlacementComponent>(); // found a point light
-                        
-                        std::string uniformLightSource = "pointLightSources[" + std::to_string(iLightSource) + "].";
+                        auto& placement = em.getEntity(lightComp.getEntityId()).getComponent<PlacementComponent>(); // found a point light
+                        std::string uniformLightSource = "pointLightSources[" + std::to_string(iLightSource) + "]";
                         visual.setShaderUniform(uniformLightSource + ".position", placement.getPosition());
                         visual.setShaderUniform(uniformLightSource + ".ambient", lightSource.getAmbient());
                         visual.setShaderUniform(uniformLightSource + ".diffuse", lightSource.getDiffuse());
@@ -85,6 +93,15 @@ namespace engine {
                     } catch(...) {}
                 }
             }
+            
+            this->nPreviousPointLights = nPointLights;
+        }
+        
+        Array<systemId_t> LightingSystem::getDependencies() const {
+            return {RenderLoadingSystem::systemTypeId()};
+        }
+        Array<systemId_t> LightingSystem::getOptionalDependencies() const {
+            return {};
         }
         
         systemId_t LightingSystem::getSystemTypeId() const {

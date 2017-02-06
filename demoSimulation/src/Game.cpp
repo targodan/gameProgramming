@@ -149,10 +149,12 @@ namespace demoSimulation {
         
         
         auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
+        bombVO->getMaterial().attachTexture("textures/bomb_diffuse.png");
+        bombVO->getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
         bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
         bombVO->loadObject();
         this->entityManager.createEntity("Bomb")
-                .addComponent<VisualComponent>(bombVO)
+                .addComponent<VisualComponent>(std::make_shared<VisualObject>(*bombVO))
                 .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
         
         float floorRadius = 1e4;
@@ -178,6 +180,7 @@ namespace demoSimulation {
         floorMat->attachTexture(floorTex);
         auto floorVO = std::make_shared<VisualObject>(floorMesh, floorMat);
         floorVO->loadObject();
+        
         this->entityManager.createEntity("Floor")
                 .addComponent<VisualComponent>(floorVO);
         
@@ -210,6 +213,7 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
+        this->systemManager.enableSystem<RenderLoadingSystem>();
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
         

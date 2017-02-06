@@ -1,6 +1,7 @@
 #include "VisualObject.h"
 #include "ModelLoader.h"
 #include <iostream>
+#include <easylogging++.h>
 
 namespace engine {
     namespace renderer {
@@ -69,6 +70,7 @@ namespace engine {
             this->mesh->loadMesh();
             if(this->material->getTextures().size() > 0) {
                 this->material->loadTextures();
+                LOG(INFO) << "Loaded textures.";
             }
             
             this->loaded = true;

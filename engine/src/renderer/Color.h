@@ -10,7 +10,7 @@ namespace engine {
         
         class Color {
         protected:
-            vec4 color;
+            vec4 color = vec4{0.f, 0.f, 0.f, 1.f};
             
         public:
             Color() {}

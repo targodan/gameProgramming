@@ -10,11 +10,14 @@
 #include "../WindowResizeMessage.h"
 
 #include "glm/gtx/transform.hpp"
+#include "RenderLoadingSystem.h"
 
 using engine::renderer::TextRenderer;
 
 namespace engine {
     namespace ECSCommon {
+        using namespace renderer;
+        
         using glm::mat4;
         
         ECS_REGISTER_SYSTEM(RenderSystem);
@@ -76,7 +79,7 @@ namespace engine {
         }
         
         Array<systemId_t> RenderSystem::getDependencies() const {
-            return {};
+            return {RenderLoadingSystem::systemTypeId()};
         }
             
         Array<systemId_t> RenderSystem::getOptionalDependencies() const {

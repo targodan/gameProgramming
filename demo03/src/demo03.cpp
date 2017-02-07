@@ -113,14 +113,19 @@ namespace demo {
         auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_Q, action5);
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
-        auto action6 = std::make_shared<PlaceBombAction>(PlaceBombAction(-2, GLFW_MOUSE_BUTTON_RIGHT, std::make_shared<Entity>(this->player)));
+        
+                    
+        auto bombMesh = std::make_shared<VisualObject>("resources/models/bomb.blend");
+        bombMesh->loadObject();
+        
+        auto action6 = std::make_shared<PlaceBombAction>(PlaceBombAction(-2, GLFW_MOUSE_BUTTON_RIGHT, std::make_shared<Entity>(this->player), bombMesh));
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_RIGHT, action6);
         
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         //this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<InputSystem>(bm);
-        this->systemManager.enableSystem<ParticleSystemSystem>();
+        //this->systemManager.enableSystem<ParticleSystemSystem>();
         Game::initialize();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);

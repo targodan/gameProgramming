@@ -33,23 +33,21 @@ namespace demo {
         
         class PlaceBombAction : public Action {
         public:
-            PlaceBombAction(int device, int button, shared_ptr<Entity> Player) : Action(device, button), prev(false), player(Player) {}
-            PlaceBombAction(const PlaceBombAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player) {}
+            PlaceBombAction(int device, int button, shared_ptr<Entity> Player, shared_ptr<VisualObject> bomb) : Action(device, button), prev(false), player(Player), bomb(bomb) {}
+            PlaceBombAction(const PlaceBombAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), prev(orig.prev), player(orig.player), bomb(orig.bomb) {}
             void execute(EntityManager& em) override {
                 if(!prev) {
                     auto pos = this->player->getComponent<PlacementComponent>().getPosition();
                     auto dir = this->player->getComponent<CameraComponent>().getDirection();
-                    
-                    
-                    VisualObject bombMesh = {"resources/models/bomb.blend"};
-                    bombMesh.loadObject();
-                    
-                    em.createEntityAsync("Bomb", {make_shared<VisualComponent>(std::make_shared<VisualObject>(bombMesh)), make_shared<PlacementComponent>(pos + vec3(dir.x, 0, dir.z ))} );
+                    prev = true;
+                    LOG(INFO) << (pos + vec3(dir.x, 0, dir.z ));
+                    em.createEntityAsync("Bomb", {make_shared<VisualComponent>(bomb), make_shared<PlacementComponent>(pos + vec3(dir.x, 0, dir.z ))} );
                 }
             }
         private:
             bool prev;
             shared_ptr<Entity> player;
+            shared_ptr<VisualObject> bomb;
         };
     }
 }

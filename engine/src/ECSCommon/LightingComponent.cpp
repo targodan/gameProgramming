@@ -20,10 +20,10 @@ namespace engine {
         }
 
         const LightSource& LightingComponent::getLightSource() const {
-            return this->lightSource;
+            return *this->lightSource;
         }
         LightSource& LightingComponent::getLightSource() {
-            return this->lightSource;
+            return *this->lightSource;
         }
         
         void LightingComponent::setComponentTypeId(componentId_t id) {

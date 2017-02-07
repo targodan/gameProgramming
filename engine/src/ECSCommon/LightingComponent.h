@@ -14,11 +14,11 @@ namespace engine {
             static componentId_t typeId;
             
         protected:
-            LightSource lightSource;
+            std::shared_ptr<LightSource> lightSource;
             
         public:
             LightingComponent() {}
-            LightingComponent(const LightSource& lightSource) : lightSource(lightSource) {}
+            LightingComponent(const std::shared_ptr<LightSource>& lightSource) : lightSource(lightSource) {}
             LightingComponent(const LightingComponent& orig) = delete;
             virtual ~LightingComponent() {}
             

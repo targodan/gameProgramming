@@ -10,10 +10,10 @@ namespace engine {
         
         class LightSource {
         public:
-            LightSource(bool directionalLight = false);
-            LightSource(const vec3& diffuseColor, bool directionalLight = false);
-            LightSource(const vec3& diffuseColor, const vec3& ambientColor, bool directionalLight = false);
-            LightSource(const vec3& diffuseColor, const vec3& ambientColor, const vec3& specularColor, bool directionalLight = false);
+            LightSource();
+            LightSource(const vec3& diffuseColor);
+            LightSource(const vec3& diffuseColor, const vec3& ambientColor);
+            LightSource(const vec3& diffuseColor, const vec3& ambientColor, const vec3& specularColor);
             LightSource(const LightSource& orig);
             LightSource(LightSource&& orig);
             virtual ~LightSource();
@@ -26,9 +26,7 @@ namespace engine {
             float getQuadAttenuation() const;
             
             void setAttenuation(float linearAttenuation, float quadraticAttenuation);
-            
-            bool isDirectionalLight() const;
-        private:
+        protected:
             /*
              * Comments based on: https://learnopengl.com/#!Lighting/Materials
              */

@@ -77,7 +77,7 @@ namespace demo {
         auto light = this->entityManager.createEntity("Light");
         LightSource lightSource;
         lightSource.setAttenuation(0.2f, 0.2f);
-        light.addComponent<LightingComponent>(lightSource).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
+        light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource)).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
         
         // Create camera/player
         this->player = this->entityManager.createEntity("Player");

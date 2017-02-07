@@ -127,6 +127,7 @@ namespace engine {
                     "   oModelViewMatrix = modelViewMatrix;\n"  
                     "}";
         }
+        // Formulae closely oriented on Basic Techniques in Computer Graphics & www.learnopengl.com
         string DefaultShader::createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures) {
             if(nPointLights == 0 && !directionalLight) {
                 throw WTFException("Cannot create lighting fragment shader for 0 light sources!");

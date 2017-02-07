@@ -10,6 +10,7 @@
 
 #include "../WTFException.h"
 #include "PlacementSystem.h"
+#include "renderer/DirectionalLight.h"
 
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
@@ -17,9 +18,7 @@
 
 namespace engine {
     namespace ECSCommon {
-        using renderer::TextureType;
-        using renderer::ShaderProgram;
-        using renderer::DefaultShader;
+        using namespace renderer;
         
         ECS_REGISTER_SYSTEM(LightingSystem);
         
@@ -34,6 +33,12 @@ namespace engine {
                     auto& placement = em.getEntity(light.getEntityId()).getComponent<PlacementComponent>(); // found a point light
                     nPointLights++;
                 } catch(...) {
+#ifdef DEBUG
+                    if(dynamic_cast<DirectionalLight*>(&light.getLightSource()) == nullptr) { // yesss, it's dirty
+                        throw("Added pointLight without placement component.")
+                    }
+#endif /*DEBUG*/
+                    
                     if(directionalLight == true) {
                         LOG(INFO) << "Only one directional light can be used in a scene. Using the first found one...";
                     } else {
@@ -73,8 +78,8 @@ namespace engine {
                 
                 if(nPointLights != this->nPreviousPointLights) {
                     material->setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures))));
-//                    std::cout << DefaultShader::createLightingVertexShader() << std::endl;
-//                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures) << std::endl;
+                    std::cout << DefaultShader::createLightingVertexShader() << std::endl;
+                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures) << std::endl;
                 }
                 
                 visual.setShaderUniform("shininess", material->getShininess());
@@ -90,17 +95,21 @@ namespace engine {
                     auto& lightComp = itLight[0]->to<LightingComponent>();
                     auto& lightSource =  lightComp.getLightSource();
                     
+                    std::string uniformLightSource = "";
                     try{
                         auto& placement = em.getEntity(lightComp.getEntityId()).getComponent<PlacementComponent>(); // found a point light
-                        std::string uniformLightSource = "pointLightSources[" + std::to_string(iLightSource) + "]";
+                        uniformLightSource = "pointLightSources[" + std::to_string(iLightSource++) + "]";
                         material->getShader()->setUniform(uniformLightSource + ".position", placement.getPosition());
-                        LOG(INFO) << "Setting lightPosition: " << glm::to_string(placement.getPosition());
-                        material->getShader()->setUniform(uniformLightSource + ".ambient", lightSource.getAmbient());
-                        material->getShader()->setUniform(uniformLightSource + ".diffuse", lightSource.getDiffuse());
-                        material->getShader()->setUniform(uniformLightSource + ".specular", lightSource.getSpecular());
                         material->getShader()->setUniform(uniformLightSource + ".linAttenuation", lightSource.getLinAttenuation());
                         material->getShader()->setUniform(uniformLightSource + ".quadAttenuation", lightSource.getQuadAttenuation());
-                    } catch(...) {}
+                    } catch(...) {
+                        uniformLightSource = "directionalLightSource";
+                        auto dirLight = dynamic_cast<DirectionalLight*>(&lightSource); // :|
+                        material->getShader()->setUniform(uniformLightSource + ".direction", dirLight->getDirection());
+                    }
+                    material->getShader()->setUniform(uniformLightSource + ".ambient", lightSource.getAmbient());
+                    material->getShader()->setUniform(uniformLightSource + ".diffuse", lightSource.getDiffuse());
+                    material->getShader()->setUniform(uniformLightSource + ".specular", lightSource.getSpecular());
                 }
                 
 //                material->makeActive();

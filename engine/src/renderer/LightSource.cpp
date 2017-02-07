@@ -3,20 +3,20 @@
 
 namespace engine {
     namespace renderer {
-            LightSource::LightSource(bool directionalLight) 
-                : diffuseColor(0.8, 0.8, 0.8), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), directionalLight(directionalLight) {
+            LightSource::LightSource() 
+                : diffuseColor(0.8, 0.8, 0.8), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0) {
                 
             }
-            LightSource::LightSource(const vec3& diffuseColor, bool directionalLight) 
-                : diffuseColor(diffuseColor), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), directionalLight(directionalLight){
+            LightSource::LightSource(const vec3& diffuseColor) 
+                : diffuseColor(diffuseColor), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0) {
                 
             }
-            LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor, bool directionalLight) 
-                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(1.0, 1.0, 1.0), directionalLight(directionalLight) {
+            LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor) 
+                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(1.0, 1.0, 1.0) {
                 
             }
-            LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor, const vec3& specularColor, bool directionalLight) 
-                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(specularColor), directionalLight(directionalLight) {
+            LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor, const vec3& specularColor) 
+                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(specularColor) {
                 
             }
             
@@ -27,8 +27,6 @@ namespace engine {
                 
                 this->linearAttenuation = orig.linearAttenuation;
                 this->quadraticAttenuation = orig.quadraticAttenuation;
-                
-                this->directionalLight = orig.directionalLight;
             }
             LightSource::LightSource(LightSource&& orig) {
                 this->diffuseColor = std::move(orig.diffuseColor);
@@ -37,8 +35,6 @@ namespace engine {
                 
                 this->linearAttenuation = std::move(orig.linearAttenuation);
                 this->quadraticAttenuation = std::move(orig.quadraticAttenuation);
-                
-                this->directionalLight = std::move(orig.directionalLight);
             }
             
             LightSource::~LightSource() {
@@ -68,10 +64,6 @@ namespace engine {
                 
                 this->linearAttenuation = linearAttenuation;
                 this->quadraticAttenuation = quadraticAttenuation;
-            }
-            
-            bool LightSource::isDirectionalLight() const {
-                return this->directionalLight;
             }
     }
 }

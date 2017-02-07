@@ -112,9 +112,9 @@ namespace engine {
             
             this->vao->unbind();
             
-            if(material->isNewShaderAttached()) {
+//            if(material->isNewShaderAttached()) {
                 this->updateBuffer();
-            }
+//            }
             
             if(!material->areTexturesLoaded() && !material->getTextures().empty()) {
                 material->loadTextures();

@@ -15,12 +15,16 @@
 #include "OneShotForce.h"
 #include "Actions.h"
 #include "renderer/DefaultShader.h"
+#include "engine/renderer/DirectionalLight.h"
+#include "engine/renderer/LightSource.h"
+#include "util/vec3.h"
 
 using namespace engine;
 using namespace engine::renderer;
 using namespace engine::physics;
 using namespace engine::ECSCommon;
 using namespace demo::IO;
+using util::vec3;
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -67,17 +71,17 @@ namespace demoSimulation {
         std::shared_ptr<Material> outerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/textured.vsh", 
                                                          "src/textured.fsh"));
         outerMaterial->attachTexture(outerTexture);
+        outerMaterial->enableLighting();
+        
         std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
                                                          "src/meshColor.fsh"), true);
         
         auto outerObject = std::make_shared<VisualObject>(outerMesh, outerMaterial);
-        outerObject->loadObject();
         auto innerObject = std::make_shared<VisualObject>(innerMesh, innerMaterial);
-        innerObject->loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 1.8, 8))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 90, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -86,17 +90,6 @@ namespace demoSimulation {
         this->tetrahedron = this->entityManager.createEntity("Outer")
                 .addComponent<VisualComponent>(outerObject)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-        
-//        TetrahedronizedObject tMesh(
-//                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-//                {tetrahedronMesh},
-//                {{std::make_pair(0, 0)}, {std::make_pair(0, 1)}, {std::make_pair(0, 2)}, {std::make_pair(0, 3)}},
-//                ObjectProperties(
-//                        ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-//                        {0, 1, 2, 3},
-//                        Vector4f(1, 1, 1, 1),
-//                        Vector4f(1, 1, 1, 1)),
-//                {0, 1, 2, 3});
         
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
                 tMesh,
@@ -112,16 +105,6 @@ namespace demoSimulation {
         
         this->openmpThreads = std::thread::hardware_concurrency() * 4;
         
-        // Deformable body created => restPosition copied
-        // Let's now pull on a vertex.
-//        defBody->getCurrentPosition()[1] += 0.001;
-//        defBody->getCurrentPosition()[2] += 0.025;
-//        tMesh.getMesh(0).getVertices()[0].position.y += 0.001;
-//        tMesh.getMesh(0).getVertices()[0].position.z += 0.025;
-//        tMesh.getMesh(0).loadMesh();
-        
-//        VisualObject tetraObject(tetrahedronMesh, innerMaterial);
-//        tetraObject.loadObject();
         this->tetrahedron = this->entityManager.createEntity("DefBody")
                 .addComponent<DeformableBodyComponent>(defBody);
         
@@ -148,13 +131,16 @@ namespace demoSimulation {
 //        });
         
         
-        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
-        bombVO->getMaterial().attachTexture("textures/bomb_diffuse.png");
-        bombVO->getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
-        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
-        bombVO->loadObject();
+        VisualObject bombVO = {"models/models.obj"};
+        bombVO.getMaterial().attachTexture("textures/bomb_diffuse.png", TextureType::DIFFUSE);
+        bombVO.getMaterial().attachTexture("textures/bomb_specular.png", TextureType::SPECULAR);
+        bombVO.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
+        // bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
+        bombVO.getMaterial().enableLighting();
+        bombVO.getMaterial().setShininess(5.f);
+         // bombVO->loadObject();
         this->entityManager.createEntity("Bomb")
-                .addComponent<VisualComponent>(std::make_shared<VisualObject>(*bombVO))
+                .addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO))
                 .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
         
         float floorRadius = 1e4;
@@ -168,7 +154,6 @@ namespace demoSimulation {
                 0, 1, 2,
                 0, 2, 3
             }));
-        Texture floorTex("textures/floor_diffuse.png");
         auto floorMat = std::make_shared<Material>(
             std::make_shared<ShaderProgram>(
                 ShaderProgram::createShaderProgramFromSource(
@@ -177,12 +162,22 @@ namespace demoSimulation {
                 )
             )
         );
-        floorMat->attachTexture(floorTex);
+        floorMat->attachTexture("textures/floor_diffuse.png");
+        floorMat->enableLighting();
         auto floorVO = std::make_shared<VisualObject>(floorMesh, floorMat);
-        floorVO->loadObject();
         
         this->entityManager.createEntity("Floor")
                 .addComponent<VisualComponent>(floorVO);
+        
+        auto light = this->entityManager.createEntity("Light");
+        LightSource lightSource = {util::vec3{0.8f, 0.8f, 0.8f}};
+        lightSource.setAttenuation(0.1, 0.1);
+        light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource)).addComponent<PlacementComponent>(util::vec3{5.f, 0.f, 5.f});
+        
+        auto light2 = this->entityManager.createEntity("Light2");
+        LightSource lightSource2 = {util::vec3{0.8f, 0.8f, 0.8f}};
+        lightSource2.setAttenuation(0.1, 0.1);
+        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
         ButtonMapping bm(this->window.getWindow());
@@ -213,9 +208,9 @@ namespace demoSimulation {
         this->systemManager.enableSystem<PerformanceMetricsSystem>(this->entityManager);
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
-        this->systemManager.enableSystem<RenderLoadingSystem>();
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<LightingSystem>();
         
         this->entityManager.sort(VisualComponent::getComponentTypeId(), [](std::shared_ptr<Component> c1, std::shared_ptr<Component> c2) {
             return c1->to<VisualComponent>().getVisualObject().getRenderPriority() < c2->to<VisualComponent>().getVisualObject().getRenderPriority();

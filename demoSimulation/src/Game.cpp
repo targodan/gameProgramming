@@ -71,6 +71,7 @@ namespace demoSimulation {
         std::shared_ptr<Material> outerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/textured.vsh", 
                                                          "src/textured.fsh"));
         outerMaterial->attachTexture(outerTexture);
+        outerMaterial->setSpecular(util::vec3{0.8, 0.8, 0.8});
         outerMaterial->enableLighting();
         
         std::shared_ptr<Material> innerMaterial = std::make_shared<Material>(std::make_shared<ShaderProgram>("src/meshColor.vsh", 
@@ -137,7 +138,7 @@ namespace demoSimulation {
         bombVO.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
         // bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
         bombVO.getMaterial().enableLighting();
-        bombVO.getMaterial().setShininess(5.f);
+        bombVO.getMaterial().setShininess(32.f);
          // bombVO->loadObject();
         this->entityManager.createEntity("Bomb")
                 .addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO))
@@ -174,10 +175,10 @@ namespace demoSimulation {
         lightSource.setAttenuation(0.1, 0.1);
         light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource)).addComponent<PlacementComponent>(util::vec3{5.f, 0.f, 5.f});
         
-        auto light2 = this->entityManager.createEntity("Light2");
-        LightSource lightSource2 = {util::vec3{0.8f, 0.8f, 0.8f}};
-        lightSource2.setAttenuation(0.1, 0.1);
-        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
+//        auto light2 = this->entityManager.createEntity("Light2");
+//        LightSource lightSource2 = {util::vec3{0.8f, 0.8f, 0.8f}};
+//        lightSource2.setAttenuation(0.1, 0.1);
+//        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
         ButtonMapping bm(this->window.getWindow());

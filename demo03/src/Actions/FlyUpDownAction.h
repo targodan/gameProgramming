@@ -32,7 +32,7 @@ namespace demo {
         public:
             FlyUpDownAction(int device, int button, shared_ptr<Entity> player) : Action(device, button), player(player){}
             FlyUpDownAction(const FlyUpDownAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player){}
-            void execute(EntityManager& em) override {
+            void execute(EntityManager& em, float deltaT) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
                 auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
                 placement.setVelocityAcc(bi.xAxis * camera.getUp());

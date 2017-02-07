@@ -47,7 +47,6 @@ namespace engine {
                     auto& visual = (*itVisual)->to<VisualComponent>();
                     try{ 
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
-                        LOG(INFO) << i++ << endl << glm::to_string(placement.getPosition());
                         mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
                         visual.setShaderUniform("modelMatrix", modelMatrix);
                     } catch(...) { LOG(INFO) << "Check";}

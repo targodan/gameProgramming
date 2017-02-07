@@ -26,7 +26,7 @@ namespace demo {
         public:
             MoveFwdBwdAction(int device, int button, shared_ptr<Entity> player) : Action(device, button), player(player){}
             MoveFwdBwdAction(const MoveFwdBwdAction& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), player(orig.player){}
-            void execute(EntityManager& em) override {
+            void execute(EntityManager& em, float deltaT) override {
                 auto& camera = this->player->getComponent(CameraComponent::getComponentTypeId()).to<CameraComponent>();
                 auto& placement = this->player->getComponent(PlacementComponent::getComponentTypeId()).to<PlacementComponent>();
                 auto dir = camera.getDirection();

@@ -82,6 +82,9 @@ namespace engine {
             const MaterialColor& getColor() const;
             void setColor(const MaterialColor& color);
             void setColor(const vec3& color);
+            void setAmbient(const vec3& color);
+            void setSpecular(const vec3& color);
+            void setDiffuse(const vec3& color);
             
             bool isActive() const;
             bool areTexturesLoaded() const;
@@ -91,6 +94,10 @@ namespace engine {
             void enableLighting();
             void disableLighting();
             bool isLightingEnabled() const;
+            
+            int getID() const {
+                return this->id;
+            }
         private:
             std::shared_ptr<ShaderProgram> shader;    
             vector<Texture> textures;
@@ -103,6 +110,9 @@ namespace engine {
             
             float shininess;
             MaterialColor color;
+            
+            int id;
+            static int globalID;
         };
     }
 }

@@ -48,7 +48,9 @@ namespace engine {
             virtual bool isBound() const override;
             bool isLoaded() const;
             TextureType getType() const;
+            GLuint getID() const;
         private:
+            void copyImageData(unsigned char* imageData);
             void initialize(std::string imagePath);
             void generateMipmap();
             
@@ -60,11 +62,11 @@ namespace engine {
             
             GLsizei width;
             GLsizei height;
-            GLsizei depth; // Per default set to zero, used for 3D textures (not fully supported))
+            GLsizei depth; // Per default set to one, used for 3D textures (not fully supported))
             
             unsigned char* imageData;
             
-            bool bound;
+            bool bound = false;
             bool loaded = false;
         };
     }

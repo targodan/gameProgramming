@@ -42,49 +42,35 @@ namespace demo {
         Texture texture = {"resources/textures/container.jpg"};
         material.attachTexture(texture);
         
-        VisualObject obj = {std::make_shared<Mesh>(mesh), std::make_shared<Material>(material)};
-        floor.addComponent<VisualComponent>(std::make_shared<VisualObject>(obj)).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
+        floor.addComponent<VisualComponent>(std::make_shared<VisualObject>(std::make_shared<Mesh>(mesh), std::make_shared<Material>(material))).addComponent<PlacementComponent>(vec3{0.f, -1.f, 0.f});
         
         // Import bomb and testing
-//        VisualObject bombMesh = {"resources/models/bomb.obj"};
-//        bombMesh.getMaterial().replaceTextureOfType("resources/textures/BombDiffuse.png", TextureType::DIFFUSE);
-//        std::shared_ptr<VisualObject> bombMesh = std::make_shared<VisualObject>("../demoSimulation/models/bomb.blend");
-//        bombMesh->getMaterial().attachTexture("../demoSimulation/textures/bomb_diffuse.png");
-        std::shared_ptr<VisualObject> bombMesh = std::make_shared<VisualObject>("resources/models/models.obj");
-        bombMesh->getMaterial().attachTexture("resources/textures/BombDiffuse.png");
-        bombMesh->getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader())));
-
-        bombMesh->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
-        auto& test = bombMesh->getMesh();
-//        VisualObject bombMesh2 = *bombMesh;
-//        bombMesh2.getMaterial().replaceTextureOfType("resources/textures/BombNormalMap.png", TextureType::DIFFUSE);
-//        bombMesh2.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
-//        VisualObject bombMesh3 = *bombMesh;
+        VisualObject bombVO = {"resources/models/models.obj"};
+        auto& bombMaterial = bombVO.getMaterial();
+        bombMaterial.attachTexture("resources/textures/BombDiffuse.png");
+        bombMaterial.setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
+        bombMaterial.enableLighting();
+        bombMaterial.setShininess(5.f);
+        bombMaterial.setSpecular(vec3{0.8, 0.8, 0.8});
         
-        bombMesh->getMaterial().enableLighting();
-        bombMesh->getMaterial().setShininess(5.f);
-        MaterialColor bombColor;
-        bombColor.diffuse = vec3{1.f, 1.f, 1.f};
-        bombColor.specular = vec3{0.f, 0.f, 0.f};
-        bombColor.ambient = vec3{1.f, 1.f, 1.f};
-        
-        bombMesh->getMaterial().setColor(MaterialColor{});
         // Create bomb
         this->bomb = this->entityManager.createEntity("Bomb");
-        this->bomb.addComponent<VisualComponent>(bombMesh).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+        this->bomb.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
+
+        // Create second bomb
+        auto bomb2 = this->entityManager.createEntity("Cube");
+        bomb2.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO)).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
+        auto& bombVO2 = this->bomb.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
+        bombVO2.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader())));
         
-//        // Create second bomb
-//        auto bomb2 = this->entityManager.createEntity("Cube");
-//        bomb2.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombMesh2)).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
-//        
-//        // Create third bomb
-//        auto bomb3 = this->entityManager.createEntity("Cube2");
-//        bomb3.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombMesh3)).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
+        // Create third bomb
+        auto bomb3 = this->entityManager.createEntity("Cube2");
+        bomb3.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO)).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
         
         // Create light source
-        auto light = this->entityManager.createEntity("Light");
-        LightSource lightSource = {vec3{0.f, 0.8f, 0.8f}, vec3{0.1f, 0.1f, 0.1f}, vec3{0.f, 0.f, 0.f}};
-        light.addComponent<LightingComponent>(lightSource).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
+//        auto light = this->entityManager.createEntity("Light");
+//        LightSource lightSource = {vec3{0.f, 0.8f, 0.8f}, vec3{0.2f, 0.2f, 0.2f}, vec3{0.f, 0.f, 0.f}};
+//        light.addComponent<LightingComponent>(lightSource).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
         
         // Create camera/player
         this->player = this->entityManager.createEntity("Player");
@@ -109,7 +95,7 @@ namespace demo {
         VisualObject vo = {std::make_shared<InstanceMesh>(instanceVertices, positions), std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
         instances.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f});
         
-        std::cout << engine::renderer::DefaultShader::createLightingFragmentShader(1, false, TextureType::DIFFUSE) << std::endl;
+        // std::cout << engine::renderer::DefaultShader::createLightingFragmentShader(1, false, TextureType::DIFFUSE) << std::endl;
         // ShaderProgram prog = ShaderProgram::createShaderProgramFromSource(engine::renderer::DefaultShader::createLightingVertexShader(), engine::renderer::DefaultShader::createLightingFragmentShader(5, false, TextureType::DIFFUSE));
     }
 
@@ -136,8 +122,7 @@ namespace demo {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<InputSystem>(bm);
-        this->systemManager.enableSystem<RenderLoadingSystem>();
-        this->systemManager.enableSystem<LightingSystem>();
+//        this->systemManager.enableSystem<LightingSystem>();
         Game::initialize();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);

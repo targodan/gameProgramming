@@ -142,7 +142,7 @@ namespace engine {
             
             std::unique_ptr<VertexArray> vao;
             
-            bool loaded;
+            bool loaded = false;
             bool verticesChanged = false;
             bool indicesChanged = false;
             

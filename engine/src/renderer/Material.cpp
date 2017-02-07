@@ -7,34 +7,36 @@
 
 namespace engine {
     namespace renderer {
+        int Material::globalID = 0;
+        
         Material::Material(float shininess, bool renderAsWireframe) 
-            : renderAsWireframe(false), shininess(shininess) {
+            : renderAsWireframe(false), shininess(shininess), id(++Material::globalID) {
             
             // This is necessary for now as no information about the global lighting setup is available yet 
             this->shader = nullptr; 
         }
         
         Material::Material(vec3 color, float shininess, bool renderAsWireframe) 
-            : renderAsWireframe(renderAsWireframe), shininess(shininess) {
+            : renderAsWireframe(renderAsWireframe), shininess(shininess), id(++Material::globalID) {
             this->color = color;
             
             // This is necessary for now as no information about the global lighting setup is available yet 
             this->shader = nullptr; 
         }
         Material::Material(MaterialColor color, float shininess, bool renderAsWireframe) 
-            : renderAsWireframe(renderAsWireframe), shininess(shininess), color(color) {
+            : renderAsWireframe(renderAsWireframe), shininess(shininess), color(color), id(++Material::globalID) {
             
             // This is necessary for now as no information about the global lighting setup is available yet 
             this->shader = nullptr; 
         }
         Material::Material(std::shared_ptr<ShaderProgram> shader, bool renderAsWireframe) 
-            : renderAsWireframe(renderAsWireframe) {
+            : renderAsWireframe(renderAsWireframe), id(++Material::globalID) {
             this->setShader(shader);
         }
-        Material::Material(const Material& orig) : shader(std::make_shared<ShaderProgram>(*orig.shader)), textures(orig.textures), 
-                renderAsWireframe(orig.renderAsWireframe), active(false), allTexturesLoaded(orig.allTexturesLoaded), 
-                lighting(orig.lighting), attachedNewShader(true), shininess(orig.shininess), color(orig.color) {
-
+        Material::Material(const Material& orig) : textures(orig.textures), 
+                renderAsWireframe(orig.renderAsWireframe), allTexturesLoaded(orig.allTexturesLoaded), 
+                lighting(orig.lighting), attachedNewShader(true), shininess(orig.shininess), color(orig.color), id(++Material::globalID) {
+            this->setShader(std::make_shared<ShaderProgram>(*orig.shader));
         }
         Material::Material(Material&& orig) : shader(std::move(orig.shader)), textures(std::move(orig.textures)), 
                 renderAsWireframe(std::move(orig.renderAsWireframe)), active(std::move(orig.active)), allTexturesLoaded(std::move(orig.allTexturesLoaded)), 
@@ -46,13 +48,13 @@ namespace engine {
             this->setShader(std::make_shared<ShaderProgram>(*right.shader));
             this->textures = right.textures;
             this->renderAsWireframe = right.renderAsWireframe;
-            this->active = false;
             this->allTexturesLoaded = right.allTexturesLoaded;
             this->lighting = right.lighting;
             this->attachedNewShader = true;
             this->shininess = right.shininess;
             this->color = right.color;
-            
+            this->id = ++Material::globalID;
+
             return *this;
         }
         Material& Material::operator=(Material&& right) {
@@ -84,6 +86,9 @@ namespace engine {
             this->textures.push_back(texture);
             
             this->allTexturesLoaded = false;
+            
+            LOG(INFO) << "Attached texture " << std::to_string(texture.getID()) << " to " << std::to_string(this->id);
+            
             return *this;
         }
         void Material::setTextures(const vector<Texture>& textures) {
@@ -191,6 +196,8 @@ namespace engine {
                     
                     this->shader->setUniformi(uniformName, i); // Set texture uniform to current texture unit
                     this->textures[i].bind();
+                    
+                    LOG(INFO) << "Bound texture " << this->textures[i].getID() << " to shaderProgram " << this->shader->getID() << " in material " << std::to_string(id);
                 }
                 // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
             }
@@ -271,6 +278,15 @@ namespace engine {
         }
         void Material::setColor(const vec3& color) {
             this->color = color;
+        }
+        void Material::setAmbient(const vec3& color) {
+            this->color.ambient = color;
+        }
+        void Material::setSpecular(const vec3& color) {
+            this->color.specular = color;
+        }
+        void Material::setDiffuse(const vec3& color) {
+            this->color.diffuse = color;
         }
         
         void Material::enableLighting() {

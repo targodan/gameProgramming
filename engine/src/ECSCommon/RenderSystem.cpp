@@ -47,6 +47,13 @@ namespace engine {
                 camera.setViewMatrix(placement.getPosition());
                 
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
+                    auto& object = itVisual->to<VisualComponent>().getVisualObject();
+                    // object.getMaterial().replaceTextureOfType("resources/textures/BombNormalMap.png", TextureType::DIFFUSE);
+                    
+                    if(!object.isLoaded()) {
+                        object.loadObject();
+                    }
+                    
                     auto& visual = (*itVisual)->to<VisualComponent>();
                     try{
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
@@ -81,9 +88,8 @@ namespace engine {
         }
         
         Array<systemId_t> RenderSystem::getDependencies() const {
-            return {RenderLoadingSystem::systemTypeId()};
-        }
-            
+            return {};
+        }  
         Array<systemId_t> RenderSystem::getOptionalDependencies() const {
             return {PerformanceMetricsSystem::systemTypeId(), LightingSystem::systemTypeId()};
         }

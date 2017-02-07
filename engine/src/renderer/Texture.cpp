@@ -4,11 +4,11 @@
 namespace engine {
     namespace renderer {
         Texture::Texture(std::string imagePath, TextureType type) 
-            : dim(TextureDimension::TEXTURE_2D), type(type), format(ImageFormat::RGB), formatToStoreTextureIn(ImageFormat::RGB), depth(0), bound(false) {
+            : dim(TextureDimension::TEXTURE_2D), type(type), format(ImageFormat::RGB), formatToStoreTextureIn(ImageFormat::RGB), depth(1) {
             this->initialize(imagePath);
         }
         Texture::Texture(std::string imagePath, ImageFormat format, ImageFormat formatToStoreTextureIn, TextureDimension dim, TextureType type) 
-            : dim(dim), type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(0), bound(false) {
+            : dim(dim), type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(1) {
             this->initialize(imagePath);
         }
         void Texture::initialize(std::string imagePath) {
@@ -34,11 +34,13 @@ namespace engine {
         
         Texture::Texture(const Texture& orig) 
             : dim(orig.dim), type(orig.type), format(orig.format), formatToStoreTextureIn(orig.formatToStoreTextureIn), 
-              width(orig.width), height(orig.height), depth(orig.depth), imageData(orig.imageData), bound(false) {
+              width(orig.width), height(orig.height), depth(orig.depth) {
+            this->copyImageData(orig.imageData);
             this->generateTexture();
-            
             if(orig.loaded) {
+                this->bind();
                 this->loadTexture();
+                this->unbind();
             }
         }
         Texture::Texture(Texture&& orig) 
@@ -53,13 +55,15 @@ namespace engine {
             this->width = right.width;
             this->height = right.height;
             this->depth = right.depth;
-            this->imageData = right.imageData;
             this->bound = false;
             this->loaded = false;
             
+            this->copyImageData(right.imageData);
             this->generateTexture();
             if(right.loaded) {
+                this->bind();
                 this->loadTexture();
+                this->unbind();
             }
 
             return *this;
@@ -84,10 +88,13 @@ namespace engine {
 
         void Texture::generateTexture() {
             glGenTextures(1, &(this->id));
+            
+            LOG(INFO) << "Created texture: " << std::to_string(this->id);
         }
         void Texture::releaseTexture() {
             glDeleteTextures(1, &(this->id));
             // SOIL_free_image_data(this->imageData);
+            LOG(INFO) << "Released texture: " << std::to_string(this->id);
         }
 
         void Texture::setParameter(GLenum name, GLenum type) {
@@ -123,6 +130,8 @@ namespace engine {
 
             this->generateMipmap();
             this->loaded = true;
+            
+            LOG(INFO) << "Loaded texture: " << std::to_string(this->id);
         }
 
         void Texture::activateTextureUnit(GLenum unit) {
@@ -156,6 +165,9 @@ namespace engine {
         bool Texture::isBound() const {
             return this->bound;
         }
+        GLuint Texture::getID() const {
+            return this->id;
+        }
 
         void Texture::generateMipmap() {
 #ifdef DEBUG
@@ -165,6 +177,24 @@ namespace engine {
 #endif
 
             glGenerateMipmap(this->dim);
+        }
+        
+        void Texture::copyImageData(unsigned char* imageData) {
+            unsigned int nChannels = 0;
+            switch(this->format) {
+                case ImageFormat::RGB:
+                    nChannels = 3;
+                    break;
+                case ImageFormat::RGBA:
+                    nChannels = 4;
+                    break;
+                default:
+                    throw IllegalArgumentException("Only ImageFormats RGB and RGBA are supported yet.");
+            }
+            
+            unsigned int bufferSize = this->width*this->height*this->depth*nChannels;
+            this->imageData = new unsigned char[bufferSize];
+            std::copy(imageData, imageData + bufferSize, this->imageData);
         }
     }
 }

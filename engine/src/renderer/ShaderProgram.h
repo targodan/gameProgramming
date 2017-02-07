@@ -17,8 +17,7 @@ namespace engine {
         
         class ShaderProgram {
         public:
-            ShaderProgram(const std::string& vertexShaderFile, const std::string& fragmentShaderFile) 
-                : linked(false) {
+            ShaderProgram(const std::string& vertexShaderFile, const std::string& fragmentShaderFile) {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
                 this->id = glCreateProgram();
                 
@@ -27,18 +26,15 @@ namespace engine {
                 
                 this->linkProgram();
             }
-            ShaderProgram(const ShaderProgram& orig) 
-                : linked(false) {
-                this->id = glCreateProgram();
-                
+            ShaderProgram(const ShaderProgram& orig) {
                 auto shaderMap = orig.getRegisteredShaders();
-                
                 Shader* vertexShader = shaderMap[ShaderType::VERTEX_SHADER];
                 Shader* fragmentShader = shaderMap[ShaderType::FRAGMENT_SHADER];
                 
+                this->id = glCreateProgram();
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
-                this->registeredShaders[ShaderType::VERTEX_SHADER] = new Shader{*vertexShader};
-                this->registeredShaders[ShaderType::FRAGMENT_SHADER] = new Shader{*fragmentShader};
+                this->registeredShaders[ShaderType::VERTEX_SHADER] = new Shader(*vertexShader);
+                this->registeredShaders[ShaderType::FRAGMENT_SHADER] = new Shader(*fragmentShader);
                 
                 this->linkProgram();
             }
@@ -81,8 +77,11 @@ namespace engine {
             bool isProgramLinked() const {
                 return this->linked;
             }
-            const Map<ShaderType, Shader*> getRegisteredShaders() const {
+            const Map<ShaderType, Shader*>& getRegisteredShaders() const {
                 return this->registeredShaders;
+            }
+            GLuint getID() const {
+                return this->id;
             }
             
             static Map<ShaderType, std::string> type2FileExtension;
@@ -101,7 +100,7 @@ namespace engine {
                 glUniform1i(this->getUniformLocation(nameInShader), data);
             }
         private:
-            ShaderProgram() : linked(false) {
+            ShaderProgram() {
                 this->registeredShaders.set_empty_key(ShaderType::NO_SHADER);
                 this->id = glCreateProgram();
             }
@@ -178,7 +177,7 @@ namespace engine {
                 this->linked = true;
             }
             
-            bool linked;
+            bool linked = false;
             GLuint id;
             Map<ShaderType, Shader*> registeredShaders;
             

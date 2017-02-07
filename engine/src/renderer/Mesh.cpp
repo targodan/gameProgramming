@@ -8,20 +8,19 @@
 namespace engine {
     namespace renderer {
         Mesh::Mesh(vector<Vertex> vertices, DataUsagePattern usage) 
-            : material(nullptr), vertices(vertices), vao(std::make_unique<VertexArray>()), loaded(false), usage(usage) {
+            : material(nullptr), vertices(vertices), vao(std::make_unique<VertexArray>()), usage(usage) {
             this->createVBO(this->vertices, usage);
         }
         Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, DataUsagePattern usage) 
-            : material(nullptr), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), loaded(false), usage(usage) {
+            : material(nullptr), vertices(vertices), indices(indices), vao(std::make_unique<VertexArray>()), usage(usage) {
             this->calculateTangentBasis();
             this->createEBO(this->indices, usage);
             this->createVBO(this->vertices, usage);
         }
         
         Mesh::Mesh(const Mesh& orig)
-            : material(orig.material), vertices(orig.vertices), indices(orig.indices), vao(std::make_unique<VertexArray>()), usage(orig.usage) {
-            // this->material = orig.material==nullptr ? nullptr : std::make_shared<Material>(*(orig.material));
-            // For testing: copy points to same material
+            : material(orig.material), vertices(orig.vertices), indices(orig.indices), tangents(orig.tangents), 
+              vao(std::make_unique<VertexArray>()), usage(orig.usage) {
             
             /*
              * The problem here is as follows.
@@ -41,16 +40,18 @@ namespace engine {
         }
         
         Mesh::Mesh(Mesh&& orig)
-            : material(std::move(orig.material)),
-                vertices(std::move(orig.vertices)), indices(std::move(orig.indices)),
-                vao(std::move(orig.vao)), loaded(std::move(orig.loaded)), usage(std::move(orig.usage)) {
+            : material(std::move(orig.material)), vertices(std::move(orig.vertices)), indices(std::move(orig.indices)),
+              tangents(std::move(orig.tangents)), vao(std::move(orig.vao)), loaded(std::move(orig.loaded)), 
+              verticesChanged(std::move(orig.verticesChanged)), indicesChanged(std::move(orig.indicesChanged)), usage(std::move(orig.usage)) {
+            
         }
         
         Mesh& Mesh::operator=(const Mesh& right) {
-            this->vao = std::make_unique<VertexArray>();
             this->material = right.material;
             this->vertices = right.vertices;
             this->indices = right.indices;
+            this->tangents = right.tangents;
+            this->vao = std::make_unique<VertexArray>();
             this->usage = right.usage;
             
             if(!this->indices.empty()) {
@@ -65,11 +66,14 @@ namespace engine {
             return *this;
         }
         Mesh& Mesh::operator=(Mesh&& right) {
-            this->vao = std::make_unique<VertexArray>(*(right.vao));
             this->material = std::move(right.material);
             this->vertices = std::move(right.vertices);
             this->indices = std::move(right.indices);
+            this->tangents = std::move(right.tangents);
+            this->vao = std::make_unique<VertexArray>(*(right.vao));
             this->loaded = std::move(right.loaded);
+            this->verticesChanged = std::move(right.verticesChanged);
+            this->indicesChanged = std::move(right.indicesChanged);
             this->usage = std::move(right.usage);
             
             return *this;
@@ -131,7 +135,6 @@ namespace engine {
             
             this->material->setNewShaderAttached(false);
         }
-        
         void Mesh::loadMesh() {
             this->vao->bind();
             this->vao->loadData();
@@ -346,7 +349,6 @@ namespace engine {
             this->vao->getEBO().setNumberOfElements(this->indices.size());
             this->setIndicesChanged(true);
         }
-        
         void Mesh::deleteEdges(const vector<std::pair<GLuint, GLuint>>& edges) {
             vector<GLuint> newIndices;
             newIndices.reserve(this->indices.size());

@@ -41,7 +41,7 @@ namespace engine {
         protected:
             virtual void init();
             
-            bool initialized;
+            bool initialized = false;
             std::shared_ptr<Mesh> mesh;
             std::shared_ptr<Material> material;
             

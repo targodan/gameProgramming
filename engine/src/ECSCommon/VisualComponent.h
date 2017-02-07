@@ -36,8 +36,6 @@ namespace engine {
             void setShaderUniform(const std::string& nameInShader, T data) const {
                 this->object->getMaterial().getShader()->useProgram();
                 this->object->getMaterial().getShader()->setUniform(nameInShader, data);
-                
-                LOG(INFO) << "Set uniform " << nameInShader;
             }
             
             componentId_t getComponentId() const override;

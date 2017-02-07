@@ -230,7 +230,7 @@ namespace engine {
                     (GLvoid*)offsetof(Vertex, position)};
 
             VertexAttribute normalAttrib {normalIndex, Vertex::nElements, 
-                    DataType::FLOAT, 0, sizeof(Vertex), 
+                    DataType::FLOAT, 1, sizeof(Vertex), 
                     (GLvoid*)offsetof(Vertex, normal)};
 
             VertexAttribute textureCoordAttrib {textureCoordinateIndex, Vertex::nElements, 
@@ -266,25 +266,11 @@ namespace engine {
                 attribs.push_back(textureCoordAttrib);
             }
             
-            // Look for first VBO to have no attributes set
-#ifdef DEBUG
-            bool foundEmptyVBO = false;
-#endif /*DEBUG*/
-            // for(auto& vbo : this->vao->getVBOs()) {
             auto& vbo = this->vao->getVBOs()[0];
-            if(vbo->getAttributes().empty()) {
-                vbo->setAttributes(attribs);
-                    
-#ifdef DEBUG
-                    foundEmptyVBO = true;
-#endif /*DEBUG*/
-                }
-            // }
-#ifdef DEBUG
-            if(!foundEmptyVBO) {
-                throw WTFException("Could not set material: WTF did you do.");
-            }
-#endif /*DEBUG*/
+//            if(vbo->getAttributes().empty()) {
+//                vbo->setAttributes(attribs);
+//            }
+            vbo->setAttributes(attribs);
         }
         void Mesh::enableVAOAttributes() {
             // Attach 

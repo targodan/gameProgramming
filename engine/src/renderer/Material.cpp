@@ -73,7 +73,7 @@ namespace engine {
                 this->shader->releaseProgram();
             }
             
-            for(auto texture : this->textures) {
+            for(auto& texture : this->textures) {
                 texture.releaseTexture();
             }
         }
@@ -86,8 +86,6 @@ namespace engine {
             this->textures.push_back(texture);
             
             this->allTexturesLoaded = false;
-            
-            LOG(INFO) << "Attached texture " << std::to_string(texture.getID()) << " to " << std::to_string(this->id);
             
             return *this;
         }
@@ -131,7 +129,7 @@ namespace engine {
             return this->textures;
         }
         bool Material::hasSpecularTexture() const {
-            for(auto texture : this->textures) {
+            for(auto& texture : this->textures) {
                 if(texture.getType() == TextureType::SPECULAR) {
                     return true;
                 }
@@ -140,7 +138,7 @@ namespace engine {
             return false;
         }
         bool Material::hasNormalTexture() const {
-            for(auto texture : this->textures) {
+            for(auto& texture : this->textures) {
                 if(texture.getType() == TextureType::NORMAL) {
                     return true;
                 }
@@ -149,7 +147,7 @@ namespace engine {
             return false;
         }
         bool Material::hasDiffuseTexture() const {
-            for(auto texture : this->textures) {
+            for(auto& texture : this->textures) {
                 if(texture.getType() == TextureType::DIFFUSE) {
                     return true;
                 }
@@ -196,10 +194,7 @@ namespace engine {
                     
                     this->shader->setUniformi(uniformName, i); // Set texture uniform to current texture unit
                     this->textures[i].bind();
-                    
-                    LOG(INFO) << "Bound texture " << this->textures[i].getID() << " to shaderProgram " << this->shader->getID() << " in material " << std::to_string(id);
                 }
-                // Texture::activateTextureUnit(TextureUnit::TEXTURE0);
             }
             
             this->active = true;
@@ -244,9 +239,9 @@ namespace engine {
             if(this->shader) {
                 LOG(INFO) << "Material.setShader: Overwriting current shader.";
                 this->shader->releaseProgram();
-                this->attachedNewShader = true;
+//                this->attachedNewShader = true;
             }
-            
+            this->attachedNewShader = true;
             this->shader = shader;
         }
         

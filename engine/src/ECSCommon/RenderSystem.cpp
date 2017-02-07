@@ -10,7 +10,6 @@
 #include "../WindowResizeMessage.h"
 
 #include "glm/gtx/transform.hpp"
-#include "RenderLoadingSystem.h"
 #include "LightingSystem.h"
 
 using engine::renderer::TextRenderer;
@@ -48,7 +47,6 @@ namespace engine {
                 
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
                     auto& object = itVisual->to<VisualComponent>().getVisualObject();
-                    // object.getMaterial().replaceTextureOfType("resources/textures/BombNormalMap.png", TextureType::DIFFUSE);
                     
                     if(!object.isLoaded()) {
                         object.loadObject();
@@ -59,6 +57,7 @@ namespace engine {
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
                         mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
                         visual.setShaderUniform("modelMatrix", modelMatrix);
+//                        LOG(INFO) << "Set modelMatrix";
                     } catch(...) {}
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());

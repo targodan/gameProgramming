@@ -11,7 +11,6 @@ namespace engine {
         componentId_t LightingComponent::getComponentId() const {
             return LightingComponent::typeId;
         }
-        
         std::string LightingComponent::getComponentName() const {
             return "LightingComponent";
         }
@@ -20,10 +19,16 @@ namespace engine {
             return "... not gonna try to stuff this into a string.";
         }
 
+        const LightSource& LightingComponent::getLightSource() const {
+            return this->lightSource;
+        }
+        LightSource& LightingComponent::getLightSource() {
+            return this->lightSource;
+        }
+        
         void LightingComponent::setComponentTypeId(componentId_t id) {
             LightingComponent::typeId = id;
         }
-        
         componentId_t LightingComponent::getComponentTypeId() {
             return LightingComponent::typeId;
         }

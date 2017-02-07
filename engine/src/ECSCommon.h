@@ -16,7 +16,6 @@
 #include "./ECSCommon/CustomUpdateSystem.h"
 #include "./ECSCommon/CustomRenderSystem.h"
 #include "./ECSCommon/PerformanceMetricsSystem.h"
-#include "./ECSCommon/RenderLoadingSystem.h"
 #include "./ECSCommon/LightingSystem.h"
 #include "./ECSCommon/LightingComponent.h"
 

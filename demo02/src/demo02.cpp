@@ -48,10 +48,11 @@ namespace demo {
         VisualObject bombVO = {"resources/models/models.obj"};
         auto& bombMaterial = bombVO.getMaterial();
         bombMaterial.attachTexture("resources/textures/BombDiffuse.png");
+        bombMaterial.attachTexture("resources/textures/BombSpecular.png", TextureType::SPECULAR);
         bombMaterial.setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
         bombMaterial.enableLighting();
         bombMaterial.setShininess(5.f);
-        bombMaterial.setSpecular(vec3{0.8, 0.8, 0.8});
+//        bombMaterial.setSpecular(vec3{0.8, 0.8, 0.8});
         
         // Create bomb
         this->bomb = this->entityManager.createEntity("Bomb");
@@ -60,17 +61,23 @@ namespace demo {
         // Create second bomb
         auto bomb2 = this->entityManager.createEntity("Cube");
         bomb2.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO)).addComponent<PlacementComponent>(vec3{20.f, -0.5f, 20.f});
-        auto& bombVO2 = this->bomb.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
-        bombVO2.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader())));
+//        auto& bombVO2 = bomb2.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
+//        bombVO2.getMaterial().disableLighting();
+//        bombVO2.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader())));
         
         // Create third bomb
         auto bomb3 = this->entityManager.createEntity("Cube2");
         bomb3.addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO)).addComponent<PlacementComponent>(vec3{5.f, -0.5f, -5.f});
+//        auto& bombVO3 = bomb3.getComponent(VisualComponent::getComponentTypeId()).to<VisualComponent>().getVisualObject();
+//        bombVO3.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(vec3{0.f, 0.8f, 0.8f}), DefaultShader::createFlatFragmentShader())));
+//         bombVO3.getMaterial().disableLighting();
+        // bombVO3.getMaterial().replaceTextureOfType("resources/textures/BombNormalMap.png", TextureType::DIFFUSE);
         
         // Create light source
-//        auto light = this->entityManager.createEntity("Light");
-//        LightSource lightSource = {vec3{0.f, 0.8f, 0.8f}, vec3{0.2f, 0.2f, 0.2f}, vec3{0.f, 0.f, 0.f}};
-//        light.addComponent<LightingComponent>(lightSource).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
+        auto light = this->entityManager.createEntity("Light");
+        LightSource lightSource;
+        lightSource.setAttenuation(0.2f, 0.2f);
+        light.addComponent<LightingComponent>(lightSource).addComponent<PlacementComponent>(vec3{1.f, 0.f, 1.f});
         
         // Create camera/player
         this->player = this->entityManager.createEntity("Player");
@@ -122,13 +129,19 @@ namespace demo {
         this->systemManager.enableSystem<PlacementSystem>();
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<InputSystem>(bm);
-//        this->systemManager.enableSystem<LightingSystem>();
+        this->systemManager.enableSystem<LightingSystem>();
         Game::initialize();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     
     void Demo02::shutdown() {
+        for(auto itVisual = this->entityManager.begin({VisualComponent::getComponentTypeId()}); itVisual != this->entityManager.end(); ++itVisual) {
+            auto& object = itVisual->to<VisualComponent>().getVisualObject();
+            object.getMaterial().releaseMaterial();
+            object.getMesh().releaseMesh();
+        }
+        
         Game::shutdown();
     }
 }

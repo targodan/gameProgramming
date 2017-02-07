@@ -119,7 +119,7 @@ namespace engine {
                     "   mat4 modelViewMatrix = viewMatrix * modelMatrix;\n"
                     ""
                     "   fragPosition = vec3(modelViewMatrix * vec4(position, 1.0f));\n"
-                    "   fragNormal = normalize(vec3(inverse(transpose(modelViewMatrix)) * vec4(normal, 0.f)));\n"
+                    "   fragNormal = vec3(inverse(transpose(modelViewMatrix)) * vec4(normal, 0.f));\n"
                     "   uv = textureCoordinates;\n"
                     ""
                     "   gl_Position = projectionMatrix * vec4(fragPosition, 1.0f);\n"
@@ -132,8 +132,8 @@ namespace engine {
                 throw WTFException("Cannot create lighting fragment shader for 0 light sources!");
             }
             
-            bool useDiffuseTexture = textures & TextureType::DIFFUSE;
-            bool useSpecularTexture = textures & TextureType::SPECULAR;
+            bool useDiffuseTexture = (textures & TextureType::DIFFUSE) != 0;
+            bool useSpecularTexture = (textures & TextureType::SPECULAR) != 0;
             
             string diffuseValue = "";
             string diffuseInput = "uniform ";
@@ -212,10 +212,11 @@ namespace engine {
                     "     vec3 unitLightDirection = normalize(vec3(oModelViewMatrix * vec4(light.position, 1.f)) - fragPosition);\n"
                     ""
                     "     vec3 ambientColor = light.ambient * " + diffuseValue + ";\n"
-                    "     vec3 diffuseColor = " + diffuseValue + ";\n"
+                    "     vec3 diffuseColor = light.diffuse * calcDiffuseTerm(unitNormal, unitLightDirection) * " + diffuseValue + ";\n"
                     "     vec3 specularColor = light.specular * calcSpecularTerm(unitNormal, unitLightDirection, unitViewDirection) * " + specularValue + ";\n"
-                    "     // return ambientColor + calcAttenuationFactor(length(fragPosition - vec3(oModelViewMatrix * vec4(light.position, 1.f))), light.linAttenuation, light.quadAttenuation) * (diffuseColor + specularColor);\n"
-                    "     return diffuseColor;\n"
+                    "     return ambientColor + calcAttenuationFactor(length(fragPosition - vec3(oModelViewMatrix * vec4(light.position, 1.f))), light.linAttenuation, light.quadAttenuation) * (diffuseColor + specularColor);\n"
+                    "     // return unitNormal;\n"
+                    "     // return "  +diffuseValue+ ";\n"
                     "}\n";
             }
             

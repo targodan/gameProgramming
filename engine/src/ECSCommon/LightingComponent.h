@@ -22,13 +22,8 @@ namespace engine {
             LightingComponent(const LightingComponent& orig) = delete;
             virtual ~LightingComponent() {}
             
-            const LightSource& getLightSource() const {
-                return this->lightSource;
-            }
-            
-            LightSource& getLightSource() {
-                return this->lightSource;
-            }
+            const LightSource& getLightSource() const;
+            LightSource& getLightSource();
             
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;

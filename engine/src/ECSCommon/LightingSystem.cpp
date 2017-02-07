@@ -6,11 +6,13 @@
 #include "VisualComponent.h"
 #include "renderer/TextureType.h"
 #include "renderer/ShaderProgram.h"
-
 #include "../ECS/Entity.h"
-#include "../WTFException.h"
-#include "RenderLoadingSystem.h"
 
+#include "../WTFException.h"
+#include "PlacementSystem.h"
+
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
 #include <easylogging++.h>
 
 namespace engine {
@@ -32,51 +34,58 @@ namespace engine {
                     auto& placement = em.getEntity(light.getEntityId()).getComponent<PlacementComponent>(); // found a point light
                     nPointLights++;
                 } catch(...) {
-                    directionalLight = true;
+                    if(directionalLight == true) {
+                        LOG(INFO) << "Only one directional light can be used in a scene. Using the first found one...";
+                    } else {
+                        directionalLight = true;
+                    }
                 }
             }
             
-            int textures;
-            bool applyNormalMapping = this->mapping == Mapping::NONE ? false : true;
+            if(nPointLights == 0 && !directionalLight) {
+                return;
+            }
             
+            int textures = 0;
+            bool applyNormalMapping = this->mapping == Mapping::NONE ? false : true;
             for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
                 auto& visual = itVisual->to<VisualComponent>();
-                auto& material = visual.getVisualObject().getMaterial();
+                auto& mesh = visual.getVisualObject().getMesh();
+                auto material = visual.getVisualObject().getMesh().getMaterial();
                 
-                if(!material.isLightingEnabled()) {
+                if(!material->isLightingEnabled()) {
                     continue;
                 }
                 
-                bool hasSpecularTexture = material.hasSpecularTexture();
-                bool hasDiffuseTexture = material.hasDiffuseTexture();
-                bool hasNormalTexture = material.hasNormalTexture();
+                bool hasSpecularTexture = material->hasSpecularTexture();
+                bool hasDiffuseTexture = material->hasDiffuseTexture();
+                bool hasNormalTexture = material->hasNormalTexture();
                 
                 if(hasSpecularTexture) {
                     textures = TextureType::SPECULAR;
                 }
-
                 if(hasDiffuseTexture) {
                     textures |= TextureType::DIFFUSE;
                 }
-
                 if(applyNormalMapping && hasNormalTexture) {
                     textures |= TextureType::NORMAL;
                 }
                 
                 if(nPointLights != this->nPreviousPointLights) {
-                    material.setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures))));
+                    material->setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures))));
+//                    std::cout << DefaultShader::createLightingVertexShader() << std::endl;
+//                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures) << std::endl;
                 }
                 
-                visual.setShaderUniform("shininess", material.getShininess());
-                if(!(textures & TextureType::SPECULAR)) {
-                    visual.setShaderUniform("specularColor", vec3(material.getColor().specular.getGLColor()));
+                visual.setShaderUniform("shininess", material->getShininess());
+                if((textures & TextureType::SPECULAR) == 0) {
+                    visual.setShaderUniform("specularColor", vec3(material->getColor().specular.getGLColor()));
                 }
-                if(!(textures & TextureType::DIFFUSE)) {
-                    visual.setShaderUniform("diffuseColor", vec3(material.getColor().diffuse.getGLColor()));
+                if((textures & TextureType::DIFFUSE) == 0) {
+                    visual.setShaderUniform("diffuseColor", vec3(material->getColor().diffuse.getGLColor()));
                 }
                 
                 unsigned int iLightSource = 0;
-                
                 for(auto itLight = em.begin({LightingComponent::getComponentTypeId()}); itLight != em.end(); ++itLight) {
                     auto& lightComp = itLight[0]->to<LightingComponent>();
                     auto& lightSource =  lightComp.getLightSource();
@@ -84,21 +93,26 @@ namespace engine {
                     try{
                         auto& placement = em.getEntity(lightComp.getEntityId()).getComponent<PlacementComponent>(); // found a point light
                         std::string uniformLightSource = "pointLightSources[" + std::to_string(iLightSource) + "]";
-                        visual.setShaderUniform(uniformLightSource + ".position", placement.getPosition());
-                        visual.setShaderUniform(uniformLightSource + ".ambient", lightSource.getAmbient());
-                        visual.setShaderUniform(uniformLightSource + ".diffuse", lightSource.getDiffuse());
-                        visual.setShaderUniform(uniformLightSource + ".specular", lightSource.getSpecular());
-                        visual.setShaderUniform(uniformLightSource + ".linAttenuation", lightSource.getLinAttenuation());
-                        visual.setShaderUniform(uniformLightSource + ".quadAttenuation", lightSource.getQuadAttenuation());
+                        material->getShader()->setUniform(uniformLightSource + ".position", placement.getPosition());
+                        LOG(INFO) << "Setting lightPosition: " << glm::to_string(placement.getPosition());
+                        material->getShader()->setUniform(uniformLightSource + ".ambient", lightSource.getAmbient());
+                        material->getShader()->setUniform(uniformLightSource + ".diffuse", lightSource.getDiffuse());
+                        material->getShader()->setUniform(uniformLightSource + ".specular", lightSource.getSpecular());
+                        material->getShader()->setUniform(uniformLightSource + ".linAttenuation", lightSource.getLinAttenuation());
+                        material->getShader()->setUniform(uniformLightSource + ".quadAttenuation", lightSource.getQuadAttenuation());
                     } catch(...) {}
                 }
+                
+//                material->makeActive();
+//                material->makeInactive();
+                // mesh.setMaterial(std::make_shared<Material>(material));
             }
             
             this->nPreviousPointLights = nPointLights;
         }
         
         Array<systemId_t> LightingSystem::getDependencies() const {
-            return {RenderLoadingSystem::systemTypeId()};
+            return {PlacementSystem::systemTypeId()};
         }
         Array<systemId_t> LightingSystem::getOptionalDependencies() const {
             return {};

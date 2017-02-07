@@ -62,7 +62,7 @@ namespace engine {
         }
 
         void CameraComponent::updateProjectionMatrix() {
-            this->projectionMatrix = glm::perspective(this->horizontalFieldOfView, this->aspectRatio, this->near, this->far);
+            this->projectionMatrix = glm::perspective(glm::radians(this->horizontalFieldOfView), this->aspectRatio, this->near, this->far);
         }
         void CameraComponent::setViewMatrix(const vec3& position, const vec3& direction, const vec3& up) {
             if(glm::dot(direction, up) != 0) {

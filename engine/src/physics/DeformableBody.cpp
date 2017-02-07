@@ -343,7 +343,7 @@ namespace engine {
             }
             LOG(INFO) << "Deleted " << tetraIndex;
             // Delete from stress
-            for(size_t row = tetraIndex * 6; row < tetraIndex * 6 + 6; ++row) {
+            for(size_t row = tetraIndex; row < tetraIndex+1; ++row) {
                 for(int col = 0; col < this->stressMatrix.cols(); ++col) {
                     if(this->stressMatrix.coeff(row, col) != double(0)) {
                         this->stressMatrix.coeffRef(row, col) = 0;

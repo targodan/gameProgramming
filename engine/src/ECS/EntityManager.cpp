@@ -7,7 +7,8 @@
 
 namespace engine {
     namespace ECS {
-        EntityManager::EntityManager(MessageHandler& messageHandler) : messageHandler(messageHandler), nextEntityId(0) {
+        EntityManager::EntityManager(MessageHandler& messageHandler)
+            : messageHandler(messageHandler), nextEntityId(0), components(), entityComponentIndexes() {
             this->components.set_empty_key(SIZE_MAX);
             this->entityComponentIndexes.set_empty_key(SIZE_MAX);
             
@@ -97,6 +98,7 @@ namespace engine {
         }
         
         void EntityManager::addComponent(entityId_t eId, shared_ptr<Component> component) {
+            component->setEntityId(eId);
             auto& vec = this->components[component->getComponentId()];
             vec.push_back(component);
             

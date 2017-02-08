@@ -11,6 +11,7 @@ namespace engine {
         class Force {
         protected:
             float secondsSinceStart = 0;
+            bool enabled = true;
             
         public:
             Force() {}
@@ -24,6 +25,17 @@ namespace engine {
             
             virtual void setSecondsSinceStart(float secondsSinceStart) {
                 this->secondsSinceStart = secondsSinceStart;
+            }
+            
+            void enable() {
+                this->enabled = true;
+            }
+            void disable() {
+                this->enabled = false;
+            }
+            
+            bool isEnabled() const {
+                return this->enabled;
             }
         };
     }

@@ -15,6 +15,7 @@
 #include "OneShotForce.h"
 #include "Actions.h"
 #include "renderer/DefaultShader.h"
+#include "Actions/ToggleForceAction.h"
 
 using namespace engine;
 using namespace engine::renderer;
@@ -77,7 +78,7 @@ namespace demoSimulation {
         
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 1.8, 8))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 90, this->window.getAspectRatio(), 0.1f, 100.f);
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -106,7 +107,7 @@ namespace demoSimulation {
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond,
-                1e3
+                0
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
@@ -130,14 +131,15 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
         
-//        this->entityManager.createEntity("Gravity")
-//                .addComponent<TimerComponent>(0)
-//                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
-//        
-//        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 10 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
-//        this->entityManager.createEntity("Force")
-//                .addComponent<TimerComponent>(3)
-//                .addComponent<ForceComponent>(explosion);
+        auto gravEnt = this->entityManager.createEntity("Gravity")
+                .addComponent<TimerComponent>(0)
+                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
+        gravEnt.getComponent<ForceComponent>().getForce().disable();
+        
+        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0.3, 5), 2 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
+        auto expEnt = this->entityManager.createEntity("Force")
+                .addComponent<TimerComponent>(999999999)
+                .addComponent<ForceComponent>(explosion);
         
 //        this->systemManager.enableSystem<CustomUpdateSystem>("boom", [](EntityManager& em, float dT) {
 //            for(auto it = em.begin({TimerComponent::getComponentTypeId(), ForceComponent::getComponentTypeId()}); it != em.end(); ++it) {
@@ -148,14 +150,12 @@ namespace demoSimulation {
 //        });
         
         
-        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
-        bombVO->getMaterial().attachTexture("textures/bomb_diffuse.png");
-        bombVO->getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
-        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
-        bombVO->loadObject();
+        VisualObject bombVO("models/bomb.obj");
+        bombVO.getMaterial().attachTexture("textures/bomb_diffuse.png");
+        bombVO.getMaterial().setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createSimpleTextureVertexShader(), DefaultShader::createSimpleTextureFragmentShader())));
         this->entityManager.createEntity("Bomb")
-                .addComponent<VisualComponent>(std::make_shared<VisualObject>(*bombVO))
-                .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
+                .addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO))
+                .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 5});
         
         float floorRadius = 1e4;
         float floorTexRepeat = 4e4;
@@ -201,6 +201,9 @@ namespace demoSimulation {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
+        
+        bm.insertMapping(-1, GLFW_KEY_J, std::make_shared<ResetTimerAction>(-1, GLFW_KEY_J, expEnt.getComponent<TimerComponent>()));
+        bm.insertMapping(-1, GLFW_KEY_G, std::make_shared<ToggleForceAction>(-1, GLFW_KEY_G, gravEnt.getComponent<ForceComponent>().getForce()));
         
         Texture skyTexture("textures/skybox_small.png");
         auto skybox = std::make_shared<Skybox>(skyTexture, EnvironmentTextureType::EQUIRECTANGULAR);

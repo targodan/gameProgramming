@@ -36,7 +36,7 @@ namespace engine {
                 }
             }
             
-            int textures;
+            int textures = 0;
             bool applyNormalMapping = this->mapping == Mapping::NONE ? false : true;
             
             for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {

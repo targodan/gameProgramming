@@ -27,6 +27,10 @@ namespace engine {
                 this->time += time;
             }
             
+            void reset(float tMinus = 0) {
+                this->time = -tMinus;
+            }
+            
             componentId_t getComponentId() const override;
             std::string getComponentName() const override;
             std::string toString() const override;

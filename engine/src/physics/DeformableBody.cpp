@@ -232,8 +232,6 @@ namespace engine {
         void DeformableBody::breakOnHighStress() {
             VectorXd stress = this->calculateStressPerTetrahedron(this->calculateCurrentDifferenceFromRestPosition());
             
-            LOG(INFO) << "Avg stress:" << stress.sum() / stress.rows();
-            
             Set<size_t> breakingTetrahedra;
             breakingTetrahedra.set_empty_key(SIZE_MAX);
             

@@ -20,6 +20,7 @@
 #include "Actions/ChangeMouseMode.h"
 #include "Actions/FlyUpDownAction.h"
 #include "Actions/BoomAction.h"
+#include "Actions/ExplosionAction.h"
 
 #endif /* ACTIONS_H */
 

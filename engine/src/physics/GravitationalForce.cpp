@@ -16,6 +16,10 @@ namespace engine {
         }
 
         VectorXf GravitationalForce::getForceOnVertices(const ObjectProperties& object) {
+            if(!this->isEnabled()) {
+                return VectorXf(0);
+            }
+            
             VectorXf forces = object.allVertices;
             Map<MatrixXf> forcesInCols(forces.data(), 3, forces.rows() / 3);
             

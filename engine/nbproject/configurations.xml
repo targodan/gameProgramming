@@ -26,9 +26,11 @@
           <in>DeformableBodySystem.cpp</in>
           <in>ForceComponent.cpp</in>
           <in>InputSystem.cpp</in>
+          <in>LightingSystem.cpp</in>
           <in>PerformanceMetricsSystem.cpp</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
+          <in>RenderLoadingSystem.cpp</in>
           <in>RenderSystem.cpp</in>
           <in>TextComponent.cpp</in>
           <in>TimerComponent.cpp</in>
@@ -408,6 +410,10 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/LightingSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -423,6 +429,13 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/RenderLoadingSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -838,6 +851,8 @@
         </ccTool>
       </item>
       <item path="test/ECS/EntityManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/MessageHandlerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -851,14 +866,20 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/SystemManagerTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/IO/SerializerTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -869,7 +890,7 @@
         </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool>
+        <ccTool flags="0">
           <incDir>
             <pElem>test</pElem>
             <pElem>.</pElem>
@@ -896,8 +917,12 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/util/MapTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -1034,6 +1059,10 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/LightingSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -1049,6 +1078,13 @@
         </ccTool>
       </item>
       <item path="src/ECSCommon/PlacementSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/RenderLoadingSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -1285,7 +1321,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -1295,7 +1333,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -1317,8 +1357,12 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
   </confs>

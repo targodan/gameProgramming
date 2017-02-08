@@ -60,6 +60,8 @@ namespace engine {
         glViewport(0, 0, this->width, this->height);
         
         glEnable(GL_DEPTH_TEST); // Enable z-buffer
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
         
         Window::instance = this;
     }

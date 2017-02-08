@@ -29,7 +29,7 @@ namespace engine {
         void InputSystem::run(EntityManager& em, float deltaTimeSeconds) {
             auto actions = map.getActions();
             for(auto actionptr : actions) {
-                actionptr->execute(em);
+                actionptr->execute(em, deltaTimeSeconds);
             }
         }
         

@@ -29,7 +29,7 @@ namespace engine {
                 bi.deviceID = device;
             }
             
-            virtual void execute(EntityManager& em) = 0;
+            virtual void execute(EntityManager& em, float deltaT) = 0;
             virtual void setAxes(double x, double y) {
                 bi.xAxis = x;
                 bi.yAxis = y;

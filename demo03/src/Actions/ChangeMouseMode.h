@@ -27,7 +27,7 @@ namespace demo {
         public:
             ChangeMouseMode(int device, int button, GLFWwindow* window) : Action(device, button), window(window) {}
             ChangeMouseMode(const ChangeMouseMode& orig) : Action(orig.bi.deviceID, orig.bi.buttonID), window(orig.window) {}
-            void execute(EntityManager& em) override {
+            void execute(EntityManager& em, float deltaT) override {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         private:

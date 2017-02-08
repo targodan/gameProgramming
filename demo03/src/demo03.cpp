@@ -40,18 +40,6 @@ namespace demo {
         : Game(argc, argv, ups), firstMouseMovement(true) {
         this->window.setClearColor(0.f, 0.2f, 0.2f);
               
-        auto test = this->entityManager.createEntity("Test");
-        vector<Vertex> tests = {Vertex(vec3(-1.f, 0.f, 0.f)), Vertex(vec3(0.f, 1.f, 0.f)), Vertex(vec3(0.f, 0.f, -1.f))};
-        vector<GLuint> inds = {0,1,2};
-        Mesh t = {tests, inds};
-        Material mat = {std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatVertexShader(), DefaultShader::createFlatFragmentShader()))};
-        
-        auto testobj = std::make_shared<VisualObject>(std::make_shared<Mesh>(t), std::make_shared<Material>(mat));
-        testobj->loadObject();
-        LOG(INFO) << testobj->isInitialized();
-        LOG(INFO) << testobj->getMesh().wasLoaded();
-        test.addComponent<VisualComponent>(testobj).addComponent<PlacementComponent>(vec3{0.f, 0.f, 0.f});
-        
         this->floor = this->entityManager.createEntity("Floor");
         vector<Vertex> vertices = {Vertex(vec3{-100.f, 0.f, -100.f}, vec3{0.f, 0.f, 0.f}, vec2{1,0}), 
                                    Vertex(vec3{-100.f, 0.f, 100.f}, vec3{0.f, 0.f, 0.f}, vec2{0,0}), 
@@ -80,13 +68,21 @@ namespace demo {
         this->player.addComponent<CameraComponent>(cc).addComponent<PlacementComponent>(pcPlayer);
         
         this->PatSys = this->entityManager.createEntity("Triangles");
-        vector<Vertex> instanceVertices = {Vertex{vec3{-0.4f, 0.f, -0.4f}}, Vertex{vec3{0.4f, 0.f, -0.4f}}, Vertex{vec3{0.f, 0.4f, 0.f}}};
-        vector<float> positions(60, 0.0f);
+        vector<Vertex> instanceVertices = { Vertex{vec3{-0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 0}}, 
+                                            Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}},
+                                            Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}},
+                                            Vertex{vec3{0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}},
+                                            Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 1}},
+                                            Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}}};
+        vector<float> positions(300, 0.0f);
         auto iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
-        VisualObject vo = {iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
+        auto iMat = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())));
+        Texture iTex = {"resources/textures/NeGeo.png"};
+        iMat->attachTexture(iTex);
+        VisualObject vo = {iMesh, iMat};
         vo.loadObject();
         
-        ParticleSystem pats(3, 0.2, iMesh ,ParticleForce::getForceOnVertices(60));
+        ParticleSystem pats(3, 0.2, iMesh ,ParticleForce::getForceOnVertices(300));
         std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
         
         this->PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
@@ -115,7 +111,7 @@ namespace demo {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         
                     
-        auto bombMesh = std::make_shared<VisualObject>("resources/models/bomb.blend");
+        auto bombMesh = std::make_shared<VisualObject>("resources/models/bomb.obj");
         bombMesh->loadObject();
         
         auto action6 = std::make_shared<PlaceBombAction>(PlaceBombAction(-2, GLFW_MOUSE_BUTTON_RIGHT, std::make_shared<Entity>(this->player), bombMesh));
@@ -125,7 +121,7 @@ namespace demo {
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         //this->systemManager.enableSystem<CameraRenderSystem>();
         this->systemManager.enableSystem<InputSystem>(bm);
-        //this->systemManager.enableSystem<ParticleSystemSystem>();
+        this->systemManager.enableSystem<ParticleSystemSystem>();
         Game::initialize();
         
         glfwSetInputMode(this->window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);

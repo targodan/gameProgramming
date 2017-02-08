@@ -1,6 +1,7 @@
 #ifndef DEFAULTSHADER_H
 #define DEFAULTSHADER_H
 
+#include "TextureType.h"
 #include <string>
 #include "../util/vec3.h"
 
@@ -9,6 +10,13 @@ namespace engine {
         using std::string;
         using std::to_string;
         using util::vec3;
+        
+        enum DefaultShaderType {
+            FLAT,
+            FLAT_INSTANCING,
+            SIMPLE_TEXTURE_SHADER,
+            LIGHTING
+        };
         
         class DefaultShader {
         public:
@@ -20,6 +28,9 @@ namespace engine {
             
             static string createFlatInstancingVertexShader(vec3 color = {1.0f, 0.f, 0.f});
             static string createFlatInstancingFragmentShader();
+            
+            static string createLightingVertexShader();
+            static string createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures);
         private:
             DefaultShader() {}  
         };

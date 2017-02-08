@@ -5,8 +5,12 @@
 
 namespace engine {
     namespace renderer {
-        ModelLoader::ModelLoader(string pathToModel, string pathToVertexShader, string pathToFragmentShader) 
-            : pathToVertexShader(pathToVertexShader), pathToFragmentShader(pathToFragmentShader) {       
+        ModelLoader::ModelLoader(string pathToModel, Mapping mapping, bool lighting) 
+            : mapping(mapping), lighting(lighting) {
+            if(mapping != Mapping::NONE && mapping != Mapping::NORMAL_MAPPING) {
+                throw WTFException("ModelLoader error: only normal mapping or not mapping at all are supported now.");
+            }
+            
             this->modelDirectory = pathToModel.substr(0, pathToModel.find_last_of("/")) + "/";
             
             // TODO: Test flags: aiProcess_OptimizeGraph, aiProcess_OptimizeMeshes
@@ -78,18 +82,67 @@ namespace engine {
             } 
 
             aiMaterial* assimpMaterial = scene->mMaterials[mesh->mMaterialIndex];
-
-//            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
-//            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
-//            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
-            Texture texture = {"resources/textures/BombColor.png", ImageFormat::RGBA};
-            vector<Texture> textures;
-            textures.push_back(texture);
             
-            std::string vertexShader = "";
-            std::string fragmentShader = "";
+            
+            vector<Texture> textures;
+            vector<aiTextureType> textureTypes;
+            
+            textureTypes.push_back(aiTextureType_DIFFUSE);
+            if(this->lighting) {
+                textureTypes.push_back(aiTextureType_SPECULAR);
+                if(this->mapping == Mapping::NORMAL_MAPPING) {
+                    textureTypes.push_back(aiTextureType_NORMALS);
+                }
+            }
+            
+            vector<Texture> result;
+            for(auto textureType : textureTypes) {
+                try {
+                    result = this->createTexturesOfType(assimpMaterial, textureType);
+                    textures.insert(textures.end(), result.begin(), result.end());
+                } catch(...) {
+                    std::string errorType;
+                    switch(textureType) {
+                        case aiTextureType_DIFFUSE:
+                            errorType = "DIFFUSE"; break;
+                        case aiTextureType_SPECULAR:
+                            errorType = "SPECULAR"; break;
+                        case aiTextureType_NORMALS:
+                            errorType = "NORMAL"; break;
+                        default:
+                            break; // Dafuq?
+                    }
+                    
+                    LOG(WARNING) << "ModelLoader: Could not import texture of type " << errorType;
+                }
+            }
+            
+//            Texture texture = {"resources/textures/bomb_diffuse.png", ImageFormat::RGBA};
+//            vector<Texture> textures;
+//            textures.push_back(texture);
+            
+//            std::string vertexShader = "";
+//            std::string fragmentShader = "";
+//            std::shared_ptr<Material> material;
+//            if(pathToVertexShader == "" && pathToFragmentShader == "") {
+//                if(!textures.empty()) {
+//                    vertexShader = DefaultShader::createSimpleTextureVertexShader();
+//                    fragmentShader = DefaultShader::createSimpleTextureFragmentShader();
+//                } else {
+//                    vertexShader = DefaultShader::createFlatVertexShader();
+//                    fragmentShader = DefaultShader::createFlatFragmentShader();
+//                }
+//                
+//                material = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)));
+//            } else {
+//                material = std::make_shared<Material>(std::make_shared<ShaderProgram>(pathToVertexShader, pathToFragmentShader));
+//            }
+            
             std::shared_ptr<Material> material;
-            if(pathToVertexShader == "" && pathToFragmentShader == "") {
+            if(!this->lighting) {
+                std::string vertexShader = "";
+                std::string fragmentShader = "";
+                
                 if(!textures.empty()) {
                     vertexShader = DefaultShader::createSimpleTextureVertexShader();
                     fragmentShader = DefaultShader::createSimpleTextureFragmentShader();
@@ -100,9 +153,9 @@ namespace engine {
                 
                 material = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(vertexShader, fragmentShader)));
             } else {
-                material = std::make_shared<Material>(std::make_shared<ShaderProgram>(pathToVertexShader, pathToFragmentShader));
+                material = std::make_shared<Material>();
             }
-            
+                
             if(!textures.empty()) {
                 material->setTextures(textures);
             }
@@ -112,13 +165,34 @@ namespace engine {
 
         vector<Texture> ModelLoader::createTexturesOfType(aiMaterial* assimpMaterial, aiTextureType type) {
             vector<Texture> textures;
-            for(unsigned int i = 0; i < assimpMaterial->GetTextureCount(type); i++) {
-                aiString pathToTexture;
-                assimpMaterial->GetTexture(type, i, &pathToTexture); // TODO: Retrieve other parameters: mapping, uvindex, blend, op, mapmode
-                
-                Texture texture = {this->modelDirectory + std::string(pathToTexture.C_Str()), ImageFormat::RGBA, ImageFormat::RGBA};
-                textures.push_back(texture);
+//            for(unsigned int i = 0; i < assimpMaterial->GetTextureCount(type); i++) {
+//                aiString pathToTexture;
+//                assimpMaterial->GetTexture(type, i, &pathToTexture); // TODO: Retrieve other parameters: mapping, uvindex, blend, op, mapmode
+//                
+//                Texture texture = {this->modelDirectory + std::string(pathToTexture.C_Str()), ImageFormat::RGBA, ImageFormat::RGBA};
+//                textures.push_back(texture);
+//            }
+            if(assimpMaterial->GetTextureCount(type) > 1) {
+                LOG(WARNING) << "ModelLoader: Multiple textures for a unique texture type detected. Will only use the first one found.";
             }
+            
+            TextureType myType;
+            switch(type) {
+                case aiTextureType_DIFFUSE:
+                    myType = TextureType::DIFFUSE; break;
+                case aiTextureType_SPECULAR:
+                    myType = TextureType::SPECULAR; break;
+                case aiTextureType_NORMALS:
+                    myType = TextureType::NORMAL; break;
+                default:
+                    throw WTFException("Could not import model: Can only import diffuse, specular or normal textures.");
+            }
+            
+            aiString pathToTexture;
+            assimpMaterial->GetTexture(type, 0, &pathToTexture); // TODO: Retrieve other parameters: mapping, uvindex, blend, op, mapmode
+                
+            Texture texture = {this->modelDirectory + std::string(pathToTexture.C_Str()), ImageFormat::RGBA, ImageFormat::RGBA, TextureDimension::TEXTURE_2D, myType};
+            textures.push_back(texture);
 
             return textures;
         }

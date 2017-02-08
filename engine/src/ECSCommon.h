@@ -18,6 +18,9 @@
 #include "./ECSCommon/PerformanceMetricsSystem.h"
 #include "./ECSCommon/ParticleSystemComponent.h"
 #include "./ECSCommon/ParticleSystemSystem.h"
+#include "./ECSCommon/RenderLoadingSystem.h"
+#include "./ECSCommon/LightingSystem.h"
+#include "./ECSCommon/LightingComponent.h"
 
 #endif /* ECSCOMMON_H */
 

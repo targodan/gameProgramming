@@ -3,7 +3,7 @@
 
 #include "gl/gl_core_3_3.h"
 #include "BufferType.h"
-#include "TextureType.h"
+#include "TextureDimension.h"
 
 namespace engine {
     namespace renderer {
@@ -35,10 +35,10 @@ namespace engine {
                 glBindVertexArray(0);
             }
             
-            static void bindTexture(TextureType type, GLuint id) {
+            static void bindTexture(TextureDimension type, GLuint id) {
                 glBindTexture(type, id);
             }
-            static void unbindTexture(TextureType type) {
+            static void unbindTexture(TextureDimension type) {
                 glBindTexture(type, 0);
             }
         };

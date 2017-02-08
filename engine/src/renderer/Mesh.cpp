@@ -108,6 +108,14 @@ namespace engine {
             
             this->vao->unbind();
             
+            if(material->isNewShaderAttached()) {
+                this->updateBuffer();
+            }
+            
+            if(!material->areTexturesLoaded() && !material->getTextures().empty()) {
+                material->loadTextures();
+            }
+            
             this->material->makeActive();
             
             this->vao->bind();
@@ -120,6 +128,8 @@ namespace engine {
             this->vao->unbind();
             
             this->material->makeInactive();
+            
+            this->material->setNewShaderAttached(false);
         }
         
         void Mesh::loadMesh() {
@@ -142,13 +152,23 @@ namespace engine {
             vao->releaseVertexArray();
         }
         
-        void Mesh::setMaterial(const std::shared_ptr<Material>& material) {
-            this->material = material;
+        void Mesh::updateBuffer() {
+            if(!this->material) {
+                throw WTFException("Could not update buffer: not material set.");
+            }
             
             this->setVAOAttributes();
             this->enableVAOAttributes();
         }
+        void Mesh::setMaterial(const std::shared_ptr<Material>& material) {
+            this->material = material;
+            
+            this->updateBuffer();
+        }
         std::shared_ptr<const Material> Mesh::getMaterial() const {
+            return this->material;
+        }
+        std::shared_ptr<Material> Mesh::getMaterial() {
             return this->material;
         }
         bool Mesh::wasLoaded() const {

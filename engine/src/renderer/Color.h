@@ -1,6 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "../util/vec3.h"
 #include "../util/vec4.h"
 
 namespace engine {
@@ -9,10 +10,22 @@ namespace engine {
         
         class Color {
         protected:
-            vec4 color;
+            vec4 color = vec4{0.f, 0.f, 0.f, 1.f};
             
         public:
+            Color() {}
             Color(float red, float green, float blue, float alpha = 1.0f) : color(red, green, blue, alpha) {}
+            
+            Color& operator=(const vec3& right) {
+                this->color = vec4{right.x, right.y, right.z, 1.0f};
+                
+                return *this;
+            }
+            Color& operator=(const vec4& right) {
+                this->color = right;
+                
+                return *this;
+            }
             
             bool operator==(const Color& other) const {
                 return this->color[0] == other.color[0]

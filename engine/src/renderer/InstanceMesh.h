@@ -17,10 +17,12 @@ namespace engine {
             InstanceMesh& operator=(InstanceMesh&& right);
             virtual ~InstanceMesh();
            
+            virtual Mesh* clone() override {
+                return new InstanceMesh(*this);
+            };
+            
             virtual void loadMesh() override;
             virtual void render() override;
-            
-            // virtual void setMaterial(const std::shared_ptr<Material>& material) override;
             
             const vector<float>& getInstancePositions() const;
             vector<float>& getInstancePositions();
@@ -30,10 +32,11 @@ namespace engine {
         protected:
             virtual void setVAOAttributes() override;
             void setVAODivisor();
-            void createVBO(vector<float>& positions, DataUsagePattern usage);
+            void createPositionVBO(vector<float>& positions, DataUsagePattern usage);
             
             vector<float> instancePositions;
             bool instancePositionsChanged = false;
+            bool createdBuffer = false;
             
             DataUsagePattern usage;
         };

@@ -125,8 +125,8 @@
         <itemPath>../engine/src/renderer/ShaderType.h</itemPath>
         <itemPath>../engine/src/renderer/TextRenderer.h</itemPath>
         <itemPath>../engine/src/renderer/Texture.h</itemPath>
+        <itemPath>../engine/src/renderer/TextureDimension.h</itemPath>
         <itemPath>../engine/src/renderer/TextureParameter.h</itemPath>
-        <itemPath>../engine/src/renderer/TextureType.h</itemPath>
         <itemPath>../engine/src/renderer/Vertex.h</itemPath>
         <itemPath>../engine/src/renderer/VertexArray.h</itemPath>
         <itemPath>../engine/src/renderer/VertexAttribute.h</itemPath>

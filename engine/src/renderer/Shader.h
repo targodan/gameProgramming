@@ -25,14 +25,17 @@ namespace engine {
          */
         class Shader {
         public:
-            Shader(std::unique_ptr<std::string> sourceCode, ShaderType type) 
-                : type(type), compiled(false), sourceCode(std::move(sourceCode)) {
+            Shader(std::shared_ptr<std::string> sourceCode, ShaderType type) 
+                : type(type), compiled(false), sourceCode(sourceCode) {
                 this->initShader();
                 this->compileShader();
             }
             Shader(const Shader& orig) 
-                : id(orig.id), type(orig.type), compiled(orig.compiled), 
-                  sourceCode(std::make_unique<std::string>(*(orig.sourceCode))) {}
+                : type(orig.type), compiled(false), 
+                  sourceCode(std::make_shared<std::string>(*(orig.sourceCode))) {
+                this->initShader();
+                this->compileShader();
+            }
             Shader(Shader&& orig) 
                 : id(std::move(orig.id)), type(std::move(orig.type)), 
                   compiled(std::move(orig.compiled)), sourceCode(std::make_unique<std::string>(*(std::move(orig.sourceCode)))) {}
@@ -86,7 +89,7 @@ namespace engine {
             // vector<std::string> uniformVariables;
             // vector<std::string> inputVariables;
             
-            const std::unique_ptr<std::string> sourceCode;
+            std::shared_ptr<std::string> sourceCode;
            
         };
     }

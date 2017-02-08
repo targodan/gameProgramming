@@ -3,6 +3,7 @@
 
 #include "gl/gl_core_3_3.h"
 #include "Bindable.h"
+#include "TextureDimension.h"
 #include "TextureType.h"
 #include "DataType.h"
 #include "ImageFormat.h"
@@ -21,7 +22,9 @@ namespace engine {
         
         class Texture : public Bindable {
         public:
-            Texture(std::string imagePath, ImageFormat format = ImageFormat::RGB, ImageFormat formatToStoreTextureIn = ImageFormat::RGB, bool specular = false, TextureType type = TextureType::TEXTURE_2D);
+            Texture(std::string imagePath, TextureType type);
+            Texture(std::string imagePath, ImageFormat format = ImageFormat::RGB, ImageFormat formatToStoreTextureIn = ImageFormat::RGB, 
+                    TextureDimension dim = TextureDimension::TEXTURE_2D, TextureType type = TextureType::DIFFUSE);
             Texture(const Texture& orig);
             Texture(Texture&& orig);
             
@@ -43,12 +46,14 @@ namespace engine {
             virtual void unbind() override;
             
             virtual bool isBound() const override;
-            bool isSpecular() const;
-            bool isDiffuse() const;
+            bool isLoaded() const;
+            TextureType getType() const;
         private:
+            void initialize(std::string imagePath);
             void generateMipmap();
             
             GLuint id;
+            TextureDimension dim;
             TextureType type;
             ImageFormat format;
             ImageFormat formatToStoreTextureIn;
@@ -60,7 +65,7 @@ namespace engine {
             unsigned char* imageData;
             
             bool bound;
-            bool specular;
+            bool loaded = false;
         };
     }
 }

@@ -3,6 +3,8 @@
 
 #include "Mesh.h"
 #include "Material.h"
+#include "DefaultShader.h"
+#include "Mapping.h"
 
 #include <string>
 #include <memory>
@@ -20,7 +22,7 @@ namespace engine {
          */
         class ModelLoader {
         public:
-            ModelLoader(string pathToModel, string pathToVertexShader = "", string pathToFragmentShader = "");
+            ModelLoader(string pathToModel, Mapping mapping, bool lighting);
             ModelLoader(const ModelLoader& orig) = delete;
             ModelLoader(ModelLoader&& orig) = delete;
             ~ModelLoader() {}
@@ -34,9 +36,10 @@ namespace engine {
             std::shared_ptr<Material> createMaterialObject(aiMesh* mesh, const aiScene* scene);
             vector<Texture> createTexturesOfType(aiMaterial* assimpMaterial, aiTextureType type);
             
-            string pathToVertexShader;
-            string pathToFragmentShader;
             string modelDirectory;
+            
+            Mapping mapping;
+            bool lighting;
         };
     }
 }

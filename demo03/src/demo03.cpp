@@ -71,9 +71,9 @@ namespace demo {
         vector<Vertex> instanceVertices = { Vertex{vec3{-0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 0}}, 
                                             Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}},
                                             Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}},
-                                            Vertex{vec3{0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 1}},
-                                            Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}},
-                                            Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}}};
+                                            Vertex{vec3{0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}},
+                                            Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 1}},
+                                            Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}}};
         vector<float> positions(300, 0.0f);
         auto iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
         auto iMat = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())));

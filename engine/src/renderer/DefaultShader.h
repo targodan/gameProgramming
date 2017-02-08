@@ -20,6 +20,9 @@ namespace engine {
             
             static string createFlatInstancingVertexShader(vec3 color = {1.0f, 0.f, 0.f});
             static string createFlatInstancingFragmentShader();
+            
+            static string createTextureInstancingVertexShader();
+            static string createTextureInstancingFragmentShader();
         private:
             DefaultShader() {}  
         };

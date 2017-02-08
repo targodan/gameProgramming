@@ -55,7 +55,7 @@ namespace engine {
                 this->first = false;
             }
             VectorXf diff = stepMatrixSolver.solve(deltaT * (this->calculateDampeningForce() + force));
-            LOG(INFO) << "diff" << diff;
+            //LOG(INFO) << "diff" << diff;
             this->lastVelocities = this->lastVelocities + diff;
         }
         
@@ -90,7 +90,7 @@ namespace engine {
             vector<float> pos(this->positions.data(), this->positions.data() + this->positions.rows());
             this->mesh->setInstancePositions(pos);
             this->mesh->setInstancePositionsChanged(true);
-            LOG(INFO) << "Pos" << this->positions;
+            //LOG(INFO) << "Pos" << this->positions;
         }
         
         void ParticleSystem::step(float deltaT) {

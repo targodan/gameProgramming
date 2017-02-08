@@ -82,7 +82,7 @@ namespace engine {
 //            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
 //            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
 //            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
-            Texture texture = {"textures/bomb_diffuse.png", ImageFormat::RGBA};
+            Texture texture = {"resources/textures/BombColor.png", ImageFormat::RGBA};
             vector<Texture> textures;
             textures.push_back(texture);
             

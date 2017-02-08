@@ -10,6 +10,7 @@
 #include "../WindowResizeMessage.h"
 
 #include "glm/gtx/transform.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 using engine::renderer::TextRenderer;
 
@@ -41,14 +42,15 @@ namespace engine {
                 }
                 
                 camera.setViewMatrix(placement.getPosition());
-                
+                int i = 0;
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
                     auto& visual = (*itVisual)->to<VisualComponent>();
-                    try{
+                    try{ 
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
+                        LOG(INFO) << i++ << endl << glm::to_string(placement.getPosition());
                         mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
                         visual.setShaderUniform("modelMatrix", modelMatrix);
-                    } catch(...) {}
+                    } catch(...) { LOG(INFO) << "Check";}
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
                     visual.setShaderUniform("viewMatrix", camera.getViewMatrix());

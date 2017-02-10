@@ -79,12 +79,12 @@ namespace engine {
 
             aiMaterial* assimpMaterial = scene->mMaterials[mesh->mMaterialIndex];
 
-//            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
-//            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
-//            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
-            Texture texture = {"resources/textures/BombColor.png", ImageFormat::RGBA};
-            vector<Texture> textures;
-            textures.push_back(texture);
+            vector<Texture> textures = this->createTexturesOfType(assimpMaterial, aiTextureType_DIFFUSE);
+            vector<Texture> specularTextures = this->createTexturesOfType(assimpMaterial, aiTextureType_SPECULAR);
+            textures.insert(textures.end(), specularTextures.begin(), specularTextures.end());
+//            Texture texture = {"resources/textures/BombColor.png", ImageFormat::RGBA};
+//            vector<Texture> textures;
+//            textures.push_back(texture);
             
             std::string vertexShader = "";
             std::string fragmentShader = "";

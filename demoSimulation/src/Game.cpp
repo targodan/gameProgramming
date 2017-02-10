@@ -12,6 +12,9 @@
 #include "engine/physics/GravitationalForce.h"
 #include "engine/physics/TetrahedronizedObject.h"
 #include "engine/physics/Tetrahedronizer.h"
+#include "engine/util/vec3.h"
+#include "engine/util/vec2.h"
+#include "ParticleForce.h"
 #include "OneShotForce.h"
 #include "Actions.h"
 #include "renderer/DefaultShader.h"
@@ -21,6 +24,9 @@ using namespace engine::renderer;
 using namespace engine::physics;
 using namespace engine::ECSCommon;
 using namespace demo::IO;
+using namespace demo;
+using engine::util::vec2;
+using engine::util::vec3;
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -106,7 +112,7 @@ namespace demoSimulation {
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond,
-                1e3
+                0
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
@@ -147,8 +153,9 @@ namespace demoSimulation {
 //            }
 //        });
         
-        
-        auto bombVO = std::make_shared<VisualObject>("models/bomb.blend");
+        LOG(INFO) << "Test";
+        auto bombVO = std::make_shared<VisualObject>("models/bomb.obj");
+        LOG(INFO) << "Another Test";
         bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
         bombVO->loadObject();
         this->entityManager.createEntity("Bomb")
@@ -166,7 +173,9 @@ namespace demoSimulation {
                 0, 1, 2,
                 0, 2, 3
             }));
+            LOG(INFO) << "TEST!";
         Texture floorTex("textures/floor_diffuse.png");
+        LOG(INFO) << "TEST!!";
         auto floorMat = std::make_shared<Material>(
             std::make_shared<ShaderProgram>(
                 ShaderProgram::createShaderProgramFromSource(
@@ -180,6 +189,27 @@ namespace demoSimulation {
         floorVO->loadObject();
         this->entityManager.createEntity("Floor")
                 .addComponent<VisualComponent>(floorVO);
+        
+        auto PatSys = this->entityManager.createEntity("ParticleSystem");
+        engine::util::vector<Vertex> instanceVertices = { Vertex{engine::util::vec3{-0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 0}}, 
+                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}},
+                                            Vertex{engine::util::vec3{0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 1}},
+                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}}};
+        engine::util::vector<float> positions(300, 0.0f);
+        auto iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
+        auto iMat = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())));
+        Texture iTex = {"textures/NeGeo.png"};
+        iMat->attachTexture(iTex);
+        VisualObject vo = {iMesh, iMat};
+        vo.loadObject();
+        
+        ParticleSystem pats(3, 0.2, iMesh, ParticleForce::getForceOnVertices(300));
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
+        
+        PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
+        
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
         ButtonMapping bm(this->window.getWindow());

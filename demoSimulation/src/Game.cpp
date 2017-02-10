@@ -15,7 +15,6 @@
 #include "OneShotForce.h"
 #include "Actions.h"
 #include "renderer/DefaultShader.h"
-#include "engine/renderer/DirectionalLight.h"
 #include "engine/renderer/LightSource.h"
 #include "util/vec3.h"
 

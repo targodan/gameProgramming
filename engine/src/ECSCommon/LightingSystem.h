@@ -38,7 +38,7 @@ namespace engine {
             virtual Array<systemId_t> getOptionalDependencies() const override;
             
             unsigned int nPreviousPointLights = 0;
-            Mapping mapping = Mapping::NONE;
+            Mapping mapping = Mapping::NORMAL_MAPPING;
             
             static systemId_t systemTypeId();
             static void setSystemTypeId(systemId_t id);

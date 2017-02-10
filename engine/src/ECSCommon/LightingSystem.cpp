@@ -72,14 +72,18 @@ namespace engine {
                 if(hasDiffuseTexture) {
                     textures |= TextureType::DIFFUSE;
                 }
-                if(applyNormalMapping && hasNormalTexture) {
-                    textures |= TextureType::NORMAL;
+                if(applyNormalMapping) {
+                    if(hasNormalTexture) { // Only apply normal mapping if texture is attached
+                        textures |= TextureType::NORMAL;
+                    } else {
+                        applyNormalMapping = false;
+                    }
                 }
                 
                 if(nPointLights != this->nPreviousPointLights) {
-                    material->setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures))));
-                    std::cout << DefaultShader::createLightingVertexShader() << std::endl;
-                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures) << std::endl;
+                    material->setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(applyNormalMapping), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures, applyNormalMapping))));
+                    std::cout << DefaultShader::createLightingVertexShader(applyNormalMapping) << std::endl;
+                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures, applyNormalMapping) << std::endl;
                 }
                 
                 visual.setShaderUniform("shininess", material->getShininess());

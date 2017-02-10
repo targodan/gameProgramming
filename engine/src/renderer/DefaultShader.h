@@ -29,8 +29,8 @@ namespace engine {
             static string createFlatInstancingVertexShader(vec3 color = {1.0f, 0.f, 0.f});
             static string createFlatInstancingFragmentShader();
             
-            static string createLightingVertexShader();
-            static string createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures);
+            static string createLightingVertexShader(bool normalMapping=false);
+            static string createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures, bool normalMapping=false);
         private:
             DefaultShader() {}  
         };

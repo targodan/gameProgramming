@@ -97,7 +97,31 @@ namespace engine {
                     "}";
         }
         
-        string DefaultShader::createLightingVertexShader() {
+        string DefaultShader::createLightingVertexShader(bool normalMapping) {
+            /*
+             * Important todo: get viewPos and lightPos as uniforms in VERTEX-SHADER
+             * and transform them with the inverse TBN (= transposed TBN) into
+             * tangent space -> way faster than doing the other way around in
+             * fragment-shader
+             */
+            
+            string inputTangents = "";
+            string outputTBN = "";
+            string calcTBN = "";
+            if(normalMapping) {
+                inputTangents =
+                        "layout (location = 3) in vec3 tangent;\n"
+                        "layout (location = 4) in vec3 bitangent;\n"
+                        "\n";
+                outputTBN =
+                        "out mat3 TBN;\n";
+                calcTBN = 
+                        "vec3 T = normalize(vec3(modelViewMatrix * vec4(tangent, 0.0)));\n"
+                        "vec3 B = normalize(vec3(modelViewMatrix * vec4(bitangent, 0.0)));\n"
+                        "vec3 N = normalize(vec3(modelViewMatrix * vec4(normal, 0.0)));\n"
+                        "TBN = mat3(T, B, N);\n";
+            }
+            
             return "#version 330\n"
                     "#extension GL_ARB_explicit_attrib_location : require\n"
                     "#extension GL_ARB_separate_shader_objects : require\n"
@@ -105,6 +129,7 @@ namespace engine {
                     "layout (location = 0) in vec3 position;\n"
                     "layout (location = 1) in vec3 normal;\n"
                     "layout (location = 2) in vec2 textureCoordinates;\n"
+                    + inputTangents +
                     ""
                     "uniform mat4 modelMatrix = mat4(vec4(1,0,0,0), vec4(0,1,0,0), vec4(0,0,1,0), vec4(0,0,0,1));\n"
                     "uniform mat4 viewMatrix;\n"
@@ -114,6 +139,7 @@ namespace engine {
                     "out vec3 fragNormal;\n"
                     "out vec2 uv;\n"
                     "out mat4 oModelViewMatrix;\n"
+                    + outputTBN +
                     ""
                     "void main() {\n"
                     "   mat4 modelViewMatrix = viewMatrix * modelMatrix;\n"
@@ -125,13 +151,27 @@ namespace engine {
                     "   gl_Position = projectionMatrix * vec4(fragPosition, 1.0f);\n"
                     ""
                     "   oModelViewMatrix = modelViewMatrix;\n"  
-                    "}";
+                    + calcTBN +
+                    "}\n";
         }
         // Formulae closely oriented on Basic Techniques in Computer Graphics & www.learnopengl.com
-        string DefaultShader::createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures) {
+        string DefaultShader::createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures, bool normalMapping) {
             if(nPointLights == 0 && !directionalLight) {
                 throw WTFException("Cannot create lighting fragment shader for 0 light sources!");
             }
+            
+            string inTBN = "";
+            string getNormal = "";
+            string normalInput = "";
+            if(normalMapping) {
+                inTBN = "in mat3 TBN;\n";
+                getNormal = "     vec3 unitNorm = normalize(TBN * normalize((texture(normalTexture1, uv).rgb)*2.0 - 1.0));\n";
+                normalInput = "uniform sampler2D normalTexture1;\n";
+            } else {
+                getNormal = "     vec3 unitNorm = normalize(fragNormal);\n";
+                normalInput = "in vec3 fragNormal;\n";
+            }
+            
             
             bool useDiffuseTexture = (textures & TextureType::DIFFUSE) != 0;
             bool useSpecularTexture = (textures & TextureType::SPECULAR) != 0;
@@ -223,7 +263,7 @@ namespace engine {
             
             string main = 
                     "void main() {\n"
-                    "     vec3 unitNorm = normalize(fragNormal);\n"
+                    + getNormal +
                     "     vec3 unitViewingDir = normalize(-fragPosition);\n"
                     "\n";
             
@@ -244,7 +284,8 @@ namespace engine {
                     + pointLightStruct + directionalLightStruct +
                     ""
                     "in vec3 fragPosition;\n" // in CC
-                    "in vec3 fragNormal;\n" // in CC 
+                    + normalInput 
+                    + inTBN +
                     "in vec2 uv;\n"
                     "\n"
                     "in mat4 oModelViewMatrix;\n"

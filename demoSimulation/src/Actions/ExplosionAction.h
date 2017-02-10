@@ -16,7 +16,7 @@ namespace demo {
         public:
             ResetTimerAction(int device, int button, TimerComponent& timer) : Action(device, button), timer(timer) {}
             ResetTimerAction(const ResetTimerAction& orig) : Action(orig), timer(orig.timer) {}
-            void execute(EntityManager& em) override {
+            void execute(EntityManager& em, float deltaT) override {
                 this->timer.reset();
             }
         private:

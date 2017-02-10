@@ -60,3 +60,4 @@ explosionBoy
 # Blender backups
 *.blend[0-9]
 /demo02/build/
+/demo03/build/

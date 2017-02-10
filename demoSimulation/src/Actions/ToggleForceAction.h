@@ -16,7 +16,7 @@ namespace demo {
         public:
             ToggleForceAction(int device, int button, Force& force) : Action(device, button), force(force) {}
             ToggleForceAction(const ToggleForceAction& orig) : Action(orig), force(orig.force) {}
-            void execute(EntityManager& em) override {
+            void execute(EntityManager& em, float deltaT) override {
                 ++this->count;
                 if(this->count >= 10) {
                     this->count = 0;

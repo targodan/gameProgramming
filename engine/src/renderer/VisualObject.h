@@ -32,6 +32,7 @@ namespace engine {
             
             const Mesh& getMesh() const;
             Mesh& getMesh();
+            std::shared_ptr<Mesh> getMeshPtr();
             
             const Material& getMaterial() const;
             Material& getMaterial();

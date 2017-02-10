@@ -12,6 +12,9 @@
 #include "engine/physics/GravitationalForce.h"
 #include "engine/physics/TetrahedronizedObject.h"
 #include "engine/physics/Tetrahedronizer.h"
+#include "engine/util/vec3.h"
+#include "engine/util/vec2.h"
+#include "ParticleForce.h"
 #include "OneShotForce.h"
 #include "Actions.h"
 #include "renderer/DefaultShader.h"
@@ -22,8 +25,11 @@ using namespace engine;
 using namespace engine::renderer;
 using namespace engine::physics;
 using namespace engine::ECSCommon;
+using namespace demo;
 using namespace demo::IO;
-using util::vec3;
+using engine::util::vec2;
+using engine::util::vec3;
+using engine::util::vector;
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -99,7 +105,7 @@ namespace demoSimulation {
 //                200e9, // youngs modulus metal
 //                0.27, // poissons ratio metal
                 1. / this->updatesPerSecond,
-                1e3
+                0
             );
         defBody->freezeVertices(tMesh.getEdgeIndices());
         
@@ -130,7 +136,6 @@ namespace demoSimulation {
 //            }
 //        });
         
-        
         VisualObject bombVO = {"models/models.obj"};
         bombVO.getMaterial().attachTexture("textures/bomb_diffuse.png", TextureType::DIFFUSE);
         bombVO.getMaterial().attachTexture("textures/bomb_specular.png", TextureType::SPECULAR);
@@ -139,6 +144,13 @@ namespace demoSimulation {
         bombVO.getMaterial().enableLighting();
         bombVO.getMaterial().setShininess(32.f);
          // bombVO->loadObject();
+//=======
+//        LOG(INFO) << "Test";
+//        auto bombVO = std::make_shared<VisualObject>("models/bomb.obj");
+//        LOG(INFO) << "Another Test";
+//        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
+//        bombVO->loadObject();
+//>>>>>>> master
         this->entityManager.createEntity("Bomb")
                 .addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO))
                 .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
@@ -154,6 +166,12 @@ namespace demoSimulation {
                 0, 1, 2,
                 0, 2, 3
             }));
+//<<<<<<< HEAD
+//=======
+//            LOG(INFO) << "TEST!";
+//        Texture floorTex("textures/floor_diffuse.png");
+//        LOG(INFO) << "TEST!!";
+//>>>>>>> master
         auto floorMat = std::make_shared<Material>(
             std::make_shared<ShaderProgram>(
                 ShaderProgram::createShaderProgramFromSource(
@@ -178,6 +196,42 @@ namespace demoSimulation {
 //        LightSource lightSource2 = {util::vec3{0.8f, 0.8f, 0.8f}};
 //        lightSource2.setAttenuation(0.1, 0.1);
 //        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
+
+        auto PatSys = this->entityManager.createEntity("ParticleSystem");
+        engine::util::vector<Vertex> instanceVertices = { Vertex{engine::util::vec3{-0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 0}}, 
+                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}},
+                                            Vertex{engine::util::vec3{0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 1}},
+                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}}};
+        engine::util::vector<float> positions(300, 0.0f);
+        std::shared_ptr<InstanceMesh> iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
+        VisualObject vo = {iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())))};
+        vo.getMaterial().attachTexture("textures/NeGeo.png");
+        
+        ParticleSystem pats(3, 0.2, iMesh, ParticleForce::getForceOnVertices(300));
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
+        
+        PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
+
+        
+//        auto instances = this->entityManager.createEntity("Triangles");
+//        engine::util::vector<Vertex> instanceVertices = {Vertex{engine::util::vec3{-0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.f, 1.f, 0.f}}};
+//        engine::util::vector<float> positions;
+//        
+//        float x = 0.f;
+//        float y = 0.f;
+//        float z = 0.f;
+//        for(int i = 0; i < 100; i++) {
+//            x += 2.f;
+//            y += 2.f;
+//            positions.push_back(x);
+//            positions.push_back(y);
+//            positions.push_back(z);
+//        }
+//        
+//        VisualObject vo = {std::make_shared<InstanceMesh>(instanceVertices, positions), std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createFlatInstancingVertexShader(), DefaultShader::createFlatInstancingFragmentShader())))};
+//        instances.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{0.f, -0.5f, 0.f});
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
         ButtonMapping bm(this->window.getWindow());

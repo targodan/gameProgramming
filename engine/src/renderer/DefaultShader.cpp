@@ -121,7 +121,7 @@ namespace engine {
                         "vec3 N = normalize(vec3(modelViewMatrix * vec4(normal, 0.0)));\n"
                         "TBN = mat3(T, B, N);\n";
             }
-            
+          
             return "#version 330\n"
                     "#extension GL_ARB_explicit_attrib_location : require\n"
                     "#extension GL_ARB_separate_shader_objects : require\n"
@@ -130,11 +130,11 @@ namespace engine {
                     "layout (location = 1) in vec3 normal;\n"
                     "layout (location = 2) in vec2 textureCoordinates;\n"
                     + inputTangents +
-                    ""
+                    "\n"
                     "uniform mat4 modelMatrix = mat4(vec4(1,0,0,0), vec4(0,1,0,0), vec4(0,0,1,0), vec4(0,0,0,1));\n"
                     "uniform mat4 viewMatrix;\n"
                     "uniform mat4 projectionMatrix;\n"
-                    ""
+                    "\n"
                     "out vec3 fragPosition;\n"
                     "out vec3 fragNormal;\n"
                     "out vec2 uv;\n"
@@ -312,6 +312,42 @@ namespace engine {
                     + calculateDirectionalLight
                     + calculatePointLight
                     + main;
+	}
+        
+        string DefaultShader::createTextureInstancingVertexShader() {
+            return "#version 330\n"
+                    "#extension GL_ARB_explicit_attrib_location : require\n"
+                    "#extension GL_ARB_separate_shader_objects : require\n"
+                    ""   
+                    "layout (location = 0) in vec3 position\n;"
+                    "layout (location = 1) in vec3 instancePosition\n;"
+                    "layout (location = 2) in vec2 textureCoordinate;\n"
+                    ""
+                    "uniform mat4 modelMatrix = mat4(vec4(1,0,0,0), vec4(0,1,0,0), vec4(0,0,1,0), vec4(0,0,0,1));\n"
+                    "uniform mat4 viewMatrix;\n"
+                    "uniform mat4 projectionMatrix;\n"
+                    ""
+                    "out vec2 uv;\n"
+                    ""
+                    "void main() {\n"
+                    "    vec4 positionView = viewMatrix * modelMatrix * vec4(instancePosition, 1.0f)\n;"
+                    "    positionView.xyz += position\n;"
+                    "    gl_Position = projectionMatrix * positionView;\n"
+                    "    uv = textureCoordinate;\n"
+                    "}";
+        }
+        string DefaultShader::createTextureInstancingFragmentShader() {
+            return "#version 330\n"
+                    "in vec2 uv;\n"
+                    ""
+                    "out vec4 fragmentColor;\n"
+                    ""
+                    "uniform sampler2D diffuseTexture1;\n"
+                    ""
+                    "void main() {\n"
+                    "    fragmentColor = vec4(texture(diffuseTexture1, uv));\n"
+                    "    fragmentColor.w = 0.2;"
+                    "}";
         }
     }
 }

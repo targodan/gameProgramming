@@ -24,6 +24,11 @@ namespace engine {
             vector(const vector& __x) noexcept : std::vector<_Tp, _Alloc>(__x) {}
             vector(vector&& __x) noexcept : std::vector<_Tp, _Alloc>(std::move(__x)) {}
             vector(std::initializer_list<_Tp> __l) noexcept : std::vector<_Tp, _Alloc>(__l) {}
+            
+            template<typename _InputIterator,
+                        typename = std::_RequireInputIter<_InputIterator>>
+            vector(_InputIterator __first, _InputIterator __last) : std::vector<_Tp, _Alloc>(__first, __last) {}
+            
             ~vector() noexcept {}
             
             vector& operator=(const vector& __x) {

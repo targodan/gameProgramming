@@ -86,6 +86,9 @@ namespace engine {
         Mesh& VisualObject::getMesh() {
             return *this->mesh;
         }
+        std::shared_ptr<Mesh> VisualObject::getMeshPtr() {
+            return this->mesh;
+        }
         Material& VisualObject::getMaterial() {
             return *this->material;
         }

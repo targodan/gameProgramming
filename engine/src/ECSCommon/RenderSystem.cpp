@@ -1,4 +1,5 @@
 #include "RenderSystem.h"
+#include "LightingSystem.h"
 #include "VisualComponent.h"
 #include "TextComponent.h"
 #include "CameraComponent.h"
@@ -10,7 +11,7 @@
 #include "../WindowResizeMessage.h"
 
 #include "glm/gtx/transform.hpp"
-#include "LightingSystem.h"
+#include "glm/gtx/string_cast.hpp"
 
 using engine::renderer::TextRenderer;
 
@@ -44,7 +45,6 @@ namespace engine {
                 }
                 
                 camera.setViewMatrix(placement.getPosition());
-                
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
                     auto& object = itVisual->to<VisualComponent>().getVisualObject();
                     
@@ -53,11 +53,10 @@ namespace engine {
                     }
                     
                     auto& visual = (*itVisual)->to<VisualComponent>();
-                    try{
+                    try{ 
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
                         mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
                         visual.setShaderUniform("modelMatrix", modelMatrix);
-//                        LOG(INFO) << "Set modelMatrix";
                     } catch(...) {}
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());

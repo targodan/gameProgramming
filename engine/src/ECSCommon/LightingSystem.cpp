@@ -82,8 +82,8 @@ namespace engine {
                 
                 if(nPointLights != this->nPreviousPointLights) {
                     material->setShader(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createLightingVertexShader(applyNormalMapping), DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures, applyNormalMapping))));
-                    std::cout << DefaultShader::createLightingVertexShader(applyNormalMapping) << std::endl;
-                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures, applyNormalMapping) << std::endl;
+//                    std::cout << DefaultShader::createLightingVertexShader(applyNormalMapping) << std::endl;
+//                    std::cout << DefaultShader::createLightingFragmentShader(nPointLights, directionalLight, textures, applyNormalMapping) << std::endl;
                 }
                 
                 visual.setShaderUniform("shininess", material->getShininess());

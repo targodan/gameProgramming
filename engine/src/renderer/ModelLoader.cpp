@@ -83,7 +83,6 @@ namespace engine {
 
             aiMaterial* assimpMaterial = scene->mMaterials[mesh->mMaterialIndex];
             
-            
             vector<Texture> textures;
             vector<aiTextureType> textureTypes;
             

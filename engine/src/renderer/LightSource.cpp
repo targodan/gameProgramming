@@ -27,6 +27,8 @@ namespace engine {
                 
                 this->linearAttenuation = orig.linearAttenuation;
                 this->quadraticAttenuation = orig.quadraticAttenuation;
+                
+                this->directionalLight = orig.directionalLight;
             }
             LightSource::LightSource(LightSource&& orig) {
                 this->diffuseColor = std::move(orig.diffuseColor);
@@ -35,6 +37,8 @@ namespace engine {
                 
                 this->linearAttenuation = std::move(orig.linearAttenuation);
                 this->quadraticAttenuation = std::move(orig.quadraticAttenuation);
+                
+                this->directionalLight = std::move(orig.directionalLight);
             }
             
             LightSource::~LightSource() {

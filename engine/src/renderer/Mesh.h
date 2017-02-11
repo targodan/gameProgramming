@@ -105,6 +105,8 @@ namespace engine {
             void setIndicesChanged(bool changed);
             void releaseMesh();
             
+            void calculateNormals();
+            
             bool wasLoaded() const;
             
             virtual void setMaterial(const std::shared_ptr<Material>& material);

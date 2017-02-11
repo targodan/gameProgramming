@@ -37,7 +37,7 @@ namespace demoSimulation {
         
         LOG(INFO) << "Window dimensions: " << this->window.getWidth() << "x" << this->window.getHeight();
         
-        auto& fontfamiliy = FontRegistry::registerFontFamily(
+        FontRegistry::registerFontFamily(
             "DejaVuSans",
             "/usr/share/fonts/TTF/DejaVuSans.ttf",
             "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
@@ -119,14 +119,14 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
         
-//        this->entityManager.createEntity("Gravity")
-//                .addComponent<TimerComponent>(0)
-//                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
+        auto gravEnt = this->entityManager.createEntity("Gravity")
+                .addComponent<TimerComponent>(0)
+                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
 //        
-//        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0, 5), 10 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
-//        this->entityManager.createEntity("Force")
-//                .addComponent<TimerComponent>(3)
-//                .addComponent<ForceComponent>(explosion);
+        auto explosion = std::make_shared<Explosion>(Vector3f(0, 0.3, 5), 2 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
+        auto expEnt = this->entityManager.createEntity("Force")
+                .addComponent<TimerComponent>(9999999999)
+                .addComponent<ForceComponent>(explosion);
         
 //        this->systemManager.enableSystem<CustomUpdateSystem>("boom", [](EntityManager& em, float dT) {
 //            for(auto it = em.begin({TimerComponent::getComponentTypeId(), ForceComponent::getComponentTypeId()}); it != em.end(); ++it) {
@@ -144,13 +144,6 @@ namespace demoSimulation {
         bombVO.getMaterial().enableLighting();
         bombVO.getMaterial().setShininess(32.f);
          // bombVO->loadObject();
-//=======
-//        LOG(INFO) << "Test";
-//        auto bombVO = std::make_shared<VisualObject>("models/bomb.obj");
-//        LOG(INFO) << "Another Test";
-//        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
-//        bombVO->loadObject();
-//>>>>>>> master
         this->entityManager.createEntity("Bomb")
                 .addComponent<VisualComponent>(std::make_shared<VisualObject>(bombVO))
                 .addComponent<PlacementComponent>(glm::vec3{0.f, 0.3, 3});
@@ -183,9 +176,10 @@ namespace demoSimulation {
                 .addComponent<VisualComponent>(floorVO);
         
         auto light = this->entityManager.createEntity("Light");
-        LightSource lightSource = {util::vec3{0.8f, 0.8f, 0.8f}};
-        lightSource.setAttenuation(0.1, 0.1);
-        light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource)).addComponent<PlacementComponent>(util::vec3{5.f, 0.f, 5.f});
+        LightSource lightSource = {util::vec3{0.31f, 0.305f, 0.3f}};
+        lightSource.setAttenuation(1e-3, 1e-3);
+        light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource))
+            .addComponent<PlacementComponent>(util::vec3{5.f, 8, 5.f});
         
 //        auto light2 = this->entityManager.createEntity("Light2");
 //        LightSource lightSource2 = {util::vec3{0.8f, 0.8f, 0.8f}};
@@ -245,6 +239,8 @@ namespace demoSimulation {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
+        bm.insertMapping(-1, GLFW_KEY_J, std::make_shared<ResetTimerAction>(-1, GLFW_KEY_J, expEnt.getComponent<TimerComponent>()));
+        bm.insertMapping(-1, GLFW_KEY_G, std::make_shared<ToggleForceAction>(-1, GLFW_KEY_G, gravEnt.getComponent<ForceComponent>().getForce()));
         
         Texture skyTexture("textures/skybox_small.png");
         auto skybox = std::make_shared<Skybox>(skyTexture, EnvironmentTextureType::EQUIRECTANGULAR);

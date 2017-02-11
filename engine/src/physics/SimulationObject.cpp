@@ -62,6 +62,9 @@ namespace engine {
                     this->renderMeshes[meshVertexIndex.first]->setVerticesChanged(true);
                 }
             }
+            for(auto& mesh : this->renderMeshes) {
+                mesh->calculateNormals();
+            }
         }
     }
 }

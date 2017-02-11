@@ -20,6 +20,8 @@
 #include "Actions/ChangeMouseMode.h"
 #include "Actions/FlyUpDownAction.h"
 #include "Actions/BoomAction.h"
+#include "Actions/ToggleForceAction.h"
+#include "Actions/ResetTimerAction.h"
 
 #endif /* ACTIONS_H */
 

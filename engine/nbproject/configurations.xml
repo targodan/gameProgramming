@@ -26,6 +26,9 @@
           <in>DeformableBodySystem.cpp</in>
           <in>ForceComponent.cpp</in>
           <in>InputSystem.cpp</in>
+          <in>LightingSystem.cpp</in>
+          <in>ParticleSystemComponent.cpp</in>
+          <in>ParticleSystemSystem.cpp</in>
           <in>PerformanceMetricsSystem.cpp</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
@@ -53,6 +56,7 @@
           <in>Explosion.cpp</in>
           <in>GravitationalForce.cpp</in>
           <in>ObjectProperties.cpp</in>
+          <in>ParticleSystem.cpp</in>
           <in>SimulationObject.cpp</in>
           <in>TetrahedronizedObject.cpp</in>
           <in>Tetrahedronizer.cpp</in>
@@ -1035,6 +1039,24 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/LightingSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -1145,6 +1167,10 @@
         </ccTool>
       </item>
       <item path="src/physics/ObjectProperties.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/physics/ParticleSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -1326,12 +1352,8 @@
             ex="false"
             tool="1"
             flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
       <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
       </item>
     </conf>
   </confs>

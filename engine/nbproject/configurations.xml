@@ -69,6 +69,7 @@
           <in>FontFamily.cpp</in>
           <in>FontRegistry.cpp</in>
           <in>InstanceMesh.cpp</in>
+          <in>LightSource.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
           <in>ModelLoader.cpp</in>
@@ -1190,6 +1191,10 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/renderer/LightSource.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/renderer/Material.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -1285,7 +1290,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -1295,7 +1302,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -1317,8 +1326,12 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/physics/ExplosionTest.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
     </conf>
   </confs>

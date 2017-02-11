@@ -158,20 +158,15 @@ namespace demoSimulation {
         float floorRadius = 1e4;
         float floorTexRepeat = 4e4;
         auto floorMesh = std::make_shared<Mesh>(engine::util::vector<Vertex>({
-                Vertex({-floorRadius, 0, -floorRadius}, {0, floorRadius, 0}, {0, floorTexRepeat}),
-                Vertex({-floorRadius, 0,  floorRadius}, {0, floorRadius, 0}, {0, 0}),
-                Vertex({ floorRadius, 0,  floorRadius}, {0, floorRadius, 0}, {floorTexRepeat, 0}),
-                Vertex({ floorRadius, 0, -floorRadius}, {0, floorRadius, 0}, {floorTexRepeat, floorTexRepeat}),
+                Vertex({-floorRadius, 0, -floorRadius}, {0, 1, 0}, {0, floorTexRepeat}),
+                Vertex({-floorRadius, 0,  floorRadius}, {0, 1, 0}, {0, 0}),
+                Vertex({ floorRadius, 0,  floorRadius}, {0, 1, 0}, {floorTexRepeat, 0}),
+                Vertex({ floorRadius, 0, -floorRadius}, {0, 1, 0}, {floorTexRepeat, floorTexRepeat}),
             }), engine::util::vector<GLuint>({
                 0, 1, 2,
                 0, 2, 3
             }));
-//<<<<<<< HEAD
-//=======
-//            LOG(INFO) << "TEST!";
-//        Texture floorTex("textures/floor_diffuse.png");
-//        LOG(INFO) << "TEST!!";
-//>>>>>>> master
+
         auto floorMat = std::make_shared<Material>(
             std::make_shared<ShaderProgram>(
                 ShaderProgram::createShaderProgramFromSource(

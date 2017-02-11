@@ -153,10 +153,7 @@ namespace demoSimulation {
 //            }
 //        });
         
-        LOG(INFO) << "Test";
         auto bombVO = std::make_shared<VisualObject>("models/bomb.obj");
-        LOG(INFO) << "Another Test";
-        bombVO->getMesh().applyTransformation(glm::rotate(glm::radians(-90.0f), glm::vec3(1, 0, 0)));
         bombVO->loadObject();
         this->entityManager.createEntity("Bomb")
                 .addComponent<VisualComponent>(bombVO)
@@ -173,9 +170,9 @@ namespace demoSimulation {
                 0, 1, 2,
                 0, 2, 3
             }));
-            LOG(INFO) << "TEST!";
+            
         Texture floorTex("textures/floor_diffuse.png");
-        LOG(INFO) << "TEST!!";
+        
         auto floorMat = std::make_shared<Material>(
             std::make_shared<ShaderProgram>(
                 ShaderProgram::createShaderProgramFromSource(
@@ -208,7 +205,7 @@ namespace demoSimulation {
         ParticleSystem pats(3, 0.2, iMesh, ParticleForce::getForceOnVertices(300));
         std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
         
-        PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
+        PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{2.f, 0.f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
         
         
         auto action1 = std::make_shared<PanCameraAction>(PanCameraAction(-2, -1, std::make_shared<Entity>(this->player), 2e-2));
@@ -242,6 +239,7 @@ namespace demoSimulation {
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<ParticleSystemSystem>();
         
         this->entityManager.sort(VisualComponent::getComponentTypeId(), [](std::shared_ptr<Component> c1, std::shared_ptr<Component> c2) {
             return c1->to<VisualComponent>().getVisualObject().getRenderPriority() < c2->to<VisualComponent>().getVisualObject().getRenderPriority();

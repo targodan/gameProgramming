@@ -74,7 +74,7 @@ namespace demo {
                                             Vertex{vec3{0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 0}},
                                             Vertex{vec3{-0.2f, 0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{1, 1}},
                                             Vertex{vec3{0.2f, -0.2f, 0.f}, vec3{0.f, 0.f, 0.f}, vec2{0, 1}}};
-        vector<float> positions(300, 0.0f);
+        vector<float> positions(1200, 0.0f);
         auto iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
         auto iMat = std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())));
         Texture iTex = {"resources/textures/NeGeo.png"};
@@ -82,7 +82,7 @@ namespace demo {
         VisualObject vo = {iMesh, iMat};
         vo.loadObject();
         
-        ParticleSystem pats(3, 0.2, iMesh ,ParticleForce::getForceOnVertices(300));
+        ParticleSystem pats(3, 0.2, iMesh ,ParticleForce::getForceOnVertices(1200));
         std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
         
         this->PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(vec3{0.f, -0.5f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);

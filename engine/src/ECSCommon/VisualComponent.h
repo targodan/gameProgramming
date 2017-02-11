@@ -3,6 +3,7 @@
 
 #include "../ECS/Component.h"
 #include "../renderer/VisualObject.h"
+#include "easylogging++.h"
 
 #include <memory>
 

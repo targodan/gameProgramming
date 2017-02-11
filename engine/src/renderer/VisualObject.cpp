@@ -1,5 +1,7 @@
 #include "VisualObject.h"
 #include "ModelLoader.h"
+#include <iostream>
+#include <easylogging++.h>
 
 namespace engine {
     namespace renderer {
@@ -7,35 +9,29 @@ namespace engine {
         using util::getAbsoluteFromRelativePath;
         using util::vector;
             
-        VisualObject::VisualObject() : initialized(false) {
+        VisualObject::VisualObject() {
             
         }
-        VisualObject::VisualObject(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) : initialized(false), mesh(mesh), material(material) {           
+        VisualObject::VisualObject(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material) : mesh(mesh), material(material) {           
             this->init();
         }
-        VisualObject::VisualObject(string pathToModel, string pathToVertexShader, string pathToFragmentShader) : initialized(false) {
-            ModelLoader loader = {pathToModel, pathToVertexShader, pathToFragmentShader};
+        VisualObject::VisualObject(string pathToModel, Mapping mapping, bool lighting) {
+            ModelLoader loader = {pathToModel, mapping, lighting};
             this->mesh = loader.mesh;
             this->material = loader.material;
             
             this->init();
         }
 
-        VisualObject::VisualObject(const VisualObject& orig) : initialized(orig.initialized), mesh(orig.mesh), material(orig.material) {
-            //this->mesh = std::make_shared<Mesh>(*(orig.mesh));
-            //this->material = std::make_shared<Material>(*(orig.material));
-            //this->mesh->setMaterial(this->material);
-            
+        VisualObject::VisualObject(const VisualObject& orig) : mesh(std::shared_ptr<Mesh>(orig.mesh->clone())), material(std::make_shared<Material>(*(orig.material))), loaded(false) {
             this->init();
         }
         VisualObject::VisualObject(VisualObject&& orig) : initialized(std::move(orig.initialized)), mesh(std::move(orig.mesh)), material(std::move(orig.material)) {}
         
         VisualObject& VisualObject::operator=(const VisualObject& right) {
-//            this->mesh = std::make_shared<Mesh>(*right.mesh);
-//            this->material = std::make_shared<Material>(*right.material);
-//            this->mesh->setMaterial(this->material);
-            this->mesh = right.mesh;
-            this->material = right.material;
+            this->mesh = std::shared_ptr<Mesh>(right.mesh->clone());
+            this->material = std::make_shared<Material>(*(right.material));
+            this->init();
             
             return *this;
         }
@@ -51,23 +47,31 @@ namespace engine {
         }
         
         void VisualObject::init() {
-            this->mesh->setMaterial(this->material);
-            this->initialized = true;
+            if(this->material->getShader()) {
+                this->mesh->setMaterial(this->material);
+                this->initialized = true;
+            }
         }
 
         void VisualObject::loadObject() {
             if(!this->initialized) {
-                throw WTFException("Could not load object: object not initialized!");
+                this->init();
+                if(!this->initialized) {  
+                    throw WTFException("Could not load object: could not initialize object. Maybe the shaders aren't correctly set?");
+                }
             }
             
             this->mesh->loadMesh();
             if(this->material->getTextures().size() > 0) {
                 this->material->loadTextures();
+                LOG(INFO) << "Loaded textures.";
             }
+            
+            this->loaded = true;
         }
         void VisualObject::render() {
             if(!this->initialized) {
-                throw WTFException("Could not load object: object not initialized!");
+                throw WTFException("Could not load object: could not initialize object. Maybe the shaders aren't correctly set?");
             }
             
             this->mesh->render();
@@ -82,12 +86,18 @@ namespace engine {
         Mesh& VisualObject::getMesh() {
             return *this->mesh;
         }
+        std::shared_ptr<Mesh> VisualObject::getMeshPtr() {
+            return this->mesh;
+        }
         Material& VisualObject::getMaterial() {
             return *this->material;
         }
         
         bool VisualObject::isInitialized() const {
             return this->initialized;
+        }
+        bool VisualObject::isLoaded() const {
+            return this->loaded;
         }
     }
 }

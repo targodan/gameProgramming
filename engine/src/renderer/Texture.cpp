@@ -1,11 +1,19 @@
 #include "Texture.h"
+#include <easylogging++.h>
 
 namespace engine {
     namespace renderer {
-        Texture::Texture(std::string imagePath, ImageFormat format, ImageFormat formatToStoreTextureIn, bool specular, TextureType type) 
-                    : type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(0), bound(false), specular(false) {
+        Texture::Texture(std::string imagePath, TextureType type) 
+            : dim(TextureDimension::TEXTURE_2D), type(type), format(ImageFormat::RGB), formatToStoreTextureIn(ImageFormat::RGB), depth(1) {
+            this->initialize(imagePath);
+        }
+        Texture::Texture(std::string imagePath, ImageFormat format, ImageFormat formatToStoreTextureIn, TextureDimension dim, TextureType type) 
+            : dim(dim), type(type), format(format), formatToStoreTextureIn(formatToStoreTextureIn), depth(1) {
+            this->initialize(imagePath);
+        }
+        void Texture::initialize(std::string imagePath) {
             int forceChannels;
-            switch(format) {
+            switch(this->format) {
                 case ImageFormat::RGB:
                     forceChannels = SOIL_LOAD_RGB;
                     break;
@@ -25,28 +33,44 @@ namespace engine {
         }
         
         Texture::Texture(const Texture& orig) 
-            : id(orig.id), type(orig.type), format(orig.format), formatToStoreTextureIn(orig.formatToStoreTextureIn), 
-              width(orig.width), height(orig.height), depth(orig.depth), imageData(orig.imageData), bound(orig.bound), specular(orig.specular) {}
+            : dim(orig.dim), type(orig.type), format(orig.format), formatToStoreTextureIn(orig.formatToStoreTextureIn), 
+              width(orig.width), height(orig.height), depth(orig.depth) {
+            this->copyImageData(orig.imageData);
+            this->generateTexture();
+            if(orig.loaded) {
+                this->bind();
+                this->loadTexture();
+                this->unbind();
+            }
+        }
         Texture::Texture(Texture&& orig) 
-            : id(std::move(orig.id)), type(std::move(orig.type)), format(std::move(orig.format)), formatToStoreTextureIn(std::move(formatToStoreTextureIn)), 
-              width(std::move(orig.width)), height(std::move(orig.height)), depth(std::move(orig.depth)), imageData(std::move(orig.imageData)), bound(std::move(bound)), specular(std::move(specular)) {}
+            : id(std::move(orig.id)), dim(std::move(orig.dim)), type(std::move(type)), format(std::move(orig.format)), formatToStoreTextureIn(std::move(formatToStoreTextureIn)), 
+              width(std::move(orig.width)), height(std::move(orig.height)), depth(std::move(orig.depth)), imageData(std::move(orig.imageData)), bound(std::move(bound)), loaded(std::move(loaded)) {}
 
         Texture& Texture::operator=(const Texture& right) {
-            this->id = right.id;
+            this->dim = right.dim;
             this->type = right.type;
             this->format = right.format;
             this->formatToStoreTextureIn = right.formatToStoreTextureIn;
             this->width = right.width;
             this->height = right.height;
             this->depth = right.depth;
-            this->imageData = right.imageData;
-            this->bound = right.bound;
-            this->specular = right.specular;
+            this->bound = false;
+            this->loaded = false;
+            
+            this->copyImageData(right.imageData);
+            this->generateTexture();
+            if(right.loaded) {
+                this->bind();
+                this->loadTexture();
+                this->unbind();
+            }
 
             return *this;
         }
         Texture& Texture::operator=(Texture&& right){
             this->id = std::move(right.id);
+            this->dim = std::move(right.dim);
             this->type = std::move(right.type);
             this->format = std::move(right.format);
             this->formatToStoreTextureIn = std::move(right.formatToStoreTextureIn);
@@ -55,7 +79,7 @@ namespace engine {
             this->depth = std::move(right.depth);
             this->imageData = std::move(right.imageData);
             this->bound = std::move(right.bound);
-            this->specular = std::move(right.specular);
+            this->loaded = std::move(right.loaded);
 
             return *this;
         }
@@ -64,10 +88,13 @@ namespace engine {
 
         void Texture::generateTexture() {
             glGenTextures(1, &(this->id));
+            
+            LOG(INFO) << "Created texture: " << std::to_string(this->id);
         }
         void Texture::releaseTexture() {
             glDeleteTextures(1, &(this->id));
-            SOIL_free_image_data(this->imageData);
+            // SOIL_free_image_data(this->imageData);
+            LOG(INFO) << "Released texture: " << std::to_string(this->id);
         }
 
         void Texture::setParameter(GLenum name, GLenum type) {
@@ -77,7 +104,7 @@ namespace engine {
             }
 #endif
 
-            glTexParameteri(this->type, name, type);
+            glTexParameteri(this->dim, name, type);
         }
 
         void Texture::loadTexture() {
@@ -86,26 +113,33 @@ namespace engine {
                 throw WTFException("Could not load texture: texture not bound.");
             }
 #endif
-
-            switch(this->type) {
+            
+            switch(this->dim) {
                 case TEXTURE_1D:
-                    glTexImage1D(this->type, 0, this->formatToStoreTextureIn, this->width, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                    glTexImage1D(this->dim, 0, this->formatToStoreTextureIn, this->width, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                     break;
                 case TEXTURE_2D:
-                    glTexImage2D(this->type, 0, this->formatToStoreTextureIn, this->width, this->height, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                    glTexImage2D(this->dim, 0, this->formatToStoreTextureIn, this->width, this->height, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                     break;
                 case TEXTURE_3D:
-                    glTexImage3D(this->type, 0, this->formatToStoreTextureIn, this->width, this->height, this->depth, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
+                    glTexImage3D(this->dim, 0, this->formatToStoreTextureIn, this->width, this->height, this->depth, 0, this->format, DataType::UBYTE, (const GLvoid*) this->imageData);
                     break;
                 default:
                     throw WTFException("Could not load texture: invalid texture type.");
             }
 
             this->generateMipmap();
+            this->loaded = true;
+            
+            LOG(INFO) << "Loaded texture: " << std::to_string(this->id);
         }
 
         void Texture::activateTextureUnit(GLenum unit) {
             glActiveTexture(unit);
+        }
+        
+        TextureType Texture::getType() const {
+            return this->type;
         }
 
         void Texture::bind() {
@@ -113,7 +147,7 @@ namespace engine {
                 return;
             }
 
-            Bindable::bindTexture(this->type, this->id);
+            Bindable::bindTexture(this->dim, this->id);
             this->bound = true;
         }
         void Texture::unbind() {
@@ -121,18 +155,18 @@ namespace engine {
                 return;
             }
 
-            Bindable::unbindTexture(this->type);
+            Bindable::unbindTexture(this->dim);
             this->bound = false;
         }
-
+        
+        bool Texture::isLoaded() const {
+            return this->loaded;
+        }
         bool Texture::isBound() const {
             return this->bound;
         }
-        bool Texture::isSpecular() const {
-            return this->specular;
-        }
-        bool Texture::isDiffuse() const {
-            return !this->specular;
+        GLuint Texture::getID() const {
+            return this->id;
         }
 
         void Texture::generateMipmap() {
@@ -142,7 +176,25 @@ namespace engine {
             }
 #endif
 
-            glGenerateMipmap(this->type);
+            glGenerateMipmap(this->dim);
+        }
+        
+        void Texture::copyImageData(unsigned char* imageData) {
+            unsigned int nChannels = 0;
+            switch(this->format) {
+                case ImageFormat::RGB:
+                    nChannels = 3;
+                    break;
+                case ImageFormat::RGBA:
+                    nChannels = 4;
+                    break;
+                default:
+                    throw IllegalArgumentException("Only ImageFormats RGB and RGBA are supported yet.");
+            }
+            
+            unsigned int bufferSize = this->width*this->height*this->depth*nChannels;
+            this->imageData = new unsigned char[bufferSize];
+            std::copy(imageData, imageData + bufferSize, this->imageData);
         }
     }
 }

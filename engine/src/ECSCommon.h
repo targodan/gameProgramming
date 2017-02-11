@@ -16,6 +16,8 @@
 #include "./ECSCommon/CustomUpdateSystem.h"
 #include "./ECSCommon/CustomRenderSystem.h"
 #include "./ECSCommon/PerformanceMetricsSystem.h"
+#include "./ECSCommon/LightingSystem.h"
+#include "./ECSCommon/LightingComponent.h"
 #include "./ECSCommon/ParticleSystemComponent.h"
 #include "./ECSCommon/ParticleSystemSystem.h"
 

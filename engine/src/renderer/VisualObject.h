@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "../util/vector.h"
+#include "Mapping.h"
 
 #include <string>
 
@@ -16,7 +17,7 @@ namespace engine {
         public:
             VisualObject();
             VisualObject(const std::shared_ptr<Mesh>& mesh, const std::shared_ptr<Material>& material);
-            VisualObject(string pathToModel, string pathToVertexShader = "", string pathToFragmentShader = "");
+            VisualObject(string pathToModel, Mapping mapping = Mapping::NONE, bool lighting=false);
             
             VisualObject(const VisualObject& orig);
             VisualObject(VisualObject&& orig);
@@ -31,17 +32,21 @@ namespace engine {
             
             const Mesh& getMesh() const;
             Mesh& getMesh();
+            std::shared_ptr<Mesh> getMeshPtr();
             
             const Material& getMaterial() const;
             Material& getMaterial();
             
             bool isInitialized() const;
+            bool isLoaded() const;
         protected:
             virtual void init();
             
-            bool initialized;
+            bool initialized = false;
             std::shared_ptr<Mesh> mesh;
             std::shared_ptr<Material> material;
+            
+            bool loaded = false;
         };
     }
 }

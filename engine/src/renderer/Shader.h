@@ -25,17 +25,36 @@ namespace engine {
          */
         class Shader {
         public:
-            Shader(std::unique_ptr<std::string> sourceCode, ShaderType type) 
-                : type(type), compiled(false), sourceCode(std::move(sourceCode)) {
+            Shader(std::shared_ptr<std::string> sourceCode, ShaderType type) 
+                : type(type), sourceCode(sourceCode) {
                 this->initShader();
                 this->compileShader();
             }
             Shader(const Shader& orig) 
-                : id(orig.id), type(orig.type), compiled(orig.compiled), 
-                  sourceCode(std::make_unique<std::string>(*(orig.sourceCode))) {}
+                : type(orig.type), sourceCode(std::make_shared<std::string>(*(orig.sourceCode))) {
+                this->initShader();
+                this->compileShader();
+            }
             Shader(Shader&& orig) 
                 : id(std::move(orig.id)), type(std::move(orig.type)), 
-                  compiled(std::move(orig.compiled)), sourceCode(std::make_unique<std::string>(*(std::move(orig.sourceCode)))) {}
+                  compiled(std::move(orig.compiled)), sourceCode(std::move(orig.sourceCode)) {}
+            Shader& operator=(const Shader& right) {
+                this->type = right.type;
+                this->sourceCode = std::make_unique<std::string>(*(right.sourceCode));
+                
+                this->initShader();
+                this->compileShader();
+                
+                return *this;
+            }
+            Shader& operator=(Shader&& right) {
+                this->id = std::move(right.id);
+                this->type = std::move(right.type);
+                this->compiled = std::move(right.compiled);
+                this->sourceCode = std::move(right.sourceCode);
+                
+                return *this;
+            }
             ~Shader() {
                 // this->releaseShader();
             }
@@ -47,7 +66,6 @@ namespace engine {
             GLuint getID() const {
                 return this->id;
             }
-            
             bool isCompiled() const {
                 return this->compiled;
             }
@@ -81,12 +99,12 @@ namespace engine {
             
             GLuint id;
             ShaderType type;
-            bool compiled;
+            bool compiled = false;
             
             // vector<std::string> uniformVariables;
             // vector<std::string> inputVariables;
             
-            const std::unique_ptr<std::string> sourceCode;
+            std::shared_ptr<std::string> sourceCode;
            
         };
     }

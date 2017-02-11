@@ -1,4 +1,5 @@
 #include "RenderSystem.h"
+#include "LightingSystem.h"
 #include "VisualComponent.h"
 #include "TextComponent.h"
 #include "CameraComponent.h"
@@ -16,6 +17,8 @@ using engine::renderer::TextRenderer;
 
 namespace engine {
     namespace ECSCommon {
+        using namespace renderer;
+        
         using glm::mat4;
         
         ECS_REGISTER_SYSTEM(RenderSystem);
@@ -42,17 +45,23 @@ namespace engine {
                 }
                 
                 camera.setViewMatrix(placement.getPosition());
-                int i = 0;
                 for(auto itVisual = em.begin({VisualComponent::getComponentTypeId()}); itVisual != em.end(); ++itVisual) {
+                    auto& object = itVisual->to<VisualComponent>().getVisualObject();
+                    
+                    if(!object.isLoaded()) {
+                        object.loadObject();
+                    }
+                    
                     auto& visual = (*itVisual)->to<VisualComponent>();
                     try{ 
                         auto& placement = em.getEntity(visual.getEntityId()).getComponent<PlacementComponent>();
                         mat4 modelMatrix = glm::translate(placement.getPosition()); // Ignore rotation for now
                         visual.setShaderUniform("modelMatrix", modelMatrix);
-                    } catch(...) { LOG(INFO) << "Check";}
+                    } catch(...) {}
                     
                     visual.setShaderUniform("projectionMatrix", camera.getProjectionMatrix());
                     visual.setShaderUniform("viewMatrix", camera.getViewMatrix());
+                    visual.setShaderUniform("viewPosition", placement.getPosition());
                     
                     this->render(visual);
                 }
@@ -78,10 +87,9 @@ namespace engine {
         
         Array<systemId_t> RenderSystem::getDependencies() const {
             return {};
-        }
-            
+        }  
         Array<systemId_t> RenderSystem::getOptionalDependencies() const {
-            return {PerformanceMetricsSystem::systemTypeId()};
+            return {PerformanceMetricsSystem::systemTypeId(), LightingSystem::systemTypeId()};
         }
         
         systemId_t RenderSystem::systemTypeId() {

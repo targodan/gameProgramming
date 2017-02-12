@@ -19,6 +19,7 @@ namespace engine {
         using engine::util::vector;
         
         ParticleSystem::ParticleSystem(float mass, float dampening, shared_ptr<InstanceMesh> mesh, VectorXf force) :
+            enabled(false),
             first(true),
             mass(mass),
             dampening(dampening),
@@ -34,6 +35,7 @@ namespace engine {
         }
 
         ParticleSystem::ParticleSystem(const ParticleSystem& orig) :
+            enabled(orig.enabled),
             first(orig.first),
             mass(orig.mass),
             dampening(orig.dampening),
@@ -46,6 +48,10 @@ namespace engine {
         }
 
         ParticleSystem::~ParticleSystem() {
+        }
+        
+        int ParticleSystem::getNumParticles() {
+            return this->numParticles;
         }
         
         void ParticleSystem::calculateVelocities(float deltaT, VectorXf force) {
@@ -96,6 +102,7 @@ namespace engine {
         void ParticleSystem::step(float deltaT) {
             VectorXf force = VectorXf::Zero(3*this->numParticles);
             this->step(deltaT, force);
+            //LOG(INFO)<<"stepped";
         }
     }
 }

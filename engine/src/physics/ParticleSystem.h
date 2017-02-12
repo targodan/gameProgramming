@@ -33,7 +33,15 @@ namespace engine {
             
             void step(float deltaT, VectorXf force);
             void step(float deltaT);
+            int getNumParticles();
+            bool isEnabled() {
+                return this->enabled;
+            }
+            void enable(bool set=true) {
+                this->enabled = set;
+            }
         protected:
+                    bool enabled;
                     bool first;
                     float mass; // in kg
                     float dampening;

@@ -83,7 +83,7 @@ namespace demoSimulation {
                                                          "src/meshColor.fsh"), true);
         
         auto outerObject = std::make_shared<VisualObject>(outerMesh, outerMaterial);
-        outerObject->loadObject();
+        //outerObject->loadObject();
         auto innerObject = std::make_shared<VisualObject>(innerMesh, innerMaterial);
         innerObject->loadObject();
         
@@ -216,21 +216,22 @@ namespace demoSimulation {
 //        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
 
         auto PatSys = this->entityManager.createEntity("ParticleSystem");
-        engine::util::vector<Vertex> instanceVertices = { Vertex{engine::util::vec3{-0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 0}}, 
-                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
-                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}},
-                                            Vertex{engine::util::vec3{0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
-                                            Vertex{engine::util::vec3{-0.2f, 0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 1}},
-                                            Vertex{engine::util::vec3{0.2f, -0.2f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}}};
-        engine::util::vector<float> positions(300, 0.0f);
+        int numPats = 1000;
+        engine::util::vector<Vertex> instanceVertices = { Vertex{engine::util::vec3{-0.05f, -0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 0}}, 
+                                            Vertex{engine::util::vec3{0.05f, -0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.05f, 0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}},
+                                            Vertex{engine::util::vec3{0.05f, 0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
+                                            Vertex{engine::util::vec3{-0.05f, 0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 1}},
+                                            Vertex{engine::util::vec3{0.05f, -0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}}};
+        engine::util::vector<float> positions(3*numPats, 0.0f);
         std::shared_ptr<InstanceMesh> iMesh = std::make_shared<InstanceMesh>(instanceVertices, positions);
-        VisualObject vo = {iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader())))};
-        vo.getMaterial().attachTexture("textures/NeGeo.png");
+        std::shared_ptr<VisualObject> vo = std::make_shared<VisualObject>(iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader()))));
+        Texture tex("textures/particle.png", ImageFormat::RGBA, ImageFormat::RGBA, TextureDimension::TEXTURE_2D, TextureType::DIFFUSE);
+        vo->getMaterial().attachTexture(tex);
+
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(3, 1, iMesh, ParticleForce::getForceOnVertices(3*numPats));
         
-        ParticleSystem pats(3, 0.2, iMesh, ParticleForce::getForceOnVertices(300));
-        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(pats);
-        
-        PatSys.addComponent<VisualComponent>(std::make_shared<VisualObject>(vo)).addComponent<PlacementComponent>(engine::util::vec3{2.f, 0.f, 0.f}).addComponent<ParticleSystemComponent>(patsptr);
+        PatSys.addComponent<VisualComponent>(vo).addComponent<PlacementComponent>(engine::util::vec3{0.f, 0.3, 3}).addComponent<ParticleSystemComponent>(patsptr);
         
 //        auto instances = this->entityManager.createEntity("Triangles");
 //        engine::util::vector<Vertex> instanceVertices = {Vertex{engine::util::vec3{-0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.f, 1.f, 0.f}}};
@@ -265,7 +266,7 @@ namespace demoSimulation {
         auto action5 = std::make_shared<FlyUpDownAction>(FlyUpDownAction(-1, GLFW_KEY_Q, std::make_shared<Entity>(this->player)));
         bm.insertMapping(-1, GLFW_KEY_Q, action5);
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
-        auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force);
+        auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force, patsptr);
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
         
         Texture skyTexture("textures/skybox_small.png");
@@ -281,6 +282,8 @@ namespace demoSimulation {
         this->systemManager.enableSystem<RenderSystem>(this->messageHandler);
         this->systemManager.enableSystem<DeformableBodySystem>();
         this->systemManager.enableSystem<TimerSystem>();
+        this->systemManager.enableSystem<LightingSystem>();
+        this->systemManager.enableSystem<ParticleSystemSystem>();
         
         this->entityManager.sort(VisualComponent::getComponentTypeId(), [](std::shared_ptr<Component> c1, std::shared_ptr<Component> c2) {
             return c1->to<VisualComponent>().getVisualObject().getRenderPriority() < c2->to<VisualComponent>().getVisualObject().getRenderPriority();

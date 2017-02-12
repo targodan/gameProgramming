@@ -345,8 +345,11 @@ namespace engine {
                     "uniform sampler2D diffuseTexture1;\n"
                     ""
                     "void main() {\n"
-                    "    fragmentColor = vec4(texture(diffuseTexture1, uv));\n"
-                    "    fragmentColor.w = 0.2;"
+                    "    vec4 color = vec4(texture(diffuseTexture1, uv));\n"
+                    "    if (color.rgb == vec3(0.0, 0.0, 0.0))"
+                    "       discard;"
+                    "    color.w = 0.5;"
+                    "    fragmentColor = color;"
                     "}";
         }
     }

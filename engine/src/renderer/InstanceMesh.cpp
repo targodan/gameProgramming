@@ -77,7 +77,7 @@ namespace engine {
 #endif /*DEBUG*/
 
             this->vao->bind();
-
+            
             if(this->verticesChanged || this->instancePositionsChanged) {
                 this->vao->reloadData();
                 this->verticesChanged = false;

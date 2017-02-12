@@ -336,7 +336,7 @@ namespace engine {
                     "    uv = textureCoordinate;\n"
                     "}";
         }
-        string DefaultShader::createTextureInstancingFragmentShader() {
+        string DefaultShader::createTextureInstancingFragmentShader(float opacity) {
             return "#version 330\n"
                     "in vec2 uv;\n"
                     ""
@@ -346,9 +346,7 @@ namespace engine {
                     ""
                     "void main() {\n"
                     "    vec4 color = vec4(texture(diffuseTexture1, uv));\n"
-                    "    if (color.rgb == vec3(0.0, 0.0, 0.0))"
-                    "       discard;"
-                    "    color.w = 0.5;"
+                    "    color.a *= " + std::to_string(opacity) + ";"
                     "    fragmentColor = color;"
                     "}";
         }

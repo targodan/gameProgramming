@@ -33,7 +33,7 @@ namespace engine {
             static string createLightingFragmentShader(unsigned int nPointLights, bool directionalLight, int textures, bool normalMapping=false);
 
             static string createTextureInstancingVertexShader();
-            static string createTextureInstancingFragmentShader();
+            static string createTextureInstancingFragmentShader(float opacity = 1);
         private:
             DefaultShader() {}  
         };

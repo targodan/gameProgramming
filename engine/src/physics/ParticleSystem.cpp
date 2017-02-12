@@ -18,26 +18,24 @@ namespace engine {
     namespace physics {
         using engine::util::vector;
         
-        ParticleSystem::ParticleSystem(float mass, float dampening, shared_ptr<InstanceMesh> mesh, VectorXf force) :
+        ParticleSystem::ParticleSystem(float mass, float surfaceArea, float dampening, shared_ptr<InstanceMesh> mesh, VectorXf force) :
             enabled(false),
             first(true),
             mass(mass),
+            surfaceArea(surfaceArea),
             dampening(dampening),
             numParticles(mesh->getInstancePositions().size()/3),
             mesh(mesh),
             positions(Eigen::Map<VectorXf>(mesh->getInstancePositions().data(), 3*this->numParticles)),
             initialForce(force),
             lastVelocities(VectorXf::Zero(3*this->numParticles))
-        {
-            LOG(INFO) << "initialPos:" << this->positions;
-            LOG(INFO) << "initialForce:" << this->initialForce;
-            LOG(INFO) << "initialVelo:" << this->lastVelocities;
-        }
+        {}
 
         ParticleSystem::ParticleSystem(const ParticleSystem& orig) :
             enabled(orig.enabled),
             first(orig.first),
             mass(orig.mass),
+            surfaceArea(orig.surfaceArea),
             dampening(orig.dampening),
             numParticles(orig.numParticles),
             mesh(orig.mesh),
@@ -90,7 +88,7 @@ namespace engine {
             stepMatrixSolver.factorize(step);
         }
         
-        void ParticleSystem::step(float deltaT, VectorXf force) {
+        void ParticleSystem::step(float deltaT, const VectorXf& force) {
             this->calculateVelocities(deltaT, force);
             this->positions = this->positions + deltaT * this->lastVelocities;
             vector<float> pos(this->positions.data(), this->positions.data() + this->positions.rows());

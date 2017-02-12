@@ -25,6 +25,8 @@
           <in>DeformableBodyComponent.cpp</in>
           <in>DeformableBodySystem.cpp</in>
           <in>ForceComponent.cpp</in>
+          <in>ForceTimerSystem.cpp</in>
+          <in>ForceTimerSystem.h</in>
           <in>InputSystem.cpp</in>
           <in>LightingSystem.cpp</in>
           <in>ParticleSystemComponent.cpp</in>
@@ -408,6 +410,10 @@
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/ForceTimerSystem.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceTimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
@@ -1034,6 +1040,10 @@
       <item path="src/ECSCommon/ForceComponent.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
+      </item>
+      <item path="src/ECSCommon/ForceTimerSystem.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ECSCommon/ForceTimerSystem.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ECSCommon/InputSystem.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">

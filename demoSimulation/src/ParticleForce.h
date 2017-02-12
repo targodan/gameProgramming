@@ -28,32 +28,25 @@ namespace demo {
     public:
         ParticleForce() {
         }
-        static Eigen::Matrix<float, Eigen::Dynamic, 1> getForceOnVertices( const int number) {
-            const int size = number;
-            Eigen::Matrix<float, Eigen::Dynamic, 1> forces(size, 1);
-            if(true) {
-                int i;
-                LOG(INFO) << "Boom.";
+        static Eigen::VectorXf getForceOnVertices(int numVertices, float minForce, float maxForce) {
+            const int size = numVertices * 3;
+            Eigen::VectorXf forces = Eigen::VectorXf::Zero(size);
+            
+            std::default_random_engine generator;
+            std::uniform_real_distribution<float> pitchDis(-90, 90);
+            std::uniform_real_distribution<float> jawDis(0, 360);
+            std::uniform_real_distribution<float> powDis(minForce, maxForce);
+            float pitch;
+            float jaw;
+            float pow;
+            for(int i = 0; i < size; i+=3){
+                pitch = pitchDis(generator);
+                jaw = jawDis(generator);
+                pow = powDis(generator);
                 
-                std::default_random_engine generator;
-                std::uniform_real_distribution<float> pitchDis(-90, 90);
-                std::uniform_real_distribution<float> jawDis(0, 360);
-                std::uniform_real_distribution<float> powDis(0, 1.1);
-                float pitch;
-                float jaw;
-                float pow;
-                forces(0,0) = 0;
-                forces(1,0) = 0;
-                forces(2,0) = 0;
-                for(i = 3; i<size; i+=3){
-                    pitch = pitchDis(generator);
-                    jaw = jawDis(generator);
-                    pow = powDis(generator);
-                    forces(i,0) = 300*pow*glm::cos(jaw)*glm::cos(pitch) ;
-                    forces(i+1,0) = 300*pow*glm::sin(pitch);
-                    forces(i+2,0) = 300*pow*glm::sin(jaw)*glm::cos(pitch);
-                }
-                
+                forces(i,0)   = pow*glm::cos(jaw)*glm::cos(pitch) ;
+                forces(i+1,0) = pow*glm::sin(pitch);
+                forces(i+2,0) = pow*glm::sin(jaw)*glm::cos(pitch);
             }
             return forces;
         }

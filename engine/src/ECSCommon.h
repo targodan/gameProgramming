@@ -20,6 +20,7 @@
 #include "./ECSCommon/LightingComponent.h"
 #include "./ECSCommon/ParticleSystemComponent.h"
 #include "./ECSCommon/ParticleSystemSystem.h"
+#include "./ECSCommon/ForceTimerSystem.h"
 
 #endif /* ECSCOMMON_H */
 

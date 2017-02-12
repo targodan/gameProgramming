@@ -1,32 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   ParticleSystemSystem.h
- * Author: markus
- *
- * Created on 27. Januar 2017, 10:31
- */
-
-#ifndef PARTICLESYSTEMSYSTEM_H
-#define PARTICLESYSTEMSYSTEM_H
+#ifndef FORCETIMERSYSTEM_H
+#define FORCETIMERSYSTEM_H
 
 #include "../ECS/EntityManager.h"
 #include "../ECS/System.h"
-#include "ForceTimerSystem.h"
+#include "TimerSystem.h"
 
 namespace engine {
     namespace ECSCommon {
         using namespace engine::ECS;
 
-        class ParticleSystemSystem : public System{
+        class ForceTimerSystem : public System{
         public:
-            ParticleSystemSystem();
-            ParticleSystemSystem(const ParticleSystemSystem& orig);
-            virtual ~ParticleSystemSystem();
+            ForceTimerSystem();
+            ForceTimerSystem(const ForceTimerSystem& orig);
+            virtual ~ForceTimerSystem();
             
             
             void run(EntityManager& em, float deltaTimeSeconds) override;
@@ -38,14 +25,14 @@ namespace engine {
                 return false;
             }
             
-            virtual Array<systemId_t> getOptionalDependencies() const {
-                return {ForceTimerSystem::systemTypeId()};
+            virtual Array<systemId_t> getDependencies() const {
+                return {TimerSystem::systemTypeId()};
             }
             
             systemId_t getSystemTypeId() const override;
             
             std::string getSystemName() const override {
-                return "ParticleSystemSystem";
+                return "ForceTimerSystem";
             }
             
             static systemId_t systemTypeId();
@@ -59,5 +46,5 @@ namespace engine {
 }
 
 
-#endif /* PARTICLESYSTEMSYSTEM_H */
+#endif /* FORCETIMERSYSTEM_H */
 

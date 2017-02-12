@@ -13,8 +13,10 @@
 
 #include "ParticleSystemSystem.h"
 #include "../ECS/SystemRegisterer.h"
-#include "../ECSCommon/ParticleSystemComponent.h"
+#include "ParticleSystemComponent.h"
 #include <eigen3/Eigen/Eigen>
+
+#include "ForceComponent.h"
 
 namespace engine {
     namespace ECSCommon {  
@@ -35,15 +37,21 @@ namespace engine {
         
         void ParticleSystemSystem::run(EntityManager& em, float deltaTimeSeconds) {
             for(auto itBodies = em.begin({ParticleSystemComponent::getComponentTypeId()}); itBodies != em.end(); ++itBodies) {
-                auto& body = itBodies->to<ParticleSystemComponent>().getParticleSystem();
-                if(!body.isEnabled()){
+                auto& particleSystem = itBodies->to<ParticleSystemComponent>().getParticleSystem();
+                if(!particleSystem.isEnabled()){
                     continue;
                 }
-                VectorXf grav = VectorXf::Zero(body.getNumParticles()*3);
-                for(int i = 0; i<body.getNumParticles(); i++){
-                    grav[3*i+1] = 1;
+                auto properties = particleSystem.getObjectProperties();
+                Eigen::VectorXf forces = Eigen::VectorXf::Zero(particleSystem.getExpectedForceVectorSize());
+                for(auto itForces = em.begin({ForceComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
+                    auto& force = (*itForces)->to<ForceComponent>();
+                    
+                    auto f = force.getForce().getForceOnVertices(properties);
+                    if(f.rows() > 0) {
+                        forces += f;
+                    }
                 }
-                body.step(deltaTimeSeconds, -0.0981 * grav);
+                particleSystem.step(deltaTimeSeconds, forces);
             }
         }
         

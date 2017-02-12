@@ -13,12 +13,6 @@ namespace engine {
         systemId_t DeformableBodySystem::systemId = 0;
             
         void DeformableBodySystem::run(EntityManager& em, float deltaTimeSeconds) {
-            for(auto itForces = em.begin({ForceComponent::getComponentTypeId(), TimerComponent::getComponentTypeId()}); itForces != em.end(); ++itForces) {
-                auto& force = itForces[0]->to<ForceComponent>();
-                auto& timer = itForces[1]->to<TimerComponent>();
-
-                force.getForce().setSecondsSinceStart(timer.getTime());
-            }
             for(auto itBodies = em.begin({DeformableBodyComponent::getComponentTypeId()}); itBodies != em.end(); ++itBodies) {
                 auto& body = itBodies->to<DeformableBodyComponent>();
                 

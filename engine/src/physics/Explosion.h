@@ -44,6 +44,12 @@ namespace engine {
             Explosion& operator=(const Explosion& orig);
             Explosion& operator=(Explosion&& orig);
             
+            virtual void setSecondsSinceStart(float secondsSinceStart) override {
+                this->secondsSinceStart = secondsSinceStart;
+                this->lastSecondsFromExplosion = this->secondsFromExplosion;
+                this->secondsFromExplosion = this->secondsSinceStart;
+            }
+            
             void setTime(float secondsFromExplosion);
             VectorXf getForceOnVertices(const ObjectProperties& object) override;
         };

@@ -136,8 +136,6 @@ namespace engine {
                 return VectorXf(0);
             }
             
-            this->setTime(this->secondsSinceStart);
-            
             MatrixXf distanceVectors = this->calculateDistancesVectorsFromCenter(object);
             VectorXf sqDistances = this->calculateSqDistancesFromCenter(distanceVectors);
             

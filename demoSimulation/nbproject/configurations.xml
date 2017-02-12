@@ -32,6 +32,8 @@
             <in>DeformableBodySystem.cpp</in>
             <in>ForceComponent.cpp</in>
             <in>InputSystem.cpp</in>
+            <in>ParticleSystemComponent.cpp</in>
+            <in>ParticleSystemSystem.cpp</in>
             <in>PerformanceMetricsSystem.cpp</in>
             <in>PlacementComponent.cpp</in>
             <in>PlacementSystem.cpp</in>
@@ -59,6 +61,7 @@
             <in>Explosion.cpp</in>
             <in>GravitationalForce.cpp</in>
             <in>ObjectProperties.cpp</in>
+            <in>ParticleSystem.cpp</in>
             <in>SimulationObject.cpp</in>
             <in>TetrahedronizedMesh.cpp</in>
             <in>TetrahedronizedObject.cpp</in>
@@ -1626,10 +1629,6 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <item path="src/Actions/ResetTimerAction.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/Actions/ToggleForceAction.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="src/Game.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="3">
           <incDir>
@@ -1870,6 +1869,44 @@
             <pElem>../engine/src/IO</pElem>
             <pElem>../engine</pElem>
           </incDir>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/ParticleSystemComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="5">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/ECSCommon/ParticleSystemSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="5">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/engine/ECSCommon/PerformanceMetricsSystem.cpp"
@@ -2220,6 +2257,25 @@
           </incDir>
           <preprocessorList>
             <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/engine/physics/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="5">
+          <incDir>
+            <pElem>/usr/include/freetype2</pElem>
+            <pElem>../engine/src</pElem>
+            <pElem>../engine</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_UBLAS_NDEBUG</Elem>
+            <Elem>EIGEN_NO_DEBUG</Elem>
+            <Elem>ELPP_FEATURE_PERFORMANCE_TRACKING</Elem>
+            <Elem>ELPP_THREAD_SAFE</Elem>
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>

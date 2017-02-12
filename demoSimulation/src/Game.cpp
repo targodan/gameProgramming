@@ -25,11 +25,27 @@ using namespace engine;
 using namespace engine::renderer;
 using namespace engine::physics;
 using namespace engine::ECSCommon;
-using namespace demo::IO;
 using namespace demo;
+using namespace demo::IO;
 using engine::util::vec2;
 using engine::util::vec3;
 using engine::util::vector;
+
+void freezeAllWith(engine::physics::DeformableBody& defBody, TetrahedronizedObject& tMesh, float x = NAN, float y = NAN, float z = NAN) {
+    const auto& sMesh = tMesh.getSimulationMesh();
+    
+    engine::util::vector<size_t> freezer;
+    
+    for(int vertexInd = 0; vertexInd < sMesh.rows() / 3; ++vertexInd) {
+        if(        (isnan(x) || abs(x - sMesh[vertexInd * 3 + 0]) < 1e-3)
+                && (isnan(y) || abs(y - sMesh[vertexInd * 3 + 1]) < 1e-3)
+                && (isnan(z) || abs(z - sMesh[vertexInd * 3 + 2]) < 1e-3)) {
+            freezer.push_back(vertexInd);
+        }
+    }
+    
+    defBody.freezeVertices(freezer);
+}
 
 namespace demoSimulation {
     void Game::initialize() {
@@ -83,13 +99,11 @@ namespace demoSimulation {
                                                          "src/meshColor.fsh"), true);
         
         auto outerObject = std::make_shared<VisualObject>(outerMesh, outerMaterial);
-        //outerObject->loadObject();
         auto innerObject = std::make_shared<VisualObject>(innerMesh, innerMaterial);
-        innerObject->loadObject();
         
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 1.8, 8))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 120, this->window.getAspectRatio(), 0.1f, 100.f);
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 90, this->window.getAspectRatio(), 0.001f, 100.f);
         
         
         this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -98,17 +112,6 @@ namespace demoSimulation {
         this->tetrahedron = this->entityManager.createEntity("Outer")
                 .addComponent<VisualComponent>(outerObject)
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 0, 0));
-        
-//        TetrahedronizedObject tMesh(
-//                ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-//                {tetrahedronMesh},
-//                {{std::make_pair(0, 0)}, {std::make_pair(0, 1)}, {std::make_pair(0, 2)}, {std::make_pair(0, 3)}},
-//                ObjectProperties(
-//                        ObjectProperties::verticesToFlatVector(tetrahedronMesh->getVertices()),
-//                        {0, 1, 2, 3},
-//                        Vector4f(1, 1, 1, 1),
-//                        Vector4f(1, 1, 1, 1)),
-//                {0, 1, 2, 3});
         
         auto defBody = std::make_shared<engine::physics::DeformableBody>(
                 tMesh,
@@ -120,20 +123,11 @@ namespace demoSimulation {
                 1. / this->updatesPerSecond,
                 0
             );
-        defBody->freezeVertices(tMesh.getEdgeIndices());
+//        defBody->freezeVertices(tMesh.getEdgeIndices());
+        freezeAllWith(*defBody, tMesh, NAN, 0, NAN);
         
         this->openmpThreads = std::thread::hardware_concurrency() * 4;
         
-        // Deformable body created => restPosition copied
-        // Let's now pull on a vertex.
-//        defBody->getCurrentPosition()[1] += 0.001;
-//        defBody->getCurrentPosition()[2] += 0.025;
-//        tMesh.getMesh(0).getVertices()[0].position.y += 0.001;
-//        tMesh.getMesh(0).getVertices()[0].position.z += 0.025;
-//        tMesh.getMesh(0).loadMesh();
-        
-//        VisualObject tetraObject(tetrahedronMesh, innerMaterial);
-//        tetraObject.loadObject();
         this->tetrahedron = this->entityManager.createEntity("DefBody")
                 .addComponent<DeformableBodyComponent>(defBody);
         
@@ -142,9 +136,11 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
         
+        auto gravity = std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75));
+        gravity->disable();
         auto gravEnt = this->entityManager.createEntity("Gravity")
                 .addComponent<TimerComponent>(0)
-                .addComponent<ForceComponent>(std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75)));
+                .addComponent<ForceComponent>(gravity);
 //        
         auto explosion = std::make_shared<Explosion>(Vector3f(0, 0.3, 5), 2 /* kg TNT */, SPEED_OF_SOUND_IN_AIR / 10.);
         auto expEnt = this->entityManager.createEntity("Force")
@@ -199,7 +195,7 @@ namespace demoSimulation {
                 .addComponent<VisualComponent>(floorVO);
         
         auto light = this->entityManager.createEntity("Light");
-        LightSource lightSource = {util::vec3{0.31f, 0.305f, 0.3f}};
+        LightSource lightSource = {util::vec3{0.31f, 0.305f, 0.3f}, util::vec3{0, 0, 0}};
         lightSource.setAttenuation(1e-3, 1e-3);
         light.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource))
             .addComponent<PlacementComponent>(util::vec3{5.f, 8, 5.f});
@@ -210,7 +206,7 @@ namespace demoSimulation {
 //        light2.addComponent<LightingComponent>(std::make_shared<LightSource>(lightSource2)).addComponent<PlacementComponent>(util::vec3{-5.f, 0.f, -5.f});
 
         auto PatSys = this->entityManager.createEntity("ParticleSystem");
-        int numPats = 1000;
+        int numPats = 10000;
         engine::util::vector<Vertex> instanceVertices = { Vertex{engine::util::vec3{-0.05f, -0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 0}}, 
                                             Vertex{engine::util::vec3{0.05f, -0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{1, 0}},
                                             Vertex{engine::util::vec3{-0.05f, 0.05f, 0.f}, engine::util::vec3{0.f, 0.f, 0.f}, engine::util::vec2{0, 1}},
@@ -222,11 +218,11 @@ namespace demoSimulation {
         std::shared_ptr<VisualObject> vo = std::make_shared<VisualObject>(iMesh, std::make_shared<Material>(std::make_shared<ShaderProgram>(ShaderProgram::createShaderProgramFromSource(DefaultShader::createTextureInstancingVertexShader(), DefaultShader::createTextureInstancingFragmentShader()))));
         Texture tex("textures/particle.png", ImageFormat::RGBA, ImageFormat::RGBA, TextureDimension::TEXTURE_2D, TextureType::DIFFUSE);
         vo->getMaterial().attachTexture(tex);
-
-        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(3, 1, iMesh, ParticleForce::getForceOnVertices(3*numPats));
+        
+        std::shared_ptr<ParticleSystem> patsptr = std::make_shared<ParticleSystem>(1e-2, 1e-6, 0, iMesh, ParticleForce::getForceOnVertices(numPats, 4, 8));
         
         PatSys.addComponent<VisualComponent>(vo).addComponent<PlacementComponent>(engine::util::vec3{0.f, 0.3, 3}).addComponent<ParticleSystemComponent>(patsptr);
-        
+
 //        auto instances = this->entityManager.createEntity("Triangles");
 //        engine::util::vector<Vertex> instanceVertices = {Vertex{engine::util::vec3{-0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.1f, 0.f, -0.1f}}, Vertex{engine::util::vec3{0.f, 1.f, 0.f}}};
 //        engine::util::vector<float> positions;
@@ -280,6 +276,7 @@ namespace demoSimulation {
         this->systemManager.enableSystem<TimerSystem>();
         this->systemManager.enableSystem<LightingSystem>();
         this->systemManager.enableSystem<ParticleSystemSystem>();
+        this->systemManager.enableSystem<ForceTimerSystem>();
         
         this->entityManager.sort(VisualComponent::getComponentTypeId(), [](std::shared_ptr<Component> c1, std::shared_ptr<Component> c2) {
             return c1->to<VisualComponent>().getVisualObject().getRenderPriority() < c2->to<VisualComponent>().getVisualObject().getRenderPriority();

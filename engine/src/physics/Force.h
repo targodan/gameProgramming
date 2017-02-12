@@ -20,7 +20,7 @@ namespace engine {
             virtual VectorXf getForceOnVertices(const ObjectProperties& object) = 0;
             
             virtual void addSecondsSinceStart(float secondsSinceStart) {
-                this->secondsSinceStart += secondsSinceStart;
+                this->setSecondsSinceStart(this->secondsSinceStart + secondsSinceStart);
             }
             
             virtual void setSecondsSinceStart(float secondsSinceStart) {

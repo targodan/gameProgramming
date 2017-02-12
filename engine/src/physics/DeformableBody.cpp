@@ -203,7 +203,7 @@ namespace engine {
                 this->stressMatrix = materialbasedMatrices.second;
             }
             this->updateStepMatrix(targetStepSize);
-            LOG(INFO) << "Done.";
+            LOG(INFO) << "Done. Size of K: " << this->stiffnessMatrix.rows() << "x" << this->stiffnessMatrix.cols();
         }
         
         void DeformableBody::step(float deltaT, Force& force) {

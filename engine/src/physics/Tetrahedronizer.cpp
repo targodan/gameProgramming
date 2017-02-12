@@ -22,7 +22,7 @@ namespace engine {
                     float textureRepeatAlongSpanOne, float textureRepeatAlongSpanTwo, float textureRepeatAlongSpanThree,
                     float density
                 ) {
-            if(abs(spanVectorOne.cross(spanVectorTwo).dot(spanVectorThree)) < 1e-5) {
+            if(abs(spanVectorOne.cross(spanVectorTwo).dot(spanVectorThree)) < 1e-8) {
                 throw IllegalArgumentException("The span vectors must not be in the same plane.");
             }
             

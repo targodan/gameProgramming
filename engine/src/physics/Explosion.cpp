@@ -129,6 +129,9 @@ namespace engine {
         }
 
         VectorXf Explosion::getForceOnVertices(const ObjectProperties& object) {
+            if(!this->isEnabled()) {
+                return VectorXf(0);
+            }
             if(this->secondsSinceStart < 0) {
                 return VectorXf(0);
             }

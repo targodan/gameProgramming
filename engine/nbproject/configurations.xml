@@ -26,6 +26,9 @@
           <in>DeformableBodySystem.cpp</in>
           <in>ForceComponent.cpp</in>
           <in>InputSystem.cpp</in>
+          <in>LightingSystem.cpp</in>
+          <in>ParticleSystemComponent.cpp</in>
+          <in>ParticleSystemSystem.cpp</in>
           <in>PerformanceMetricsSystem.cpp</in>
           <in>PlacementComponent.cpp</in>
           <in>PlacementSystem.cpp</in>
@@ -53,6 +56,7 @@
           <in>Explosion.cpp</in>
           <in>GravitationalForce.cpp</in>
           <in>ObjectProperties.cpp</in>
+          <in>ParticleSystem.cpp</in>
           <in>SimulationObject.cpp</in>
           <in>TetrahedronizedObject.cpp</in>
           <in>Tetrahedronizer.cpp</in>
@@ -69,6 +73,7 @@
           <in>FontFamily.cpp</in>
           <in>FontRegistry.cpp</in>
           <in>InstanceMesh.cpp</in>
+          <in>LightSource.cpp</in>
           <in>Material.cpp</in>
           <in>Mesh.cpp</in>
           <in>ModelLoader.cpp</in>
@@ -1034,6 +1039,24 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/ECSCommon/LightingSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemComponent.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/ECSCommon/ParticleSystemSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/ECSCommon/PerformanceMetricsSystem.cpp"
             ex="false"
             tool="1"
@@ -1147,6 +1170,10 @@
         <ccTool flags="1">
         </ccTool>
       </item>
+      <item path="src/physics/ParticleSystem.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <item path="src/physics/SimulationObject.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
@@ -1187,6 +1214,10 @@
         </ccTool>
       </item>
       <item path="src/renderer/InstanceMesh.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
+      <item path="src/renderer/LightSource.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>
@@ -1285,7 +1316,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/ECS/pb/mockcomponents.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/IO/ConsoleTest.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -1295,7 +1328,9 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="0">
+      <item path="test/IO/serializer_test.pb.cc" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
       </item>
       <item path="test/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

@@ -407,6 +407,38 @@ namespace engine {
                 this->tangents[i].bitangent /= static_cast<float>(counts[i]);
             }
         }
+        
+        void Mesh::calculateNormals() {
+            // Reset old normals
+            for(auto& v : this->vertices) {
+                v.normal = vec3(0, 0, 0);
+            }
+            
+            for(size_t face = 0; face < this->indices.size(); face += 3) {
+                auto i0 = this->indices[face + 0];
+                auto i1 = this->indices[face + 1];
+                auto i2 = this->indices[face + 2];
+                
+                auto v0 = this->vertices[i0].position;
+                auto v1 = this->vertices[i1].position;
+                auto v2 = this->vertices[i2].position;
+                
+                auto faceNormal = glm::cross(v1 - v0, v2 - v0);
+                
+                // Add faceNormal to all vertex normals.
+                // Normalization comes later, this way we weigh the normals by face size.
+                this->vertices[i0].normal += faceNormal;
+                this->vertices[i1].normal += faceNormal;
+                this->vertices[i2].normal += faceNormal;
+            }
+            
+            // Normalize
+            for(auto& v : this->vertices) {
+                v.normal = glm::normalize(static_cast<glm::vec3>(v.normal));
+            }
+            
+            this->setVerticesChanged(true);
+        }
     }
 }
 

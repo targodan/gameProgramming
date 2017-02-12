@@ -4,19 +4,19 @@
 namespace engine {
     namespace renderer {
             LightSource::LightSource() 
-                : diffuseColor(0.8, 0.8, 0.8), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), directionalLight(false) {
+                : diffuseColor(0.8, 0.8, 0.8), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), linearAttenuation(0), quadraticAttenuation(0), directionalLight(false) {
                 
             }
             LightSource::LightSource(const vec3& diffuseColor) 
-                : diffuseColor(diffuseColor), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), directionalLight(false) {
+                : diffuseColor(diffuseColor), ambientColor(0.2, 0.2, 0.2), specularColor(1.0, 1.0, 1.0), linearAttenuation(0), quadraticAttenuation(0), directionalLight(false) {
                 
             }
             LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor) 
-                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(1.0, 1.0, 1.0), directionalLight(false) {
+                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(1.0, 1.0, 1.0), linearAttenuation(0), quadraticAttenuation(0), directionalLight(false) {
                 
             }
             LightSource::LightSource(const vec3& diffuseColor, const vec3& ambientColor, const vec3& specularColor) 
-                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(specularColor), directionalLight(false) {
+                : diffuseColor(diffuseColor), ambientColor(ambientColor), specularColor(specularColor), linearAttenuation(0), quadraticAttenuation(0), directionalLight(false) {
                 
             }
             

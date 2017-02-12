@@ -53,7 +53,8 @@ namespace engine {
             }
             
             /*
-             * Note: Idea taken from 'Basic Techniques in Computer Graphics',
+             * Note on setUniform via templates: 
+             * Idea taken from 'Basic Techniques in Computer Graphics',
              *       assignment08/tools/ShaderProgram.hpp. :)
              */
             template<typename T>
@@ -154,6 +155,10 @@ namespace engine {
             
                 glLinkProgram(this->id);
                 
+                /*
+                 * Polling linker error based on: 'Basic Techniques in Computer Graphics',
+                 *       assignment08/tools/ShaderProgram.hpp. :)
+                 */
                 GLint linkError;
                 glGetProgramiv(this->id, GL_LINK_STATUS, &linkError);
                 if(linkError != GL_TRUE) {

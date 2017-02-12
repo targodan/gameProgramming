@@ -80,6 +80,11 @@ namespace engine {
             void compileShader() {
                 glCompileShader(this->id);  
                     
+                
+                /*
+                 * Polling compile error based on: 'Basic Techniques in Computer Graphics',
+                 *       assignment08/tools/Shader.hpp. :)
+                 */
                 GLint shaderError;
                 glGetShaderiv(this->id, GL_COMPILE_STATUS, &shaderError);
                 if(shaderError != GL_TRUE) {

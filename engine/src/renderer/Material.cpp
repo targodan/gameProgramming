@@ -171,6 +171,9 @@ namespace engine {
             
             this->shader->useProgram();
             
+            /*
+             * The texture-unit activation is based on: https://learnopengl.com/#!Model-Loading/Mesh
+             */
             if(!this->textures.empty()) {
                 int specularCount = 0, diffuseCount = 0, normalCount = 0, heightCount = 0;
                 for(unsigned int i = 0; i < this->textures.size(); i++) {

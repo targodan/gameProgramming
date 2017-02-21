@@ -108,6 +108,9 @@ namespace engine {
             void freezeVertices(const engine::util::Array<size_t>& indices);
             void unfreezeVertex(size_t index);
             void unfreezeVertices(const engine::util::Array<size_t>& indices);
+            void unfreezeAllVertices();
+            
+            void resetSimulation();
             
             bool isBreakingEnabled() const;
             

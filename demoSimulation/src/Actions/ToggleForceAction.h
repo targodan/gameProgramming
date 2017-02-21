@@ -14,21 +14,24 @@ namespace demo {
         
         class ToggleForceAction : public Action {
         public:
-            ToggleForceAction(int device, int button, Force& force) : Action(device, button), force(force) {}
+            ToggleForceAction(int device, int button, Force& force, demoSimulation::StatusDisplay* sd) : Action(device, button), force(force), sd(sd) {}
             ToggleForceAction(const ToggleForceAction& orig) : Action(orig), force(orig.force) {}
             void execute(EntityManager& em, float deltaT) override {
                 ++this->count;
-                if(this->count >= 10) {
+                if(this->count >= 7) {
                     this->count = 0;
                     if(this->force.isEnabled()) {
                         this->force.disable();
+                        sd->setGravity(false);
                     } else {
                         this->force.enable();
+                        sd->setGravity(true);
                     }
                 }
             }
         private:
             Force& force;
+            demoSimulation::StatusDisplay* sd;
             int count = 0;
         };
     }

@@ -106,6 +106,7 @@
           <in>WindowResizeMessage.cpp</in>
         </df>
         <in>Game.cpp</in>
+        <in>StatusDisplay.h</in>
         <in>main.cpp</in>
       </df>
       <df name="test">
@@ -241,6 +242,10 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <item path="src/Actions/FreezeAction.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Actions/ResetAction.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Actions/ResetTimerAction.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Actions/ToggleForceAction.h" ex="false" tool="3" flavor2="0">
@@ -259,6 +264,8 @@
             <Elem>ELPP_THREAD_SAFE</Elem>
           </preprocessorList>
         </ccTool>
+      </item>
+      <item path="src/StatusDisplay.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/engine/ECS/AddEntityMessage.cpp"
             ex="false"
@@ -1491,6 +1498,8 @@
             <Elem>NDEBUG</Elem>
           </preprocessorList>
         </ccTool>
+      </item>
+      <item path="src/freezer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="2">

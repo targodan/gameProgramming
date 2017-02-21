@@ -27,6 +27,14 @@ namespace engine {
             Action(int device, int button) {
                 bi.buttonID = button;
                 bi.deviceID = device;
+                bi.xAxis = 0;
+                bi.yAxis = 0;
+            }
+            Action(const Action& orig) {
+                bi.buttonID = orig.bi.buttonID;
+                bi.deviceID = orig.bi.deviceID;
+                bi.xAxis = orig.bi.xAxis;
+                bi.yAxis = orig.bi.yAxis;
             }
             
             virtual void execute(EntityManager& em, float deltaT) = 0;

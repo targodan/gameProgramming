@@ -94,21 +94,21 @@ namespace engine {
                     if(prevDevice != it.first.deviceID) {
                         buttons = glfwGetJoystickButtons(it.first.deviceID, &bCount);
                         axis = glfwGetJoystickAxes(it.first.deviceID, &aCount);
-                    }
-                    if(it.first.buttonID < 0 && (it.first.buttonID*2) > -aCount) {
-                        float xpos = axis[-(it.first.buttonID)*2-1];
-                        float ypos = axis[-(it.first.buttonID)*2];
-                        if(it.first.negate) {
-                            it.second->setAxes(-xpos, -ypos);
+                        
+                        if(it.first.buttonID < 0 && (it.first.buttonID*2) > -aCount) {
+                            float xpos = axis[-(it.first.buttonID)*2-1];
+                            float ypos = axis[-(it.first.buttonID)*2];
+                            if(it.first.negate) {
+                                it.second->setAxes(-xpos, -ypos);
+                            }
+                            else {
+                            it.second->setAxes(xpos, ypos);                            
+                            }
+                            actions.push_back(it.second);
+                        } else if(it.first.buttonID < bCount && buttons[it.first.buttonID] == GLFW_PRESS) {
+                            it.second->setDevButton(it.first.deviceID, it.first.buttonID);
+                            actions.push_back(it.second);
                         }
-                        else {
-                        it.second->setAxes(xpos, ypos);                            
-                        }
-                        actions.push_back(it.second);
-                    }
-                    else if(it.first.buttonID < bCount && buttons[it.first.buttonID] == GLFW_PRESS) {
-                        it.second->setDevButton(it.first.deviceID, it.first.buttonID);
-                        actions.push_back(it.second);
                     }
                 }
                 prevDevice = it.first.deviceID;

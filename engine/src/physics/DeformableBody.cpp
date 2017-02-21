@@ -395,9 +395,17 @@ namespace engine {
                 this->vertexFreezer.segment<3>(index * 3) = Vector3d::Ones();
             }
         }
+        void DeformableBody::unfreezeAllVertices() {
+            this->vertexFreezer = VectorXd::Ones(this->vertexFreezer.rows());
+        }
         
         bool DeformableBody::isBreakingEnabled() const {
             return this->stressThresholdSqForBreaking > 0;
+        }
+        
+        void DeformableBody::resetSimulation() {
+            this->lastVelocities = VectorXd::Zero(this->lastVelocities.rows());
+            this->mesh.updateMeshFromPlanarVector(this->restPosition);
         }
     }
 }

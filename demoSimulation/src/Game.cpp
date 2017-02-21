@@ -21,6 +21,10 @@
 #include "engine/renderer/LightSource.h"
 #include "util/vec3.h"
 
+#include "freezer.h"
+#include "Actions/FreezeAction.h"
+#include "Actions/ResetAction.h"
+
 using namespace engine;
 using namespace engine::renderer;
 using namespace engine::physics;
@@ -31,26 +35,27 @@ using engine::util::vec2;
 using engine::util::vec3;
 using engine::util::vector;
 
-void freezeAllWith(engine::physics::DeformableBody& defBody, TetrahedronizedObject& tMesh, float x = NAN, float y = NAN, float z = NAN) {
-    const auto& sMesh = tMesh.getSimulationMesh();
-
-    engine::util::vector<size_t> freezer;
-
-    for(int vertexInd = 0; vertexInd < sMesh.rows() / 3; ++vertexInd) {
-        if(        (isnan(x) || abs(x - sMesh[vertexInd * 3 + 0]) < 1e-3)
-                && (isnan(y) || abs(y - sMesh[vertexInd * 3 + 1]) < 1e-3)
-                && (isnan(z) || abs(z - sMesh[vertexInd * 3 + 2]) < 1e-3)) {
-            freezer.push_back(vertexInd);
-        }
-    }
-
-    defBody.freezeVertices(freezer);
-}
+/*
+ * --- Button Binding ---
+ * 
+ * WASD, QE : Movement
+ * ESC/F10  : Toggle mouse mode
+ * 
+ * R        : Reset Simulation
+ * 
+ * LeftMouse: Push wall, start particles and hide bomb
+ * F        : Trigger explosion force
+ * G        : Toggle gravity
+ * H        : Toggle freeze left part of wall
+ * J        : Toggle freeze right part of wall
+ * K        : Toggle freeze top part of wall
+ * L        : Toggle freeze bottom part of wall
+ */
 
 namespace demoSimulation {
     void Game::initialize() {
         this->window.setClearColor(0.1f, 0.f, 0.1f);
-
+        
         LOG(INFO) << "Window dimensions: " << this->window.getWidth() << "x" << this->window.getHeight();
 
         FontRegistry::registerFontFamily(
@@ -60,6 +65,8 @@ namespace demoSimulation {
             "/usr/share/fonts/TTF/DejaVuSans-Oblique.ttf",
             "/usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf"
         );
+        
+        this->statusDisplay = new StatusDisplay(this->entityManager);
 
         Vertex frontBottom( {0, 0.05, 0.05},        {0, 1, 0});
         Vertex backLeft(    {-0.05, 0, 0},    {0, 0, 1});
@@ -74,7 +81,8 @@ namespace demoSimulation {
 //                DataUsagePattern::DYNAMIC_DRAW));
 
 //        float density = 7850; // kg / m³ metal
-        float density = 900; // kg / m³ rubber
+//        float density = 900; // kg / m³ rubber
+        float density = 400; // looks cooler
 
         auto tMesh = Tetrahedronizer::tetrahedronizeCuboid({-2, 4, 2}, {4, 0, 0}, {0, -4, 0}, {0, 0, -0.5}, 16, 16, 1, 8, 8, 2, density);
         std::shared_ptr<Mesh> outerMesh = tMesh.getMeshPtr(0);
@@ -104,7 +112,7 @@ namespace demoSimulation {
 
         this->player = this->entityManager.createEntity("Camera")
                 .addComponent<PlacementComponent>(engine::util::vec3(0, 1.8, 8))
-                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 90, this->window.getAspectRatio(), 0.001f, 100.f);
+                .addComponent<CameraComponent>(glm::normalize(glm::vec3(0, 0, -1)), engine::util::vec3(0, 1, 0), 90, this->window.getAspectRatio(), 0.01f, 50.f);
 
 
 //        this->tetrahedron = this->entityManager.createEntity("Inner")
@@ -125,12 +133,11 @@ namespace demoSimulation {
                 0
             );
         // defBody->freezeVertices(tMesh.getEdgeIndices());
-    //    freezeAllWith(*defBody, tMesh, NAN, 7, NAN);
-    //    freezeAllWith(*defBody, tMesh, NAN, 4, NAN);
-    //    freezeAllWith(*defBody, tMesh, NAN, 0, NAN);
-       freezeAllWith(*defBody, tMesh, -2, NAN, NAN);
-       freezeAllWith(*defBody, tMesh, 2, NAN, NAN);
-
+        this->statusDisplay->setLeftFrozen(false);
+        this->statusDisplay->setRightFrozen(false);
+        this->statusDisplay->setTopFrozen(false);
+        this->statusDisplay->setBottomFrozen(false);
+        
         this->openmpThreads = std::thread::hardware_concurrency() * 4;
 
         this->tetrahedron = this->entityManager.createEntity("DefBody")
@@ -141,8 +148,9 @@ namespace demoSimulation {
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(force);
 
-        auto gravity = std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.75));
+        auto gravity = std::make_shared<GravitationalForce>(GRAVITY_G_TO_M_PER_SS(0.6));
         gravity->disable();
+        this->statusDisplay->setGravity(false);
         auto gravEnt = this->entityManager.createEntity("Gravity")
                 .addComponent<TimerComponent>(0)
                 .addComponent<ForceComponent>(gravity);
@@ -266,8 +274,14 @@ namespace demoSimulation {
         bm.insertMapping(-1, GLFW_KEY_E, action5, true);
         auto action6 = std::make_shared<BoomAction>(-2, GLFW_MOUSE_BUTTON_LEFT, *force, patsptr, bombEnt.getComponent<PlacementComponent>());
         bm.insertMapping(-2, GLFW_MOUSE_BUTTON_LEFT, action6);
-        bm.insertMapping(-1, GLFW_KEY_J, std::make_shared<ResetTimerAction>(-1, GLFW_KEY_J, expEnt.getComponent<TimerComponent>()));
-        bm.insertMapping(-1, GLFW_KEY_G, std::make_shared<ToggleForceAction>(-1, GLFW_KEY_G, gravEnt.getComponent<ForceComponent>().getForce()));
+        bm.insertMapping(-1, GLFW_KEY_F, std::make_shared<ResetTimerAction>(-1, GLFW_KEY_J, expEnt.getComponent<TimerComponent>()));
+        bm.insertMapping(-1, GLFW_KEY_G, std::make_shared<ToggleForceAction>(-1, GLFW_KEY_G, gravEnt.getComponent<ForceComponent>().getForce(), this->statusDisplay));
+        
+        bm.insertMapping(-1, GLFW_KEY_R, std::make_shared<ResetAction>(-1, GLFW_KEY_R, *defBody));
+        bm.insertMapping(-1, GLFW_KEY_H, std::make_shared<FreezeAction>(-1, GLFW_KEY_H, *defBody, tMesh, this->statusDisplay));
+        bm.insertMapping(-1, GLFW_KEY_J, std::make_shared<FreezeAction>(-1, GLFW_KEY_J, *defBody, tMesh, this->statusDisplay));
+        bm.insertMapping(-1, GLFW_KEY_K, std::make_shared<FreezeAction>(-1, GLFW_KEY_K, *defBody, tMesh, this->statusDisplay));
+        bm.insertMapping(-1, GLFW_KEY_L, std::make_shared<FreezeAction>(-1, GLFW_KEY_L, *defBody, tMesh, this->statusDisplay));
 
         Texture skyTexture("textures/skybox_small.png");
         auto skybox = std::make_shared<Skybox>(skyTexture, EnvironmentTextureType::EQUIRECTANGULAR);

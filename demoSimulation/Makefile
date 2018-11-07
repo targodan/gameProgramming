@@ -20,11 +20,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp `freetype-config --cflags` -DELPP_FEATURE_PERFORMANCE_TRACKING -DELPP_THREAD_SAFE -I$(SRCDIR) -I$(SRCDIR)/engine
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp `pkg-config --cflags freetype2` -DELPP_FEATURE_PERFORMANCE_TRACKING -DELPP_THREAD_SAFE -DGLM_ENABLE_EXPERIMENTAL -I$(SRCDIR) -I$(SRCDIR)/engine
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine -lSOIL `freetype-config --libs` -lglfw -Wl,-rpath=.,--as-needed
+LD_FLAGS_COMMON = -L. -lm -lpthread -lprotobuf -lengine -lSOIL `pkg-config --libs freetype2` -lglfw -Wl,-rpath=.,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments

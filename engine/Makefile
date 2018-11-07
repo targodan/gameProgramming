@@ -2,7 +2,7 @@
 G++VERSION = $(shell g++ -dumpversion | cut -f1 -d.)
 G++_GT_6 = $(shell echo $(G++VERSION)\>=6 | bc)
 
-ifeq ($(G++_GT_6),1) 
+ifeq ($(G++_GT_6),1)
 	CC := g++
 else
 	CC := g++-6
@@ -26,11 +26,11 @@ DEBUG = false
 # -Wall turns on most, but not all, compiler warnings
 # -fPIC neccessary for shared library (Position Independent Code)
 #C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fPIC -DELPP_THREAD_SAFE
-C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -DELPP_FEATURE_PERFORMANCE_TRACKING -DELPP_THREAD_SAFE `freetype-config --cflags` -pthread -I$(SRCDIR)
+C_FLAGS_COMMON = -std=c++14 -Wall -pedantic -fopenmp -fPIC -DELPP_FEATURE_PERFORMANCE_TRACKING -DELPP_THREAD_SAFE -DGLM_ENABLE_EXPERIMENTAL `pkg-config --cflags freetype2` -pthread -I$(SRCDIR)
 # -shared: build a shared library
 # -lm -lpthread: Link against math and pthread
 # -Wl,--as-needed: feel free to not link if no symbols of a library are needed
-LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread `freetype-config --libs` -Wl,--as-needed
+LD_FLAGS_COMMON = -shared -fopenmp -lSOIL -lm -lglfw -lXrandr -lGL -lXi -lX11 -lXxf86vm -lprotobuf -lassimp -pthread -lpthread `pkg-config --libs freetype2` -Wl,--as-needed
 
 ifeq ($(CC),g++)
 	C_FLAGS_DEBUG+=-fvar-tracking-assignments
@@ -66,7 +66,7 @@ PROTO_FILES = $(shell find $(SRCDIR) -type f -name '*.proto')
 PROTO_GENERATED_H = $(PROTO_FILES:.proto=.pb.h)
 PROTO_GENERATED_CC = $(PROTO_FILES:.proto=.pb.cc)
 
-SOURCES_CPP = $(shell find $(SRCDIR) -type f -name '*.cpp')
+SOURCES_CPP = $(shell find $(SRCDIR) -follow -type f -name '*.cpp')
 SOURCES_CC = $(PROTO_GENERATED_CC)
 SOURCES = $(SOURCES_CPP) $(SOURCES_CC)
 OBJECTS = $(addprefix $(BUILDDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
@@ -133,7 +133,7 @@ $(TARGET): $(OBJECTS)
 
 $(TARGET_TEST): $(TARGET) $(OBJECTS_TEST)
 	@$(ECHO) "LD$(TAB)$@"
-	@$(CC) -o $@ $^ $(LD_FLAGS_TEST) 
+	@$(CC) -o $@ $^ $(LD_FLAGS_TEST)
 
 $(BUILDDIR)/$(SRCDIR)/%.o: $(SRCDIR)/%.cc $(DEPDIR)/$(SRCDIR)/%.d
 	@$(ECHO) "CC$(TAB)$@"
